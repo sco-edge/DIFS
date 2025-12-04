@@ -10,3 +10,5 @@ credentials/
 .secrets/
 .env.*
 my_security/INFaaSUser_accessKeys.csv
+my_security/INFaaSUser_credentials.csv
+my_security/infaas_instance1_key1.pem
