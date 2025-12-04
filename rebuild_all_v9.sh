@@ -11,7 +11,7 @@ GRPC_VERSION="v1.48.0"
 INSTALL_PREFIX="/usr/local"
 PROTOBUF_SRC=~/protobuf
 GRPC_SRC=~/grpc
-INFAAS_SRC=~/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/INFaaS
+INFAAS_SRC=~/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS
 BUILD_DIR=build
 export PATH="$INSTALL_PREFIX/bin:$PATH"
 export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH"
@@ -109,15 +109,15 @@ if [ ! -f "$PROTO_PATH/modelreg.proto" ]; then
 fi
 protoc --proto_path="$PROTO_PATH" --cpp_out="$INFAAS_SRC/src/master" --grpc_out="$INFAAS_SRC/src/master" --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` "$PROTO_PATH/modelreg.proto"
 # -------------------------------------------------
-# BUILD INFaaS
+# BUILD DIFS
 # -------------------------------------------------
-echo -e "${BLUE}==> Cleaning previous INFaaS build artifacts...${NC}"
+echo -e "${BLUE}==> Cleaning previous DIFS build artifacts...${NC}"
 rm -rf "$INFAAS_SRC/$BUILD_DIR"
 find "$INFAAS_SRC" -name "*.pb.cc" -o -name "*.pb.h" | xargs -r rm -f
-echo -e "${GREEN}=== BUILDING INFaaS (LOCAL MODE) ===${NC}"
+echo -e "${GREEN}=== BUILDING DIFS (LOCAL MODE) ===${NC}"
 cd "$INFAAS_SRC"
 mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR"
-echo -e "${BLUE}==> Configuring INFaaS with LOCAL-MODE flags...${NC}"
+echo -e "${BLUE}==> Configuring DIFS with LOCAL-MODE flags...${NC}"
 cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX" \
@@ -131,7 +131,7 @@ cmake .. \
     -DENABLE_AWS_AUTOSCALING=OFF \
     -DENABLE_TRTIS=OFF
 
-echo -e "${BLUE}==> Compiling INFaaS (this may show a fake error — it's normal)...${NC}"
+echo -e "${BLUE}==> Compiling DIFS (this may show a fake error — it's normal)...${NC}"
 make -j$(nproc) || {
     echo -e "${BLUE}→ make returned non-zero (common false positive with -j)${NC}"
     sleep 1
@@ -152,7 +152,7 @@ if [ -f "$BIN_DIR/modelreg_server" ] && \
    [ -f "$BIN_DIR/infaas_online_query" ]; then
 
     echo -e "${GREEN}=========================================================================${NC}"
-    echo -e "${GREEN}  INFaaS LOCAL SINGLE-GPU BUILD 100% SUCCESSFUL!${NC}"
+    echo -e "${GREEN}  DIFS LOCAL SINGLE-GPU BUILD 100% SUCCESSFUL!${NC}"
     echo -e "${GREEN}  All required binaries ready in: $BIN_DIR${NC}"
     echo -e "${GREEN}  worker_daemon missing is NORMAL in local mode${NC}"
     echo -e "${GREEN}  Next: cd $INFAAS_SRC && ./start_infaas.sh${NC}"
