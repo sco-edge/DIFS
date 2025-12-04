@@ -1,0 +1,12 @@
+# Secrets
+*.env
+*.key
+*.secret
+*.pem
+*.p12
+config/*.json
+config/*.yaml
+credentials/
+.secrets/
+.env.*
+my_security/INFaaSUser_accessKeys.csv
