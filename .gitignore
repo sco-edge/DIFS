@@ -10,3 +10,4 @@ credentials/
 .secrets/
 .env.*
 my_security/*
+mymodel_directory/*
