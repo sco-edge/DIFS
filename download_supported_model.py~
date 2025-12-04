@@ -1,0 +1,7 @@
+import torch
+import torchvision.models as models
+
+model = models.resnet50(weights="IMAGENET1K_V1")
+model.eval()
+scripted = torch.jit.script(model)
+scripted.save("resnet50_fp32.pt")

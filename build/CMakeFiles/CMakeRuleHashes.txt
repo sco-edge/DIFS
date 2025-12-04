@@ -1,0 +1,17 @@
+# Hashes of file build rules.
+df7186044ea05119bbe571e8d30ab553 protos/internal/infaas_request_status.pb.h
+9dc56dd73821431bcc9a8eae7c481a91 protos/internal/query.grpc.pb.cc
+95b4f6c35070ee9e57eb153e81f7f268 protos/internal/query.pb.h
+84da1729d70683e60a4096f6ec6c32c3 protos/internal/sys_monitor.grpc.pb.cc
+6acd258f8f867e7700156cb3233c9e65 protos/internal/sys_monitor.pb.h
+c14e4a94147dfae90fd27419a3ecc733 protos/modelreg.grpc.pb.cc
+4912bb75fc5b13b5ce09ebb8f53ffe61 protos/modelreg.pb.h
+e43af26778d4c554af06922d3117736d protos/queryfe.grpc.pb.cc
+3859e3fd4c5d5d5dd30a505f593d7c82 protos/queryfe.pb.h
+fcf7edfba39f2b7aaee41b5b4f33935d protos/request_reply.pb.h
+1c9f8a3d3679ac589e9070fbe2876b8c protos/trtis/api.pb.h
+302d3ba793f3095ab27739fdb8c1947a protos/trtis/grpc_service.grpc.pb.cc
+54dac789648f6c4022aa60021e5c4ce0 protos/trtis/grpc_service.pb.h
+58c9731c626cf9c7b6eb753891751e37 protos/trtis/model_config.pb.h
+9ddf81b0482c982676b19a89963e70df protos/trtis/request_status.pb.h
+63e7894f03fae7e2c53462ff011c37b0 protos/trtis/server_status.pb.h

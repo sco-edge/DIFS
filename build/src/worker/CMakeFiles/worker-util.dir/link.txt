@@ -1,0 +1,2 @@
+/usr/bin/ar qc libworker-util.a CMakeFiles/worker-util.dir/common_model_util.cc.o CMakeFiles/worker-util.dir/autoscaler.cc.o CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.o
+/usr/bin/ranlib libworker-util.a

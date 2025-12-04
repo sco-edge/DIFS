@@ -1,0 +1,30 @@
+[ 86%] Built target redis_md_test
+[ 88%] Linking CXX executable ../../bin/infaas_online_query
+cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/src/cli-tools && /usr/bin/cmake -E cmake_link_script CMakeFiles/infaas_online_query.dir/link.txt --verbose=1
+/usr/bin/c++  -std=c++11 -O3 -DNDEBUG CMakeFiles/infaas_online_query.dir/infaas_online_query.cc.o -o ../../bin/infaas_online_query   -L/usr/local/lib  -L/usr/local/lib64  -Wl,-rpath,/usr/local/lib:/usr/local/lib64:/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/src/master:/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/src/metadata-store -lgrpc++_unsecure -lgrpc -lgpr ../master/libinf-master.so /usr/local/lib/libopencv_videostab.so.2.4.13 /usr/local/lib/libopencv_ts.a /usr/local/lib/libopencv_superres.so.2.4.13 /usr/local/lib/libopencv_stitching.so.2.4.13 /usr/local/lib/libopencv_contrib.so.2.4.13 ../metadata-store/libredis-md.so -lredox /usr/lib/x86_64-linux-gnu/libhiredis.so /usr/lib/x86_64-linux-gnu/libev.so ../../protos/libinfaas-protos.a /usr/local/lib/libprotobuf.so -ldl -lm -lpthread -lrt -ldl -lm -lpthread -lrt /usr/local/lib/libopencv_nonfree.so.2.4.13 /usr/local/lib/libopencv_ocl.so.2.4.13 /usr/local/lib/libopencv_gpu.so.2.4.13 /usr/local/lib/libopencv_photo.so.2.4.13 /usr/local/lib/libopencv_objdetect.so.2.4.13 /usr/local/lib/libopencv_legacy.so.2.4.13 /usr/local/lib/libopencv_video.so.2.4.13 /usr/local/lib/libopencv_ml.so.2.4.13 /usr/local/lib/libopencv_calib3d.so.2.4.13 /usr/local/lib/libopencv_features2d.so.2.4.13 /usr/local/lib/libopencv_highgui.so.2.4.13 /usr/local/lib/libopencv_imgproc.so.2.4.13 /usr/local/lib/libopencv_flann.so.2.4.13 /usr/local/lib/libopencv_core.so.2.4.13 
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build'
+[ 88%] Built target infaas_online_query
+[ 89%] Linking CXX static library libworker-util.a
+cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/src/worker && /usr/bin/cmake -P CMakeFiles/worker-util.dir/cmake_clean_target.cmake
+cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/src/worker && /usr/bin/cmake -E cmake_link_script CMakeFiles/worker-util.dir/link.txt --verbose=1
+/usr/bin/ar qc libworker-util.a CMakeFiles/worker-util.dir/common_model_util.cc.o CMakeFiles/worker-util.dir/autoscaler.cc.o CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.o
+/usr/bin/ranlib libworker-util.a
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build'
+[ 89%] Built target worker-util
+make[1]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build'
+make: *** [Makefile:94: all] Error 2
+→ make returned non-zero (common false positive with -j)
+==> Verifying binaries in /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/bin ...
+Build failed — missing key binaries in /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/bin
+Contents of /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/RESEARCH_PROJECTS/Templates/INFaaS/build/bin:
+total 636
+drwxrwxr-x 2 kwadwo kwadwo   4096 11월 29 15:56 .
+drwxrwxr-x 6 kwadwo kwadwo   4096 11월 29 15:56 ..
+-rwxrwxr-x 1 kwadwo kwadwo  23864 11월 29 15:56 infaas_modarch
+-rwxrwxr-x 1 kwadwo kwadwo  23376 11월 29 15:56 infaas_modelregistration
+-rwxrwxr-x 1 kwadwo kwadwo  23976 11월 29 15:56 infaas_modinfo
+-rwxrwxr-x 1 kwadwo kwadwo  23320 11월 29 15:56 infaas_offline_query
+-rwxrwxr-x 1 kwadwo kwadwo  62528 11월 29 15:56 infaas_online_query
+-rwxrwxr-x 1 kwadwo kwadwo  22504 11월 29 15:56 queryfe_heartbeat
+-rwxrwxr-x 1 kwadwo kwadwo 235680 11월 29 15:56 redis_md_test
+-rwxrwxr-x 1 kwadwo kwadwo 213216 11월 29 15:56 redis_startup_helper

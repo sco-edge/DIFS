@@ -1,0 +1,75 @@
+#!/bin/bash
+set -e  # exit immediately if a command fails
+set -o pipefail
+
+# -------------------------------------------------
+# Configuration
+# -------------------------------------------------
+PROTOBUF_VERSION="5.26.1"
+GRPC_VERSION="1.59.0"
+INSTALL_PREFIX="/usr/local"
+
+# Ensure /usr/local/bin is first in PATH
+export PATH="$INSTALL_PREFIX/bin:$PATH"
+export LD_LIBRARY_PATH="$INSTALL_PREFIX/lib:$LD_LIBRARY_PATH"
+
+# -------------------------------------------------
+# Step 0: Cleanup old builds
+# -------------------------------------------------
+echo "Cleaning old build directories..."
+rm -rf ~/protobuf/build ~/grpc/build ~/INFaaS/build
+
+# -------------------------------------------------
+# Step 1: Build and install Protobuf
+# -------------------------------------------------
+echo "Building Protobuf..."
+cd ~/protobuf
+mkdir -p build && cd build
+
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+    -Dprotobuf_BUILD_TESTS=ON \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+
+make -j$(nproc)
+sudo make install
+sudo ldconfig  # refresh shared library cache
+
+# -------------------------------------------------
+# Step 2: Build and install gRPC
+# -------------------------------------------------
+echo "Building gRPC..."
+cd ~/grpc
+mkdir -p build && cd build
+
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+    -DgRPC_BUILD_TESTS=ON \
+    -DgRPC_INSTALL=ON \
+    -DgRPC_PROTOBUF_PACKAGE_TYPE=CONFIG \
+    -DgRPC_ZLIB_PROVIDER=package
+
+make -j$(nproc)
+sudo make install
+sudo ldconfig
+
+# -------------------------------------------------
+# Step 3: Build INFaaS
+# -------------------------------------------------
+echo "Building INFaaS..."
+cd ~/INFaaS
+rm -rf build
+mkdir -p build && cd build
+
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX" \
+    -DProtobuf_DIR="$INSTALL_PREFIX/lib/cmake/protobuf" \
+    -DgRPC_DIR="$INSTALL_PREFIX/lib/cmake/grpc" \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+
+make -j$(nproc)
+
+echo "✅ Build completed successfully!"

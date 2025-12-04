@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -std=c++11 -O3 -DNDEBUG -shared -Wl,-soname,libredis-md.so -o libredis-md.so CMakeFiles/redis-md.dir/redis_metadata.cc.o   -L/usr/local/lib64  -Wl,-rpath,/usr/local/lib64 -lredox /usr/lib/x86_64-linux-gnu/libhiredis.so /usr/lib/x86_64-linux-gnu/libev.so 

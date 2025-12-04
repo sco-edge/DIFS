@@ -1,0 +1,12 @@
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/INFaaS/src/worker/common_model_util.cc: In member function ‘int8_t infaas::internal::CpuModelManager::QueryModelOffline(const std::string&, const infaas::internal::QueryOfflineRequest&, std::unique_ptr<RedisMetadata>&, std::unique_ptr<Aws::S3::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/INFaaS/src/worker/common_model_util.cc:1731:45: error: ‘infaas_bucket’ was not declared in this scope; did you mean ‘infaas_buckets_dir’?
+ 1731 |       std::string src_url = bucket_prefix + infaas_bucket + "/" + model_name;
+      |                                             ^~~~~~~~~~~~~
+      |                                             infaas_buckets_dir
+make[3]: *** [src/worker/CMakeFiles/worker-util.dir/build.make:79: src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o] Error 1
+make[3]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/INFaaS/build'
+make[2]: *** [CMakeFiles/Makefile2:436: src/worker/CMakeFiles/worker-util.dir/all] Error 2
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/INFaaS/build'
+make[1]: *** [CMakeFiles/Makefile2:584: src/master/CMakeFiles/modelreg_server.dir/rule] Error 2
+make[1]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/INFaaS/build'
+make: *** [Makefile:283: modelreg_server] Error 2

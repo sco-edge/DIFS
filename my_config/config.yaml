@@ -1,0 +1,6 @@
+hardware:
+  gpu: true
+  cpu: true
+
+model_repo_path: src/model_repository/
+profiling_data_path: src/profiling_data/
