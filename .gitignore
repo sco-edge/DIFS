@@ -4,6 +4,7 @@
 *.secret
 *.pem
 *.p12
+"*~"
 config/*.json
 config/*.yaml
 credentials/
