@@ -1,2 +1,0 @@
-/usr/bin/ar qc libnv-trtis-protos.a CMakeFiles/nv-trtis-protos.dir/grpc_service.pb.cc.o CMakeFiles/nv-trtis-protos.dir/api.pb.cc.o CMakeFiles/nv-trtis-protos.dir/model_config.pb.cc.o CMakeFiles/nv-trtis-protos.dir/request_status.pb.cc.o CMakeFiles/nv-trtis-protos.dir/server_status.pb.cc.o CMakeFiles/nv-trtis-protos.dir/grpc_service.grpc.pb.cc.o
-/usr/bin/ranlib libnv-trtis-protos.a
