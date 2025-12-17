@@ -569,24 +569,24 @@
 │   ├── install_grpc.sh
 │   ├── setup.sh
 │   └── start_vm.sh
-├── shutdown_infaas_bkUp_v1.sh
+├── shutdown_infaas_bkUp_v1.sh (PNB: my modification of the original 'shutdown_infaas.sh' script)
 ├── shutdown_infaas.sh
 ├── src
 │   ├── cli-tools
 │   │   ├── CMakeLists.txt
-│   │   ├── infaas_modarch.cc
-│   │   ├── infaas_modelregistration.cc
-│   │   ├── infaas_modinfo.cc
-│   │   ├── infaas_offline_query.cc
-│   │   └── infaas_online_query.cc
+│   │   ├── infaas_modarch.cc (PNB: I added the '#include "constants.h" file to give the file access to the file which I created in the "contants" folder')
+│   │   ├── infaas_modelregistration.cc (PNB: I added the '#include "constants.h" file to give the file access to the file which I created in the "contants" folder')
+│   │   ├── infaas_modinfo.cc (PNB: I added the '#include "constants.h" file to give the file access to the file which I created in the "contants" folder')
+│   │   ├── infaas_offline_query.cc (PNB: I added the '#include "constants.h" file to give the file access to the file which I created in the "contants" folder')
+│   │   └── infaas_online_query.cc (PNB: I added the '#include "constants.h" file to give the file access to the file which I created in the "contants" folder')
 │   ├── CMakeLists.txt
-│   ├── common
-│   │   ├── local_paths.h
+│   ├── common (PNB: created for the 'local_paths.h' file containing the constant for storing the path to the local folder representing our buckets)
+│   │   ├── local_paths.h (PNB: File containing the constant storing the path to the local folder representing our buckets)
 │   │   └── local_paths.h~
 │   ├── containers
-│   │   ├── container_start.sh
-│   │   ├── gnmt-nvpy
-│   │   │   ├── gnmt_container.py
+│   │   ├── container_start.sh (PNB: appears to be used by other scripts such as 'src/profiler/profile_model.sh to start constainer having as parameters; an input size scale, model and port')
+│   │   ├── gnmt-nvpy (GROK: Full translation pipeline for Google Neural Machine Translation (GNMT) with NVIDIA-optimized PyTorch model loading, beam search, seq2seq inference)
+│   │   │   ├── gnmt_container.py (GROK: gRPC server + GNMT Inference handler)
 │   │   │   ├── LICENSE
 │   │   │   ├── requirements.txt
 │   │   │   ├── seq2seq
@@ -612,7 +612,7 @@
 │   │   │   │   │   ├── table.py
 │   │   │   │   │   └── trainer.py
 │   │   │   │   └── utils.py
-│   │   │   └── translate.py
+│   │   │   └── translate.py (GROK: standalone translation - translates sentences from English to German based on the WMT'16 English-German dataset, denoted as "ende4" for 4-layer LSTM variants - testing)
 │   │   ├── inferentia
 │   │   │   ├── compile_resnet50.py
 │   │   │   ├── example_run.sh
