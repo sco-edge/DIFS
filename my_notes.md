@@ -20,14 +20,16 @@
 
 
 * _Versions and Why they were saved_
-| File              | Date    |  Time | Reason                                                         |
-|-------------------+---------+-------+----------------------------------------------------------------|
-| ../INFaaS_BkUp_v1 | Nov  21 | 13:30 | I was going to start editting the working distributed version  |
-|                   |         |       | of INFaaS into a local copy so I needed a backup               |
-| ../INFaaS_BkUp_v2 | Nov  29 | 00:51 |                                                                |
-|-------------------+---------+-------+----------------------------------------------------------------|
-| ../INFaaS_BkUp_v3 | Dec   1 | 17:11 | This was to backup the finally working local version of INFaaS |
-|                   |         |       |                                                                |
+| File                                             | Date    |  Time | Reason                                                         |
+|--------------------------------------------------+---------+-------+----------------------------------------------------------------|
+| ../INFaaS_DIFS_BkUps/INFaaS_BkUps/INFaaS_BkUp_v1 | Nov  21 | 13:30 | I was going to start editting the working distributed version  |
+|                                                  |         |       | of INFaaS into a local copy so I needed a backup               |
+| ../INFaaS_DIFS_BkUps/INFaaS_BkUps/INFaaS_BkUp_v2 | Nov  29 | 00:51 |                                                                |
+|--------------------------------------------------+---------+-------+----------------------------------------------------------------|
+| ../INFaaS_DIFS_BkUps/INFaaS_BkUps/INFaaS_BkUp_v3 | Dec   1 | 17:11 | This was to backup the finally working local version of INFaaS |
+|--------------------------------------------------+---------+-------+----------------------------------------------------------------|
+| ../INFaaS_DIFS_BkUps/DIFS_BkUps/DIFS_BkUp_v2/    | Dec 18  | 15:53 | Backed up because I intend to integrate the Stable Diffusion   |
+|                                                  |         |       | Model into DIFS                                                |
 
 
 * AWS CHEATSHEET
@@ -148,6 +150,11 @@ sudo make install
 ** ACTIONS
 - I have crated a series of files bearing the name formats 'rebuild_all_v<version number>.sh' to handle the
   series of corrections that I have attempted
+*** _Diffusion Model Integration (2025.12.18)_
+- PROTOBUF RELATED:
+  - Created new file "protos/infaas_query.proto" to handle implement the query interface
+-
+  
 ** POSSIBLE QUESTIONS TO ATTEMPT TO RESOLVE THE PROBLEMS
 - Is it possible for INFaaS to work if one of the problematic libraries is eliminated?
 - How can we get compactible versions online that don't keep making the problem recur?

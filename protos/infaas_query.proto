@@ -1,0 +1,20 @@
+message DiffusionQuery {
+  string prompt = 1;
+  int32 steps = 2;
+  float guidance_scale = 3;
+  int32 seed = 4;
+  int32 width = 5;
+  int32 height = 6;
+}
+
+message DiffusionResponse {
+  bytes image = 1;
+  int32 width = 2;
+  int32 height = 3;
+}
+
+// Ending request
+oneof task {
+  ImageClassificationRequest image_cls = 1;
+  DiffusionQuery diffusion = 10;
+}

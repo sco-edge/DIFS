@@ -589,7 +589,7 @@
 │   │   │   ├── gnmt_container.py (GROK: gRPC server + GNMT Inference handler)
 │   │   │   ├── LICENSE
 │   │   │   ├── requirements.txt
-│   │   │   ├── seq2seq
+│   │   │   ├── seq2seq (GROK: GNMT model definiition, training/inferences utilities)
 │   │   │   │   ├── data
 │   │   │   │   │   ├── config.py
 │   │   │   │   │   ├── dataset.py
@@ -613,8 +613,8 @@
 │   │   │   │   │   └── trainer.py
 │   │   │   │   └── utils.py
 │   │   │   └── translate.py (GROK: standalone translation - translates sentences from English to German based on the WMT'16 English-German dataset, denoted as "ende4" for 4-layer LSTM variants - testing)
-│   │   ├── inferentia
-│   │   │   ├── compile_resnet50.py
+│   │   ├── inferentia (GROK: Inferentia-specific runtime and compilation - Vision (e.g., ResNet50 on Inferentia))
+│   │   │   ├── compile_resnet50.py (GROK: Its role in ResNet(CNN) is to compile/run - based on specific scripts, models for Inferentia - Demonstrates ResNet as an example CNN)
 │   │   │   ├── example_run.sh
 │   │   │   ├── infaas_request_status_pb2.py
 │   │   │   ├── infer_resnet50.py
@@ -622,7 +622,7 @@
 │   │   │   ├── neuron_container.py
 │   │   │   ├── query_pb2_grpc.py
 │   │   │   └── query_pb2.py
-│   │   └── pytorch_container.py -> (PNB: This is the file handing the GRPC and possible ANN or Diffusion modeling)
+│   │   └── pytorch_container.py -> (GROK: Its role pertaining to ResNet(CNN) is as a generic pytorch container that loads and runs any serialized PyTorch model. This is the file handing the GRPC and possible ANN or Diffusion modeling)
 │   ├── include
 │   │   ├── base64.h
 │   │   ├── constants.h.templ
@@ -657,7 +657,7 @@
 │   │   ├── neuron_container.py
 │   │   ├── nlp_query.py
 │   │   ├── profile_model.sh
-│   │   └── pytorch_query.py
+│   │   └── pytorch_query.py (GROK: It's role with ResNet(CNN) is to test queries to PyTorch containers)
 │   └── worker
 │       ├── autoscaler.cc
 │       ├── autoscaler.h
@@ -683,8 +683,6 @@
 │       ├── trtis_request.cc
 │       ├── trtis_request.h
 │       └── trtis_simple_client.cc
-├── start_infaas_bkUp_v1.sh
-├── start_infaas_bkUp_v2.sh
 ├── start_infaas_v1.sh
 ├── start_infaas_v2.sh
 ├── start_local_infaas.sh
