@@ -498,7 +498,10 @@ int8_t RedisMetadata::add_model(
     const std::string& gparent_model_name, const double& comp_size,
     const double& accuracy, const std::string& dataset,
     const std::string& submitter, const std::string& framework,
-    const std::string& task, const int16_t& img_dimensions,
+    const std::string& task,
+    const std::string& container_image //PNB: New field added to support diffusion model(2025.12.22)
+    int container_port //PNB: New field added to support diffusion model (2025.12.22)
+    const int16_t& img_dimensions,
     const int16_t& max_batch, const double& load_latency,
     const double& inf_latency, const double& peak_memory, const double& slope,
     const double& intercept) {
@@ -541,6 +544,8 @@ int8_t RedisMetadata::add_model(
        "submitter",    submitter,
        "framework",    framework,
        "task",         task,
+       "container_image", containerimage,             // PNB: for diffusion model implementation (2025.12.22)
+       "container_port", std::to_string(containerport), // PNB: for diffusion model implementation (2025.12.22)
        "max_batch",    std::to_string(max_batch),
        "load_latency", std::to_string(load_latency),
        "inf_latency",  std::to_string(inf_latency),

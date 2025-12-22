@@ -285,4 +285,21 @@ private:
 }  // namespace internal
 }  // namespace infaas
 
+
+/* PNB: Diffusion model intergration (2025.12.19)
+
+   Diffusion (offline, local-only)
+   ==========
+   PARAMETERS
+   ==========
+   model_name: model_identifier (e.g. "stable_diffusion_v1")
+   input_path: path to input image file
+   output_path: directory where the result is written
+   
+ */
+bool RunDiffusionModel( const std::string& model_name,
+			const std::string& input_path,
+			const std::string& output_path,
+			std::string* error_message);//Returns true on success
+
 #endif  // #ifndef COMMON_MODEL_UTIL_H

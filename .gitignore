@@ -5,6 +5,8 @@
 *.pem
 *.p12
 my_notes.md
+dump_codebase.sh
+codebase_dump.txt
 config/*.json
 config/*.yaml
 credentials/

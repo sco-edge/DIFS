@@ -1,6 +1,10 @@
+//PNB: Diffusion model implemementation related (2025.12.19)
+
 message DiffusionQuery {
   string prompt = 1;
   int32 steps = 2;
+  //int32 batchSize = 10; //PNB: other parameters suggested by Jieun
+  //N = 10  //PNB: other parameters suggested by Jieun
   float guidance_scale = 3;
   int32 seed = 4;
   int32 width = 5;
@@ -13,7 +17,7 @@ message DiffusionResponse {
   int32 height = 3;
 }
 
-// Ending request
+// Extending request
 oneof task {
   ImageClassificationRequest image_cls = 1;
   DiffusionQuery diffusion = 10;

@@ -9,6 +9,24 @@ package infaas.internal;
 
 import "infaas_request_status.proto";
 
+//PNB: Adding internal diffusion messages (2025.12.19)
+// BEGIN: diffusion messages
+message InternalDiffusionQuery {
+  string prompt        = 1;
+  int32  steps         = 2;
+  float  guidanceScale = 3;
+  int32  seed          = 4;
+  int32  width         = 5;
+  int32  height        = 6;
+}
+
+message InternalDiffusionResponse {
+  bytes image  = 1;
+  int32 width  = 2;
+  int32 height = 3;
+}
+// END: diffusion messages
+
 // Service provided by the workers that the master can talk to.
 service Query {
   // Online query, send input data in the payload
@@ -32,11 +50,17 @@ message QueryOnlineRequest {
   repeated string model = 2;    // The name of the model(s), support a pool of models.
   QuerySLO slo = 3;             // SLO provided by the user.
   string submitter = 4;         // User who submitted the request
+
+  // PNB: Diffusion-specific payload (optional) (2025.12.19)
+  InternalDiffusionQuery diffusion = 10;
 }
 
 message QueryOnlineResponse {
   repeated bytes raw_output = 1;  // Serialized output in bytes.
   InfaasRequestStatus status = 2;
+
+  // PNB: Optional typed diffusion output (2025.12.19)
+  InternalDiffusionResponse diffusion = 10;
 }
 
 message QueryOfflineRequest {

@@ -31,10 +31,11 @@ static const int MAX_GRPC_MESSAGE_SIZE = INT32_MAX;
 
 int main(int argc, char** argv) {
   if (argc < 3) {
-    std::cout << "Usage: ./infaas_modelregistration <config-name> "
-                 "<model_var_dir_path>";
+    //  std::cout << "Usage: ./infaas_modelregistration <config-name> <model_var_dir_path>"; // PNB: Original line of code (2025.12.22)
+    std::cout << "Usage: ./infaas_modelregistration <config-name> <model_var_dir_path> [task]" << std::endl;//PNB: New line of code (2025.12.22)
+  
     std::cout << std::endl;
-    // std::cout << "Submitter is assumed to be tester" << std::endl;
+    // std::cout << "]Submitter is assumed to be tester" << std::endl;
     std::cout
         << "model_var_dir_path: S3 path to your frozen model's root directory";
     std::cout << std::endl;
@@ -52,6 +53,18 @@ int main(int argc, char** argv) {
   std::string framework("");
   std::string task("");
   double accuracy = 0.0;
+
+  /*
+    PNB: Recognising that a task uses the diffusion model has been issued (2025.12.22)
+    The correspond call at the command line should be like
+    
+    ./infaas_modelregistration stable_diffusion_v15 s3://bucket/sd_v15/ DIFFUSION
+   */
+  if(argc >= 4){
+    task = argv[3]
+  }else{
+    task = "";
+  }
 
   size_t ind = config_name.find(".");
   std::string first_variant = config_name.substr(0, ind);

@@ -57,6 +57,10 @@
 #include "query_client.h"
 #include "trtis_request.h"
 
+//PNB: personal includes
+#include <cstlib>
+#include <sstream>
+
 using Aws::S3::S3Client;
 using grpc::ClientContext;
 using grpc::Status;
@@ -2317,6 +2321,34 @@ int8_t InfaModelManager::QueryModelOnline(const std::string& model_name,
 
 #endif
   return 0;
+}
+
+
+  // PNB: (2025.12.19)
+  bool RunDiffusionModel(const std::string& model_name,
+                       const std::string& input_path,
+                       const std::string& output_path,
+                       std::string* error_msg) {
+  // Example: local Python-based diffusion runner
+  // You can later swap this for C++ / TensorRT / TorchScript
+
+  std::stringstream cmd;
+
+  // This assumes you will provide a script later (we will)
+  cmd << "python3 ./scripts/run_diffusion.py "
+      << "--model " << model_name << " "
+      << "--input " << input_path << " "
+      << "--output " << output_path;
+
+  int ret = std::system(cmd.str().c_str());
+  if (ret != 0) {
+    if (error_msg) {
+      *error_msg = "Diffusion execution failed with code " + std::to_string(ret);
+    }
+    return false;
+  }
+
+  return true;
 }
 
 }  // namespace internal

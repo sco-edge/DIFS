@@ -499,13 +499,55 @@ if (check_outcome.IsSuccess()) {
 
     compute_linreg(batch_values, inf_latency, num_batch_items, &slope,
                    &intercept);
-
+    
+    // PNB: Original code ensuring task is stored (2025.12.22)
     // Store model metadata
-    rc = rm_->add_model(variant_name, parent_model, grandparent_model,
-                        comp_size, accuracy, dataset, submitter, framework,
-                        task, input_dim, batch_size, load_latency,
-                        inf_latency[0], peak_memory, slope, intercept);
+    // rc = rm_->add_model(variant_name, parent_model, grandparent_model,
+    //                     comp_size, accuracy, dataset, submitter, framework,
+    //                     task, input_dim, batch_size, load_latency,
+    //                     inf_latency[0], peak_memory, slope, intercept);
 
+    // PNB: ensuring task is stored for diffusion model (2025.12.22)
+    if (req->task() == "DIFFUSION") {
+      rc = rm_->add_model(variant_name,
+		     parent_model,
+		     grandparent_model,
+		     comp_size,
+		     accuracy,
+		     dataset,
+		     submitter,
+		     framework,
+		     task,// "DIFFUSION"
+                     "infaas-diffusion:latest",  // ← ADD container image
+                     50052,          // ← ADD container port
+		     input_dim,
+		     batch_size,
+		     load_latency,
+		     inf_latency[0],
+		     peak_memory,
+		     slope,
+		     intercept);
+    } else {
+      // existing call for other tasks
+      rc = rm_->add_model(variant_name,
+			  parent_model,
+			  grandparent_model,
+			  comp_size,
+			  accuracy,
+			  dataset,
+			  submitter,
+			  framework,
+			  task,
+			  input_dim,
+			  batch_size,
+			  load_latency,
+			  inf_latency[0],
+			  peak_memory,
+			  slope,
+			  intercept);
+    }
+    
+    
     if (rc) {
       rs->set_status(RequestReplyEnum::INVALID);
       rs->set_msg("Failed to register model");

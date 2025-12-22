@@ -1,0 +1,67 @@
+#!/bin/bash
+# stop_infaas_v2.sh — Graceful shutdown of INFaaS + Diffusion
+# Kills all services cleanly, stops containers, cleans up
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BUILD_DIR="$SCRIPT_DIR/build"
+LOG_DIR="$SCRIPT_DIR/logs"
+
+echo "🛑 Shutting down INFaaS + Diffusion stack..."
+echo "============================================="
+
+# --------------------------------------------------
+# 1. Stop Diffusion Container
+# --------------------------------------------------
+echo "[1/5] Stopping Diffusion container..."
+docker stop diffusion-svc >/dev/null 2>&1 || true
+docker rm diffusion-svc >/dev/null 2>&1 || true
+echo "  → Diffusion container stopped ✓"
+
+# --------------------------------------------------
+# 2. Kill INFaaS Services (graceful SIGTERM)
+# --------------------------------------------------
+echo "[2/5] Stopping INFaaS services..."
+pkill -f "modelreg_server" >/dev/null 2>&1 || true
+pkill -f "queryfe_server" >/dev/null 2>&1 || true
+pkill -f "query_executor" >/dev/null 2>&1 || true
+
+# Wait for graceful shutdown (10s timeout)
+sleep 3
+pkill -f "modelreg_server" -9 >/dev/null 2>&1 || true
+pkill -f "queryfe_server" -9 >/dev/null 2>&1 || true
+pkill -f "query_executor" -9 >/dev/null 2>&1 || true
+echo "  → INFaaS services stopped ✓"
+
+# --------------------------------------------------
+# 3. Stop Redis
+# --------------------------------------------------
+echo "[3/5] Stopping Redis..."
+redis-cli shutdown >/dev/null 2>&1 || true
+sleep 2
+pkill -f redis-server >/dev/null 2>&1 || true
+echo "  → Redis stopped ✓"
+
+# --------------------------------------------------
+# 4. Cleanup GPU processes
+# --------------------------------------------------
+echo "[4/5] Cleaning GPU processes..."
+nvidia-smi -q -d UTILIZATION | grep -q "gpu.*100%" && {
+  echo "  → GPU utilization high, waiting..."
+  sleep 5
+}
+pkill -f python3.*diffusers >/dev/null 2>&1 || true  # Leftover diffusion
+echo "  → GPU cleanup complete ✓"
+
+# --------------------------------------------------
+# 5. Log Summary + Final Status
+# --------------------------------------------------
+echo "[5/5] Final status check..."
+echo
+echo "✅ SHUTDOWN COMPLETE!"
+echo "===================="
+echo "  📁 Logs saved: $LOG_DIR/"
+echo "  🗑️  Redis data: $SCRIPT_DIR/redis-data/ (manual cleanup if needed)"
+echo "  🐳 Docker images: docker images | grep infaas-diffusion"
+echo
+echo "🔄 Restart: ./start_infaas_v2.sh"
+echo

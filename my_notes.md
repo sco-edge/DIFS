@@ -153,8 +153,48 @@ sudo make install
 *** _Diffusion Model Integration (2025.12.18)_
 - PROTOBUF RELATED:
   - Created new file "protos/infaas_query.proto" to handle implement the query interface
--
-  
+- MASTER (FRONT-END SERVER) Related:
+  - Edited 'src/master/queryfe_server.cc' for logic detection
+- Creating diffusion container files
+  - 'src/container/diffusion/server.py'
+  - 'dockerfiles/Dockerfile.diffusion'
+
+    | STEP | NAME            | STATUS             | PRIMARY FILES(S)                                    | IMPORTANCE | EFFECT                                        |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    1 | Public Protos   | Done               | [DIFS_root]/protos/infaas_query.proto               | MEDIUM     | Public API which supports                     |
+    |      |                 |                    |                                                     |            | diffusion queries via raw                     |
+    |      |                 |                    |                                                     |            | input fallback                                |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    2 | Internal Protos | Done               | [DIFS_root]/protos/internal/query.proto             | HIGH       | For master<->worker diffusion                 |
+    |      |                 |                    |                                                     |            | format implementation (i.e., Internal         |
+    |      |                 |                    |                                                     |            | Diffusion query)                              |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    3 | Container Proto | Done               | [DIFS_root]/protos/internal/diffusion_service.proto | CRITICAL   | For worker<->container contract               |
+    |      |                 |                    |                                                     |            | (i.e. Diffusion Request and Reply)            |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    4 | ModelRegClient  | Done               | [DIFS_root]/src/master/modelreg_client.cc           | MEDIUM     | Forwards task=DIFFUSION to master server      |
+    |      |                 |                    |                                                     |            |                                               |
+    |      |                 |                    |                                                     |            |                                               |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    5 | MasterReg       | Done               | [DIFS_root]/src/master/modelreg_server.cc           | HIGH       | Calls 'add_model(..., "DIFFUSION",            |
+    |      |                 |                    |                                                     |            | container_image,                              |
+    |      |                 |                    |                                                     |            | container_port)'                              |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    6 | Metadata        | Done               | [DIFS_root]/src/metadata-store/redis_metadata.cc    | CRITICAL   | Stores                                        |
+    |      |                 |                    |                                                     |            | "task=DIFFUSION,                              |
+    |      |                 |                    |                                                     |            | container_image,                              |
+    |      |                 |                    |                                                     |            | container_port" in Redis                      |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    7 | Worker          | Done               | [DIFS_root]/src/master/queryfe_server.cc            | CRITICAL   | makes the call to "CallDiffusionContainer()"  |
+    |      |                 |                    |                                                     |            | which routes to container via model.host:port |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    8 | Container       | Done               | [DIFS_root]/src/containers/diffusion/server.py      | CRITICAL   | Actual Stable Diffusion Inference             |
+    |      |                 |                    | [DIFS_root]/dockerfiles/DockerFile.diffusion        |            | (PyTorch + diffusers)                         |
+    |------+-----------------+--------------------+-----------------------------------------------------+------------+-----------------------------------------------|
+    |    9 | CLI             | start_infaas_v3.sh | For starting everything                             | LOW        |                                               |
+    |      |                 | stop_infaas_v3.sh  | For stoping everything                              |            |                                               |
+    
+    
 ** POSSIBLE QUESTIONS TO ATTEMPT TO RESOLVE THE PROBLEMS
 - Is it possible for INFaaS to work if one of the problematic libraries is eliminated?
 - How can we get compactible versions online that don't keep making the problem recur?

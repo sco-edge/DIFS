@@ -1,12 +1,2 @@
-==> Checking running DIFS processes...
-   • Model Registration Server not running
-   • Query Frontend Server not running
-   • Worker Daemon not running
-   • GPU Daemon not running
-   • Redis Server running (PIDs: 1441) → stopping...
-     ✔ Redis Server stopped (PIDs: 1441)
-   • Online Query CLI not running
-   • Model Registration CLI not running
-   • Redis Metadata Test not running
-
-All local DIFS services have been stopped.
+ERROR: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+❌ Dockerfile.diffusion missing! Create it first.
