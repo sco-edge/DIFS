@@ -1,0 +1,2 @@
+/usr/bin/ar qc libinfaas-protos-internal.a CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o
+/usr/bin/ranlib libinfaas-protos-internal.a

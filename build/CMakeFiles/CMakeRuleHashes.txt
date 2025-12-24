@@ -1,0 +1,11 @@
+# Hashes of file build rules.
+232632564d7bce4015f390ff0517fbfb protos/internal/infaas_request_status.pb.h
+f4f8c23d4a18c872be0fbe3c5545293b protos/internal/query.grpc.pb.cc
+b6e0732c55e8475293d56d373f25f4a9 protos/internal/query.pb.h
+bbd5c8cc28ec1afd3f9f21d869148aa6 protos/internal/sys_monitor.grpc.pb.cc
+be899f9be29eb5bc7aeb97dc59c7d56e protos/internal/sys_monitor.pb.h
+9633eb083f94ddd35355405a5d72f45b protos/modelreg.grpc.pb.cc
+4de7ec01c491a4cd058b569df15a4d9d protos/modelreg.pb.h
+5ce6f7ccbaeba5ed129b4edb6cfc7b59 protos/queryfe.grpc.pb.cc
+fe8d0552b647caa0048ba33252ce6dcb protos/queryfe.pb.h
+2848531b642787670e252ccbce4e4483 protos/request_reply.pb.h

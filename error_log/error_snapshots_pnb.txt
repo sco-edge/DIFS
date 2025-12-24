@@ -1,2 +1,248 @@
-ERROR: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
-❌ Dockerfile.diffusion missing! Create it first.
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:42:10: fatal error: common_local_paths.h: No such file or directory
+   42 | #include "common_local_paths.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [src/worker/CMakeFiles/worker-util.dir/build.make:79: src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o] Error 1
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
+make[1]: *** [CMakeFiles/Makefile2:392: src/worker/CMakeFiles/worker-util.dir/all] Error 2
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc: In function ‘int main(int, char**)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:272:20: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
+  272 |       rmd.add_model(test_pt_mod_variant.model_name, parent_model, gparent_model,
+      |       ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  273 |                     test_pt_mod_variant.comp_size, test_pt_mod_variant.acc,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  274 |                     test_pt_mod_variant.dataset, test_pt_mod_variant.submitter,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  275 |                     test_pt_mod_variant.framework, test_pt_mod_variant.task,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  276 |                     test_pt_mod_variant.img_dim, test_pt_mod_variant.batch,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  277 |                     test_pt_mod_variant.load_lat, test_pt_mod_variant.inf_lat,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  278 |                     test_pt_mod_variant.peak_memory, test_pt_mod_variant.slope,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  279 |                     test_pt_mod_variant.intercept);
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:30:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
+  176 |   int8_t add_model(const std::string& model_name,
+      |          ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:297:21: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
+  297 |   rc = rmd.add_model(test_mod_variant.model_name, parent_model, gparent_model,
+      |        ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  298 |                      test_mod_variant.comp_size, test_mod_variant.acc,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  299 |                      test_mod_variant.dataset, test_mod_variant.submitter,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  300 |                      test_mod_variant.framework, test_mod_variant.task,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  301 |                      test_mod_variant.img_dim, test_mod_variant.batch,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  302 |                      test_mod_variant.load_lat, test_mod_variant.inf_lat,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  303 |                      test_mod_variant.peak_memory, test_mod_variant.slope,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  304 |                      test_mod_variant.intercept);
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
+  176 |   int8_t add_model(const std::string& model_name,
+      |          ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:313:21: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
+  313 |   rc = rmd.add_model(test_mod_variant.model_name, parent_model, gparent_model,
+      |        ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  314 |                      test_mod_variant.comp_size, test_mod_variant.acc,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  315 |                      test_mod_variant.dataset, test_mod_variant.submitter,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  316 |                      test_mod_variant.framework, test_mod_variant.task,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  317 |                      test_mod_variant.img_dim, test_mod_variant.batch,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  318 |                      test_mod_variant.load_lat, test_mod_variant.inf_lat,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  319 |                      test_mod_variant.peak_memory, test_mod_variant.slope,
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  320 |                      test_mod_variant.intercept);
+      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
+  176 |   int8_t add_model(const std::string& model_name,
+      |          ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:978:20: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
+  978 |       rmd.add_model(test_inferentia_mod_variant.model_name, parent_model, gparent_model,
+      |       ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  979 |                     test_inferentia_mod_variant.comp_size, test_inferentia_mod_variant.acc,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  980 |                     test_inferentia_mod_variant.dataset, test_inferentia_mod_variant.submitter,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  981 |                     test_inferentia_mod_variant.framework, test_inferentia_mod_variant.task,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  982 |                     test_inferentia_mod_variant.img_dim, test_inferentia_mod_variant.batch,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  983 |                     test_inferentia_mod_variant.load_lat, test_inferentia_mod_variant.inf_lat,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  984 |                     test_inferentia_mod_variant.peak_memory, test_inferentia_mod_variant.slope,
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  985 |                     test_inferentia_mod_variant.intercept);
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
+  176 |   int8_t add_model(const std::string& model_name,
+      |          ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
+make[2]: *** [src/metadata-store/CMakeFiles/redis_md_test.dir/build.make:79: src/metadata-store/CMakeFiles/redis_md_test.dir/redis_md_test.cc.o] Error 1
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
+make[1]: *** [CMakeFiles/Makefile2:311: src/metadata-store/CMakeFiles/redis_md_test.dir/all] Error 2
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/cli-tools/infaas_modelregistration.cc: In function ‘int main(int, char**)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/cli-tools/infaas_modelregistration.cc:64:19: error: expected ‘;’ before ‘}’ token
+   64 |     task = argv[3]
+      |                   ^
+      |                   ;
+   65 |   }else{
+      |   ~                
+make[2]: *** [src/cli-tools/CMakeFiles/infaas_modelregistration.dir/build.make:79: src/cli-tools/CMakeFiles/infaas_modelregistration.dir/infaas_modelregistration.cc.o] Error 1
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
+make[1]: *** [CMakeFiles/Makefile2:763: src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all] Error 2
+In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:32:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:58:24: error: ‘RequestStatus’ does not name a type
+   58 |   explicit Error(const RequestStatus& status);
+      |                        ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:62:35: error: expected ‘)’ before ‘code’
+   62 |   explicit Error(RequestStatusCode code = RequestStatusCode::SUCCESS);
+      |                 ~                 ^~~~~
+      |                                   )
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:67:35: error: expected ‘)’ before ‘code’
+   67 |   explicit Error(RequestStatusCode code, const std::string& msg);
+      |                 ~                 ^~~~~
+      |                                   )
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:71:3: error: ‘RequestStatusCode’ does not name a type
+   71 |   RequestStatusCode Code() const { return code_; }
+      |   ^~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:101:3: error: ‘RequestStatusCode’ does not name a type
+  101 |   RequestStatusCode code_;
+      |   ^~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h: In member function ‘bool nvidia::inferenceserver::client::Error::IsOk() const’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:93:30: error: ‘code_’ was not declared in this scope; did you mean ‘mode_t’?
+   93 |   bool IsOk() const { return code_ == RequestStatusCode::SUCCESS; }
+      |                              ^~~~~
+      |                              mode_t
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:93:39: error: ‘RequestStatusCode’ has not been declared
+   93 |   bool IsOk() const { return code_ == RequestStatusCode::SUCCESS; }
+      |                                       ^~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h: At global scope:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:182:33: error: ‘ServerStatus’ has not been declared
+  182 |   virtual Error GetServerStatus(ServerStatus* status) = 0;
+      |                                 ^~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:271:13: error: ‘DataType’ does not name a type
+  271 |     virtual DataType DType() const = 0;
+      |             ^~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:274:13: error: ‘ModelInput’ does not name a type
+  274 |     virtual ModelInput::Format Format() const = 0;
+      |             ^~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:279:19: error: ‘DimsList’ does not name a type
+  279 |     virtual const DimsList& Dims() const = 0;
+      |                   ^~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:346:13: error: ‘DataType’ does not name a type
+  346 |     virtual DataType DType() const = 0;
+      |             ^~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:351:19: error: ‘DimsList’ does not name a type
+  351 |     virtual const DimsList& Dims() const = 0;
+      |                   ^~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:673:45: error: ‘CorrelationID’ has not been declared
+  673 |   InferContext(const std::string&, int64_t, CorrelationID, bool);
+      |                                             ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:704:9: error: ‘CorrelationID’ does not name a type
+  704 |   const CorrelationID correlation_id_;
+      |         ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:726:3: error: ‘InferRequestHeader’ does not name a type
+  726 |   InferRequestHeader infer_request_;
+      |   ^~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:847:25: error: ‘ServerStatus’ has not been declared
+  847 |   Error GetServerStatus(ServerStatus* status) override;
+      |                         ^~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:860:3: error: ‘RequestStatus’ does not name a type
+  860 |   RequestStatus request_status_;
+      |   ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:906:43: error: ‘CorrelationID’ has not been declared
+  906 |       std::unique_ptr<InferContext>* ctx, CorrelationID correlation_id,
+      |                                           ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:922:56: error: ‘CorrelationID’ has not been declared
+  922 |       const std::string&, const std::string&, int64_t, CorrelationID, bool);
+      |                                                        ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:969:3: error: ‘RequestStatus’ does not name a type
+  969 |   RequestStatus request_status_;
+      |   ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:996:19: error: ‘GRPCService’ was not declared in this scope
+  996 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                   ^~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:996:36: error: template argument 1 is invalid
+  996 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                                    ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:996:36: error: template argument 2 is invalid
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1031:25: error: ‘ServerStatus’ has not been declared
+ 1031 |   Error GetServerStatus(ServerStatus* status) override;
+      |                         ^~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1041:19: error: ‘GRPCService’ was not declared in this scope
+ 1041 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                   ^~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1041:36: error: template argument 1 is invalid
+ 1041 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                                    ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1041:36: error: template argument 2 is invalid
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1084:43: error: ‘CorrelationID’ has not been declared
+ 1084 |       std::unique_ptr<InferContext>* ctx, CorrelationID correlation_id,
+      |                                           ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1096:56: error: ‘CorrelationID’ has not been declared
+ 1096 |       const std::string&, const std::string&, int64_t, CorrelationID, bool);
+      |                                                        ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1113:19: error: ‘GRPCService’ was not declared in this scope
+ 1113 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                   ^~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1113:36: error: template argument 1 is invalid
+ 1113 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                                    ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1113:36: error: template argument 2 is invalid
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1117:3: error: ‘InferRequest’ does not name a type
+ 1117 |   InferRequest request_;
+      |   ^~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1141:19: error: ‘GRPCService’ was not declared in this scope
+ 1141 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                   ^~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1141:36: error: template argument 1 is invalid
+ 1141 |   std::unique_ptr<GRPCService::Stub> stub_;
+      |                                    ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1141:36: error: template argument 2 is invalid
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc: In function ‘int8_t TrtserverReady()’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:53:17: error: no matching function for call to ‘nvidia::inferenceserver::client::Error::Error()’
+   53 |   trtisc::Error err;
+      |                 ^~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:58:12: note: candidate: ‘nvidia::inferenceserver::client::Error::Error(const int&)’
+   58 |   explicit Error(const RequestStatus& status);
+      |            ^~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:58:12: note:   candidate expects 1 argument, 0 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note: candidate: ‘nvidia::inferenceserver::client::Error::Error(const nvidia::inferenceserver::client::Error&)’
+   54 | class Error {
+      |       ^~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note:   candidate expects 1 argument, 0 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note: candidate: ‘nvidia::inferenceserver::client::Error::Error(nvidia::inferenceserver::client::Error&&)’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note:   candidate expects 1 argument, 0 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:56:12: error: ‘ServerStatus’ is not a member of ‘trtis’
+   56 |     trtis::ServerStatus server_status;
+      |            ^~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:57:33: error: ‘server_status’ was not declared in this scope; did you mean ‘si_status’?
+   57 |     err = ctx->GetServerStatus(&server_status);
+      |                                 ^~~~~~~~~~~~~
+      |                                 si_status
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:61:18: error: ‘ServerReadyState_descriptor’ is not a member of ‘trtis’
+   61 |           trtis::ServerReadyState_descriptor()->FindValueByNumber(itr)->name();
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:63:25: error: ‘SERVER_READY’ is not a member of ‘trtis’
+   63 |       if (itr != trtis::SERVER_READY) {
+      |                         ^~~~~~~~~~~~
+make[2]: *** [src/worker/CMakeFiles/gpu_daemon.dir/build.make:79: src/worker/CMakeFiles/gpu_daemon.dir/gpu_daemon.cc.o] Error 1
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
+make[1]: *** [CMakeFiles/Makefile2:475: src/worker/CMakeFiles/gpu_daemon.dir/all] Error 2
+make[1]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
+make: *** [Makefile:94: all] Error 2
+ERROR occurred on line 155

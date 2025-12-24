@@ -4,13 +4,13 @@ PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS
   request_reply.proto
   modelreg.proto
   queryfe.proto
-  diffusion_service.proto # PNB: Diffusion model implementation related (2025.12.19)
+#  diffusion_service.proto # PNB: Diffusion model implementation related (2025.12.19)
 )
 
 PROTOBUF_GENERATE_GRPC_CPP(PROTO_GRPC_SRCS PROTO_GRPC_HDRS
   modelreg.proto
   queryfe.proto
-  diffusion_service.proto # PNB: Diffusion model implementation related (2025.12.19)
+ # diffusion_service.proto # PNB: Diffusion model implementation related (2025.12.19)
 )
 
 add_library(infaas-protos
@@ -23,4 +23,7 @@ target_include_directories(infaas-protos PUBLIC
 )
 
 add_subdirectory(internal)
-add_subdirectory(trtis)
+# 🔴 FIX: only include TRTIS when explicitly enabled
+if (ENABLE_TRTIS)
+  add_subdirectory(trtis)
+endif()

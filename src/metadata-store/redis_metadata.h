@@ -179,6 +179,8 @@ public:
                    const double& comp_size, const double& accuracy,
                    const std::string& dataset, const std::string& submitter,
                    const std::string& framework, const std::string& task,
+		   const std::string& container_image,// PNB: Diffusion model implementation related (2025.12.23)
+                   int container_port, // PNB: Diffusion model implementation related (2025.12.23)
                    const int16_t& img_dimensions, const int16_t& max_batch,
                    const double& load_latency, const double& inf_latency,
                    const double& peak_memory, const double& slope,

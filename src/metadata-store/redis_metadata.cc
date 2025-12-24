@@ -477,6 +477,7 @@ int8_t RedisMetadata::add_gparent_model(const std::string& gparent_model_name) {
   Command<int>& c_add_model =
       rdx_.commandSync<int>({"SADD", GMOD_SET, gparent_model_name});
   if (!c_add_model.ok()) { return -1; }
+  return 0; // PNB: Diffusion model debugging; suggested solution (2025.12.23)
 }
 
 int8_t RedisMetadata::add_parent_model(const std::string& parent_model_name) {
@@ -491,6 +492,7 @@ int8_t RedisMetadata::add_parent_model(const std::string& parent_model_name) {
   Command<int>& c_add_model =
       rdx_.commandSync<int>({"SADD", MODEL_SET, parent_model_name});
   if (!c_add_model.ok()) { return -1; }
+  return 0; // PNB: Diffusion model debugging; suggested solution (2025.12.23)
 }
 
 int8_t RedisMetadata::add_model(
@@ -499,8 +501,8 @@ int8_t RedisMetadata::add_model(
     const double& accuracy, const std::string& dataset,
     const std::string& submitter, const std::string& framework,
     const std::string& task,
-    const std::string& container_image //PNB: New field added to support diffusion model(2025.12.22)
-    int container_port //PNB: New field added to support diffusion model (2025.12.22)
+    const std::string& container_image, //PNB: New field added to support diffusion model(2025.12.22)
+    int container_port, //PNB: New field added to support diffusion model (2025.12.22)
     const int16_t& img_dimensions,
     const int16_t& max_batch, const double& load_latency,
     const double& inf_latency, const double& peak_memory, const double& slope,
@@ -531,28 +533,53 @@ int8_t RedisMetadata::add_model(
 
   // Add to model->model variant set that is sorted by inference latency
   const std::string par_child_name = parent_model_name + "-" + MODVAR_SUFF;
+
+
   Command<int>& c_var_par_sset = rdx_.commandSync<int>(
       {"ZADD", par_child_name, std::to_string(inf_latency), model_name});
   if (!c_var_par_sset.ok()) { return -1; }
 
+  // // Create model info hash lookup table
+  // const std::string model_info_name = model_name + "-" + MODINFO_SUFF;
+  // Command<std::string>& c_modinfo_htable = rdx_.commandSync<std::string>(
+  //     {"HMSET",        model_info_name,
+  //      "comp_size",    std::to_string(comp_size),
+  //      "dataset",      dataset,
+  //      "submitter",    submitter,
+  //      "framework",    framework,
+  //      "task",         task,
+  //      "container_image", containerimage,             // PNB: for diffusion model implementation (2025.12.22)
+  //      "container_port", std::to_string(containerport), // PNB: for diffusion model implementation (2025.12.22)
+  //      "max_batch",    std::to_string(max_batch),
+  //      "load_latency", std::to_string(load_latency),
+  //      "inf_latency",  std::to_string(inf_latency),
+  //      "peak_memory",  std::to_string(peak_memory),
+  //      "img_dim",      std::to_string(img_dimensions),
+  //      "slope",        std::to_string(slope),
+  //      "intercept",    std::to_string(intercept)});
+
+
   // Create model info hash lookup table
   const std::string model_info_name = model_name + "-" + MODINFO_SUFF;
-  Command<std::string>& c_modinfo_htable = rdx_.commandSync<std::string>(
-      {"HMSET",        model_info_name,
+  std::vector<std::string> cmd = {
+       "HMSET",        model_info_name,
        "comp_size",    std::to_string(comp_size),
        "dataset",      dataset,
        "submitter",    submitter,
        "framework",    framework,
        "task",         task,
-       "container_image", containerimage,             // PNB: for diffusion model implementation (2025.12.22)
-       "container_port", std::to_string(containerport), // PNB: for diffusion model implementation (2025.12.22)
+       "container_image", container_image,             // PNB: for diffusion model implementation (2025.12.22)
+       "container_port", std::to_string(container_port), // PNB: for diffusion model implementation (2025.12.22)
        "max_batch",    std::to_string(max_batch),
        "load_latency", std::to_string(load_latency),
        "inf_latency",  std::to_string(inf_latency),
        "peak_memory",  std::to_string(peak_memory),
        "img_dim",      std::to_string(img_dimensions),
        "slope",        std::to_string(slope),
-       "intercept",    std::to_string(intercept)});
+       "intercept",    std::to_string(intercept)};
+  Command<std::string>& c_modinfo_htable = rdx_.commandSync<std::string>(cmd);
+
+
   if (!c_modinfo_htable.ok()) { return -1; }
 
   // Add to parent model's load latency set

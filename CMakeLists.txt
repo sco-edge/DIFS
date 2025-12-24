@@ -53,6 +53,10 @@ endif()
 # ============================================================
 # Add submodules
 # ============================================================
-add_subdirectory(protos)
+if(LOCAL_MODE)
+  message(STATUS "LOCAL_MODE: Skipping protos/ directory")
+else()
+  add_subdirectory(protos)
+endif()
 add_subdirectory(src)
 

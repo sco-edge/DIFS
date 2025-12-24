@@ -273,6 +273,7 @@ int main(int argc, char** argv) {
                     test_pt_mod_variant.comp_size, test_pt_mod_variant.acc,
                     test_pt_mod_variant.dataset, test_pt_mod_variant.submitter,
                     test_pt_mod_variant.framework, test_pt_mod_variant.task,
+		    "RGB",0, //PNB: (2025.12.24)
                     test_pt_mod_variant.img_dim, test_pt_mod_variant.batch,
                     test_pt_mod_variant.load_lat, test_pt_mod_variant.inf_lat,
                     test_pt_mod_variant.peak_memory, test_pt_mod_variant.slope,

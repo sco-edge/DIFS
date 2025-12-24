@@ -1,8 +1,10 @@
-# GPU-enabled base image with PyTorch and CUDA
-FROM nvcr.io/nvidia/pytorch:23.08-py3
+# GPU-enabled base image with CUDA (STABLE - fixes zlib issue)
+# FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
+FROM ubuntu:22.04
 
 # Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /workspace/diffusion
 
@@ -25,10 +27,16 @@ RUN pip install --no-cache-dir \
 
 # Copy generated Python stubs for diffusion_service
 # Adjust path if your build puts them elsewhere.
-# Typical INFaaS layout: protos/internal/*.py within repo root.
-COPY protos/internal/diffusion_service_pb2.py \
-     protos/internal/diffusion_service_pb2_grpc.py \
-     /workspace/diffusion/protos/internal/
+## # Typical INFaaS layout: protos/internal/*.py within repo root.
+## COPY protos/internal/diffusion_service_pb2.py \
+##      protos/internal/diffusion_service_pb2_grpc.py \
+##      /workspace/diffusion/protos/internal/
+
+# PNB: I adjusted as I built them somewhere else (2025.12.25)
+# Copy generated Python stubs for diffusion_service (FIXED PATHS)
+COPY src/containers/diffusion/diffusion_service_pb2.py \
+     src/containers/diffusion/diffusion_service_pb2_grpc.py \
+     /workspace/diffusion/
 
 # Copy server implementation
 COPY src/containers/diffusion/server.py /workspace/diffusion/

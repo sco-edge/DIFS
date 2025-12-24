@@ -35,6 +35,8 @@
 #include <string>
 #include <thread>
 #include <vector>
+
+#ifndef DISABLE_TRTIS // PNB: (2025.12.23)
 #include "trtis/api.pb.h"
 #include "trtis/grpc_service.grpc.pb.h"
 #include "trtis/grpc_service.pb.h"
@@ -42,6 +44,7 @@
 #include "trtis/model_config.pb.h"
 #include "trtis/request_status.pb.h"
 #include "trtis/server_status.pb.h"
+#endif
 
 namespace nvidia { namespace inferenceserver { namespace client {
 

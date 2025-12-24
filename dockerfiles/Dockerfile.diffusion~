@@ -1,0 +1,47 @@
+# GPU-enabled base image with PyTorch and CUDA
+FROM nvcr.io/nvidia/pytorch:23.08-py3
+
+# Avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /workspace/diffusion
+
+# System packages (optional but useful)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies.
+# We pin core libs but allow you to loosen versions later if needed.
+RUN pip install --no-cache-dir \
+        "torch>=2.0.0" \
+        "diffusers[torch]>=0.21.0" \
+        "transformers>=4.30.0" \
+        "accelerate>=0.21.0" \
+        "safetensors>=0.3.0" \
+        "grpcio>=1.60.0" \
+        "protobuf>=4.23.0"
+
+# Copy generated Python stubs for diffusion_service
+# Adjust path if your build puts them elsewhere.
+# Typical INFaaS layout: protos/internal/*.py within repo root.
+COPY protos/internal/diffusion_service_pb2.py \
+     protos/internal/diffusion_service_pb2_grpc.py \
+     /workspace/diffusion/protos/internal/
+
+# Copy server implementation
+COPY src/containers/diffusion/server.py /workspace/diffusion/
+
+# Optional: set cache dirs for Hugging Face/diffusers to local folder
+ENV TRANSFORMERS_CACHE=/workspace/cache \
+    HF_HOME=/workspace/cache \
+    DIFFUSION_GRPC_PORT=50052 \
+    SD_MODEL_ID=runwayml/stable-diffusion-v1-5 \
+    SD_DEVICE=cuda \
+    SD_USE_FP16=1
+
+# Expose gRPC port (for documentation; INFaaS usually uses host mode networking)
+EXPOSE 50052
+
+CMD ["python", "server.py"]

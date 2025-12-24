@@ -1,0 +1,2 @@
+/usr/bin/ar qc libinfaas-protos.a CMakeFiles/infaas-protos.dir/request_reply.pb.cc.o CMakeFiles/infaas-protos.dir/modelreg.pb.cc.o CMakeFiles/infaas-protos.dir/queryfe.pb.cc.o CMakeFiles/infaas-protos.dir/modelreg.grpc.pb.cc.o CMakeFiles/infaas-protos.dir/queryfe.grpc.pb.cc.o
+/usr/bin/ranlib libinfaas-protos.a

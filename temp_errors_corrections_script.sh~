@@ -1,0 +1,14 @@
+#!/
+# 1. INSTALL LATEST COMPRESSION TOOLS
+sudo apt update
+sudo apt install -y pigz zstd gzip bzip2 xz-utils
+
+# 2. RESTART DOCKER DAEMON (CRITICAL)
+sudo systemctl restart docker
+
+# 3. VERIFY Docker daemon fixed
+docker run --rm hello-world  # Must succeed!
+
+# 4. Clean + retry
+docker rmi infaas-diffusion:latest || true
+./start_infaas_v2.sh

@@ -4,7 +4,7 @@
 *.secret
 *.pem
 *.p12
-my_notes.md
+Notes/*
 dump_codebase.sh
 codebase_dump.txt
 config/*.json
