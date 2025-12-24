@@ -14,7 +14,7 @@ Like INFaaS, DIFS adopts a model-less abstraction: users specify high-level task
 latency, output resolution, or quality level) rather than exact model variants. The system then automatically selects and routes requests to the most suitable pre-registered diffusion model from a local repository, navigating the inherent trade-off space between speed, memory usage, and visual fidelity.
 Key differentiators and contributions of DIFS include:
 
-[comment]: #(* Local, Single-Machine Optimization:
+[comment]: # (* Local, Single-Machine Optimization:
 - Unlike the original cloud-centric INFaaS (which relied on AWS EC2/S3), DIFS is fully adapted for standalone execution
    on resource-constrained hardware, including machines with a single consumer-grade GPU. All AWS dependencies have been
     removed, and model/data loading uses local file paths.
