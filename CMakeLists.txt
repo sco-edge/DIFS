@@ -60,3 +60,8 @@ else()
 endif()
 add_subdirectory(src)
 
+
+if(NOT LOCAL_MODE)
+  message(STATUS "Skipping metadata-store tests (LOCAL_MODE)")
+  add_subdirectory(src/metadata-store)
+endif()

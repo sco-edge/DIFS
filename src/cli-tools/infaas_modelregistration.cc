@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
     ./infaas_modelregistration stable_diffusion_v15 s3://bucket/sd_v15/ DIFFUSION
    */
   if(argc >= 4){
-    task = argv[3]
+    task = argv[3];
   }else{
     task = "";
   }

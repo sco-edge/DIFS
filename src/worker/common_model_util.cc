@@ -53,11 +53,14 @@
 #include "autoscaler.h"
 #include "common_model_util.h"
 #include "include/base64.h"
-#include "include/constants.h"
-#include "constants.h"  // PNB 2025.11.28
+//#include "include/constants.h"
+#include "constants.h"  // PNB: (2025.11.28)
 #include "include/json.hpp"
-#include "internal_query.grpc.pb.h"
+#include "query.grpc.pb.h"
 #include "query_client.h"
+#include "worker/autoscaler.h" // PNB: (2025.11.28)
+#include "query.grpc.pb.h" // PNB: (2025.12.27)
+#include "query.pb.h" // PNB: (2025.12.27)
 
 #ifdef INFAAS_NEURON_WORKER
 #include "trtis_request.h"
@@ -67,6 +70,14 @@ using Aws::S3::S3Client;
 using grpc::ClientContext;
 using grpc::Status;
 using json = nlohmann::json;
+
+//PNB: To have access to the symbols within "infaas::internal:[object]" namespace (2025.12.28)
+using infaas::internal::Query;
+using infaas::internal::QueryOnlineRequest;
+using infaas::internal::QueryOnlineResponse;
+using infaas::internal::QueryOfflineRequest;
+using infaas::internal::QueryOfflineResponse;
+using infaas::internal::InfaasRequestStatusEnum;
 
 // ================================================
 // CONSTANTS AND GLOBAL VARIABLES
@@ -99,7 +110,7 @@ static const int WORKER_NEURON_CORES = 4;
 // RUNTIME GLOBALS - FIXED FOR LOCAL_MODE
 std::string bucketprefix = "s3://";
 std::string workername = "local_worker";
-std::string infaas_buckets_dir = "infaas-buckets/";
+
 
 // ================================================
 // CRITICAL UTILITY FUNCTIONS - FULL IMPLEMENTATIONS
@@ -504,7 +515,7 @@ namespace CpuModelManager {
                 if (foronline) {
                     rmd->add_running_model(workername, modelname);
                     std::string parentmod = rmd->get_parent_model(modelname);
-                    rmd->unset_parent_scale_down(workername, parentmod);
+                    rmd->unset_parent_scaledown(workername, parentmod);
                 }
             }
             (*modeltonames)[modelname].push_back(instancename);
@@ -657,15 +668,19 @@ namespace CpuModelManager {
                   << std::to_string(portnum) << std::endl;
         
         auto framework = rmd->get_model_info(modelname, "framework");
-        if (framework == "pytorch" || framework.find(GNMT_NVPY) != std::string::npos()) {
-            struct Address destaddr("localhost:" + std::to_string(portnum));
+	Address destaddr;
+	destaddr.ip = "localhost";
+	destaddr.port = portnum;
+	
+        if (framework == "pytorch" || framework.find(GNMT_NVPY) != std::string::npos) {
+        
             grpc::ChannelArguments arguments;
             arguments.SetMaxSendMessageSize(MAX_GRPC_MESSAGE_SIZE);
             arguments.SetMaxReceiveMessageSize(MAX_GRPC_MESSAGE_SIZE);
-            
+
+            std::string addr = destaddr.ip + ":" + std::to_string(destaddr.port);
             std::unique_ptr<Query::Stub> stub = Query::NewStub(
-                grpc::CreateCustomChannel(RedisMetadata::Addresstostr(destaddr),
-                                        grpc::InsecureChannelCredentials(), arguments));
+                grpc::CreateCustomChannel(addr, grpc::InsecureChannelCredentials(), arguments));
             
             ClientContext context;
             uint64_t time1 = get_curr_timestamp(), time2;
@@ -840,14 +855,14 @@ namespace CpuModelManager {
         std::cout << "Offline serve with instance " << instancename << " port number " 
                   << std::to_string(portnum) << std::endl;
         
-        struct Address destaddr("localhost:" + std::to_string(portnum));
+        
         grpc::ChannelArguments arguments;
         arguments.SetMaxSendMessageSize(MAX_GRPC_MESSAGE_SIZE);
         arguments.SetMaxReceiveMessageSize(MAX_GRPC_MESSAGE_SIZE);
-        
-        std::unique_ptr<Query::Stub> stub = Query::NewStub(
-            grpc::CreateCustomChannel(RedisMetadata::Addresstostr(destaddr),
-                                    grpc::InsecureChannelCredentials(), arguments));
+
+	std::string addr = destaddr.ip + ":" + std::to_string(destaddr.port);
+        Std::unique_ptr<Query::Stub> stub = Query::NewStub(
+            grpc::CreateCustomChannel(addr, grpc::InsecureChannelCredentials(), arguments));
         
         QueryOfflineRequest containerrequest;
         QueryOfflineResponse reply;

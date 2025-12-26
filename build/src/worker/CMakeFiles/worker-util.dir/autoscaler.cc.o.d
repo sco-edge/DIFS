@@ -905,8 +905,8 @@ src/worker/CMakeFiles/worker-util.dir/autoscaler.cc.o: \
  /usr/local/include/google/protobuf/explicitly_constructed.h \
  /usr/local/include/google/protobuf/metadata_lite.h \
  /usr/local/include/google/protobuf/stubs/once.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker/../../protos/internal/query.grpc.pb.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker/../../protos/internal/query.pb.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.h \
  /usr/local/include/google/protobuf/arenastring.h \
  /usr/local/include/google/protobuf/generated_message_table_driven.h \
  /usr/local/include/google/protobuf/map.h \
@@ -933,7 +933,7 @@ src/worker/CMakeFiles/worker-util.dir/autoscaler.cc.o: \
  /usr/local/include/google/protobuf/stubs/stl_util.h \
  /usr/local/include/google/protobuf/message.h \
  /usr/local/include/google/protobuf/extension_set.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker/../../protos/internal/infaas_request_status.pb.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.pb.h \
  /usr/local/include/grpcpp/impl/codegen/async_generic_service.h \
  /usr/local/include/grpcpp/impl/codegen/async_stream.h \
  /usr/local/include/grpcpp/impl/codegen/service_type.h \

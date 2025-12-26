@@ -175,20 +175,6 @@ query_heartbeat/fast:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_heartbeat.dir/build.make src/worker/CMakeFiles/query_heartbeat.dir/build
 .PHONY : query_heartbeat/fast
 
-# Convenience name for target.
-src/worker/CMakeFiles/gpu_daemon.dir/rule:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/worker/CMakeFiles/gpu_daemon.dir/rule
-.PHONY : src/worker/CMakeFiles/gpu_daemon.dir/rule
-
-# Convenience name for target.
-gpu_daemon: src/worker/CMakeFiles/gpu_daemon.dir/rule
-.PHONY : gpu_daemon
-
-# fast build rule for target.
-gpu_daemon/fast:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/gpu_daemon.dir/build.make src/worker/CMakeFiles/gpu_daemon.dir/build
-.PHONY : gpu_daemon/fast
-
 __/__/utils/filesystem_utils.o: __/__/utils/filesystem_utils.cpp.o
 .PHONY : __/__/utils/filesystem_utils.o
 
@@ -260,30 +246,6 @@ common_model_util.s: common_model_util.cc.s
 common_model_util.cc.s:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/worker-util.dir/build.make src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.s
 .PHONY : common_model_util.cc.s
-
-gpu_daemon.o: gpu_daemon.cc.o
-.PHONY : gpu_daemon.o
-
-# target to build an object file
-gpu_daemon.cc.o:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/gpu_daemon.dir/build.make src/worker/CMakeFiles/gpu_daemon.dir/gpu_daemon.cc.o
-.PHONY : gpu_daemon.cc.o
-
-gpu_daemon.i: gpu_daemon.cc.i
-.PHONY : gpu_daemon.i
-
-# target to preprocess a source file
-gpu_daemon.cc.i:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/gpu_daemon.dir/build.make src/worker/CMakeFiles/gpu_daemon.dir/gpu_daemon.cc.i
-.PHONY : gpu_daemon.cc.i
-
-gpu_daemon.s: gpu_daemon.cc.s
-.PHONY : gpu_daemon.s
-
-# target to generate assembly for a file
-gpu_daemon.cc.s:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/gpu_daemon.dir/build.make src/worker/CMakeFiles/gpu_daemon.dir/gpu_daemon.cc.s
-.PHONY : gpu_daemon.cc.s
 
 query_client.o: query_client.cc.o
 .PHONY : query_client.o
@@ -365,7 +327,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... gpu_daemon"
 	@echo "... inf-worker"
 	@echo "... query_executor"
 	@echo "... query_heartbeat"
@@ -379,9 +340,6 @@ help:
 	@echo "... common_model_util.o"
 	@echo "... common_model_util.i"
 	@echo "... common_model_util.s"
-	@echo "... gpu_daemon.o"
-	@echo "... gpu_daemon.i"
-	@echo "... gpu_daemon.s"
 	@echo "... query_client.o"
 	@echo "... query_client.i"
 	@echo "... query_client.s"

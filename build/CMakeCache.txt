@@ -489,7 +489,7 @@ gRPC_DIR:UNINITIALIZED=/usr/local/lib/cmake/grpc
 inf-master_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos;general;/usr/local/lib/libprotobuf.so;
 
 //Dependencies for the target
-inf-worker_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos-internal;general;/usr/local/lib/libprotobuf.so;
+inf-worker_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos-internal;general;grpc++_unsecure;general;grpc;general;gpr;general;protobuf::libprotobuf;
 
 //Value Computed by CMake
 infaas-cli_BINARY_DIR:STATIC=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/cli-tools
@@ -558,7 +558,7 @@ pkgcfg_lib__OPENSSL_ssl:FILEPATH=/usr/lib/x86_64-linux-gnu/libssl.so
 redis-md_LIB_DEPENDS:STATIC=general;redox;general;/usr/lib/x86_64-linux-gnu/libhiredis.so;general;/usr/lib/x86_64-linux-gnu/libev.so;
 
 //Dependencies for the target
-worker-util_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos-internal;general;inf-worker;general;/usr/local/lib/libprotobuf.so;
+worker-util_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos-internal;general;grpc++_unsecure;general;grpc;general;gpr;general;protobuf::libprotobuf;
 
 
 ########################

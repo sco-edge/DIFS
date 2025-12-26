@@ -30,7 +30,7 @@
 
 #include <google/protobuf/repeated_field.h>
 #include <grpcpp/grpcpp.h>
-#include "internal/query.grpc.pb.h"
+#include "query.grpc.pb.h"
 
 using grpc::Channel;
 

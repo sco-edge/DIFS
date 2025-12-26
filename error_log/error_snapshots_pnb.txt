@@ -1,248 +1,163 @@
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:42:10: fatal error: common_local_paths.h: No such file or directory
-   42 | #include "common_local_paths.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:102:13: error: conflicting declaration ‘std::string infaas_buckets_dir’
+  102 | std::string infaas_buckets_dir = "infaas-buckets/";
+      |             ^~~~~~~~~~~~~~~~~~
+In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:57:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/include/constants.h:14:20: note: previous declaration as ‘const char* infaas_buckets_dir’
+   14 | static const char* infaas_buckets_dir = "/tmp/infaas_bucket";
+      |                    ^~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In function ‘int8_t CpuModelManager::LoadModel(const std::string&, const std::string&, std::unique_ptr<RedisMetadata>&, std::unique_ptr<Aws::S3::S3Client>&, const std::string&, bool)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:507:26: error: ‘class RedisMetadata’ has no member named ‘unset_parent_scale_down’; did you mean ‘unset_parent_scaledown’?
+  507 |                     rmd->unset_parent_scale_down(workername, parentmod);
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~
+      |                          unset_parent_scaledown
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In function ‘int8_t CpuModelManager::UnloadModel(const std::string&, std::unique_ptr<RedisMetadata>&, const std::string&, bool)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:603:9: error: ‘Autoscaler’ has not been declared
+  603 |         Autoscaler::setAvgBatch(modelname, 0);
+      |         ^~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: At global scope:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:607:65: error: ‘QueryOnlineRequest’ does not name a type
+  607 |     int8_t QueryModelOnline(const std::string& modelname, const QueryOnlineRequest& request,
+      |                                                                 ^~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:608:28: error: ‘QueryOnlineResponse’ has not been declared
+  608 |                            QueryOnlineResponse& reply, std::unique_ptr<RedisMetadata>& rmd,
+      |                            ^~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In function ‘int8_t CpuModelManager::QueryModelOnline(const std::string&, const int&, int&, std::unique_ptr<RedisMetadata>&, std::unique_ptr<Aws::S3::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:660:85: error: ‘std::__cxx11::basic_string<char>::npos’ cannot be used as a function
+  660 |         if (framework == "pytorch" || framework.find(GNMT_NVPY) != std::string::npos()) {
+      |                                                                    ~~~~~~~~~~~~~~~~~^~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:661:75: error: no matching function for call to ‘Address::Address(std::__cxx11::basic_string<char>)’
+  661 |             struct Address destaddr("localhost:" + std::to_string(portnum));
+      |                                                                           ^
+In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/autoscaler.h:39,
+                 from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:53:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note: candidate: ‘Address::Address()’
+   76 | struct Address {
+      |        ^~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note:   candidate expects 0 arguments, 1 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note: candidate: ‘Address::Address(const Address&)’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note:   no known conversion for argument 1 from ‘std::__cxx11::basic_string<char>’ to ‘const Address&’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note: candidate: ‘Address::Address(Address&&)’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note:   no known conversion for argument 1 from ‘std::__cxx11::basic_string<char>’ to ‘Address&&’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:666:29: error: ‘Query’ was not declared in this scope; did you mean ‘infaas::internal::Query’?
+  666 |             std::unique_ptr<Query::Stub> stub = Query::NewStub(
+      |                             ^~~~~
+      |                             infaas::internal::Query
+In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.h:45,
+                 from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:54:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.h:37:7: note: ‘infaas::internal::Query’ declared here
+   37 | class Query final {
+      |       ^~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:666:40: error: template argument 1 is invalid
+  666 |             std::unique_ptr<Query::Stub> stub = Query::NewStub(
+      |                                        ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:666:40: error: template argument 2 is invalid
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:666:49: error: ‘Query’ is not a class, namespace, or enumeration
+  666 |             std::unique_ptr<Query::Stub> stub = Query::NewStub(
+      |                                                 ^~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:667:58: error: ‘Addresstostr’ is not a member of ‘RedisMetadata’
+  667 |                 grpc::CreateCustomChannel(RedisMetadata::Addresstostr(destaddr),
+      |                                                          ^~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:672:33: error: base operand of ‘->’ is not a pointer
+  672 |             Status status = stub->QueryOnline(&context, request, &reply);
+      |                                 ^~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:677:87: error: request for member ‘rawinput’ in ‘request’, which is of non-class type ‘const int’
+  677 |             const google::protobuf::RepeatedPtrField<std::string>& rawinput = request.rawinput();
+      |                                                                                       ^~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:752:23: error: request for member ‘add_rawoutput’ in ‘reply’, which is of non-class type ‘int’
+  752 |                 reply.add_rawoutput(reinterpret_cast<const char*>(predv),
+      |                       ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:760:13: error: ‘time2’ was not declared in this scope; did you mean ‘time1’?
+  760 |             time2 = get_curr_timestamp();
+      |             ^~~~~
+      |             time1
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:768:55: error: request for member ‘rawoutput_size’ in ‘reply’, which is of non-class type ‘int’
+  768 |         std::cout << "rawoutput batch size " << reply.rawoutput_size()
+      |                                                       ^~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:769:50: error: request for member ‘rawoutput’ in ‘reply’, which is of non-class type ‘int’
+  769 |                   << " each dimension " << reply.rawoutput(0).size() << std::endl;
+      |                                                  ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: At global scope:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:773:66: error: ‘QueryOfflineRequest’ does not name a type
+  773 |     int8_t QueryModelOffline(const std::string& modelname, const QueryOfflineRequest& request,
+      |                                                                  ^~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In function ‘int8_t CpuModelManager::QueryModelOffline(const std::string&, const int&, std::unique_ptr<RedisMetadata>&, std::unique_ptr<Aws::S3::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:775:55: error: request for member ‘inputurl’ in ‘request’, which is of non-class type ‘const int’
+  775 |         std::string inputurl = bucketprefix + request.inputurl();
+      |                                                       ^~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:776:56: error: request for member ‘outputurl’ in ‘request’, which is of non-class type ‘const int’
+  776 |         std::string outputurl = bucketprefix + request.outputurl();
+      |                                                        ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:777:41: error: request for member ‘submitter’ in ‘request’, which is of non-class type ‘const int’
+  777 |         std::string submitter = request.submitter();
+      |                                         ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:843:71: error: no matching function for call to ‘Address::Address(std::__cxx11::basic_string<char>)’
+  843 |         struct Address destaddr("localhost:" + std::to_string(portnum));
+      |                                                                       ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note: candidate: ‘Address::Address()’
+   76 | struct Address {
+      |        ^~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note:   candidate expects 0 arguments, 1 provided
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note: candidate: ‘Address::Address(const Address&)’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note:   no known conversion for argument 1 from ‘std::__cxx11::basic_string<char>’ to ‘const Address&’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note: candidate: ‘Address::Address(Address&&)’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:76:8: note:   no known conversion for argument 1 from ‘std::__cxx11::basic_string<char>’ to ‘Address&&’
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:848:25: error: ‘Query’ was not declared in this scope; did you mean ‘infaas::internal::Query’?
+  848 |         std::unique_ptr<Query::Stub> stub = Query::NewStub(
+      |                         ^~~~~
+      |                         infaas::internal::Query
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.h:37:7: note: ‘infaas::internal::Query’ declared here
+   37 | class Query final {
+      |       ^~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:848:36: error: template argument 1 is invalid
+  848 |         std::unique_ptr<Query::Stub> stub = Query::NewStub(
+      |                                    ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:848:36: error: template argument 2 is invalid
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:848:45: error: ‘Query’ is not a class, namespace, or enumeration
+  848 |         std::unique_ptr<Query::Stub> stub = Query::NewStub(
+      |                                             ^~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:849:54: error: ‘Addresstostr’ is not a member of ‘RedisMetadata’
+  849 |             grpc::CreateCustomChannel(RedisMetadata::Addresstostr(destaddr),
+      |                                                      ^~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:852:9: error: ‘QueryOfflineRequest’ was not declared in this scope; did you mean ‘infaas::internal::QueryOfflineRequest’?
+  852 |         QueryOfflineRequest containerrequest;
+      |         ^~~~~~~~~~~~~~~~~~~
+      |         infaas::internal::QueryOfflineRequest
+In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.h:12:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.h:1095:7: note: ‘infaas::internal::QueryOfflineRequest’ declared here
+ 1095 | class QueryOfflineRequest final :
+      |       ^~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:853:9: error: ‘QueryOfflineResponse’ was not declared in this scope; did you mean ‘infaas::internal::QueryOfflineResponse’?
+  853 |         QueryOfflineResponse reply;
+      |         ^~~~~~~~~~~~~~~~~~~~
+      |         infaas::internal::QueryOfflineResponse
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.h:1324:7: note: ‘infaas::internal::QueryOfflineResponse’ declared here
+ 1324 | class QueryOfflineResponse final :
+      |       ^~~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:854:9: error: ‘containerrequest’ was not declared in this scope
+  854 |         containerrequest.set_inputurl(localinstancename);
+      |         ^~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:857:58: error: request for member ‘slo’ in ‘request’, which is of non-class type ‘const int’
+  857 |         containerrequest.mutable_slo()->CopyFrom(request.slo());
+      |                                                          ^~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:901:33: error: base operand of ‘->’ is not a pointer
+  901 |             Status status = stub->QueryOffline(&context, containerrequest, &reply);
+      |                                 ^~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:901:77: error: ‘reply’ was not declared in this scope
+  901 |             Status status = stub->QueryOffline(&context, containerrequest, &reply);
+      |                                                                             ^~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:902:61: error: ‘InfaasRequestStatusEnum’ has not been declared
+  902 |             if (!status.ok() || !reply.status().status() == InfaasRequestStatusEnum::SUCCESS) {
+      |                                                             ^~~~~~~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: At global scope:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:1019:62: error: ‘QueryOnlineRequest’ does not name a type
+ 1019 | int8_t QueryGeneralModel(const std::string& modelname, const QueryOnlineRequest& request,
+      |                                                              ^~~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:1020:25: error: ‘QueryOnlineResponse’ has not been declared
+ 1020 |                         QueryOnlineResponse& reply) {
+      |                         ^~~~~~~~~~~~~~~~~~~
 make[2]: *** [src/worker/CMakeFiles/worker-util.dir/build.make:79: src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o] Error 1
 make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
-make[1]: *** [CMakeFiles/Makefile2:392: src/worker/CMakeFiles/worker-util.dir/all] Error 2
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc: In function ‘int main(int, char**)’:
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:272:20: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
-  272 |       rmd.add_model(test_pt_mod_variant.model_name, parent_model, gparent_model,
-      |       ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  273 |                     test_pt_mod_variant.comp_size, test_pt_mod_variant.acc,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  274 |                     test_pt_mod_variant.dataset, test_pt_mod_variant.submitter,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  275 |                     test_pt_mod_variant.framework, test_pt_mod_variant.task,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  276 |                     test_pt_mod_variant.img_dim, test_pt_mod_variant.batch,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  277 |                     test_pt_mod_variant.load_lat, test_pt_mod_variant.inf_lat,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  278 |                     test_pt_mod_variant.peak_memory, test_pt_mod_variant.slope,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  279 |                     test_pt_mod_variant.intercept);
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:30:
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
-  176 |   int8_t add_model(const std::string& model_name,
-      |          ^~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:297:21: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
-  297 |   rc = rmd.add_model(test_mod_variant.model_name, parent_model, gparent_model,
-      |        ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  298 |                      test_mod_variant.comp_size, test_mod_variant.acc,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  299 |                      test_mod_variant.dataset, test_mod_variant.submitter,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  300 |                      test_mod_variant.framework, test_mod_variant.task,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  301 |                      test_mod_variant.img_dim, test_mod_variant.batch,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  302 |                      test_mod_variant.load_lat, test_mod_variant.inf_lat,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  303 |                      test_mod_variant.peak_memory, test_mod_variant.slope,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  304 |                      test_mod_variant.intercept);
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
-  176 |   int8_t add_model(const std::string& model_name,
-      |          ^~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:313:21: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
-  313 |   rc = rmd.add_model(test_mod_variant.model_name, parent_model, gparent_model,
-      |        ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  314 |                      test_mod_variant.comp_size, test_mod_variant.acc,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  315 |                      test_mod_variant.dataset, test_mod_variant.submitter,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  316 |                      test_mod_variant.framework, test_mod_variant.task,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  317 |                      test_mod_variant.img_dim, test_mod_variant.batch,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  318 |                      test_mod_variant.load_lat, test_mod_variant.inf_lat,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  319 |                      test_mod_variant.peak_memory, test_mod_variant.slope,
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  320 |                      test_mod_variant.intercept);
-      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
-  176 |   int8_t add_model(const std::string& model_name,
-      |          ^~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_md_test.cc:978:20: error: no matching function for call to ‘RedisMetadata::add_model(std::string&, const std::string&, const std::string&, double&, double&, std::string&, std::string&, std::string&, std::string&, int16_t&, int16_t&, double&, double&, double&, double&, double&)’
-  978 |       rmd.add_model(test_inferentia_mod_variant.model_name, parent_model, gparent_model,
-      |       ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  979 |                     test_inferentia_mod_variant.comp_size, test_inferentia_mod_variant.acc,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  980 |                     test_inferentia_mod_variant.dataset, test_inferentia_mod_variant.submitter,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  981 |                     test_inferentia_mod_variant.framework, test_inferentia_mod_variant.task,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  982 |                     test_inferentia_mod_variant.img_dim, test_inferentia_mod_variant.batch,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  983 |                     test_inferentia_mod_variant.load_lat, test_inferentia_mod_variant.inf_lat,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  984 |                     test_inferentia_mod_variant.peak_memory, test_inferentia_mod_variant.slope,
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  985 |                     test_inferentia_mod_variant.intercept);
-      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note: candidate: ‘int8_t RedisMetadata::add_model(const std::string&, const std::string&, const std::string&, const double&, const double&, const std::string&, const std::string&, const std::string&, const std::string&, const std::string&, int, const int16_t&, const int16_t&, const double&, const double&, const double&, const double&, const double&)’
-  176 |   int8_t add_model(const std::string& model_name,
-      |          ^~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h:176:10: note:   candidate expects 18 arguments, 16 provided
-make[2]: *** [src/metadata-store/CMakeFiles/redis_md_test.dir/build.make:79: src/metadata-store/CMakeFiles/redis_md_test.dir/redis_md_test.cc.o] Error 1
-make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
-make[1]: *** [CMakeFiles/Makefile2:311: src/metadata-store/CMakeFiles/redis_md_test.dir/all] Error 2
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/cli-tools/infaas_modelregistration.cc: In function ‘int main(int, char**)’:
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/cli-tools/infaas_modelregistration.cc:64:19: error: expected ‘;’ before ‘}’ token
-   64 |     task = argv[3]
-      |                   ^
-      |                   ;
-   65 |   }else{
-      |   ~                
-make[2]: *** [src/cli-tools/CMakeFiles/infaas_modelregistration.dir/build.make:79: src/cli-tools/CMakeFiles/infaas_modelregistration.dir/infaas_modelregistration.cc.o] Error 1
-make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
-make[1]: *** [CMakeFiles/Makefile2:763: src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all] Error 2
-In file included from /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:32:
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:58:24: error: ‘RequestStatus’ does not name a type
-   58 |   explicit Error(const RequestStatus& status);
-      |                        ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:62:35: error: expected ‘)’ before ‘code’
-   62 |   explicit Error(RequestStatusCode code = RequestStatusCode::SUCCESS);
-      |                 ~                 ^~~~~
-      |                                   )
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:67:35: error: expected ‘)’ before ‘code’
-   67 |   explicit Error(RequestStatusCode code, const std::string& msg);
-      |                 ~                 ^~~~~
-      |                                   )
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:71:3: error: ‘RequestStatusCode’ does not name a type
-   71 |   RequestStatusCode Code() const { return code_; }
-      |   ^~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:101:3: error: ‘RequestStatusCode’ does not name a type
-  101 |   RequestStatusCode code_;
-      |   ^~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h: In member function ‘bool nvidia::inferenceserver::client::Error::IsOk() const’:
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:93:30: error: ‘code_’ was not declared in this scope; did you mean ‘mode_t’?
-   93 |   bool IsOk() const { return code_ == RequestStatusCode::SUCCESS; }
-      |                              ^~~~~
-      |                              mode_t
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:93:39: error: ‘RequestStatusCode’ has not been declared
-   93 |   bool IsOk() const { return code_ == RequestStatusCode::SUCCESS; }
-      |                                       ^~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h: At global scope:
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:182:33: error: ‘ServerStatus’ has not been declared
-  182 |   virtual Error GetServerStatus(ServerStatus* status) = 0;
-      |                                 ^~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:271:13: error: ‘DataType’ does not name a type
-  271 |     virtual DataType DType() const = 0;
-      |             ^~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:274:13: error: ‘ModelInput’ does not name a type
-  274 |     virtual ModelInput::Format Format() const = 0;
-      |             ^~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:279:19: error: ‘DimsList’ does not name a type
-  279 |     virtual const DimsList& Dims() const = 0;
-      |                   ^~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:346:13: error: ‘DataType’ does not name a type
-  346 |     virtual DataType DType() const = 0;
-      |             ^~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:351:19: error: ‘DimsList’ does not name a type
-  351 |     virtual const DimsList& Dims() const = 0;
-      |                   ^~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:673:45: error: ‘CorrelationID’ has not been declared
-  673 |   InferContext(const std::string&, int64_t, CorrelationID, bool);
-      |                                             ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:704:9: error: ‘CorrelationID’ does not name a type
-  704 |   const CorrelationID correlation_id_;
-      |         ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:726:3: error: ‘InferRequestHeader’ does not name a type
-  726 |   InferRequestHeader infer_request_;
-      |   ^~~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:847:25: error: ‘ServerStatus’ has not been declared
-  847 |   Error GetServerStatus(ServerStatus* status) override;
-      |                         ^~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:860:3: error: ‘RequestStatus’ does not name a type
-  860 |   RequestStatus request_status_;
-      |   ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:906:43: error: ‘CorrelationID’ has not been declared
-  906 |       std::unique_ptr<InferContext>* ctx, CorrelationID correlation_id,
-      |                                           ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:922:56: error: ‘CorrelationID’ has not been declared
-  922 |       const std::string&, const std::string&, int64_t, CorrelationID, bool);
-      |                                                        ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:969:3: error: ‘RequestStatus’ does not name a type
-  969 |   RequestStatus request_status_;
-      |   ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:996:19: error: ‘GRPCService’ was not declared in this scope
-  996 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                   ^~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:996:36: error: template argument 1 is invalid
-  996 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                                    ^
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:996:36: error: template argument 2 is invalid
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1031:25: error: ‘ServerStatus’ has not been declared
- 1031 |   Error GetServerStatus(ServerStatus* status) override;
-      |                         ^~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1041:19: error: ‘GRPCService’ was not declared in this scope
- 1041 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                   ^~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1041:36: error: template argument 1 is invalid
- 1041 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                                    ^
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1041:36: error: template argument 2 is invalid
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1084:43: error: ‘CorrelationID’ has not been declared
- 1084 |       std::unique_ptr<InferContext>* ctx, CorrelationID correlation_id,
-      |                                           ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1096:56: error: ‘CorrelationID’ has not been declared
- 1096 |       const std::string&, const std::string&, int64_t, CorrelationID, bool);
-      |                                                        ^~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1113:19: error: ‘GRPCService’ was not declared in this scope
- 1113 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                   ^~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1113:36: error: template argument 1 is invalid
- 1113 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                                    ^
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1113:36: error: template argument 2 is invalid
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1117:3: error: ‘InferRequest’ does not name a type
- 1117 |   InferRequest request_;
-      |   ^~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1141:19: error: ‘GRPCService’ was not declared in this scope
- 1141 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                   ^~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1141:36: error: template argument 1 is invalid
- 1141 |   std::unique_ptr<GRPCService::Stub> stub_;
-      |                                    ^
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:1141:36: error: template argument 2 is invalid
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc: In function ‘int8_t TrtserverReady()’:
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:53:17: error: no matching function for call to ‘nvidia::inferenceserver::client::Error::Error()’
-   53 |   trtisc::Error err;
-      |                 ^~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:58:12: note: candidate: ‘nvidia::inferenceserver::client::Error::Error(const int&)’
-   58 |   explicit Error(const RequestStatus& status);
-      |            ^~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:58:12: note:   candidate expects 1 argument, 0 provided
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note: candidate: ‘nvidia::inferenceserver::client::Error::Error(const nvidia::inferenceserver::client::Error&)’
-   54 | class Error {
-      |       ^~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note:   candidate expects 1 argument, 0 provided
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note: candidate: ‘nvidia::inferenceserver::client::Error::Error(nvidia::inferenceserver::client::Error&&)’
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/trtis_request.h:54:7: note:   candidate expects 1 argument, 0 provided
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:56:12: error: ‘ServerStatus’ is not a member of ‘trtis’
-   56 |     trtis::ServerStatus server_status;
-      |            ^~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:57:33: error: ‘server_status’ was not declared in this scope; did you mean ‘si_status’?
-   57 |     err = ctx->GetServerStatus(&server_status);
-      |                                 ^~~~~~~~~~~~~
-      |                                 si_status
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:61:18: error: ‘ServerReadyState_descriptor’ is not a member of ‘trtis’
-   61 |           trtis::ServerReadyState_descriptor()->FindValueByNumber(itr)->name();
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/gpu_daemon.cc:63:25: error: ‘SERVER_READY’ is not a member of ‘trtis’
-   63 |       if (itr != trtis::SERVER_READY) {
-      |                         ^~~~~~~~~~~~
-make[2]: *** [src/worker/CMakeFiles/gpu_daemon.dir/build.make:79: src/worker/CMakeFiles/gpu_daemon.dir/gpu_daemon.cc.o] Error 1
-make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
-make[1]: *** [CMakeFiles/Makefile2:475: src/worker/CMakeFiles/gpu_daemon.dir/all] Error 2
+make[1]: *** [CMakeFiles/Makefile2:311: src/worker/CMakeFiles/worker-util.dir/all] Error 2
 make[1]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
 make: *** [Makefile:94: all] Error 2
 ERROR occurred on line 155

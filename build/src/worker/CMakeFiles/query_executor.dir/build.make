@@ -96,7 +96,6 @@ query_executor_EXTERNAL_OBJECTS =
 src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/query_executor.cc.o
 src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/build.make
 src/worker/query_executor: src/worker/libworker-util.a
-src/worker/query_executor: src/worker/libinf-worker.so
 src/worker/query_executor: src/metadata-store/libredis-md.so
 src/worker/query_executor: /usr/lib/x86_64-linux-gnu/libhiredis.so
 src/worker/query_executor: /usr/lib/x86_64-linux-gnu/libev.so

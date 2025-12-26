@@ -98,12 +98,12 @@ bin/modelreg_server: src/master/CMakeFiles/modelreg_server.dir/build.make
 bin/modelreg_server: src/master/libinf-master.so
 bin/modelreg_server: src/worker/libworker-util.a
 bin/modelreg_server: protos/libinfaas-protos.a
-bin/modelreg_server: src/worker/libinf-worker.so
+bin/modelreg_server: /usr/local/lib/libprotobuf.so
 bin/modelreg_server: src/metadata-store/libredis-md.so
 bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libev.so
-bin/modelreg_server: /usr/local/lib/libprotobuf.so
 bin/modelreg_server: protos/internal/libinfaas-protos-internal.a
+bin/modelreg_server: /usr/local/lib/libprotobuf.so
 bin/modelreg_server: src/master/CMakeFiles/modelreg_server.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../../bin/modelreg_server"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/master && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/modelreg_server.dir/link.txt --verbose=$(VERBOSE)

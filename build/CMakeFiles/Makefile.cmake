@@ -80,24 +80,20 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "protos/CMakeFiles/CMakeDirectoryInformation.cmake"
   "protos/internal/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "src/metadata-store/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/worker/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/master/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/cli-tools/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/metadata-store/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "protos/CMakeFiles/infaas-protos.dir/DependInfo.cmake"
   "protos/internal/CMakeFiles/infaas-protos-internal.dir/DependInfo.cmake"
-  "src/metadata-store/CMakeFiles/redis-md.dir/DependInfo.cmake"
-  "src/metadata-store/CMakeFiles/redis_md_test.dir/DependInfo.cmake"
-  "src/metadata-store/CMakeFiles/redis_startup_helper.dir/DependInfo.cmake"
   "src/worker/CMakeFiles/inf-worker.dir/DependInfo.cmake"
   "src/worker/CMakeFiles/worker-util.dir/DependInfo.cmake"
   "src/worker/CMakeFiles/query_executor.dir/DependInfo.cmake"
   "src/worker/CMakeFiles/query_heartbeat.dir/DependInfo.cmake"
-  "src/worker/CMakeFiles/gpu_daemon.dir/DependInfo.cmake"
   "src/master/CMakeFiles/inf-master.dir/DependInfo.cmake"
   "src/master/CMakeFiles/modelreg_server.dir/DependInfo.cmake"
   "src/master/CMakeFiles/modelreg_heartbeat.dir/DependInfo.cmake"
@@ -108,4 +104,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "src/cli-tools/CMakeFiles/infaas_online_query.dir/DependInfo.cmake"
   "src/cli-tools/CMakeFiles/infaas_offline_query.dir/DependInfo.cmake"
   "src/cli-tools/CMakeFiles/infaas_modelregistration.dir/DependInfo.cmake"
+  "src/metadata-store/CMakeFiles/redis-md.dir/DependInfo.cmake"
+  "src/metadata-store/CMakeFiles/redis_md_test.dir/DependInfo.cmake"
+  "src/metadata-store/CMakeFiles/redis_startup_helper.dir/DependInfo.cmake"
   )

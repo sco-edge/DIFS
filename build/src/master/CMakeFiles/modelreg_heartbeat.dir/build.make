@@ -98,12 +98,12 @@ bin/modelreg_heartbeat: src/master/CMakeFiles/modelreg_heartbeat.dir/build.make
 bin/modelreg_heartbeat: src/master/libinf-master.so
 bin/modelreg_heartbeat: src/worker/libworker-util.a
 bin/modelreg_heartbeat: protos/libinfaas-protos.a
-bin/modelreg_heartbeat: src/worker/libinf-worker.so
+bin/modelreg_heartbeat: /usr/local/lib/libprotobuf.so
 bin/modelreg_heartbeat: src/metadata-store/libredis-md.so
 bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libev.so
-bin/modelreg_heartbeat: /usr/local/lib/libprotobuf.so
 bin/modelreg_heartbeat: protos/internal/libinfaas-protos-internal.a
+bin/modelreg_heartbeat: /usr/local/lib/libprotobuf.so
 bin/modelreg_heartbeat: src/master/CMakeFiles/modelreg_heartbeat.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../../bin/modelreg_heartbeat"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/master && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/modelreg_heartbeat.dir/link.txt --verbose=$(VERBOSE)

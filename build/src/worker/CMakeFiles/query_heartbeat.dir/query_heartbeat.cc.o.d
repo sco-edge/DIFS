@@ -389,8 +389,8 @@ src/worker/CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o: \
  /usr/local/include/grpcpp/security/authorization_policy_provider.h \
  /usr/local/include/grpcpp/server_context.h \
  /usr/local/include/grpcpp/server_posix.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker/../../protos/internal/query.grpc.pb.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker/../../protos/internal/query.pb.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.h \
  /usr/local/include/google/protobuf/arenastring.h \
  /usr/local/include/google/protobuf/generated_message_table_driven.h \
  /usr/local/include/google/protobuf/map.h \
@@ -417,7 +417,7 @@ src/worker/CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o: \
  /usr/local/include/google/protobuf/stubs/stl_util.h \
  /usr/local/include/google/protobuf/message.h \
  /usr/local/include/google/protobuf/extension_set.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker/../../protos/internal/infaas_request_status.pb.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.pb.h \
  /usr/local/include/grpcpp/impl/codegen/async_generic_service.h \
  /usr/local/include/grpcpp/impl/codegen/async_stream.h \
  /usr/local/include/grpcpp/impl/codegen/service_type.h \

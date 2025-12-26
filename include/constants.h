@@ -11,7 +11,7 @@
 static const std::string bucket_prefix = "";
 
 // No S3 bucket for storing models/configs
-static const char* infaas_buckets_dir = "/tmp/infaas_bucket";
+inline const std::string infaas_buckets_dir = "/tmp/infaas_bucket";
 
 // No S3 bucket for storing models/configs
 // static const char* model_location ="/local/models/"

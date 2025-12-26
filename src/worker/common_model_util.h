@@ -42,7 +42,7 @@
 #include <aws/s3/S3Client.h>
 #include <google/protobuf/repeated_field.h>
 
-#include "internal/query.grpc.pb.h"
+#include "query.grpc.pb.h"
 #include "metadata-store/redis_metadata.h"
 
 namespace infaas {

@@ -96,14 +96,15 @@ queryfe_server_EXTERNAL_OBJECTS =
 bin/queryfe_server: src/master/CMakeFiles/queryfe_server.dir/queryfe_server.cc.o
 bin/queryfe_server: src/master/CMakeFiles/queryfe_server.dir/build.make
 bin/queryfe_server: src/master/libinf-master.so
+bin/queryfe_server: src/worker/libinf-worker.so
 bin/queryfe_server: src/worker/libworker-util.a
 bin/queryfe_server: protos/libinfaas-protos.a
-bin/queryfe_server: src/worker/libinf-worker.so
+bin/queryfe_server: /usr/local/lib/libprotobuf.so
 bin/queryfe_server: src/metadata-store/libredis-md.so
 bin/queryfe_server: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/queryfe_server: /usr/lib/x86_64-linux-gnu/libev.so
-bin/queryfe_server: /usr/local/lib/libprotobuf.so
 bin/queryfe_server: protos/internal/libinfaas-protos-internal.a
+bin/queryfe_server: /usr/local/lib/libprotobuf.so
 bin/queryfe_server: src/master/CMakeFiles/queryfe_server.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../../bin/queryfe_server"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/master && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/queryfe_server.dir/link.txt --verbose=$(VERBOSE)

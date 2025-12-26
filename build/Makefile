@@ -146,45 +146,6 @@ infaas-protos-internal/fast:
 .PHONY : infaas-protos-internal/fast
 
 #=============================================================================
-# Target rules for targets named redis-md
-
-# Build rule for target.
-redis-md: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 redis-md
-.PHONY : redis-md
-
-# fast build rule for target.
-redis-md/fast:
-	$(MAKE) $(MAKESILENT) -f src/metadata-store/CMakeFiles/redis-md.dir/build.make src/metadata-store/CMakeFiles/redis-md.dir/build
-.PHONY : redis-md/fast
-
-#=============================================================================
-# Target rules for targets named redis_md_test
-
-# Build rule for target.
-redis_md_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 redis_md_test
-.PHONY : redis_md_test
-
-# fast build rule for target.
-redis_md_test/fast:
-	$(MAKE) $(MAKESILENT) -f src/metadata-store/CMakeFiles/redis_md_test.dir/build.make src/metadata-store/CMakeFiles/redis_md_test.dir/build
-.PHONY : redis_md_test/fast
-
-#=============================================================================
-# Target rules for targets named redis_startup_helper
-
-# Build rule for target.
-redis_startup_helper: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 redis_startup_helper
-.PHONY : redis_startup_helper
-
-# fast build rule for target.
-redis_startup_helper/fast:
-	$(MAKE) $(MAKESILENT) -f src/metadata-store/CMakeFiles/redis_startup_helper.dir/build.make src/metadata-store/CMakeFiles/redis_startup_helper.dir/build
-.PHONY : redis_startup_helper/fast
-
-#=============================================================================
 # Target rules for targets named inf-worker
 
 # Build rule for target.
@@ -235,19 +196,6 @@ query_heartbeat: cmake_check_build_system
 query_heartbeat/fast:
 	$(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_heartbeat.dir/build.make src/worker/CMakeFiles/query_heartbeat.dir/build
 .PHONY : query_heartbeat/fast
-
-#=============================================================================
-# Target rules for targets named gpu_daemon
-
-# Build rule for target.
-gpu_daemon: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gpu_daemon
-.PHONY : gpu_daemon
-
-# fast build rule for target.
-gpu_daemon/fast:
-	$(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/gpu_daemon.dir/build.make src/worker/CMakeFiles/gpu_daemon.dir/build
-.PHONY : gpu_daemon/fast
 
 #=============================================================================
 # Target rules for targets named inf-master
@@ -379,6 +327,45 @@ infaas_modelregistration/fast:
 	$(MAKE) $(MAKESILENT) -f src/cli-tools/CMakeFiles/infaas_modelregistration.dir/build.make src/cli-tools/CMakeFiles/infaas_modelregistration.dir/build
 .PHONY : infaas_modelregistration/fast
 
+#=============================================================================
+# Target rules for targets named redis-md
+
+# Build rule for target.
+redis-md: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 redis-md
+.PHONY : redis-md
+
+# fast build rule for target.
+redis-md/fast:
+	$(MAKE) $(MAKESILENT) -f src/metadata-store/CMakeFiles/redis-md.dir/build.make src/metadata-store/CMakeFiles/redis-md.dir/build
+.PHONY : redis-md/fast
+
+#=============================================================================
+# Target rules for targets named redis_md_test
+
+# Build rule for target.
+redis_md_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 redis_md_test
+.PHONY : redis_md_test
+
+# fast build rule for target.
+redis_md_test/fast:
+	$(MAKE) $(MAKESILENT) -f src/metadata-store/CMakeFiles/redis_md_test.dir/build.make src/metadata-store/CMakeFiles/redis_md_test.dir/build
+.PHONY : redis_md_test/fast
+
+#=============================================================================
+# Target rules for targets named redis_startup_helper
+
+# Build rule for target.
+redis_startup_helper: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 redis_startup_helper
+.PHONY : redis_startup_helper
+
+# fast build rule for target.
+redis_startup_helper/fast:
+	$(MAKE) $(MAKESILENT) -f src/metadata-store/CMakeFiles/redis_startup_helper.dir/build.make src/metadata-store/CMakeFiles/redis_startup_helper.dir/build
+.PHONY : redis_startup_helper/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -387,7 +374,6 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... gpu_daemon"
 	@echo "... inf-master"
 	@echo "... inf-worker"
 	@echo "... infaas-protos"
