@@ -1147,7 +1147,9 @@ int8_t Autoscaler::popScaleRequestInfa(ScaleRequest* reqs) {
 void Autoscaler::GpuAutoscalerDaemon(const std::string& worker_name,
                                      const AutoscalerType& atype,
                                      std::unique_ptr<RedisMetadata>& rmd,
-                                     std::unique_ptr<Aws::S3::S3Client>& s3c) {
+                                     // std::unique_ptr<Aws::S3::S3Client>& s3c
+				     std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+				     ) {
   // Log to the file "INFaaS/logs/gpu_autoscaler_daemon.log"
   std::ofstream logfile;
   logfile.open(infaas_log_dir + "/worker/gpu_autoscaler_daemon.log");
@@ -1244,7 +1246,9 @@ void Autoscaler::GpuAutoscalerDaemon(const std::string& worker_name,
 void Autoscaler::CpuAutoscalerDaemon(const std::string& worker_name,
                                      const AutoscalerType& atype,
                                      std::unique_ptr<RedisMetadata>& rmd,
-                                     std::unique_ptr<Aws::S3::S3Client>& s3c) {
+                                     //std::unique_ptr<Aws::S3::S3Client>& s3c
+				     std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+				     ) {
   // Log to the file "INFaaS/logs/cpu_autoscaler_daemon.log"
   std::ofstream logfile;
   logfile.open(infaas_log_dir + "/worker/cpu_autoscaler_daemon.log");
@@ -1329,7 +1333,9 @@ void Autoscaler::CpuAutoscalerDaemon(const std::string& worker_name,
 void Autoscaler::InfaAutoscalerDaemon(const std::string& worker_name,
                                      const AutoscalerType& atype,
                                      std::unique_ptr<RedisMetadata>& rmd,
-                                     std::unique_ptr<Aws::S3::S3Client>& s3c) {
+				      //std::unique_ptr<Aws::S3::S3Client>& s3c
+				     std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+				      ) {
   // Log to the file "INFaaS/logs/inferentia_autoscaler_daemon.log"
   std::ofstream logfile;
   logfile.open(infaas_log_dir + "/worker/inferentia_autoscaler_daemon.log");

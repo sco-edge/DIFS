@@ -508,32 +508,42 @@ if (check_outcome.IsSuccess()) {
     //                     inf_latency[0], peak_memory, slope, intercept);
 
     // PNB: ensuring task is stored for diffusion model (2025.12.22)
-    if (req->task() == "DIFFUSION") {
-      rc = rm_->add_model(variant_name,
-		     parent_model,
-		     grandparent_model,
-		     comp_size,
-		     accuracy,
-		     dataset,
-		     submitter,
-		     framework,
-		     task,// "DIFFUSION"
-                     "infaas-diffusion:latest",  // ← ADD container image
-                     50052,          // ← ADD container port
-		     input_dim,
-		     batch_size,
-		     load_latency,
-		     inf_latency[0],
-		     peak_memory,
-		     slope,
-		     intercept);
+    if (request->task() == "DIFFUSION") {
+      std::string model_type = "default";
+      double comp_size = std::stod(request->comp_size());
+      double accuracy  = request->accuracy();
+rc = rm_->add_model(
+    variant_name,
+    parent_model,
+    grandparent_model,
+    comp_size,          
+    accuracy,
+    dataset,
+    submitter,
+    framework,
+    task,
+    "local-container",
+    50052,              
+    input_dim,
+    batch_size,
+    load_latency,
+    inf_latency[0],
+    peak_memory,
+    slope,
+    intercept
+);
     } else {
       // existing call for other tasks
+      std::string model_type = "default";
+      double comp_size = std::stod(request->comp_size());
+      double accuracy  = request->accuracy();
+      double cost = 0.0;  // TODO: compute later
       rc = rm_->add_model(variant_name,
 			  parent_model,
 			  grandparent_model,
 			  comp_size,
 			  accuracy,
+			  model_type,
 			  dataset,
 			  submitter,
 			  framework,
@@ -544,7 +554,8 @@ if (check_outcome.IsSuccess()) {
 			  inf_latency[0],
 			  peak_memory,
 			  slope,
-			  intercept);
+			  intercept,
+			  cost);
     }
     
     

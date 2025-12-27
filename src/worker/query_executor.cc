@@ -37,22 +37,42 @@
 #include <unistd.h>
 #include <vector>
 
+// PNB: Substitute (local) implementations for Aws.h and S3Client.h  (2025.12.27)
+#if ENABLE_AWS
 #include <aws/core/Aws.h>
 #include <aws/s3/S3Client.h>
+#else
+#include "local_s3cfg.h"
+#endif
+
+
 #include <grpcpp/grpcpp.h>
 
 #include "autoscaler.h"
 #include "common_model_util.h"
 //#include "include/constants.h"
 #include "constants.h" //PNB: (2025.11.28)
-#include "internal/query.grpc.pb.h"
+#include "query.grpc.pb.h"
 #include "metadata-store/redis_metadata.h"
 
+//#include "worker/local_storage_backend.h"//PNB: (2025.11.28)
+#include "local_storage_backend.h"//PNB: (2025.12.28)
+
+#ifdef ENABLE_AWS
 using Aws::S3::S3Client;
+#endif
+
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
+
+// PnB: (2025.12.27)
+#ifdef ENABLE_DIFFUSION
+using infaas::internal::InternalDiffusionQuery;
+using infaas::internal::InternalDiffusionResponse;
+using infaas::internal::DiffusionService;
+#endif
 
 const std::string query_exe_addr = "0.0.0.0:50051";
 const std::string test_model = "testmodel";
@@ -64,6 +84,10 @@ static const int MAX_GRPC_MESSAGE_SIZE = INT32_MAX;
 // threads in the future.
 static const int OFFLINE_THREAD_POOL_SIZE = 1;
 static const int AUTOSCALER_THREAD_POOL_SIZE = 1;
+
+// // PNB: Use this to do local autoscaling in place of AWS (2025.12.27)
+// LocalStorageBackend storage("/var/lib/infaas/models");
+// autoscaler_.scaleUpWithStorage(model_name, &storage);
 
 #ifdef INFAAS_NEURON_WORKER
 // TODO: we just assume each inferentia worker has 4 neuron cores. Maybe make
@@ -142,9 +166,13 @@ public:
     // s3cfg.region = Aws::String(infaas_aws_region.c_str());
     // s3cfg.endpointOverride = Aws::String(infaas_s3_endpoint.c_str());
 
+    localfs::ClientConfiguration s3cfg;  //PNB: 2025.12.28
+    //localfs::LocalClientConfig s3cfg;
     s3cfg.connectTimeoutMs = 1000 * 60 * 3; // Connection timeout = 3min
     s3cfg.requestTimeoutMs = 1000 * 60 * 3; // Request timeout = 3min.
-    s3_client_ = std::unique_ptr<S3Client>(new S3Client(s3cfg));
+    s3cfg.root_dir = "/var/lib/infaas/models";
+    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
+    
     qpsMonitorThread_ = new std::thread(&QueryServiceImpl::qpsMonitor, this);
     resourceMonitorThread_ =
         new std::thread(&QueryServiceImpl::resourceMonitor, this);
@@ -213,7 +241,7 @@ private:
   std::unique_ptr<RedisMetadata> redis_metadata_;
   // Aws::SDKOptions s3_options_; // PNB: Commented out lines with 'Aws::'
   // initializations to get rid of AWS setup and dependency (2025.11.21)
-  std::unique_ptr<S3Client> s3_client_;
+  std::unique_ptr<localfs::S3Client> s3_client_;
   // For Offline queries
   // The mutex protects concurrent access to offline_reqs_.
   std::mutex offline_mutex_;
@@ -313,9 +341,17 @@ Status QueryServiceImpl::QueryOnline(ServerContext *context,
       // printf("[query_executor.cc] manager QueryModelOnline start time:
       // %lu.\n",
       //       time3);
+    localfs::ClientConfiguration s3cfg;  //PNB: 2025.12.28
+    //localfs::LocalClientConfig s3cfg;
+    s3cfg.connectTimeoutMs = 1000 * 60 * 3; // Connection timeout = 3min
+    s3cfg.requestTimeoutMs = 1000 * 60 * 3; // Request timeout = 3min.
+    s3cfg.root_dir = "/var/lib/infaas/models";
+    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
 
-      int8_t res = manager.QueryModelOnline(models[0], request, reply,
-                                            redis_metadata_, s3_client_);
+   s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
+   int8_t res = manager.QueryModelOnline(models[0], request, reply, redis_metadata_, s3_client_);
+  
+
       time4 = get_curr_timestamp();
       // printf("[query_executor.cc] manager QueryModelOnline end time: %lu.\n",
       //       time4);
@@ -352,8 +388,17 @@ Status QueryServiceImpl::QueryOnline(ServerContext *context,
       // %lu.\n",
       //       time3);
 
-      int8_t res = manager.QueryModelOnline(models[0], request, reply,
-                                            redis_metadata_, s3_client_);
+	localfs::ClientConfiguration s3cfg; //PNB: 2025.12.28
+    //localfs::LocalClientConfig s3cfg;
+    s3cfg.connectTimeoutMs = 1000 * 60 * 3; // Connection timeout = 3min
+    s3cfg.requestTimeoutMs = 1000 * 60 * 3; // Request timeout = 3min.
+    s3cfg.root_dir = "/var/lib/infaas/models";
+    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
+    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));  
+    int8_t res = manager.QueryModelOnline(models[0], request, reply,redis_metadata_, s3_client_);
+   
+   
+      
       time4 = get_curr_timestamp();
       // printf("[query_executor.cc] manager QueryModelOnline end time: %lu.\n",
       //       time4);

@@ -387,8 +387,14 @@ CURL_LIBRARY_DEBUG:FILEPATH=CURL_LIBRARY_DEBUG-NOTFOUND
 //Path to a library.
 CURL_LIBRARY_RELEASE:FILEPATH=/usr/lib/x86_64-linux-gnu/libcurl.so
 
+//Enable AWS s3 backend
+ENABLE_AWS:BOOL=OFF
+
 //Enable AWS autoscaling
 ENABLE_AWS_AUTOSCALING:BOOL=OFF
+
+//Enable diffusion model support
+ENABLE_DIFFUSION:BOOL=OFF
 
 //Enable Triton/TRTIS support
 ENABLE_TRTIS:BOOL=OFF
@@ -517,6 +523,9 @@ infaas-metadata_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
 infaas-metadata_SOURCE_DIR:STATIC=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store
+
+//Dependencies for the target
+infaas-protos_LIB_DEPENDS:STATIC=general;infaas-protos-internal;
 
 //Value Computed by CMake
 infaas-root_BINARY_DIR:STATIC=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build

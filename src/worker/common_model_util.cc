@@ -50,7 +50,6 @@
 #include <aws/s3/model/PutObjectRequest.h>
 #endif
 
-#include "autoscaler.h"
 #include "common_model_util.h"
 #include "include/base64.h"
 //#include "include/constants.h"
@@ -58,7 +57,7 @@
 #include "include/json.hpp"
 #include "query.grpc.pb.h"
 #include "query_client.h"
-#include "worker/autoscaler.h" // PNB: (2025.11.28)
+#include "autoscaler.h" // PNB: (2025.11.28)
 #include "query.grpc.pb.h" // PNB: (2025.12.27)
 #include "query.pb.h" // PNB: (2025.12.27)
 
@@ -78,6 +77,7 @@ using infaas::internal::QueryOnlineResponse;
 using infaas::internal::QueryOfflineRequest;
 using infaas::internal::QueryOfflineResponse;
 using infaas::internal::InfaasRequestStatusEnum;
+using infaas::internal::Autoscaler;
 
 // ================================================
 // CONSTANTS AND GLOBAL VARIABLES
@@ -111,7 +111,7 @@ static const int WORKER_NEURON_CORES = 4;
 std::string bucketprefix = "s3://";
 std::string workername = "local_worker";
 
-
+uint64_t time2 = 0;
 // ================================================
 // CRITICAL UTILITY FUNCTIONS - FULL IMPLEMENTATIONS
 // ================================================
@@ -678,7 +678,7 @@ namespace CpuModelManager {
             arguments.SetMaxSendMessageSize(MAX_GRPC_MESSAGE_SIZE);
             arguments.SetMaxReceiveMessageSize(MAX_GRPC_MESSAGE_SIZE);
 
-            std::string addr = destaddr.ip + ":" + std::to_string(destaddr.port);
+            std::string addr = destaddr.ip + ":" + destaddr.port;
             std::unique_ptr<Query::Stub> stub = Query::NewStub(
                 grpc::CreateCustomChannel(addr, grpc::InsecureChannelCredentials(), arguments));
             
@@ -689,8 +689,9 @@ namespace CpuModelManager {
             printf("[common_model_util.cc] Pytorch inference time %.4lf ms.\n",
                    get_duration_ms(time1, time2));
         } else if (framework == "tensorflow-cpu") {
-            const google::protobuf::RepeatedPtrField<std::string>& rawinput = request.rawinput();
-            size_t batchsize = rawinput.size();
+            const google::protobuf::RepeatedPtrField<std::string>& rawinput = request.raw_input();
+            const auto& raw_input = request.raw_input(); // PNB: (2025.12.27)
+	    size_t batchsize = raw_input.size();
             
             CURL* curl = curl_easy_init();
             if (!curl) {
@@ -703,9 +704,15 @@ namespace CpuModelManager {
             
             // Encode each input as base64
             for (size_t idx = 0; idx < batchsize; idx++) {
-                unsigned int rawsize = rawinput.Get(idx).size();
+
+	      // PNB: (2025.12.27)
+		const std::string& s = raw_input.Get(idx);
+                const char* rawptr = s.data();
+                unsigned int rawsize = s.size();
+		
+		
                 unsigned char const* bytestoencode = 
-                    reinterpret_cast<unsigned char const*>(rawinput.Get(idx).data());
+                reinterpret_cast<unsigned char const*>(rawptr);
                 std::string base64str = base64_encode(bytestoencode, rawsize);
                 std::replace(base64str.begin(), base64str.end(), '+', '-');
                 std::replace(base64str.begin(), base64str.end(), '/', '_');
@@ -764,7 +771,7 @@ namespace CpuModelManager {
                 for (auto& i : *it) {
                     predv[cntit++] = std::stof(i.dump());
                 }
-                reply.add_rawoutput(reinterpret_cast<const char*>(predv), 
+                reply.add_raw_output(reinterpret_cast<const char*>(predv), 
                                   it->size() * sizeof(float));
             }
             if (predv) delete[] predv;
@@ -780,15 +787,15 @@ namespace CpuModelManager {
             return -1;
         }
         
-        std::cout << "rawoutput batch size " << reply.rawoutput_size() 
-                  << " each dimension " << reply.rawoutput(0).size() << std::endl;
+        std::cout << "rawoutput batch size " << reply.raw_output_size() 
+                  << " each dimension " << reply.raw_output(0).size() << std::endl;
         return 0;
     }
     
     int8_t QueryModelOffline(const std::string& modelname, const QueryOfflineRequest& request,
                             std::unique_ptr<RedisMetadata>& rmd, std::unique_ptr<S3Client>& s3c) {
-        std::string inputurl = bucketprefix + request.inputurl();
-        std::string outputurl = bucketprefix + request.outputurl();
+        std::string inputurl = bucketprefix + request.input_url();
+        std::string outputurl = bucketprefix + request.output_url();
         std::string submitter = request.submitter();
         
         // NOTE: one level deeper for the folder.
@@ -860,15 +867,20 @@ namespace CpuModelManager {
         arguments.SetMaxSendMessageSize(MAX_GRPC_MESSAGE_SIZE);
         arguments.SetMaxReceiveMessageSize(MAX_GRPC_MESSAGE_SIZE);
 
-	std::string addr = destaddr.ip + ":" + std::to_string(destaddr.port);
-        Std::unique_ptr<Query::Stub> stub = Query::NewStub(
+	// PNB: (2025.12.27)
+	Address destaddr;
+	destaddr.ip = "localhost";
+	destaddr.port = std::to_string(portnum);
+	
+	std::string addr = destaddr.ip + ":" + destaddr.port;
+        std::unique_ptr<Query::Stub> stub = Query::NewStub(
             grpc::CreateCustomChannel(addr, grpc::InsecureChannelCredentials(), arguments));
         
         QueryOfflineRequest containerrequest;
         QueryOfflineResponse reply;
-        containerrequest.set_inputurl(localinstancename);
+        containerrequest.set_input_url(localinstancename);
         containerrequest.add_model(modelname);
-        containerrequest.set_outputurl(localinstancename);
+        containerrequest.set_output_url(localinstancename);
         containerrequest.mutable_slo()->CopyFrom(request.slo());
         containerrequest.set_submitter(submitter);
         

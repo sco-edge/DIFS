@@ -116,6 +116,7 @@ src/master/libinf-master.so: protos/libinfaas-protos.a
 src/master/libinf-master.so: /usr/local/lib/libprotobuf.so
 src/master/libinf-master.so: /usr/lib/x86_64-linux-gnu/libhiredis.so
 src/master/libinf-master.so: /usr/lib/x86_64-linux-gnu/libev.so
+src/master/libinf-master.so: protos/internal/libinfaas-protos-internal.a
 src/master/libinf-master.so: src/master/CMakeFiles/inf-master.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared library libinf-master.so"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/master && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/inf-master.dir/link.txt --verbose=$(VERBOSE)

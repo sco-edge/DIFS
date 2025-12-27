@@ -31,6 +31,7 @@ constexpr ModelRegRequest::ModelRegRequest(
   , config_name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , model_path_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , model_name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , comp_size_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , accuracy_(0){}
 struct ModelRegRequestDefaultTypeInternal {
   constexpr ModelRegRequestDefaultTypeInternal()
@@ -102,6 +103,7 @@ const uint32_t TableStruct_modelreg_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::infaaspublic::infaasmodelreg::ModelRegRequest, config_name_),
   PROTOBUF_FIELD_OFFSET(::infaaspublic::infaasmodelreg::ModelRegRequest, model_path_),
   PROTOBUF_FIELD_OFFSET(::infaaspublic::infaasmodelreg::ModelRegRequest, model_name_),
+  PROTOBUF_FIELD_OFFSET(::infaaspublic::infaasmodelreg::ModelRegRequest, comp_size_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::infaaspublic::infaasmodelreg::ModelRegResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -126,9 +128,9 @@ const uint32_t TableStruct_modelreg_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::infaaspublic::infaasmodelreg::ModelRegRequest)},
-  { 18, -1, -1, sizeof(::infaaspublic::infaasmodelreg::ModelRegResponse)},
-  { 25, -1, -1, sizeof(::infaaspublic::infaasmodelreg::HeartbeatRequest)},
-  { 32, -1, -1, sizeof(::infaaspublic::infaasmodelreg::HeartbeatResponse)},
+  { 19, -1, -1, sizeof(::infaaspublic::infaasmodelreg::ModelRegResponse)},
+  { 26, -1, -1, sizeof(::infaaspublic::infaasmodelreg::HeartbeatRequest)},
+  { 33, -1, -1, sizeof(::infaaspublic::infaasmodelreg::HeartbeatResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -140,31 +142,32 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_modelreg_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\016modelreg.proto\022\033infaaspublic.infaasmod"
-  "elreg\032\023request_reply.proto\"\372\001\n\017ModelRegR"
+  "elreg\032\023request_reply.proto\"\215\002\n\017ModelRegR"
   "equest\022\021\n\tsubmitter\030\001 \001(\t\022\031\n\021grandparent"
   "_model\030\002 \001(\t\022\024\n\014parent_model\030\003 \001(\t\022\025\n\rfi"
   "rst_variant\030\004 \001(\t\022\013\n\003url\030\005 \001(\t\022\017\n\007datase"
   "t\030\006 \001(\t\022\020\n\010accuracy\030\007 \001(\002\022\021\n\tframework\030\010"
   " \001(\t\022\014\n\004task\030\t \001(\t\022\023\n\013config_name\030\n \001(\t\022"
-  "\022\n\nmodel_path\030\013 \001(\t\022\022\n\nmodel_name\030\014 \001(\t\""
-  ">\n\020ModelRegResponse\022*\n\006status\030\001 \001(\0132\032.in"
-  "faaspublic.RequestReply\">\n\020HeartbeatRequ"
-  "est\022*\n\006status\030\001 \001(\0132\032.infaaspublic.Reque"
-  "stReply\"\?\n\021HeartbeatResponse\022*\n\006status\030\001"
-  " \001(\0132\032.infaaspublic.RequestReply2\350\001\n\010Mod"
-  "elReg\022l\n\tHeartbeat\022-.infaaspublic.infaas"
-  "modelreg.HeartbeatRequest\032..infaaspublic"
-  ".infaasmodelreg.HeartbeatResponse\"\000\022n\n\rR"
-  "egisterModel\022,.infaaspublic.infaasmodelr"
-  "eg.ModelRegRequest\032-.infaaspublic.infaas"
-  "modelreg.ModelRegResponse\"\000b\006proto3"
+  "\022\n\nmodel_path\030\013 \001(\t\022\022\n\nmodel_name\030\014 \001(\t\022"
+  "\021\n\tcomp_size\030\r \001(\t\">\n\020ModelRegResponse\022*"
+  "\n\006status\030\001 \001(\0132\032.infaaspublic.RequestRep"
+  "ly\">\n\020HeartbeatRequest\022*\n\006status\030\001 \001(\0132\032"
+  ".infaaspublic.RequestReply\"\?\n\021HeartbeatR"
+  "esponse\022*\n\006status\030\001 \001(\0132\032.infaaspublic.R"
+  "equestReply2\350\001\n\010ModelReg\022l\n\tHeartbeat\022-."
+  "infaaspublic.infaasmodelreg.HeartbeatReq"
+  "uest\032..infaaspublic.infaasmodelreg.Heart"
+  "beatResponse\"\000\022n\n\rRegisterModel\022,.infaas"
+  "public.infaasmodelreg.ModelRegRequest\032-."
+  "infaaspublic.infaasmodelreg.ModelRegResp"
+  "onse\"\000b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_modelreg_2eproto_deps[1] = {
   &::descriptor_table_request_5freply_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_modelreg_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_modelreg_2eproto = {
-  false, false, 755, descriptor_table_protodef_modelreg_2eproto, "modelreg.proto", 
+  false, false, 774, descriptor_table_protodef_modelreg_2eproto, "modelreg.proto", 
   &descriptor_table_modelreg_2eproto_once, descriptor_table_modelreg_2eproto_deps, 1, 4,
   schemas, file_default_instances, TableStruct_modelreg_2eproto::offsets,
   file_level_metadata_modelreg_2eproto, file_level_enum_descriptors_modelreg_2eproto, file_level_service_descriptors_modelreg_2eproto,
@@ -284,6 +287,14 @@ ModelRegRequest::ModelRegRequest(const ModelRegRequest& from)
     model_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_model_name(), 
       GetArenaForAllocation());
   }
+  comp_size_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    comp_size_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_comp_size().empty()) {
+    comp_size_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_comp_size(), 
+      GetArenaForAllocation());
+  }
   accuracy_ = from.accuracy_;
   // @@protoc_insertion_point(copy_constructor:infaaspublic.infaasmodelreg.ModelRegRequest)
 }
@@ -333,6 +344,10 @@ model_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringA
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   model_name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+comp_size_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  comp_size_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 accuracy_ = 0;
 }
 
@@ -356,6 +371,7 @@ inline void ModelRegRequest::SharedDtor() {
   config_name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   model_path_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   model_name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  comp_size_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void ModelRegRequest::ArenaDtor(void* object) {
@@ -385,6 +401,7 @@ void ModelRegRequest::Clear() {
   config_name_.ClearToEmpty();
   model_path_.ClearToEmpty();
   model_name_.ClearToEmpty();
+  comp_size_.ClearToEmpty();
   accuracy_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -509,6 +526,16 @@ const char* ModelRegRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPAC
           auto str = _internal_mutable_model_name();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaaspublic.infaasmodelreg.ModelRegRequest.model_name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string comp_size = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 106)) {
+          auto str = _internal_mutable_comp_size();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaaspublic.infaasmodelreg.ModelRegRequest.comp_size"));
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -662,6 +689,16 @@ uint8_t* ModelRegRequest::_InternalSerialize(
         12, this->_internal_model_name(), target);
   }
 
+  // string comp_size = 13;
+  if (!this->_internal_comp_size().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_comp_size().data(), static_cast<int>(this->_internal_comp_size().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaaspublic.infaasmodelreg.ModelRegRequest.comp_size");
+    target = stream->WriteStringMaybeAliased(
+        13, this->_internal_comp_size(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -755,6 +792,13 @@ size_t ModelRegRequest::ByteSizeLong() const {
         this->_internal_model_name());
   }
 
+  // string comp_size = 13;
+  if (!this->_internal_comp_size().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_comp_size());
+  }
+
   // float accuracy = 7;
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_accuracy = this->_internal_accuracy();
@@ -818,6 +862,9 @@ void ModelRegRequest::MergeFrom(const ModelRegRequest& from) {
   }
   if (!from._internal_model_name().empty()) {
     _internal_set_model_name(from._internal_model_name());
+  }
+  if (!from._internal_comp_size().empty()) {
+    _internal_set_comp_size(from._internal_comp_size());
   }
   static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
   float tmp_accuracy = from._internal_accuracy();
@@ -899,6 +946,11 @@ void ModelRegRequest::InternalSwap(ModelRegRequest* other) {
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       &model_name_, lhs_arena,
       &other->model_name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &comp_size_, lhs_arena,
+      &other->comp_size_, rhs_arena
   );
   swap(accuracy_, other->accuracy_);
 }

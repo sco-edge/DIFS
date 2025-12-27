@@ -27,3 +27,8 @@ add_subdirectory(internal)
 if (ENABLE_TRTIS)
   add_subdirectory(trtis)
 endif()
+
+target_link_libraries(infaas-protos
+  PUBLIC
+    infaas-protos-internal
+)

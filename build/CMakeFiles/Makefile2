@@ -226,7 +226,7 @@ src/worker/clean: src/worker/CMakeFiles/query_heartbeat.dir/clean
 # Target rules for target protos/CMakeFiles/infaas-protos.dir
 
 # All Build rule for target.
-protos/CMakeFiles/infaas-protos.dir/all:
+protos/CMakeFiles/infaas-protos.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 	$(MAKE) $(MAKESILENT) -f protos/CMakeFiles/infaas-protos.dir/build.make protos/CMakeFiles/infaas-protos.dir/depend
 	$(MAKE) $(MAKESILENT) -f protos/CMakeFiles/infaas-protos.dir/build.make protos/CMakeFiles/infaas-protos.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=6,7,8,9,10,11,12,13,14,15,16 "Built target infaas-protos"
@@ -234,7 +234,7 @@ protos/CMakeFiles/infaas-protos.dir/all:
 
 # Build rule for subdir invocation for target.
 protos/CMakeFiles/infaas-protos.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 11
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 22
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 protos/CMakeFiles/infaas-protos.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : protos/CMakeFiles/infaas-protos.dir/rule
@@ -389,6 +389,7 @@ src/worker/CMakeFiles/query_heartbeat.dir/clean:
 
 # All Build rule for target.
 src/master/CMakeFiles/inf-master.dir/all: protos/CMakeFiles/infaas-protos.dir/all
+src/master/CMakeFiles/inf-master.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 src/master/CMakeFiles/inf-master.dir/all: src/metadata-store/CMakeFiles/redis-md.dir/all
 	$(MAKE) $(MAKESILENT) -f src/master/CMakeFiles/inf-master.dir/build.make src/master/CMakeFiles/inf-master.dir/depend
 	$(MAKE) $(MAKESILENT) -f src/master/CMakeFiles/inf-master.dir/build.make src/master/CMakeFiles/inf-master.dir/build
@@ -397,7 +398,7 @@ src/master/CMakeFiles/inf-master.dir/all: src/metadata-store/CMakeFiles/redis-md
 
 # Build rule for subdir invocation for target.
 src/master/CMakeFiles/inf-master.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 16
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 27
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/master/CMakeFiles/inf-master.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : src/master/CMakeFiles/inf-master.dir/rule
@@ -507,6 +508,7 @@ src/master/CMakeFiles/queryfe_server.dir/clean:
 
 # All Build rule for target.
 src/master/CMakeFiles/queryfe_heartbeat.dir/all: protos/CMakeFiles/infaas-protos.dir/all
+src/master/CMakeFiles/queryfe_heartbeat.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 src/master/CMakeFiles/queryfe_heartbeat.dir/all: src/master/CMakeFiles/inf-master.dir/all
 src/master/CMakeFiles/queryfe_heartbeat.dir/all: src/metadata-store/CMakeFiles/redis-md.dir/all
 	$(MAKE) $(MAKESILENT) -f src/master/CMakeFiles/queryfe_heartbeat.dir/build.make src/master/CMakeFiles/queryfe_heartbeat.dir/depend
@@ -516,7 +518,7 @@ src/master/CMakeFiles/queryfe_heartbeat.dir/all: src/metadata-store/CMakeFiles/r
 
 # Build rule for subdir invocation for target.
 src/master/CMakeFiles/queryfe_heartbeat.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 29
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/master/CMakeFiles/queryfe_heartbeat.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : src/master/CMakeFiles/queryfe_heartbeat.dir/rule
@@ -535,6 +537,7 @@ src/master/CMakeFiles/queryfe_heartbeat.dir/clean:
 
 # All Build rule for target.
 src/cli-tools/CMakeFiles/infaas_modarch.dir/all: protos/CMakeFiles/infaas-protos.dir/all
+src/cli-tools/CMakeFiles/infaas_modarch.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 src/cli-tools/CMakeFiles/infaas_modarch.dir/all: src/master/CMakeFiles/inf-master.dir/all
 src/cli-tools/CMakeFiles/infaas_modarch.dir/all: src/metadata-store/CMakeFiles/redis-md.dir/all
 	$(MAKE) $(MAKESILENT) -f src/cli-tools/CMakeFiles/infaas_modarch.dir/build.make src/cli-tools/CMakeFiles/infaas_modarch.dir/depend
@@ -544,7 +547,7 @@ src/cli-tools/CMakeFiles/infaas_modarch.dir/all: src/metadata-store/CMakeFiles/r
 
 # Build rule for subdir invocation for target.
 src/cli-tools/CMakeFiles/infaas_modarch.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 29
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/cli-tools/CMakeFiles/infaas_modarch.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : src/cli-tools/CMakeFiles/infaas_modarch.dir/rule
@@ -563,6 +566,7 @@ src/cli-tools/CMakeFiles/infaas_modarch.dir/clean:
 
 # All Build rule for target.
 src/cli-tools/CMakeFiles/infaas_modinfo.dir/all: protos/CMakeFiles/infaas-protos.dir/all
+src/cli-tools/CMakeFiles/infaas_modinfo.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 src/cli-tools/CMakeFiles/infaas_modinfo.dir/all: src/master/CMakeFiles/inf-master.dir/all
 src/cli-tools/CMakeFiles/infaas_modinfo.dir/all: src/metadata-store/CMakeFiles/redis-md.dir/all
 	$(MAKE) $(MAKESILENT) -f src/cli-tools/CMakeFiles/infaas_modinfo.dir/build.make src/cli-tools/CMakeFiles/infaas_modinfo.dir/depend
@@ -572,7 +576,7 @@ src/cli-tools/CMakeFiles/infaas_modinfo.dir/all: src/metadata-store/CMakeFiles/r
 
 # Build rule for subdir invocation for target.
 src/cli-tools/CMakeFiles/infaas_modinfo.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 29
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/cli-tools/CMakeFiles/infaas_modinfo.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : src/cli-tools/CMakeFiles/infaas_modinfo.dir/rule
@@ -591,6 +595,7 @@ src/cli-tools/CMakeFiles/infaas_modinfo.dir/clean:
 
 # All Build rule for target.
 src/cli-tools/CMakeFiles/infaas_online_query.dir/all: protos/CMakeFiles/infaas-protos.dir/all
+src/cli-tools/CMakeFiles/infaas_online_query.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 src/cli-tools/CMakeFiles/infaas_online_query.dir/all: src/master/CMakeFiles/inf-master.dir/all
 src/cli-tools/CMakeFiles/infaas_online_query.dir/all: src/metadata-store/CMakeFiles/redis-md.dir/all
 	$(MAKE) $(MAKESILENT) -f src/cli-tools/CMakeFiles/infaas_online_query.dir/build.make src/cli-tools/CMakeFiles/infaas_online_query.dir/depend
@@ -600,7 +605,7 @@ src/cli-tools/CMakeFiles/infaas_online_query.dir/all: src/metadata-store/CMakeFi
 
 # Build rule for subdir invocation for target.
 src/cli-tools/CMakeFiles/infaas_online_query.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 29
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/cli-tools/CMakeFiles/infaas_online_query.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : src/cli-tools/CMakeFiles/infaas_online_query.dir/rule
@@ -619,6 +624,7 @@ src/cli-tools/CMakeFiles/infaas_online_query.dir/clean:
 
 # All Build rule for target.
 src/cli-tools/CMakeFiles/infaas_offline_query.dir/all: protos/CMakeFiles/infaas-protos.dir/all
+src/cli-tools/CMakeFiles/infaas_offline_query.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 src/cli-tools/CMakeFiles/infaas_offline_query.dir/all: src/master/CMakeFiles/inf-master.dir/all
 src/cli-tools/CMakeFiles/infaas_offline_query.dir/all: src/metadata-store/CMakeFiles/redis-md.dir/all
 	$(MAKE) $(MAKESILENT) -f src/cli-tools/CMakeFiles/infaas_offline_query.dir/build.make src/cli-tools/CMakeFiles/infaas_offline_query.dir/depend
@@ -628,7 +634,7 @@ src/cli-tools/CMakeFiles/infaas_offline_query.dir/all: src/metadata-store/CMakeF
 
 # Build rule for subdir invocation for target.
 src/cli-tools/CMakeFiles/infaas_offline_query.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 29
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/cli-tools/CMakeFiles/infaas_offline_query.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : src/cli-tools/CMakeFiles/infaas_offline_query.dir/rule
@@ -647,6 +653,7 @@ src/cli-tools/CMakeFiles/infaas_offline_query.dir/clean:
 
 # All Build rule for target.
 src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all: protos/CMakeFiles/infaas-protos.dir/all
+src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all: protos/internal/CMakeFiles/infaas-protos-internal.dir/all
 src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all: src/master/CMakeFiles/inf-master.dir/all
 src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all: src/metadata-store/CMakeFiles/redis-md.dir/all
 	$(MAKE) $(MAKESILENT) -f src/cli-tools/CMakeFiles/infaas_modelregistration.dir/build.make src/cli-tools/CMakeFiles/infaas_modelregistration.dir/depend
@@ -656,7 +663,7 @@ src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all: src/metadata-store/CM
 
 # Build rule for subdir invocation for target.
 src/cli-tools/CMakeFiles/infaas_modelregistration.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 18
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 29
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/cli-tools/CMakeFiles/infaas_modelregistration.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles 0
 .PHONY : src/cli-tools/CMakeFiles/infaas_modelregistration.dir/rule

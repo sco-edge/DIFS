@@ -60,11 +60,24 @@ Aws::S3::S3Client UNUSED_S3_CLIENT;
 #include <grpcpp/grpcpp.h>
 
 #include "worker/query_client.h"
+#include "query.pb.h"
+#include "infaas_request_status.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
+
+
+#ifdef ENABLE_DIFFUSION
+/* PNB: If you need to turn on the "diffusion" functionalities, all you needot do is to uncomment the line "# diffusion_service.proto" in your "protos/CMakeLists.txt" and add the "ENABLE_DIFFUSION" flag (-DENABLE_DIFFUSION=ON) during compilation*/
+// PNB (2025.12.27)
+  using infaas::internal::DiffusionRequest;
+  using infaas::internal::DiffusionReply;
+  using infaas::internal::DiffusionService;
+  using infaas::internal::InternalDiffusionQuery;
+  using infaas::internal::InternalDiffusionResponse;
+#endif
 
 //// Constants and global variables ////
 static const int MAX_GRPC_MESSAGE_SIZE = INT32_MAX;
@@ -195,43 +208,43 @@ public:
     }
   }
 
-    // === CallDiffusionContainer begin ===
-    //PNB: Diffusion model implementation related (2025.12.19)
-Status CallDiffusionContainer(
-    const ModelInfo& model,
-    const InternalDiffusionQuery& dq,
-    InternalDiffusionResponse* out) {
+// #ifdef ENABLE_DIFFUSION
+//     // === CallDiffusionContainer begin ===
+//     //PNB: Diffusion model implementation related (2025.12.19)
+// Status CallDiffusionContainer(
+//     const ModelInfo& model,
+//     const InternalDiffusionQuery& dq,
+//     InternalDiffusionResponse* out) {
 
-  using infaas::internal::DiffusionRequest;
-  using infaas::internal::DiffusionReply;
-  using infaas::internal::DiffusionService;
+  
+//   std::string target = model.host() + ":" + std::to_string(model.port());
+//   auto channel = grpc::CreateChannel(target, grpc::InsecureChannelCredentials());
+//   std::unique_ptr<DiffusionService::Stub> stub = DiffusionService::NewStub(channel);
 
-  std::string target = model.host() + ":" + std::to_string(model.port());
-  auto channel = grpc::CreateChannel(target, grpc::InsecureChannelCredentials());
-  std::unique_ptr<DiffusionService::Stub> stub = DiffusionService::NewStub(channel);
+//   DiffusionRequest req;
+//   req.set_prompt(dq.prompt());
+//   req.set_steps(dq.steps());
+//   req.set_guidancescale(dq.guidancescale());
+//   req.set_seed(dq.seed());
+//   req.set_width(dq.width());
+//   req.set_height(dq.height());
 
-  DiffusionRequest req;
-  req.set_prompt(dq.prompt());
-  req.set_steps(dq.steps());
-  req.set_guidancescale(dq.guidancescale());
-  req.set_seed(dq.seed());
-  req.set_width(dq.width());
-  req.set_height(dq.height());
+//   DiffusionReply rep;
+//   grpc::ClientContext ctx;
+//   auto status = stub->Generate(&ctx, req, &rep);
+//   if (!status.ok()) {
+//     return status;
+//   }
 
-  DiffusionReply rep;
-  grpc::ClientContext ctx;
-  auto status = stub->Generate(&ctx, req, &rep);
-  if (!status.ok()) {
-    return status;
-  }
+//   out->set_image(rep.image_png());
+//   out->set_width(rep.width());
+//   out->set_height(rep.height());
+//   return ::grpc::Status::OK;
+// }
+//   // === CallDiffusionContainer end ===
+//   //PNB: Diffusion model implementation related (2025.12.19)
 
-  out->set_image(rep.image_png());
-  out->set_width(rep.width());
-  out->set_height(rep.height());
-  return ::grpc::Status::OK;
-}
-  // === CallDiffusionContainer end ===
-  //PNB: Diffusion model implementation related (2025.12.19)
+ 
 
 private:
   // The assumption for this function is that BOTH an accuracy and a latency
@@ -242,12 +255,12 @@ private:
   // exception
   //// that the initial model pruning cannot be an exhaustive search
 
-
-  // PNB: Diffusion Model Implementation Related (helper declaration)
-  Status CallDiffusionContainer(const ModelInfo& model,
-                                        const InternalDiffusionQuery& dq,
-                                        InternalDiffusionResponse* out);
-
+// #else
+//   // PNB: Diffusion Model Implementation Related (helper declaration)
+//   Status CallDiffusionContainer(const ModelInfo& model,
+//                                         const InternalDiffusionQuery& dq,
+//                                         InternalDiffusionResponse* out);
+// #endif
   
   std::vector<std::string> gpar_lat_acc_search(
       const std::string &gparent_model, const double &accuracy_constraint,
@@ -1128,48 +1141,61 @@ private:
 
     //PNB: Diffusion model implementation related (2025.12.19)
       // ==== Diffusion task handling (Stable Diffusion) ====
-  if (request->model_size() > 0) {
-    const std::string& model_name = request->model(0);
+
+    //    const std::string& model_name = request->model();
+    const std::string& model_name = request->model_variant();//PNB: (2025.12.27)
 
     // Get model metadata to check its task.
-    ModelInfo model_info;
-    bool found = metadata_store_->GetModelInfo(model_name, &model_info);
-    // Adjust GetModelInfo(...) to your actual function signature.
+if (!rm_->model_registered(model_name)) {
+    return grpc::Status(grpc::StatusCode::NOT_FOUND, "Model not found");
 
-    if (found && model_info.task() == "DIFFUSION") {
-      InternalDiffusionQuery dq = request->diffusion();
+// #ifdef ENABLE_DIFFUSION
+//       if(request->has_diffusion()){
+//       InternalDiffusionQuery dq = request->diffusion();
+//       InternalDiffusionResponse dresp;
+ 
+//       // Fallback: if not filled, decode DiffusionQuery from raw_input[0].
+//       if (dq.prompt().empty() && request->raw_input_size() > 0) {
+//         infaaspublic::DiffusionQuery public_q;
+//         if (public_q.ParseFromString(request->raw_input(0))) {
+//           dq.set_prompt(public_q.prompt());
+//           dq.set_steps(public_q.steps());
+//           dq.set_guidancescale(public_q.guidancescale());
+//           dq.set_seed(public_q.seed());
+//           dq.set_width(public_q.width());
+//           dq.set_height(public_q.height());
+//         }
+//       }
 
-      // Fallback: if not filled, decode DiffusionQuery from rawinput[0].
-      if (dq.prompt().empty() && request->rawinput_size() > 0) {
-        infaaspublic::DiffusionQuery public_q;
-        if (public_q.ParseFromString(request->rawinput(0))) {
-          dq.set_prompt(public_q.prompt());
-          dq.set_steps(public_q.steps());
-          dq.set_guidancescale(public_q.guidancescale());
-          dq.set_seed(public_q.seed());
-          dq.set_width(public_q.width());
-          dq.set_height(public_q.height());
-        }
-      }
+//       InternalDiffusionResponse dresp;
+//       auto status = CallDiffusionContainer(model_info, dq, &dresp);
+//       if (!status.ok()) {
+//         auto* st = reply->mutable_status();
+//         st->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
+//         st->set_msg(status.error_message());
+//         return ::grpc::Status::OK;  // gRPC OK; INFaaS status indicates failure.
+//       }
 
-      InternalDiffusionResponse dresp;
-      auto status = CallDiffusionContainer(model_info, dq, &dresp);
-      if (!status.ok()) {
-        auto* st = reply->mutable_status();
-        st->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
-        st->set_msg(status.error_message());
-        return ::grpc::Status::OK;  // gRPC OK; INFaaS status indicates failure.
-      }
+//       *(reply->mutable_diffusion()) = dresp;
+//       }
+//  #else
+//       if (request->has_diffusion()) {
+//   st->set_status(InfaasRequestStatusEnum::UNSUPPORTED);
+//   return grpc::Status(grpc::StatusCode::UNIMPLEMENTED,
+//                       "Diffusion is disabled at build time");
+// }
+//      reply->add_raw_output(dresp.image());
+// #endif
 
-      *(reply->mutable_diffusion()) = dresp;
-      reply->add_rawoutput(dresp.image());
-
-      auto* st = reply->mutable_status();
-      st->set_status(InfaasRequestStatusEnum::SUCCESS);
-      st->set_msg("OK");
-      return ::grpc::Status::OK;
+      
+      
+      
+      //auto* st = reply->mutable_status();
+      //st->set_status(infaas::internal::InfaasRequestStatusEnum::SUCCESS);
+      //st->set_msg("OK");
+      //return ::grpc::Status::OK;
     }
-  }
+
   // ==== end diffusion branch ====
 
 

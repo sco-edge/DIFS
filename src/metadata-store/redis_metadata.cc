@@ -30,6 +30,19 @@
 
 using namespace redox;
 
+// PNB: (2025.12.27)
+struct ModelRecord {
+  std::string model_name;
+  std::string parent_model;
+  std::string framework;
+  std::string task;
+  double comp_size;
+  double accuracy;
+  int port;
+  // etc...
+};
+
+
 const struct Address RedisMetadata::empty_addr = {"0", "0"};
 
 RedisMetadata::RedisMetadata(struct Address redis_server)

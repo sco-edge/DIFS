@@ -37,9 +37,13 @@
 #include <random>
 #include <cmath>
 
+#include "local_s3cfg.h" // PNB: (2025.12.28)
 
+#ifdef ENABLE_AWS_AUTOSCALING// PNB: (2025.12.27)
 #include <aws/core/Aws.h>
 #include <aws/s3/S3Client.h>
+#endif
+
 #include <google/protobuf/repeated_field.h>
 
 #include "query.grpc.pb.h"
@@ -78,19 +82,24 @@ inline double get_duration_ms(const uint64_t& a, const uint64_t& b) {
 }
 
 int8_t list_s3_path(const std::string& bucket_name, const std::string& obj_name,
-                    std::unique_ptr<Aws::S3::S3Client>& s3c,
+                    //std::unique_ptr<Aws::S3::S3Client>& s3c,
+		    std::unique_ptr<localfs::S3Client>& s3c, // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
                     std::vector<std::string>* key_names);
 
 int8_t download_s3_local(const std::string& src_bucket,
                          const std::string& prefix,
                          const std::vector<std::string>& key_names,
                          const std::string& local_base_dir,
-                         std::unique_ptr<Aws::S3::S3Client>& s3c);
+                         //std::unique_ptr<Aws::S3::S3Client>& s3c
+			 std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+			 );
 
 int8_t upload_local_s3(const std::string& local_base_dir,
                        const std::vector<std::string>& file_names,
                        const std::string& dst_bucket, const std::string& prefix,
-                       std::unique_ptr<Aws::S3::S3Client>& s3c);
+                       //std::unique_ptr<Aws::S3::S3Client>& s3c
+		       std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+		       );
 
 // Parse and the "count: x" from the pbtxt file.
 size_t get_count_from_pbtxt(const std::string& file_path);
@@ -117,7 +126,9 @@ public:
   // Return 0 means success, return -1 means error.
   int8_t LoadModel(const std::string src_url, const std::string model_name,
                    std::unique_ptr<RedisMetadata>& rmd,
-                   std::unique_ptr<Aws::S3::S3Client>& s3c);
+                   //std::unique_ptr<Aws::S3::S3Client>& s3c
+		   std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+		   );
 
   // Unload a model on GPU
   // model_name: model name to unload
@@ -132,7 +143,9 @@ public:
                           const QueryOnlineRequest* request,
                           QueryOnlineResponse* reply,
                           std::unique_ptr<RedisMetadata>& rmd,
-                          std::unique_ptr<Aws::S3::S3Client>& s3c);
+                          //std::unique_ptr<Aws::S3::S3Client>& s3c
+			  std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+			  );
 
   // Query General models
   int8_t QueryGeneralModel(
@@ -171,7 +184,8 @@ public:
   // Return 0 means success, return -1 means error.
   int8_t LoadModel(const std::string src_url, const std::string model_name,
                    std::unique_ptr<RedisMetadata>& rmd,
-                   std::unique_ptr<Aws::S3::S3Client>& s3c,
+                   //std::unique_ptr<Aws::S3::S3Client>& s3c,
+		   std::unique_ptr<localfs::S3Client>& s3c, // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'		   
                    const std::string container_name = "",
                    bool for_online = true);
 
@@ -192,14 +206,18 @@ public:
                           const QueryOnlineRequest* request,
                           QueryOnlineResponse* reply,
                           std::unique_ptr<RedisMetadata>& rmd,
-                          std::unique_ptr<Aws::S3::S3Client>& s3c);
+                          //std::unique_ptr<Aws::S3::S3Client>& s3c
+			  std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+			  );
 
   // Process an offline request.
   // This is the entrance of all CPU model query.
   int8_t QueryModelOffline(const std::string& model_name,
                            const QueryOfflineRequest& request,
                            std::unique_ptr<RedisMetadata>& rmd,
-                           std::unique_ptr<Aws::S3::S3Client>& s3c);
+                           // std::unique_ptr<Aws::S3::S3Client>& s3c
+			   std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+);
 
   static size_t numReplicas(const std::string& model_name);
 
@@ -232,7 +250,8 @@ public:
   // Return 0 means success, return -1 means error.
   int8_t LoadModel(const std::string src_url, const std::string model_name,
                    std::unique_ptr<RedisMetadata>& rmd,
-                   std::unique_ptr<Aws::S3::S3Client>& s3c,
+                   // std::unique_ptr<Aws::S3::S3Client>& s3c,
+		   std::unique_ptr<localfs::S3Client>& s3c, // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'		   
                    const std::string container_name = "");
 
   // Unload a model instance on Inferentia, pick the instance from the back of
@@ -251,7 +270,9 @@ public:
                           const QueryOnlineRequest* request,
                           QueryOnlineResponse* reply,
                           std::unique_ptr<RedisMetadata>& rmd,
-                          std::unique_ptr<Aws::S3::S3Client>& s3c);
+                          //std::unique_ptr<Aws::S3::S3Client>& s3c
+			  std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+			  );
 
   // Return how many replicas for a model name.
   static size_t numReplicas(const std::string& model_name);

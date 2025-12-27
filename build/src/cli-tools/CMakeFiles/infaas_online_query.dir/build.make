@@ -105,6 +105,7 @@ bin/infaas_online_query: src/metadata-store/libredis-md.so
 bin/infaas_online_query: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/infaas_online_query: /usr/lib/x86_64-linux-gnu/libev.so
 bin/infaas_online_query: protos/libinfaas-protos.a
+bin/infaas_online_query: protos/internal/libinfaas-protos-internal.a
 bin/infaas_online_query: /usr/local/lib/libprotobuf.so
 bin/infaas_online_query: /usr/local/lib/libopencv_nonfree.so.2.4.13
 bin/infaas_online_query: /usr/local/lib/libopencv_ocl.so.2.4.13

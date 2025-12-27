@@ -33,8 +33,11 @@
 #include <mutex>
 #include <string>
 
+//#ifdef ENABLE_AWS_AUTOSCALING
 #include <aws/core/Aws.h>
 #include <aws/s3/S3Client.h>
+//#endif
+#include "local_s3cfg.h" // PNB: (2025.12.28)
 
 #include "metadata-store/redis_metadata.h"
 
@@ -58,6 +61,12 @@ enum AutoscalerType {
   AUTOSCALE_INFAAS
 };
 
+  // PNB: For replacing AWS version (2025.12.27)
+  struct StorageBackend_lite {// PNB: change from "StorageBackend" to "StorageBackend_lite" because it was clashing with the class definition in in "storage_backend.h" which had the same name
+    virtual ~StorageBackend_lite() = default;
+    virtual bool exists(const std::string& path) = 0;
+};
+  
 // For auto scaling
 class Autoscaler {
 public:
@@ -66,20 +75,39 @@ public:
                                 const AutoscalerType& atype,
                                 std::unique_ptr<RedisMetadata>& rmd);
 
+  //#ifdef ENABLE_AWS_AUTOSCALING
+    //PNB: For distributed AWS version (2025.12.27)
   // Scale up/down on CPU/GPU. The daemon for actual execution.
   static void GpuAutoscalerDaemon(const std::string& worker_name,
                                   const AutoscalerType& atype,
                                   std::unique_ptr<RedisMetadata>& rmd,
-                                  std::unique_ptr<Aws::S3::S3Client>& s3c);
+                                  //std::unique_ptr<Aws::S3::S3Client>& s3c 
+				  std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+				  );
   static void CpuAutoscalerDaemon(const std::string& worker_name,
                                   const AutoscalerType& atype,
                                   std::unique_ptr<RedisMetadata>& rmd,
-                                  std::unique_ptr<Aws::S3::S3Client>& s3c);
+				  //std::unique_ptr<Aws::S3::S3Client>& s3c
+				  std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+				  );
   static void InfaAutoscalerDaemon(const std::string& worker_name,
                                    const AutoscalerType& atype,
                                    std::unique_ptr<RedisMetadata>& rmd,
-                                   std::unique_ptr<Aws::S3::S3Client>& s3c);
+				   //std::unique_ptr<Aws::S3::S3Client>& s3c
+				  std::unique_ptr<localfs::S3Client>& s3c // PNB: when in LOCAL_MODE/OFFLINE 'local::S3Client' replaces 'Aws::S3:S3Client'
+				   );
+  //#else
+  //PNB: Local Offline version (2025.12.27)
+struct StorageBackend_lite;  // forward declaration
 
+bool scaleUpWithStorage(const std::string& model,
+                        StorageBackend_lite* storage);
+
+bool scaleDownWithStorage(const std::string& model,
+                          StorageBackend_lite* storage);
+  //#endif
+
+  
   // If count > 0, load #count replicas, if count < 0, unload #count replicas.
   // Add one scaling request to the queue if the model_name has not existed.
   static int8_t setScaleRequestGpu(const std::string& model_name, int count,

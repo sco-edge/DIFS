@@ -8,6 +8,7 @@ project(infaas-root)
 option(ENABLE_TRTIS "Enable Triton/TRTIS support" OFF)
 option(BUILD_ONLY_WORKER "Only build Worker" OFF)
 option(BUILD_ONLY_MD "Only build Metadata Store" OFF)
+option(ENABLE_AWS "Enable AWS S3 backend" OFF)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE   ON)
@@ -15,6 +16,27 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+# ============================================================
+# PNB: Diffusion related options and settings (2025.12.27)
+# ============================================================
+option(ENABLE_DIFFUSION "Enable diffusion model support" OFF)
+
+if (ENABLE_DIFFUSION)
+  add_compile_definitions(ENABLE_DIFFUSION)
+endif()
+
+# ======================================================================
+# PNB: This is for AWS options and settings (i.e. to use local computer
+# substitute or actual AWS class)-(2025.12.27)
+# ======================================================================
+option(ENABLE_AWS "Enable AWS s3 backend" OFF)
+
+if (ENABLE_AWS)
+    add_compile_definitions(ENABLE_AWS)
+endif()
+
 
 # ============================================================
 # Include paths (global)

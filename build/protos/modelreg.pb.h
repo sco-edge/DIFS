@@ -214,6 +214,7 @@ class ModelRegRequest final :
     kConfigNameFieldNumber = 10,
     kModelPathFieldNumber = 11,
     kModelNameFieldNumber = 12,
+    kCompSizeFieldNumber = 13,
     kAccuracyFieldNumber = 7,
   };
   // string submitter = 1;
@@ -370,6 +371,20 @@ class ModelRegRequest final :
   std::string* _internal_mutable_model_name();
   public:
 
+  // string comp_size = 13;
+  void clear_comp_size();
+  const std::string& comp_size() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_comp_size(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_comp_size();
+  PROTOBUF_NODISCARD std::string* release_comp_size();
+  void set_allocated_comp_size(std::string* comp_size);
+  private:
+  const std::string& _internal_comp_size() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_comp_size(const std::string& value);
+  std::string* _internal_mutable_comp_size();
+  public:
+
   // float accuracy = 7;
   void clear_accuracy();
   float accuracy() const;
@@ -397,6 +412,7 @@ class ModelRegRequest final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr config_name_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr model_path_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr model_name_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr comp_size_;
   float accuracy_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_modelreg_2eproto;
@@ -1456,6 +1472,57 @@ inline void ModelRegRequest::set_allocated_model_name(std::string* model_name) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:infaaspublic.infaasmodelreg.ModelRegRequest.model_name)
+}
+
+// string comp_size = 13;
+inline void ModelRegRequest::clear_comp_size() {
+  comp_size_.ClearToEmpty();
+}
+inline const std::string& ModelRegRequest::comp_size() const {
+  // @@protoc_insertion_point(field_get:infaaspublic.infaasmodelreg.ModelRegRequest.comp_size)
+  return _internal_comp_size();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ModelRegRequest::set_comp_size(ArgT0&& arg0, ArgT... args) {
+ 
+ comp_size_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:infaaspublic.infaasmodelreg.ModelRegRequest.comp_size)
+}
+inline std::string* ModelRegRequest::mutable_comp_size() {
+  std::string* _s = _internal_mutable_comp_size();
+  // @@protoc_insertion_point(field_mutable:infaaspublic.infaasmodelreg.ModelRegRequest.comp_size)
+  return _s;
+}
+inline const std::string& ModelRegRequest::_internal_comp_size() const {
+  return comp_size_.Get();
+}
+inline void ModelRegRequest::_internal_set_comp_size(const std::string& value) {
+  
+  comp_size_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* ModelRegRequest::_internal_mutable_comp_size() {
+  
+  return comp_size_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* ModelRegRequest::release_comp_size() {
+  // @@protoc_insertion_point(field_release:infaaspublic.infaasmodelreg.ModelRegRequest.comp_size)
+  return comp_size_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void ModelRegRequest::set_allocated_comp_size(std::string* comp_size) {
+  if (comp_size != nullptr) {
+    
+  } else {
+    
+  }
+  comp_size_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), comp_size,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (comp_size_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    comp_size_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:infaaspublic.infaasmodelreg.ModelRegRequest.comp_size)
 }
 
 // -------------------------------------------------------------------

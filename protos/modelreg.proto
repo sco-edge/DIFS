@@ -31,6 +31,7 @@ message ModelRegRequest {
    // Add model_path and model_name fields
   string model_path = 11;  // PNB: New field for the path of the model (2025.11.29)
   string model_name = 12;  // PNB: New field for the name of the model (2025.11.29)
+  string comp_size = 13;  // PNB: New field for the name of the model (2025.12.28)
 }
 
 // Model registration response

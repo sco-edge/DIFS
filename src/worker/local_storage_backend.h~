@@ -1,0 +1,19 @@
+/*
+Author: KB
+Purpose: To replace AWS storage functionality in local version
+Date: Sat 27 Dec 23:50:23 KST 2025
+ */
+
+#pragma once
+#include <string>
+#include <filesystem>
+
+struct LocalStorageBackend : public StorageBackend {
+    std::string root;
+
+    explicit LocalStorageBackend(std::string r) : root(std::move(r)) {}
+
+    bool exists(const std::string& path) override {
+        return std::filesystem::exists(root + "/" + path);
+    }
+};

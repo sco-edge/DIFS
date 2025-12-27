@@ -100,6 +100,7 @@ bin/infaas_modarch: src/metadata-store/libredis-md.so
 bin/infaas_modarch: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/infaas_modarch: /usr/lib/x86_64-linux-gnu/libev.so
 bin/infaas_modarch: protos/libinfaas-protos.a
+bin/infaas_modarch: protos/internal/libinfaas-protos-internal.a
 bin/infaas_modarch: /usr/local/lib/libprotobuf.so
 bin/infaas_modarch: src/cli-tools/CMakeFiles/infaas_modarch.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../../bin/infaas_modarch"

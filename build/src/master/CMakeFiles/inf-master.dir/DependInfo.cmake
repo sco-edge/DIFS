@@ -16,6 +16,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
 set(CMAKE_TARGET_LINKED_INFO_FILES
   "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/metadata-store/CMakeFiles/redis-md.dir/DependInfo.cmake"
   "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/CMakeFiles/infaas-protos.dir/DependInfo.cmake"
+  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/CMakeFiles/infaas-protos-internal.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

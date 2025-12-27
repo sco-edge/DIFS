@@ -9,6 +9,7 @@ find_package(OpenCV REQUIRED)
 find_package(gRPC REQUIRED)
 
 # AWS ALWAYS OFF in offline mode
+add_compile_definitions(AWS_SDK_DISABLED)
 option(ENABLE_AWS_AUTOSCALING "Enable AWS-based autoscaling" OFF)
 
 if(ENABLE_AWS_AUTOSCALING)
@@ -63,7 +64,7 @@ option(ENABLE_TRTIS "Enable Triton/TRTIS support" OFF)
 if(ENABLE_TRTIS)
     add_library(trtis-request SHARED trtis_request.cc trtis_model_config.cc)
     # target_link_libraries(trtis-request nv-trtis-protos ${PROTOBUF_LIBRARY} curl grpc++_unsecure grpc gpr) # ${PROTOBUF_LIBRARY} # PNB: (2025.12.27)
-    target_link_libraries(trtis-request nv-trtis-protos  protobuf::libprotobuf  curl grpc++_unsecure grpc gpr) 
+    target_link_libraries(trtis-request nv-trtis-protos  protobuf::libprotobuf  curl grpc++_unsecure grpc gpr)
 else()
     add_library(trtis-request INTERFACE)
 endif()
@@ -85,9 +86,17 @@ target_include_directories(inf-worker
     ${CMAKE_SOURCE_DIR}/src
 )
 
-# include_directories("${CMAKE_SOURCE_DIR}/src") # PNB: (2025.12.27)
-target_include_directories(worker-util PRIVATE
-  ${CMAKE_SOURCE_DIR}/src
+## include_directories("${CMAKE_SOURCE_DIR}/src") # PNB: (2025.12.27)
+#target_include_directories(worker-util PUBLIC
+  #${CMAKE_SOURCE_DIR}   # PNB: (2025.12.27)
+  #${CMAKE_SOURCE_DIR}/src
+  #${PROJECT_BINARY_DIR}/protos/internal
+#)
+
+# PNB: (2025.12.28)
+target_include_directories(worker-util PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/utils
   ${PROJECT_BINARY_DIR}/protos/internal
 )
 
@@ -108,7 +117,15 @@ target_link_libraries(worker-util
 add_executable(query_executor query_executor.cc)
 add_executable(query_heartbeat query_heartbeat.cc)
 
-target_link_libraries(query_executor worker-util)
+target_link_libraries(query_executor
+	worker-util
+    absl::synchronization
+    absl::strings
+    absl::base
+    absl::time
+    absl::status
+    ${OpenCV_LIBS}
+    $<$<BOOL:${_has_nvidia}>:cuda>)
 target_link_libraries(query_heartbeat
     inf-worker
 )

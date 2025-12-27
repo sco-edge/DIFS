@@ -73,6 +73,8 @@
 #define BLISTMOD_SUFF "blistmod"  // executor_name + model_name + BLISTMOD_SUFF
 #define SLACK_SUFF "slack"
 
+struct ModelRecord; // PNB: (2025.12.27)
+
 struct Address {
   std::string ip;
   std::string port;
@@ -87,6 +89,9 @@ class RedisMetadata {
 public:
   RedisMetadata(struct Address redis_server);
 
+
+  bool get_model(const std::string& model_name, ModelRecord* record);// PNB: Public equivalent to "bool get_model(const std::string& model_name, ModelRecord* record);"
+  
   // Add executor-address
   int8_t add_executor_addr(const std::string& executor_name,
                            const struct Address& addr);
