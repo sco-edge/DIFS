@@ -154,9 +154,24 @@ public:
       google::protobuf::RepeatedPtrField<std::string>* raw_output);
 
   // For autoscaling
+  
   static int numReplicas(const std::string& model_name);
   static int8_t changeNumReplicas(const std::string& model_name,
                                   const size_t& count);
+                                  
+  //size_t numReplicas(const std::string&);
+
+  //int8_t changeNumReplicas(const std::string&, const size_t&);
+
+  //int8_t LoadModel(
+    //const std::string,
+    //const std::string,
+    //std::unique_ptr<RedisMetadata>&,
+    //std::unique_ptr<localfs::S3Client>&);
+
+  //int8_t UnloadModel(
+    //const std::string&,
+    //std::unique_ptr<RedisMetadata>&);
 
 private:
   std::string worker_name_;

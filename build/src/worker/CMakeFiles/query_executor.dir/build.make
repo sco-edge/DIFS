@@ -96,6 +96,7 @@ query_executor_EXTERNAL_OBJECTS =
 src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/query_executor.cc.o
 src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/build.make
 src/worker/query_executor: src/worker/libworker-util.a
+src/worker/query_executor: /usr/lib/x86_64-linux-gnu/libcurl.so
 src/worker/query_executor: /usr/local/lib/libabsl_status.so.2206.0.0
 src/worker/query_executor: /usr/local/lib/libopencv_videostab.so.2.4.13
 src/worker/query_executor: /usr/local/lib/libopencv_ts.a

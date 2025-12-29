@@ -102,6 +102,7 @@ bin/modelreg_server: /usr/local/lib/libprotobuf.so
 bin/modelreg_server: src/metadata-store/libredis-md.so
 bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libev.so
+bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libcurl.so
 bin/modelreg_server: protos/internal/libinfaas-protos-internal.a
 bin/modelreg_server: /usr/local/lib/libprotobuf.so
 bin/modelreg_server: src/master/CMakeFiles/modelreg_server.dir/link.txt

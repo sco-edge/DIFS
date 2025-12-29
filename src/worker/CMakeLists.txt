@@ -100,7 +100,8 @@ target_include_directories(worker-util PUBLIC
   ${PROJECT_BINARY_DIR}/protos/internal
 )
 
-target_link_libraries(worker-util
+target_link_libraries(worker-util PUBLIC
+	CURL::libcurl # PNB: (2025.12.29)
     trtis-request
     redis-md
     infaas-protos-internal
@@ -119,13 +120,16 @@ add_executable(query_heartbeat query_heartbeat.cc)
 
 target_link_libraries(query_executor
 	worker-util
+	CURL::libcurl
     absl::synchronization
     absl::strings
     absl::base
     absl::time
     absl::status
     ${OpenCV_LIBS}
-    $<$<BOOL:${_has_nvidia}>:cuda>)
+    $<$<BOOL:${_has_nvidia}>:cuda>
+)
+    
 target_link_libraries(query_heartbeat
     inf-worker
 )

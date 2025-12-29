@@ -102,6 +102,7 @@ bin/modelreg_heartbeat: /usr/local/lib/libprotobuf.so
 bin/modelreg_heartbeat: src/metadata-store/libredis-md.so
 bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libev.so
+bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libcurl.so
 bin/modelreg_heartbeat: protos/internal/libinfaas-protos-internal.a
 bin/modelreg_heartbeat: /usr/local/lib/libprotobuf.so
 bin/modelreg_heartbeat: src/master/CMakeFiles/modelreg_heartbeat.dir/link.txt

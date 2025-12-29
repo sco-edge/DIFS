@@ -1,7 +1,13 @@
-c_string<char, std::char_traits<char>, std::allocator<char> >)'
-/usr/bin/ld: autoscaler.cc:(.text+0xdeec): undefined reference to `infaas::internal::InfaModelManager::UnloadModel(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::unique_ptr<RedisMetadata, std::default_delete<RedisMetadata> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)'
+[ 98%] Built target modelreg_server
+/usr/bin/ld: CMakeFiles/query_executor.dir/query_executor.cc.o: in function `infaas::internal::QueryServiceImpl::qpsMonitor()':
+query_executor.cc:(.text+0x49bf): undefined reference to `infaas::internal::CommonModelUtil::SetBlacklisted(bool)'
+/usr/bin/ld: CMakeFiles/query_executor.dir/query_executor.cc.o: in function `infaas::internal::QueryServiceImpl::QueryOnline(grpc::ServerContext*, infaas::internal::QueryOnlineRequest const*, infaas::internal::QueryOnlineResponse*)':
+query_executor.cc:(.text+0x6824): undefined reference to `infaas::internal::GpuModelManager::QueryModelOnline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, infaas::internal::QueryOnlineRequest const*, infaas::internal::QueryOnlineResponse*, std::unique_ptr<RedisMetadata, std::default_delete<RedisMetadata> >&, std::unique_ptr<localfs::S3Client, std::default_delete<localfs::S3Client> >&)'
+/usr/bin/ld: query_executor.cc:(.text+0x72dd): undefined reference to `infaas::internal::CpuModelManager::QueryModelOnline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, infaas::internal::QueryOnlineRequest const*, infaas::internal::QueryOnlineResponse*, std::unique_ptr<RedisMetadata, std::default_delete<RedisMetadata> >&, std::unique_ptr<localfs::S3Client, std::default_delete<localfs::S3Client> >&)'
+/usr/bin/ld: CMakeFiles/query_executor.dir/query_executor.cc.o: in function `infaas::internal::QueryServiceImpl::offlineProccess()':
+query_executor.cc:(.text+0x8acb): undefined reference to `infaas::internal::CpuModelManager::QueryModelOffline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, infaas::internal::QueryOfflineRequest const&, std::unique_ptr<RedisMetadata, std::default_delete<RedisMetadata> >&, std::unique_ptr<localfs::S3Client, std::default_delete<localfs::S3Client> >&)'
 collect2: error: ld returned 1 exit status
-make[2]: *** [src/worker/CMakeFiles/query_executor.dir/build.make:153: src/worker/query_executor] Error 1
+make[2]: *** [src/worker/CMakeFiles/query_executor.dir/build.make:154: src/worker/query_executor] Error 1
 make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
 make[1]: *** [CMakeFiles/Makefile2:339: src/worker/CMakeFiles/query_executor.dir/all] Error 2
 make[1]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'

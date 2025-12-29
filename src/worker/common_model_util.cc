@@ -1039,6 +1039,152 @@ namespace InfaModelManager {
 }
 #endif
 
+// PNB: (2025.12.29)
+#ifndef INFAAS_NEURON_WORKER
+
+namespace infaas {
+namespace internal {
+
+// -------- Inferentia stubs (non-Neuron build) --------
+
+size_t InfaModelManager::numReplicas(const std::string&) {
+  return 0;
+}
+
+int8_t InfaModelManager::LoadModel(
+    const std::string,
+    const std::string,
+    std::unique_ptr<RedisMetadata>&,
+    std::unique_ptr<localfs::S3Client>&,
+    const std::string) {
+  return -1;  // Inferentia disabled
+}
+
+int8_t InfaModelManager::UnloadModel(
+    const std::string&,
+    std::unique_ptr<RedisMetadata>&,
+    const std::string) {
+  return 0;  // Safe no-op
+}
+
+int8_t InfaModelManager::QueryModelOnline(
+    const std::string&,
+    const QueryOnlineRequest*,
+    QueryOnlineResponse*,
+    std::unique_ptr<RedisMetadata>&,
+    std::unique_ptr<localfs::S3Client>&) {
+  return -1;
+}
+
+// Hardware selection fallback
+std::string ChooseHardware(
+    const std::string&,
+    const std::unique_ptr<RedisMetadata>&,
+    const std::string) {
+  return "cpu";
+}
+
+int InfaModelManager::numUsedCores() {
+  return 0;
+}
+// ============================================================
+// GPU stubs (no CUDA / no TRTIS build) PNB: (2025.12.29)
+// ============================================================
+int GpuModelManager::numReplicas(const std::string&) {
+  return 0;
+}
+
+int8_t GpuModelManager::changeNumReplicas(const std::string&, const size_t&) {
+  return -1;
+}
+
+int8_t GpuModelManager::LoadModel(
+    const std::string,
+    const std::string,
+    std::unique_ptr<RedisMetadata>&,
+    std::unique_ptr<localfs::S3Client>&) {
+  return -1;
+}
+
+int8_t GpuModelManager::UnloadModel(
+    const std::string&,
+    std::unique_ptr<RedisMetadata>&) {
+  return 0;
+}
+
+int8_t GpuModelManager::QueryModelOnline(
+    const std::string& model_name,
+    const QueryOnlineRequest* request,
+    QueryOnlineResponse* reply,
+    std::unique_ptr<RedisMetadata>& rmd,
+    std::unique_ptr<localfs::S3Client>& s3c) {
+    // implementation
+}
+
+// ============================================================
+// CPU stubs (offline / containerless build)  PNB: (2025.12.29)
+// ============================================================
+size_t CpuModelManager::numReplicas(const std::string&) {
+  return 0;
+}
+
+int8_t CpuModelManager::LoadModel(
+    const std::string,
+    const std::string,
+    std::unique_ptr<RedisMetadata>&,
+    std::unique_ptr<localfs::S3Client>&,
+    const std::string,
+    bool) {
+  return -1;
+}
+
+int8_t CpuModelManager::UnloadModel(
+    const std::string&,
+    std::unique_ptr<RedisMetadata>&,
+    const std::string,
+    bool) {
+  return 0;
+}
+
+int8_t CpuModelManager::QueryModelOnline(
+    const std::string& model_name,
+    const QueryOnlineRequest* request,
+    QueryOnlineResponse* reply,
+    std::unique_ptr<RedisMetadata>& rmd,
+    std::unique_ptr<localfs::S3Client>& s3c) {
+    // implementation
+}
+
+int8_t CpuModelManager::QueryModelOffline(
+    const std::string& model_name,
+    const QueryOfflineRequest& request,
+    std::unique_ptr<RedisMetadata>& rmd,
+    std::unique_ptr<localfs::S3Client>& s3c) {
+    // implementation
+}
+
+// ============================================================
+// CommonModelUtils definitions  PNB: (2025.12.29)
+// ============================================================
+bool CommonModelUtil::has_blacklisted_ = false;
+std::mutex CommonModelUtil::mutex_;
+
+void CommonModelUtil::SetBlacklisted(bool flag) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  has_blacklisted_ = flag;
+}
+
+bool CommonModelUtil::HasBlacklisted() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  return has_blacklisted_;
+}
+}  // namespace internal
+}  // namespace infaas
+
+#endif  // INFAAS_NEURON_WORKER
+
+
+
 // ================================================
 // GPU MODEL MANAGER STUB (for completeness)
 // ================================================

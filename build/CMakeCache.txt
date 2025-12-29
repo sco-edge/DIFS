@@ -567,7 +567,7 @@ pkgcfg_lib__OPENSSL_ssl:FILEPATH=/usr/lib/x86_64-linux-gnu/libssl.so
 redis-md_LIB_DEPENDS:STATIC=general;redox;general;/usr/lib/x86_64-linux-gnu/libhiredis.so;general;/usr/lib/x86_64-linux-gnu/libev.so;
 
 //Dependencies for the target
-worker-util_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos-internal;general;grpc++_unsecure;general;grpc;general;gpr;general;protobuf::libprotobuf;
+worker-util_LIB_DEPENDS:STATIC=general;CURL::libcurl;general;redis-md;general;infaas-protos-internal;general;grpc++_unsecure;general;grpc;general;gpr;general;protobuf::libprotobuf;
 
 
 ########################
