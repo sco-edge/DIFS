@@ -1,32 +1,17 @@
+// Author: Mr. Heesik
+// Purpose: For testing client-server communication for his implmentation
+// Date: (2026.01.06)
+
 // For internal communication of queries between the master and workers.
 // Note that some service names/message names may be the same as public APIs,
 // clients are not supposed to directly use them.
 
 syntax = "proto3";
 
-// The namepace for internal communications
-package infaas.internal;
-
 import "infaas_request_status.proto";
 
-
-//PNB: Adding internal diffusion messages (2025.12.19)
-// BEGIN: diffusion messages
-message InternalDiffusionQuery {
-  string prompt        = 1;
-  int32  steps         = 2;
-  float  guidanceScale = 3;
-  int32  seed          = 4;
-  int32  width         = 5;
-  int32  height        = 6;
-}
-
-message InternalDiffusionResponse {
-  bytes image  = 1;
-  int32 width  = 2;
-  int32 height = 3;
-}
-// END: diffusion messages
+// The namepace for internal communications
+package infaas.internal;
 
 
 // Service provided by the workers that the master can talk to.
@@ -47,14 +32,6 @@ message QueryOnlineRequest {
   float  CFG_Scale = 3;  // 7.0 ~ 8.0
   int32  BatchSize = 4; // 동시생성갯수
   int64  Seed = 5;          // 이미지 고유번호
-  
-  repeated bytes raw_input = 6; // Serialized input in bytes.
-  repeated string model = 7;    // The name of the model(s), support a pool of models.
-  QuerySLO slo = 8;             // SLO provided by the user.
-  string submitter = 9;         // User who submitted the request
-
-  // PNB: Diffusion-specific payload (optional) (2025.12.19)
-  InternalDiffusionQuery diffusion = 10;
 }
 
 message QuerySLO {
@@ -67,12 +44,6 @@ message QueryOnlineResponse {
   // 변경: 생성된 이미지 파일 경로들의 리스트를 반환
   repeated string image_paths = 1; 
   InfaasRequestStatus status = 2;
-  
-  //PNB
-  repeated bytes raw_output = 3;  // Serialized output in bytes.
-
-  // PNB: Optional typed diffusion output (2025.12.19)
-  InternalDiffusionResponse diffusion = 10;
   }
 
 message QueryOfflineRequest {
@@ -81,12 +52,6 @@ message QueryOfflineRequest {
   float  CFG_Scale = 3;  // 7.0 ~ 8.0
   int32  BatchSize = 4; // 동시생성갯수
   int64  Seed = 5;          // 이미지 고유번호
-  
-  string input_url = 6;       // Provide the url of input bucket.
-  repeated string model = 7;  // Support a pool of models.
-  string output_url = 8;      // Provide the url of output bucket.
-  QuerySLO slo = 9;           // SLO provided by the user.
-  string submitter = 10;
 }
 
 message QueryOfflineResponse {

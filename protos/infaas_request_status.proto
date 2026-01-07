@@ -1,0 +1,23 @@
+// Author: Mr. Heesik
+// Purpose: For testing client-server communication for his implmentation
+// Date: (2026.01.06)
+
+// Message definition of gRPC request status.
+
+syntax = "proto3";
+
+// The namepace for internal communications
+package infaas.internal;
+
+// Request status enums
+enum InfaasRequestStatusEnum {
+  INVALID = 0;
+  SUCCESS = 1;
+  UNAVAILABLE = 2;
+}
+
+// Request status message
+message InfaasRequestStatus {
+  InfaasRequestStatusEnum status = 1;
+  string msg = 2;  // Additional message.
+}

@@ -9,7 +9,6 @@ package infaas.internal;
 
 import "infaas_request_status.proto";
 
-
 //PNB: Adding internal diffusion messages (2025.12.19)
 // BEGIN: diffusion messages
 message InternalDiffusionQuery {
@@ -28,7 +27,6 @@ message InternalDiffusionResponse {
 }
 // END: diffusion messages
 
-
 // Service provided by the workers that the master can talk to.
 service Query {
   // Online query, send input data in the payload
@@ -41,52 +39,36 @@ service Query {
   rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {}
 }
 
-message QueryOnlineRequest {
-  repeated string Prompt = 1; // Prompt
-  int32  Steps = 2;  // timestep
-  float  CFG_Scale = 3;  // 7.0 ~ 8.0
-  int32  BatchSize = 4; // 동시생성갯수
-  int64  Seed = 5;          // 이미지 고유번호
-  
-  repeated bytes raw_input = 6; // Serialized input in bytes.
-  repeated string model = 7;    // The name of the model(s), support a pool of models.
-  QuerySLO slo = 8;             // SLO provided by the user.
-  string submitter = 9;         // User who submitted the request
-
-  // PNB: Diffusion-specific payload (optional) (2025.12.19)
-  InternalDiffusionQuery diffusion = 10;
-}
-
 message QuerySLO {
   int64 LatencyInUSec = 1;  // Latency in micro-seconds.
   float MinAccuracy = 2;    // Minimum accuracy.
   float MaxCost = 3;        // Maximum cost in dollar.
 }
 
+message QueryOnlineRequest {
+  repeated bytes raw_input = 1; // Serialized input in bytes.
+  repeated string model = 2;    // The name of the model(s), support a pool of models.
+  QuerySLO slo = 3;             // SLO provided by the user.
+  string submitter = 4;         // User who submitted the request
+
+  // PNB: Diffusion-specific payload (optional) (2025.12.19)
+  InternalDiffusionQuery diffusion = 10;
+}
+
 message QueryOnlineResponse {
-  // 변경: 생성된 이미지 파일 경로들의 리스트를 반환
-  repeated string image_paths = 1; 
+  repeated bytes raw_output = 1;  // Serialized output in bytes.
   InfaasRequestStatus status = 2;
-  
-  //PNB
-  repeated bytes raw_output = 3;  // Serialized output in bytes.
 
   // PNB: Optional typed diffusion output (2025.12.19)
   InternalDiffusionResponse diffusion = 10;
-  }
+}
 
 message QueryOfflineRequest {
-  string Prompt = 1; // Prompt
-  int32  Steps = 2;  // timestep
-  float  CFG_Scale = 3;  // 7.0 ~ 8.0
-  int32  BatchSize = 4; // 동시생성갯수
-  int64  Seed = 5;          // 이미지 고유번호
-  
-  string input_url = 6;       // Provide the url of input bucket.
-  repeated string model = 7;  // Support a pool of models.
-  string output_url = 8;      // Provide the url of output bucket.
-  QuerySLO slo = 9;           // SLO provided by the user.
-  string submitter = 10;
+  string input_url = 1;       // Provide the url of input bucket.
+  repeated string model = 2;  // Support a pool of models.
+  string output_url = 3;      // Provide the url of output bucket.
+  QuerySLO slo = 4;           // SLO provided by the user.
+  string submitter = 5;
 }
 
 message QueryOfflineResponse {

@@ -49,6 +49,27 @@ struct InternalDiffusionResponseDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT InternalDiffusionResponseDefaultTypeInternal _InternalDiffusionResponse_default_instance_;
+constexpr QueryOnlineRequest::QueryOnlineRequest(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : prompt_()
+  , raw_input_()
+  , model_()
+  , submitter_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , slo_(nullptr)
+  , diffusion_(nullptr)
+  , steps_(0)
+  , cfg_scale_(0)
+  , seed_(int64_t{0})
+  , batchsize_(0){}
+struct QueryOnlineRequestDefaultTypeInternal {
+  constexpr QueryOnlineRequestDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~QueryOnlineRequestDefaultTypeInternal() {}
+  union {
+    QueryOnlineRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT QueryOnlineRequestDefaultTypeInternal _QueryOnlineRequest_default_instance_;
 constexpr QuerySLO::QuerySLO(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : latencyinusec_(int64_t{0})
@@ -63,25 +84,10 @@ struct QuerySLODefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT QuerySLODefaultTypeInternal _QuerySLO_default_instance_;
-constexpr QueryOnlineRequest::QueryOnlineRequest(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : raw_input_()
-  , model_()
-  , submitter_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
-  , slo_(nullptr)
-  , diffusion_(nullptr){}
-struct QueryOnlineRequestDefaultTypeInternal {
-  constexpr QueryOnlineRequestDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~QueryOnlineRequestDefaultTypeInternal() {}
-  union {
-    QueryOnlineRequest _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT QueryOnlineRequestDefaultTypeInternal _QueryOnlineRequest_default_instance_;
 constexpr QueryOnlineResponse::QueryOnlineResponse(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : raw_output_()
+  : image_paths_()
+  , raw_output_()
   , status_(nullptr)
   , diffusion_(nullptr){}
 struct QueryOnlineResponseDefaultTypeInternal {
@@ -96,10 +102,15 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT QueryOnlineResponseDefaultTypeI
 constexpr QueryOfflineRequest::QueryOfflineRequest(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : model_()
+  , prompt_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , input_url_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , output_url_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , submitter_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
-  , slo_(nullptr){}
+  , slo_(nullptr)
+  , steps_(0)
+  , cfg_scale_(0)
+  , seed_(int64_t{0})
+  , batchsize_(0){}
 struct QueryOfflineRequestDefaultTypeInternal {
   constexpr QueryOfflineRequestDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -174,6 +185,22 @@ const uint32_t TableStruct_query_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::infaas::internal::InternalDiffusionResponse, width_),
   PROTOBUF_FIELD_OFFSET(::infaas::internal::InternalDiffusionResponse, height_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, prompt_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, steps_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, cfg_scale_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, batchsize_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, seed_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, raw_input_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, model_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, slo_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, submitter_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, diffusion_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QuerySLO, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -183,24 +210,14 @@ const uint32_t TableStruct_query_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QuerySLO, minaccuracy_),
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QuerySLO, maxcost_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, raw_input_),
-  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, model_),
-  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, slo_),
-  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, submitter_),
-  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineRequest, diffusion_),
-  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineResponse, raw_output_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineResponse, image_paths_),
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineResponse, status_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineResponse, raw_output_),
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOnlineResponse, diffusion_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, _internal_metadata_),
@@ -208,6 +225,11 @@ const uint32_t TableStruct_query_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, prompt_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, steps_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, cfg_scale_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, batchsize_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, seed_),
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, input_url_),
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, model_),
   PROTOBUF_FIELD_OFFSET(::infaas::internal::QueryOfflineRequest, output_url_),
@@ -238,20 +260,20 @@ const uint32_t TableStruct_query_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::infaas::internal::InternalDiffusionQuery)},
   { 12, -1, -1, sizeof(::infaas::internal::InternalDiffusionResponse)},
-  { 21, -1, -1, sizeof(::infaas::internal::QuerySLO)},
-  { 30, -1, -1, sizeof(::infaas::internal::QueryOnlineRequest)},
-  { 41, -1, -1, sizeof(::infaas::internal::QueryOnlineResponse)},
-  { 50, -1, -1, sizeof(::infaas::internal::QueryOfflineRequest)},
-  { 61, -1, -1, sizeof(::infaas::internal::QueryOfflineResponse)},
-  { 68, -1, -1, sizeof(::infaas::internal::HeartbeatRequest)},
-  { 75, -1, -1, sizeof(::infaas::internal::HeartbeatResponse)},
+  { 21, -1, -1, sizeof(::infaas::internal::QueryOnlineRequest)},
+  { 37, -1, -1, sizeof(::infaas::internal::QuerySLO)},
+  { 46, -1, -1, sizeof(::infaas::internal::QueryOnlineResponse)},
+  { 56, -1, -1, sizeof(::infaas::internal::QueryOfflineRequest)},
+  { 72, -1, -1, sizeof(::infaas::internal::QueryOfflineResponse)},
+  { 79, -1, -1, sizeof(::infaas::internal::HeartbeatRequest)},
+  { 86, -1, -1, sizeof(::infaas::internal::HeartbeatResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_InternalDiffusionQuery_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_InternalDiffusionResponse_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_QuerySLO_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_QueryOnlineRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_QuerySLO_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_QueryOnlineResponse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_QueryOfflineRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_QueryOfflineResponse_default_instance_),
@@ -266,41 +288,45 @@ const char descriptor_table_protodef_query_2eproto[] PROTOBUF_SECTION_VARIABLE(p
   "guidanceScale\030\003 \001(\002\022\014\n\004seed\030\004 \001(\005\022\r\n\005wid"
   "th\030\005 \001(\005\022\016\n\006height\030\006 \001(\005\"I\n\031InternalDiff"
   "usionResponse\022\r\n\005image\030\001 \001(\014\022\r\n\005width\030\002 "
-  "\001(\005\022\016\n\006height\030\003 \001(\005\"G\n\010QuerySLO\022\025\n\rLaten"
-  "cyInUSec\030\001 \001(\003\022\023\n\013MinAccuracy\030\002 \001(\002\022\017\n\007M"
-  "axCost\030\003 \001(\002\"\255\001\n\022QueryOnlineRequest\022\021\n\tr"
-  "aw_input\030\001 \003(\014\022\r\n\005model\030\002 \003(\t\022&\n\003slo\030\003 \001"
-  "(\0132\031.infaas.internal.QuerySLO\022\021\n\tsubmitt"
-  "er\030\004 \001(\t\022:\n\tdiffusion\030\n \001(\0132\'.infaas.int"
-  "ernal.InternalDiffusionQuery\"\236\001\n\023QueryOn"
-  "lineResponse\022\022\n\nraw_output\030\001 \003(\014\0224\n\006stat"
-  "us\030\002 \001(\0132$.infaas.internal.InfaasRequest"
-  "Status\022=\n\tdiffusion\030\n \001(\0132*.infaas.inter"
-  "nal.InternalDiffusionResponse\"\206\001\n\023QueryO"
-  "fflineRequest\022\021\n\tinput_url\030\001 \001(\t\022\r\n\005mode"
-  "l\030\002 \003(\t\022\022\n\noutput_url\030\003 \001(\t\022&\n\003slo\030\004 \001(\013"
-  "2\031.infaas.internal.QuerySLO\022\021\n\tsubmitter"
-  "\030\005 \001(\t\"L\n\024QueryOfflineResponse\0224\n\006status"
-  "\030\001 \001(\0132$.infaas.internal.InfaasRequestSt"
-  "atus\"H\n\020HeartbeatRequest\0224\n\006status\030\001 \001(\013"
-  "2$.infaas.internal.InfaasRequestStatus\"I"
-  "\n\021HeartbeatResponse\0224\n\006status\030\001 \001(\0132$.in"
-  "faas.internal.InfaasRequestStatus2\230\002\n\005Qu"
-  "ery\022Z\n\013QueryOnline\022#.infaas.internal.Que"
-  "ryOnlineRequest\032$.infaas.internal.QueryO"
-  "nlineResponse\"\000\022]\n\014QueryOffline\022$.infaas"
-  ".internal.QueryOfflineRequest\032%.infaas.i"
-  "nternal.QueryOfflineResponse\"\000\022T\n\tHeartb"
-  "eat\022!.infaas.internal.HeartbeatRequest\032\""
-  ".infaas.internal.HeartbeatResponse\"\000b\006pr"
-  "oto3"
+  "\001(\005\022\016\n\006height\030\003 \001(\005\"\200\002\n\022QueryOnlineReque"
+  "st\022\016\n\006Prompt\030\001 \003(\t\022\r\n\005Steps\030\002 \001(\005\022\021\n\tCFG"
+  "_Scale\030\003 \001(\002\022\021\n\tBatchSize\030\004 \001(\005\022\014\n\004Seed\030"
+  "\005 \001(\003\022\021\n\traw_input\030\006 \003(\014\022\r\n\005model\030\007 \003(\t\022"
+  "&\n\003slo\030\010 \001(\0132\031.infaas.internal.QuerySLO\022"
+  "\021\n\tsubmitter\030\t \001(\t\022:\n\tdiffusion\030\n \001(\0132\'."
+  "infaas.internal.InternalDiffusionQuery\"G"
+  "\n\010QuerySLO\022\025\n\rLatencyInUSec\030\001 \001(\003\022\023\n\013Min"
+  "Accuracy\030\002 \001(\002\022\017\n\007MaxCost\030\003 \001(\002\"\263\001\n\023Quer"
+  "yOnlineResponse\022\023\n\013image_paths\030\001 \003(\t\0224\n\006"
+  "status\030\002 \001(\0132$.infaas.internal.InfaasReq"
+  "uestStatus\022\022\n\nraw_output\030\003 \003(\014\022=\n\tdiffus"
+  "ion\030\n \001(\0132*.infaas.internal.InternalDiff"
+  "usionResponse\"\331\001\n\023QueryOfflineRequest\022\016\n"
+  "\006Prompt\030\001 \001(\t\022\r\n\005Steps\030\002 \001(\005\022\021\n\tCFG_Scal"
+  "e\030\003 \001(\002\022\021\n\tBatchSize\030\004 \001(\005\022\014\n\004Seed\030\005 \001(\003"
+  "\022\021\n\tinput_url\030\006 \001(\t\022\r\n\005model\030\007 \003(\t\022\022\n\nou"
+  "tput_url\030\010 \001(\t\022&\n\003slo\030\t \001(\0132\031.infaas.int"
+  "ernal.QuerySLO\022\021\n\tsubmitter\030\n \001(\t\"L\n\024Que"
+  "ryOfflineResponse\0224\n\006status\030\001 \001(\0132$.infa"
+  "as.internal.InfaasRequestStatus\"H\n\020Heart"
+  "beatRequest\0224\n\006status\030\001 \001(\0132$.infaas.int"
+  "ernal.InfaasRequestStatus\"I\n\021HeartbeatRe"
+  "sponse\0224\n\006status\030\001 \001(\0132$.infaas.internal"
+  ".InfaasRequestStatus2\230\002\n\005Query\022Z\n\013QueryO"
+  "nline\022#.infaas.internal.QueryOnlineReque"
+  "st\032$.infaas.internal.QueryOnlineResponse"
+  "\"\000\022]\n\014QueryOffline\022$.infaas.internal.Que"
+  "ryOfflineRequest\032%.infaas.internal.Query"
+  "OfflineResponse\"\000\022T\n\tHeartbeat\022!.infaas."
+  "internal.HeartbeatRequest\032\".infaas.inter"
+  "nal.HeartbeatResponse\"\000b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_query_2eproto_deps[1] = {
   &::descriptor_table_infaas_5frequest_5fstatus_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_query_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_query_2eproto = {
-  false, false, 1324, descriptor_table_protodef_query_2eproto, "query.proto", 
+  false, false, 1511, descriptor_table_protodef_query_2eproto, "query.proto", 
   &descriptor_table_query_2eproto_once, descriptor_table_query_2eproto_deps, 1, 9,
   schemas, file_default_instances, TableStruct_query_2eproto::offsets,
   file_level_metadata_query_2eproto, file_level_enum_descriptors_query_2eproto, file_level_service_descriptors_query_2eproto,
@@ -915,6 +941,516 @@ void InternalDiffusionResponse::InternalSwap(InternalDiffusionResponse* other) {
 
 // ===================================================================
 
+class QueryOnlineRequest::_Internal {
+ public:
+  static const ::infaas::internal::QuerySLO& slo(const QueryOnlineRequest* msg);
+  static const ::infaas::internal::InternalDiffusionQuery& diffusion(const QueryOnlineRequest* msg);
+};
+
+const ::infaas::internal::QuerySLO&
+QueryOnlineRequest::_Internal::slo(const QueryOnlineRequest* msg) {
+  return *msg->slo_;
+}
+const ::infaas::internal::InternalDiffusionQuery&
+QueryOnlineRequest::_Internal::diffusion(const QueryOnlineRequest* msg) {
+  return *msg->diffusion_;
+}
+QueryOnlineRequest::QueryOnlineRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  prompt_(arena),
+  raw_input_(arena),
+  model_(arena) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:infaas.internal.QueryOnlineRequest)
+}
+QueryOnlineRequest::QueryOnlineRequest(const QueryOnlineRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message(),
+      prompt_(from.prompt_),
+      raw_input_(from.raw_input_),
+      model_(from.model_) {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  submitter_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    submitter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_submitter().empty()) {
+    submitter_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_submitter(), 
+      GetArenaForAllocation());
+  }
+  if (from._internal_has_slo()) {
+    slo_ = new ::infaas::internal::QuerySLO(*from.slo_);
+  } else {
+    slo_ = nullptr;
+  }
+  if (from._internal_has_diffusion()) {
+    diffusion_ = new ::infaas::internal::InternalDiffusionQuery(*from.diffusion_);
+  } else {
+    diffusion_ = nullptr;
+  }
+  ::memcpy(&steps_, &from.steps_,
+    static_cast<size_t>(reinterpret_cast<char*>(&batchsize_) -
+    reinterpret_cast<char*>(&steps_)) + sizeof(batchsize_));
+  // @@protoc_insertion_point(copy_constructor:infaas.internal.QueryOnlineRequest)
+}
+
+inline void QueryOnlineRequest::SharedCtor() {
+submitter_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  submitter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&slo_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&batchsize_) -
+    reinterpret_cast<char*>(&slo_)) + sizeof(batchsize_));
+}
+
+QueryOnlineRequest::~QueryOnlineRequest() {
+  // @@protoc_insertion_point(destructor:infaas.internal.QueryOnlineRequest)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void QueryOnlineRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  submitter_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete slo_;
+  if (this != internal_default_instance()) delete diffusion_;
+}
+
+void QueryOnlineRequest::ArenaDtor(void* object) {
+  QueryOnlineRequest* _this = reinterpret_cast< QueryOnlineRequest* >(object);
+  (void)_this;
+}
+void QueryOnlineRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void QueryOnlineRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void QueryOnlineRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:infaas.internal.QueryOnlineRequest)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  prompt_.Clear();
+  raw_input_.Clear();
+  model_.Clear();
+  submitter_.ClearToEmpty();
+  if (GetArenaForAllocation() == nullptr && slo_ != nullptr) {
+    delete slo_;
+  }
+  slo_ = nullptr;
+  if (GetArenaForAllocation() == nullptr && diffusion_ != nullptr) {
+    delete diffusion_;
+  }
+  diffusion_ = nullptr;
+  ::memset(&steps_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&batchsize_) -
+      reinterpret_cast<char*>(&steps_)) + sizeof(batchsize_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* QueryOnlineRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated string Prompt = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_prompt();
+            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOnlineRequest.Prompt"));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 Steps = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          steps_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float CFG_Scale = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 29)) {
+          cfg_scale_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 BatchSize = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          batchsize_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int64 Seed = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          seed_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated bytes raw_input = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_raw_input();
+            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<50>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string model = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_model();
+            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOnlineRequest.model"));
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<58>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // .infaas.internal.QuerySLO slo = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
+          ptr = ctx->ParseMessage(_internal_mutable_slo(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string submitter = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
+          auto str = _internal_mutable_submitter();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOnlineRequest.submitter"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .infaas.internal.InternalDiffusionQuery diffusion = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+          ptr = ctx->ParseMessage(_internal_mutable_diffusion(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* QueryOnlineRequest::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:infaas.internal.QueryOnlineRequest)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated string Prompt = 1;
+  for (int i = 0, n = this->_internal_prompt_size(); i < n; i++) {
+    const auto& s = this->_internal_prompt(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.QueryOnlineRequest.Prompt");
+    target = stream->WriteString(1, s, target);
+  }
+
+  // int32 Steps = 2;
+  if (this->_internal_steps() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_steps(), target);
+  }
+
+  // float CFG_Scale = 3;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cfg_scale = this->_internal_cfg_scale();
+  uint32_t raw_cfg_scale;
+  memcpy(&raw_cfg_scale, &tmp_cfg_scale, sizeof(tmp_cfg_scale));
+  if (raw_cfg_scale != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(3, this->_internal_cfg_scale(), target);
+  }
+
+  // int32 BatchSize = 4;
+  if (this->_internal_batchsize() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_batchsize(), target);
+  }
+
+  // int64 Seed = 5;
+  if (this->_internal_seed() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt64ToArray(5, this->_internal_seed(), target);
+  }
+
+  // repeated bytes raw_input = 6;
+  for (int i = 0, n = this->_internal_raw_input_size(); i < n; i++) {
+    const auto& s = this->_internal_raw_input(i);
+    target = stream->WriteBytes(6, s, target);
+  }
+
+  // repeated string model = 7;
+  for (int i = 0, n = this->_internal_model_size(); i < n; i++) {
+    const auto& s = this->_internal_model(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.QueryOnlineRequest.model");
+    target = stream->WriteString(7, s, target);
+  }
+
+  // .infaas.internal.QuerySLO slo = 8;
+  if (this->_internal_has_slo()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        8, _Internal::slo(this), target, stream);
+  }
+
+  // string submitter = 9;
+  if (!this->_internal_submitter().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_submitter().data(), static_cast<int>(this->_internal_submitter().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.QueryOnlineRequest.submitter");
+    target = stream->WriteStringMaybeAliased(
+        9, this->_internal_submitter(), target);
+  }
+
+  // .infaas.internal.InternalDiffusionQuery diffusion = 10;
+  if (this->_internal_has_diffusion()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        10, _Internal::diffusion(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:infaas.internal.QueryOnlineRequest)
+  return target;
+}
+
+size_t QueryOnlineRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:infaas.internal.QueryOnlineRequest)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated string Prompt = 1;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(prompt_.size());
+  for (int i = 0, n = prompt_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      prompt_.Get(i));
+  }
+
+  // repeated bytes raw_input = 6;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(raw_input_.size());
+  for (int i = 0, n = raw_input_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+      raw_input_.Get(i));
+  }
+
+  // repeated string model = 7;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(model_.size());
+  for (int i = 0, n = model_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      model_.Get(i));
+  }
+
+  // string submitter = 9;
+  if (!this->_internal_submitter().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_submitter());
+  }
+
+  // .infaas.internal.QuerySLO slo = 8;
+  if (this->_internal_has_slo()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *slo_);
+  }
+
+  // .infaas.internal.InternalDiffusionQuery diffusion = 10;
+  if (this->_internal_has_diffusion()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *diffusion_);
+  }
+
+  // int32 Steps = 2;
+  if (this->_internal_steps() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_steps());
+  }
+
+  // float CFG_Scale = 3;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cfg_scale = this->_internal_cfg_scale();
+  uint32_t raw_cfg_scale;
+  memcpy(&raw_cfg_scale, &tmp_cfg_scale, sizeof(tmp_cfg_scale));
+  if (raw_cfg_scale != 0) {
+    total_size += 1 + 4;
+  }
+
+  // int64 Seed = 5;
+  if (this->_internal_seed() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int64SizePlusOne(this->_internal_seed());
+  }
+
+  // int32 BatchSize = 4;
+  if (this->_internal_batchsize() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_batchsize());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData QueryOnlineRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    QueryOnlineRequest::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*QueryOnlineRequest::GetClassData() const { return &_class_data_; }
+
+void QueryOnlineRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<QueryOnlineRequest *>(to)->MergeFrom(
+      static_cast<const QueryOnlineRequest &>(from));
+}
+
+
+void QueryOnlineRequest::MergeFrom(const QueryOnlineRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:infaas.internal.QueryOnlineRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  prompt_.MergeFrom(from.prompt_);
+  raw_input_.MergeFrom(from.raw_input_);
+  model_.MergeFrom(from.model_);
+  if (!from._internal_submitter().empty()) {
+    _internal_set_submitter(from._internal_submitter());
+  }
+  if (from._internal_has_slo()) {
+    _internal_mutable_slo()->::infaas::internal::QuerySLO::MergeFrom(from._internal_slo());
+  }
+  if (from._internal_has_diffusion()) {
+    _internal_mutable_diffusion()->::infaas::internal::InternalDiffusionQuery::MergeFrom(from._internal_diffusion());
+  }
+  if (from._internal_steps() != 0) {
+    _internal_set_steps(from._internal_steps());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cfg_scale = from._internal_cfg_scale();
+  uint32_t raw_cfg_scale;
+  memcpy(&raw_cfg_scale, &tmp_cfg_scale, sizeof(tmp_cfg_scale));
+  if (raw_cfg_scale != 0) {
+    _internal_set_cfg_scale(from._internal_cfg_scale());
+  }
+  if (from._internal_seed() != 0) {
+    _internal_set_seed(from._internal_seed());
+  }
+  if (from._internal_batchsize() != 0) {
+    _internal_set_batchsize(from._internal_batchsize());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void QueryOnlineRequest::CopyFrom(const QueryOnlineRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:infaas.internal.QueryOnlineRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool QueryOnlineRequest::IsInitialized() const {
+  return true;
+}
+
+void QueryOnlineRequest::InternalSwap(QueryOnlineRequest* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  prompt_.InternalSwap(&other->prompt_);
+  raw_input_.InternalSwap(&other->raw_input_);
+  model_.InternalSwap(&other->model_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &submitter_, lhs_arena,
+      &other->submitter_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(QueryOnlineRequest, batchsize_)
+      + sizeof(QueryOnlineRequest::batchsize_)
+      - PROTOBUF_FIELD_OFFSET(QueryOnlineRequest, slo_)>(
+          reinterpret_cast<char*>(&slo_),
+          reinterpret_cast<char*>(&other->slo_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata QueryOnlineRequest::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_query_2eproto_getter, &descriptor_table_query_2eproto_once,
+      file_level_metadata_query_2eproto[2]);
+}
+
+// ===================================================================
+
 class QuerySLO::_Internal {
  public:
 };
@@ -1168,372 +1704,6 @@ void QuerySLO::InternalSwap(QuerySLO* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata QuerySLO::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_query_2eproto_getter, &descriptor_table_query_2eproto_once,
-      file_level_metadata_query_2eproto[2]);
-}
-
-// ===================================================================
-
-class QueryOnlineRequest::_Internal {
- public:
-  static const ::infaas::internal::QuerySLO& slo(const QueryOnlineRequest* msg);
-  static const ::infaas::internal::InternalDiffusionQuery& diffusion(const QueryOnlineRequest* msg);
-};
-
-const ::infaas::internal::QuerySLO&
-QueryOnlineRequest::_Internal::slo(const QueryOnlineRequest* msg) {
-  return *msg->slo_;
-}
-const ::infaas::internal::InternalDiffusionQuery&
-QueryOnlineRequest::_Internal::diffusion(const QueryOnlineRequest* msg) {
-  return *msg->diffusion_;
-}
-QueryOnlineRequest::QueryOnlineRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
-  raw_input_(arena),
-  model_(arena) {
-  SharedCtor();
-  if (!is_message_owned) {
-    RegisterArenaDtor(arena);
-  }
-  // @@protoc_insertion_point(arena_constructor:infaas.internal.QueryOnlineRequest)
-}
-QueryOnlineRequest::QueryOnlineRequest(const QueryOnlineRequest& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      raw_input_(from.raw_input_),
-      model_(from.model_) {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  submitter_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    submitter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_submitter().empty()) {
-    submitter_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_submitter(), 
-      GetArenaForAllocation());
-  }
-  if (from._internal_has_slo()) {
-    slo_ = new ::infaas::internal::QuerySLO(*from.slo_);
-  } else {
-    slo_ = nullptr;
-  }
-  if (from._internal_has_diffusion()) {
-    diffusion_ = new ::infaas::internal::InternalDiffusionQuery(*from.diffusion_);
-  } else {
-    diffusion_ = nullptr;
-  }
-  // @@protoc_insertion_point(copy_constructor:infaas.internal.QueryOnlineRequest)
-}
-
-inline void QueryOnlineRequest::SharedCtor() {
-submitter_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  submitter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&slo_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&diffusion_) -
-    reinterpret_cast<char*>(&slo_)) + sizeof(diffusion_));
-}
-
-QueryOnlineRequest::~QueryOnlineRequest() {
-  // @@protoc_insertion_point(destructor:infaas.internal.QueryOnlineRequest)
-  if (GetArenaForAllocation() != nullptr) return;
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-inline void QueryOnlineRequest::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  submitter_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (this != internal_default_instance()) delete slo_;
-  if (this != internal_default_instance()) delete diffusion_;
-}
-
-void QueryOnlineRequest::ArenaDtor(void* object) {
-  QueryOnlineRequest* _this = reinterpret_cast< QueryOnlineRequest* >(object);
-  (void)_this;
-}
-void QueryOnlineRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void QueryOnlineRequest::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-
-void QueryOnlineRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:infaas.internal.QueryOnlineRequest)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  raw_input_.Clear();
-  model_.Clear();
-  submitter_.ClearToEmpty();
-  if (GetArenaForAllocation() == nullptr && slo_ != nullptr) {
-    delete slo_;
-  }
-  slo_ = nullptr;
-  if (GetArenaForAllocation() == nullptr && diffusion_ != nullptr) {
-    delete diffusion_;
-  }
-  diffusion_ = nullptr;
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* QueryOnlineRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // repeated bytes raw_input = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            auto str = _internal_add_raw_input();
-            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated string model = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            auto str = _internal_add_model();
-            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOnlineRequest.model"));
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
-        } else
-          goto handle_unusual;
-        continue;
-      // .infaas.internal.QuerySLO slo = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          ptr = ctx->ParseMessage(_internal_mutable_slo(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // string submitter = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
-          auto str = _internal_mutable_submitter();
-          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOnlineRequest.submitter"));
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // .infaas.internal.InternalDiffusionQuery diffusion = 10;
-      case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
-          ptr = ctx->ParseMessage(_internal_mutable_diffusion(), ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* QueryOnlineRequest::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:infaas.internal.QueryOnlineRequest)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // repeated bytes raw_input = 1;
-  for (int i = 0, n = this->_internal_raw_input_size(); i < n; i++) {
-    const auto& s = this->_internal_raw_input(i);
-    target = stream->WriteBytes(1, s, target);
-  }
-
-  // repeated string model = 2;
-  for (int i = 0, n = this->_internal_model_size(); i < n; i++) {
-    const auto& s = this->_internal_model(i);
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      s.data(), static_cast<int>(s.length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "infaas.internal.QueryOnlineRequest.model");
-    target = stream->WriteString(2, s, target);
-  }
-
-  // .infaas.internal.QuerySLO slo = 3;
-  if (this->_internal_has_slo()) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(
-        3, _Internal::slo(this), target, stream);
-  }
-
-  // string submitter = 4;
-  if (!this->_internal_submitter().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_submitter().data(), static_cast<int>(this->_internal_submitter().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "infaas.internal.QueryOnlineRequest.submitter");
-    target = stream->WriteStringMaybeAliased(
-        4, this->_internal_submitter(), target);
-  }
-
-  // .infaas.internal.InternalDiffusionQuery diffusion = 10;
-  if (this->_internal_has_diffusion()) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(
-        10, _Internal::diffusion(this), target, stream);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:infaas.internal.QueryOnlineRequest)
-  return target;
-}
-
-size_t QueryOnlineRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:infaas.internal.QueryOnlineRequest)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // repeated bytes raw_input = 1;
-  total_size += 1 *
-      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(raw_input_.size());
-  for (int i = 0, n = raw_input_.size(); i < n; i++) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-      raw_input_.Get(i));
-  }
-
-  // repeated string model = 2;
-  total_size += 1 *
-      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(model_.size());
-  for (int i = 0, n = model_.size(); i < n; i++) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-      model_.Get(i));
-  }
-
-  // string submitter = 4;
-  if (!this->_internal_submitter().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_submitter());
-  }
-
-  // .infaas.internal.QuerySLO slo = 3;
-  if (this->_internal_has_slo()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *slo_);
-  }
-
-  // .infaas.internal.InternalDiffusionQuery diffusion = 10;
-  if (this->_internal_has_diffusion()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-        *diffusion_);
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData QueryOnlineRequest::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
-    QueryOnlineRequest::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*QueryOnlineRequest::GetClassData() const { return &_class_data_; }
-
-void QueryOnlineRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
-                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<QueryOnlineRequest *>(to)->MergeFrom(
-      static_cast<const QueryOnlineRequest &>(from));
-}
-
-
-void QueryOnlineRequest::MergeFrom(const QueryOnlineRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:infaas.internal.QueryOnlineRequest)
-  GOOGLE_DCHECK_NE(&from, this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  raw_input_.MergeFrom(from.raw_input_);
-  model_.MergeFrom(from.model_);
-  if (!from._internal_submitter().empty()) {
-    _internal_set_submitter(from._internal_submitter());
-  }
-  if (from._internal_has_slo()) {
-    _internal_mutable_slo()->::infaas::internal::QuerySLO::MergeFrom(from._internal_slo());
-  }
-  if (from._internal_has_diffusion()) {
-    _internal_mutable_diffusion()->::infaas::internal::InternalDiffusionQuery::MergeFrom(from._internal_diffusion());
-  }
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void QueryOnlineRequest::CopyFrom(const QueryOnlineRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:infaas.internal.QueryOnlineRequest)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool QueryOnlineRequest::IsInitialized() const {
-  return true;
-}
-
-void QueryOnlineRequest::InternalSwap(QueryOnlineRequest* other) {
-  using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  raw_input_.InternalSwap(&other->raw_input_);
-  model_.InternalSwap(&other->model_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &submitter_, lhs_arena,
-      &other->submitter_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(QueryOnlineRequest, diffusion_)
-      + sizeof(QueryOnlineRequest::diffusion_)
-      - PROTOBUF_FIELD_OFFSET(QueryOnlineRequest, slo_)>(
-          reinterpret_cast<char*>(&slo_),
-          reinterpret_cast<char*>(&other->slo_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata QueryOnlineRequest::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_query_2eproto_getter, &descriptor_table_query_2eproto_once,
       file_level_metadata_query_2eproto[3]);
 }
 
@@ -1562,6 +1732,7 @@ void QueryOnlineResponse::clear_status() {
 QueryOnlineResponse::QueryOnlineResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
+  image_paths_(arena),
   raw_output_(arena) {
   SharedCtor();
   if (!is_message_owned) {
@@ -1571,6 +1742,7 @@ QueryOnlineResponse::QueryOnlineResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
 }
 QueryOnlineResponse::QueryOnlineResponse(const QueryOnlineResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
+      image_paths_(from.image_paths_),
       raw_output_(from.raw_output_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_status()) {
@@ -1622,6 +1794,7 @@ void QueryOnlineResponse::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  image_paths_.Clear();
   raw_output_.Clear();
   if (GetArenaForAllocation() == nullptr && status_ != nullptr) {
     delete status_;
@@ -1640,14 +1813,15 @@ const char* QueryOnlineResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAME
     uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // repeated bytes raw_output = 1;
+      // repeated string image_paths = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr -= 1;
           do {
             ptr += 1;
-            auto str = _internal_add_raw_output();
+            auto str = _internal_add_image_paths();
             ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOnlineResponse.image_paths"));
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
@@ -1659,6 +1833,20 @@ const char* QueryOnlineResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAME
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr = ctx->ParseMessage(_internal_mutable_status(), ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated bytes raw_output = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_raw_output();
+            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -1699,10 +1887,14 @@ uint8_t* QueryOnlineResponse::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated bytes raw_output = 1;
-  for (int i = 0, n = this->_internal_raw_output_size(); i < n; i++) {
-    const auto& s = this->_internal_raw_output(i);
-    target = stream->WriteBytes(1, s, target);
+  // repeated string image_paths = 1;
+  for (int i = 0, n = this->_internal_image_paths_size(); i < n; i++) {
+    const auto& s = this->_internal_image_paths(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.QueryOnlineResponse.image_paths");
+    target = stream->WriteString(1, s, target);
   }
 
   // .infaas.internal.InfaasRequestStatus status = 2;
@@ -1711,6 +1903,12 @@ uint8_t* QueryOnlineResponse::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(
         2, _Internal::status(this), target, stream);
+  }
+
+  // repeated bytes raw_output = 3;
+  for (int i = 0, n = this->_internal_raw_output_size(); i < n; i++) {
+    const auto& s = this->_internal_raw_output(i);
+    target = stream->WriteBytes(3, s, target);
   }
 
   // .infaas.internal.InternalDiffusionResponse diffusion = 10;
@@ -1737,7 +1935,15 @@ size_t QueryOnlineResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated bytes raw_output = 1;
+  // repeated string image_paths = 1;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(image_paths_.size());
+  for (int i = 0, n = image_paths_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      image_paths_.Get(i));
+  }
+
+  // repeated bytes raw_output = 3;
   total_size += 1 *
       ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(raw_output_.size());
   for (int i = 0, n = raw_output_.size(); i < n; i++) {
@@ -1781,6 +1987,7 @@ void QueryOnlineResponse::MergeFrom(const QueryOnlineResponse& from) {
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  image_paths_.MergeFrom(from.image_paths_);
   raw_output_.MergeFrom(from.raw_output_);
   if (from._internal_has_status()) {
     _internal_mutable_status()->::infaas::internal::InfaasRequestStatus::MergeFrom(from._internal_status());
@@ -1805,6 +2012,7 @@ bool QueryOnlineResponse::IsInitialized() const {
 void QueryOnlineResponse::InternalSwap(QueryOnlineResponse* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  image_paths_.InternalSwap(&other->image_paths_);
   raw_output_.InternalSwap(&other->raw_output_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(QueryOnlineResponse, diffusion_)
@@ -1845,6 +2053,14 @@ QueryOfflineRequest::QueryOfflineRequest(const QueryOfflineRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       model_(from.model_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  prompt_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    prompt_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_prompt().empty()) {
+    prompt_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_prompt(), 
+      GetArenaForAllocation());
+  }
   input_url_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     input_url_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
@@ -1874,10 +2090,17 @@ QueryOfflineRequest::QueryOfflineRequest(const QueryOfflineRequest& from)
   } else {
     slo_ = nullptr;
   }
+  ::memcpy(&steps_, &from.steps_,
+    static_cast<size_t>(reinterpret_cast<char*>(&batchsize_) -
+    reinterpret_cast<char*>(&steps_)) + sizeof(batchsize_));
   // @@protoc_insertion_point(copy_constructor:infaas.internal.QueryOfflineRequest)
 }
 
 inline void QueryOfflineRequest::SharedCtor() {
+prompt_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  prompt_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 input_url_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   input_url_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
@@ -1890,7 +2113,10 @@ submitter_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAl
 #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
   submitter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-slo_ = nullptr;
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&slo_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&batchsize_) -
+    reinterpret_cast<char*>(&slo_)) + sizeof(batchsize_));
 }
 
 QueryOfflineRequest::~QueryOfflineRequest() {
@@ -1902,6 +2128,7 @@ QueryOfflineRequest::~QueryOfflineRequest() {
 
 inline void QueryOfflineRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  prompt_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   input_url_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   output_url_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   submitter_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -1925,6 +2152,7 @@ void QueryOfflineRequest::Clear() {
   (void) cached_has_bits;
 
   model_.Clear();
+  prompt_.ClearToEmpty();
   input_url_.ClearToEmpty();
   output_url_.ClearToEmpty();
   submitter_.ClearToEmpty();
@@ -1932,6 +2160,9 @@ void QueryOfflineRequest::Clear() {
     delete slo_;
   }
   slo_ = nullptr;
+  ::memset(&steps_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&batchsize_) -
+      reinterpret_cast<char*>(&steps_)) + sizeof(batchsize_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1941,9 +2172,51 @@ const char* QueryOfflineRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAME
     uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // string input_url = 1;
+      // string Prompt = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_prompt();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOfflineRequest.Prompt"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 Steps = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          steps_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float CFG_Scale = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 29)) {
+          cfg_scale_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 BatchSize = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          batchsize_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int64 Seed = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          seed_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string input_url = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
           auto str = _internal_mutable_input_url();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOfflineRequest.input_url"));
@@ -1951,9 +2224,9 @@ const char* QueryOfflineRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAME
         } else
           goto handle_unusual;
         continue;
-      // repeated string model = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+      // repeated string model = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
           ptr -= 1;
           do {
             ptr += 1;
@@ -1962,13 +2235,13 @@ const char* QueryOfflineRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAME
             CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOfflineRequest.model"));
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<58>(ptr));
         } else
           goto handle_unusual;
         continue;
-      // string output_url = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+      // string output_url = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
           auto str = _internal_mutable_output_url();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOfflineRequest.output_url"));
@@ -1976,17 +2249,17 @@ const char* QueryOfflineRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAME
         } else
           goto handle_unusual;
         continue;
-      // .infaas.internal.QuerySLO slo = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+      // .infaas.internal.QuerySLO slo = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
           ptr = ctx->ParseMessage(_internal_mutable_slo(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // string submitter = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+      // string submitter = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
           auto str = _internal_mutable_submitter();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.QueryOfflineRequest.submitter"));
@@ -2023,52 +2296,90 @@ uint8_t* QueryOfflineRequest::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string input_url = 1;
+  // string Prompt = 1;
+  if (!this->_internal_prompt().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_prompt().data(), static_cast<int>(this->_internal_prompt().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.QueryOfflineRequest.Prompt");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_prompt(), target);
+  }
+
+  // int32 Steps = 2;
+  if (this->_internal_steps() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_steps(), target);
+  }
+
+  // float CFG_Scale = 3;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cfg_scale = this->_internal_cfg_scale();
+  uint32_t raw_cfg_scale;
+  memcpy(&raw_cfg_scale, &tmp_cfg_scale, sizeof(tmp_cfg_scale));
+  if (raw_cfg_scale != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(3, this->_internal_cfg_scale(), target);
+  }
+
+  // int32 BatchSize = 4;
+  if (this->_internal_batchsize() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_batchsize(), target);
+  }
+
+  // int64 Seed = 5;
+  if (this->_internal_seed() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt64ToArray(5, this->_internal_seed(), target);
+  }
+
+  // string input_url = 6;
   if (!this->_internal_input_url().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_input_url().data(), static_cast<int>(this->_internal_input_url().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "infaas.internal.QueryOfflineRequest.input_url");
     target = stream->WriteStringMaybeAliased(
-        1, this->_internal_input_url(), target);
+        6, this->_internal_input_url(), target);
   }
 
-  // repeated string model = 2;
+  // repeated string model = 7;
   for (int i = 0, n = this->_internal_model_size(); i < n; i++) {
     const auto& s = this->_internal_model(i);
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       s.data(), static_cast<int>(s.length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "infaas.internal.QueryOfflineRequest.model");
-    target = stream->WriteString(2, s, target);
+    target = stream->WriteString(7, s, target);
   }
 
-  // string output_url = 3;
+  // string output_url = 8;
   if (!this->_internal_output_url().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_output_url().data(), static_cast<int>(this->_internal_output_url().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "infaas.internal.QueryOfflineRequest.output_url");
     target = stream->WriteStringMaybeAliased(
-        3, this->_internal_output_url(), target);
+        8, this->_internal_output_url(), target);
   }
 
-  // .infaas.internal.QuerySLO slo = 4;
+  // .infaas.internal.QuerySLO slo = 9;
   if (this->_internal_has_slo()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(
-        4, _Internal::slo(this), target, stream);
+        9, _Internal::slo(this), target, stream);
   }
 
-  // string submitter = 5;
+  // string submitter = 10;
   if (!this->_internal_submitter().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_submitter().data(), static_cast<int>(this->_internal_submitter().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
       "infaas.internal.QueryOfflineRequest.submitter");
     target = stream->WriteStringMaybeAliased(
-        5, this->_internal_submitter(), target);
+        10, this->_internal_submitter(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2087,7 +2398,7 @@ size_t QueryOfflineRequest::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated string model = 2;
+  // repeated string model = 7;
   total_size += 1 *
       ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(model_.size());
   for (int i = 0, n = model_.size(); i < n; i++) {
@@ -2095,32 +2406,63 @@ size_t QueryOfflineRequest::ByteSizeLong() const {
       model_.Get(i));
   }
 
-  // string input_url = 1;
+  // string Prompt = 1;
+  if (!this->_internal_prompt().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_prompt());
+  }
+
+  // string input_url = 6;
   if (!this->_internal_input_url().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_input_url());
   }
 
-  // string output_url = 3;
+  // string output_url = 8;
   if (!this->_internal_output_url().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_output_url());
   }
 
-  // string submitter = 5;
+  // string submitter = 10;
   if (!this->_internal_submitter().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_submitter());
   }
 
-  // .infaas.internal.QuerySLO slo = 4;
+  // .infaas.internal.QuerySLO slo = 9;
   if (this->_internal_has_slo()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *slo_);
+  }
+
+  // int32 Steps = 2;
+  if (this->_internal_steps() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_steps());
+  }
+
+  // float CFG_Scale = 3;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cfg_scale = this->_internal_cfg_scale();
+  uint32_t raw_cfg_scale;
+  memcpy(&raw_cfg_scale, &tmp_cfg_scale, sizeof(tmp_cfg_scale));
+  if (raw_cfg_scale != 0) {
+    total_size += 1 + 4;
+  }
+
+  // int64 Seed = 5;
+  if (this->_internal_seed() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int64SizePlusOne(this->_internal_seed());
+  }
+
+  // int32 BatchSize = 4;
+  if (this->_internal_batchsize() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_batchsize());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
@@ -2146,6 +2488,9 @@ void QueryOfflineRequest::MergeFrom(const QueryOfflineRequest& from) {
   (void) cached_has_bits;
 
   model_.MergeFrom(from.model_);
+  if (!from._internal_prompt().empty()) {
+    _internal_set_prompt(from._internal_prompt());
+  }
   if (!from._internal_input_url().empty()) {
     _internal_set_input_url(from._internal_input_url());
   }
@@ -2157,6 +2502,22 @@ void QueryOfflineRequest::MergeFrom(const QueryOfflineRequest& from) {
   }
   if (from._internal_has_slo()) {
     _internal_mutable_slo()->::infaas::internal::QuerySLO::MergeFrom(from._internal_slo());
+  }
+  if (from._internal_steps() != 0) {
+    _internal_set_steps(from._internal_steps());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_cfg_scale = from._internal_cfg_scale();
+  uint32_t raw_cfg_scale;
+  memcpy(&raw_cfg_scale, &tmp_cfg_scale, sizeof(tmp_cfg_scale));
+  if (raw_cfg_scale != 0) {
+    _internal_set_cfg_scale(from._internal_cfg_scale());
+  }
+  if (from._internal_seed() != 0) {
+    _internal_set_seed(from._internal_seed());
+  }
+  if (from._internal_batchsize() != 0) {
+    _internal_set_batchsize(from._internal_batchsize());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2180,6 +2541,11 @@ void QueryOfflineRequest::InternalSwap(QueryOfflineRequest* other) {
   model_.InternalSwap(&other->model_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &prompt_, lhs_arena,
+      &other->prompt_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
       &input_url_, lhs_arena,
       &other->input_url_, rhs_arena
   );
@@ -2193,7 +2559,12 @@ void QueryOfflineRequest::InternalSwap(QueryOfflineRequest* other) {
       &submitter_, lhs_arena,
       &other->submitter_, rhs_arena
   );
-  swap(slo_, other->slo_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(QueryOfflineRequest, batchsize_)
+      + sizeof(QueryOfflineRequest::batchsize_)
+      - PROTOBUF_FIELD_OFFSET(QueryOfflineRequest, slo_)>(
+          reinterpret_cast<char*>(&slo_),
+          reinterpret_cast<char*>(&other->slo_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata QueryOfflineRequest::GetMetadata() const {
@@ -2815,11 +3186,11 @@ template<> PROTOBUF_NOINLINE ::infaas::internal::InternalDiffusionQuery* Arena::
 template<> PROTOBUF_NOINLINE ::infaas::internal::InternalDiffusionResponse* Arena::CreateMaybeMessage< ::infaas::internal::InternalDiffusionResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::infaas::internal::InternalDiffusionResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::infaas::internal::QuerySLO* Arena::CreateMaybeMessage< ::infaas::internal::QuerySLO >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::infaas::internal::QuerySLO >(arena);
-}
 template<> PROTOBUF_NOINLINE ::infaas::internal::QueryOnlineRequest* Arena::CreateMaybeMessage< ::infaas::internal::QueryOnlineRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::infaas::internal::QueryOnlineRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::infaas::internal::QuerySLO* Arena::CreateMaybeMessage< ::infaas::internal::QuerySLO >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::infaas::internal::QuerySLO >(arena);
 }
 template<> PROTOBUF_NOINLINE ::infaas::internal::QueryOnlineResponse* Arena::CreateMaybeMessage< ::infaas::internal::QueryOnlineResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::infaas::internal::QueryOnlineResponse >(arena);

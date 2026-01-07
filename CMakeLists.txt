@@ -60,7 +60,7 @@ find_package(gRPC REQUIRED)
 
 find_program(_GRPC_CPP_PLUGIN_EXECUTABLE grpc_cpp_plugin)
 if(NOT _GRPC_CPP_PLUGIN_EXECUTABLE)
-    message(FATAL_ERROR "grpc_cpp_plugin not found.")
+    essage(FATAL_ERROR "grpc_cpp_plugin not found.")
 endif()
 
 set(_GRPC_GRPCPP_UNSECURE grpc++_unsecure)

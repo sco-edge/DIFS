@@ -1,15 +1,106 @@
-[ 98%] Built target modelreg_server
-/usr/bin/ld: CMakeFiles/query_executor.dir/query_executor.cc.o: in function `infaas::internal::QueryServiceImpl::qpsMonitor()':
-query_executor.cc:(.text+0x49bf): undefined reference to `infaas::internal::CommonModelUtil::SetBlacklisted(bool)'
-/usr/bin/ld: CMakeFiles/query_executor.dir/query_executor.cc.o: in function `infaas::internal::QueryServiceImpl::QueryOnline(grpc::ServerContext*, infaas::internal::QueryOnlineRequest const*, infaas::internal::QueryOnlineResponse*)':
-query_executor.cc:(.text+0x6824): undefined reference to `infaas::internal::GpuModelManager::QueryModelOnline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, infaas::internal::QueryOnlineRequest const*, infaas::internal::QueryOnlineResponse*, std::unique_ptr<RedisMetadata, std::default_delete<RedisMetadata> >&, std::unique_ptr<localfs::S3Client, std::default_delete<localfs::S3Client> >&)'
-/usr/bin/ld: query_executor.cc:(.text+0x72dd): undefined reference to `infaas::internal::CpuModelManager::QueryModelOnline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, infaas::internal::QueryOnlineRequest const*, infaas::internal::QueryOnlineResponse*, std::unique_ptr<RedisMetadata, std::default_delete<RedisMetadata> >&, std::unique_ptr<localfs::S3Client, std::default_delete<localfs::S3Client> >&)'
-/usr/bin/ld: CMakeFiles/query_executor.dir/query_executor.cc.o: in function `infaas::internal::QueryServiceImpl::offlineProccess()':
-query_executor.cc:(.text+0x8acb): undefined reference to `infaas::internal::CpuModelManager::QueryModelOffline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, infaas::internal::QueryOfflineRequest const&, std::unique_ptr<RedisMetadata, std::default_delete<RedisMetadata> >&, std::unique_ptr<localfs::S3Client, std::default_delete<localfs::S3Client> >&)'
-collect2: error: ld returned 1 exit status
-make[2]: *** [src/worker/CMakeFiles/query_executor.dir/build.make:154: src/worker/query_executor] Error 1
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc: In member function ‘infaas::internal::InfaasRequestStatus infaas::internal::QueryClient::QueryOnline(const google::protobuf::RepeatedPtrField<std::__cxx11::basic_string<char> >&, const std::vector<std::__cxx11::basic_string<char> >&, std::string, google::protobuf::RepeatedPtrField<std::__cxx11::basic_string<char> >*, const int64_t&, const double&, const double&, int)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:72:11: error: ‘class infaas::internal::QueryOnlineRequest’ has no member named ‘mutable_raw_input’
+   72 |   request.mutable_raw_input()->CopyFrom(input);
+      |           ^~~~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:73:34: error: ‘class infaas::internal::QueryOnlineRequest’ has no member named ‘add_model’
+   73 |   for (auto m : model) { request.add_model(m); }
+      |                                  ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:74:11: error: ‘class infaas::internal::QueryOnlineRequest’ has no member named ‘mutable_slo’; did you mean ‘mutable_prompt’?
+   74 |   request.mutable_slo()->CopyFrom(query_slo);
+      |           ^~~~~~~~~~~
+      |           mutable_prompt
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:75:11: error: ‘class infaas::internal::QueryOnlineRequest’ has no member named ‘set_submitter’
+   75 |   request.set_submitter(submitter);
+      |           ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:98:21: error: ‘class infaas::internal::QueryOnlineResponse’ has no member named ‘raw_output’
+   98 |     *output = reply.raw_output();
+      |                     ^~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc: In member function ‘infaas::internal::InfaasRequestStatus infaas::internal::QueryClient::QueryOffline(const std::string&, const std::vector<std::__cxx11::basic_string<char> >&, std::string, const std::string&, const double&, int)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:132:11: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘set_input_url’
+  132 |   request.set_input_url(input_url);
+      |           ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:133:34: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘add_model’
+  133 |   for (auto m : model) { request.add_model(m); }
+      |                                  ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:134:11: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘set_output_url’
+  134 |   request.set_output_url(output_url);
+      |           ^~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:135:11: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘mutable_slo’; did you mean ‘mutable_prompt’?
+  135 |   request.mutable_slo()->CopyFrom(query_slo);
+      |           ^~~~~~~~~~~
+      |           mutable_prompt
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc:136:11: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘set_submitter’
+  136 |   request.set_submitter(submitter);
+      |           ^~~~~~~~~~~~~
+make[2]: *** [src/worker/CMakeFiles/inf-worker.dir/build.make:79: src/worker/CMakeFiles/inf-worker.dir/query_client.cc.o] Error 1
 make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
-make[1]: *** [CMakeFiles/Makefile2:339: src/worker/CMakeFiles/query_executor.dir/all] Error 2
+make[1]: *** [CMakeFiles/Makefile2:284: src/worker/CMakeFiles/inf-worker.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+[ 57%] Linking CXX shared library libinf-master.so
+cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/master && /usr/bin/cmake -E cmake_link_script CMakeFiles/inf-master.dir/link.txt --verbose=1
+/usr/bin/c++ -fPIC  -std=c++11 -O3 -DNDEBUG -shared -Wl,-soname,libinf-master.so -o libinf-master.so CMakeFiles/inf-master.dir/queryfe_client.cc.o CMakeFiles/inf-master.dir/modelreg_client.cc.o   -L/usr/local/lib  -L/usr/local/lib64  -Wl,-rpath,/usr/local/lib:/usr/local/lib64:/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/metadata-store ../metadata-store/libredis-md.so ../../protos/libinfaas-protos.a /usr/local/lib/libprotobuf.so -lredox /usr/lib/x86_64-linux-gnu/libhiredis.so /usr/lib/x86_64-linux-gnu/libev.so ../../protos/internal/libinfaas-protos-internal.a 
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
+[ 57%] Built target inf-master
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In function ‘int8_t CpuModelManager::QueryModelOnline(const std::string&, const infaas::internal::QueryOnlineRequest&, infaas::internal::QueryOnlineResponse&, std::unique_ptr<RedisMetadata>&, std::unique_ptr<Aws::S3::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:692:87: error: ‘const class infaas::internal::QueryOnlineRequest’ has no member named ‘raw_input’
+  692 |             const google::protobuf::RepeatedPtrField<std::string>& rawinput = request.raw_input();
+      |                                                                                       ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:693:45: error: ‘const class infaas::internal::QueryOnlineRequest’ has no member named ‘raw_input’
+  693 |             const auto& raw_input = request.raw_input(); // PNB: (2025.12.27)
+      |                                             ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:774:23: error: ‘class infaas::internal::QueryOnlineResponse’ has no member named ‘add_raw_output’
+  774 |                 reply.add_raw_output(reinterpret_cast<const char*>(predv),
+      |                       ^~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:790:55: error: ‘class infaas::internal::QueryOnlineResponse’ has no member named ‘raw_output_size’
+  790 |         std::cout << "rawoutput batch size " << reply.raw_output_size()
+      |                                                       ^~~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:791:50: error: ‘class infaas::internal::QueryOnlineResponse’ has no member named ‘raw_output’
+  791 |                   << " each dimension " << reply.raw_output(0).size() << std::endl;
+      |                                                  ^~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In function ‘int8_t CpuModelManager::QueryModelOffline(const std::string&, const infaas::internal::QueryOfflineRequest&, std::unique_ptr<RedisMetadata>&, std::unique_ptr<Aws::S3::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:797:55: error: ‘const class infaas::internal::QueryOfflineRequest’ has no member named ‘input_url’
+  797 |         std::string inputurl = bucketprefix + request.input_url();
+      |                                                       ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:798:56: error: ‘const class infaas::internal::QueryOfflineRequest’ has no member named ‘output_url’
+  798 |         std::string outputurl = bucketprefix + request.output_url();
+      |                                                        ^~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:799:41: error: ‘const class infaas::internal::QueryOfflineRequest’ has no member named ‘submitter’
+  799 |         std::string submitter = request.submitter();
+      |                                         ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:881:26: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘set_input_url’
+  881 |         containerrequest.set_input_url(localinstancename);
+      |                          ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:882:26: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘add_model’
+  882 |         containerrequest.add_model(modelname);
+      |                          ^~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:883:26: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘set_output_url’
+  883 |         containerrequest.set_output_url(localinstancename);
+      |                          ^~~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:884:26: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘mutable_slo’; did you mean ‘mutable_prompt’?
+  884 |         containerrequest.mutable_slo()->CopyFrom(request.slo());
+      |                          ^~~~~~~~~~~
+      |                          mutable_prompt
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:884:58: error: ‘const class infaas::internal::QueryOfflineRequest’ has no member named ‘slo’
+  884 |         containerrequest.mutable_slo()->CopyFrom(request.slo());
+      |                                                          ^~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:885:26: error: ‘class infaas::internal::QueryOfflineRequest’ has no member named ‘set_submitter’
+  885 |         containerrequest.set_submitter(submitter);
+      |                          ^~~~~~~~~~~~~
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In member function ‘int8_t infaas::internal::GpuModelManager::QueryModelOnline(const std::string&, const infaas::internal::QueryOnlineRequest*, infaas::internal::QueryOnlineResponse*, std::unique_ptr<RedisMetadata>&, std::unique_ptr<localfs::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:1122:1: warning: no return statement in function returning non-void [-Wreturn-type]
+ 1122 | }
+      | ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In member function ‘int8_t infaas::internal::CpuModelManager::QueryModelOnline(const std::string&, const infaas::internal::QueryOnlineRequest*, infaas::internal::QueryOnlineResponse*, std::unique_ptr<RedisMetadata>&, std::unique_ptr<localfs::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:1156:1: warning: no return statement in function returning non-void [-Wreturn-type]
+ 1156 | }
+      | ^
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc: In member function ‘int8_t infaas::internal::CpuModelManager::QueryModelOffline(const std::string&, const infaas::internal::QueryOfflineRequest&, std::unique_ptr<RedisMetadata>&, std::unique_ptr<localfs::S3Client>&)’:
+/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.cc:1164:1: warning: no return statement in function returning non-void [-Wreturn-type]
+ 1164 | }
+      | ^
+make[2]: *** [src/worker/CMakeFiles/worker-util.dir/build.make:79: src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o] Error 1
+make[2]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
+make[1]: *** [CMakeFiles/Makefile2:311: src/worker/CMakeFiles/worker-util.dir/all] Error 2
 make[1]: Leaving directory '/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build'
 make: *** [Makefile:94: all] Error 2
 ERROR occurred on line 155

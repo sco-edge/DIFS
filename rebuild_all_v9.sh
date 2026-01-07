@@ -118,12 +118,20 @@ if [ ! -f "$PROTO_PATH/modelreg.proto" ]; then
     exit 1
 fi
 
+# PNB: for cpp base protoc compilation  (2026.01.06)
 protoc \
   --proto_path="$PROTO_PATH" \
   --cpp_out="$INFAAS_SRC/src/master" \
   --grpc_out="$INFAAS_SRC/src/master" \
   --plugin=protoc-gen-grpc="$(which grpc_cpp_plugin)" \
   "$PROTO_PATH/modelreg.proto"
+
+# PNB: for python base protoc compilation  (2026.01.06)
+python -m grpc_tools.protoc  -I=protos   \
+       --python_out="$PROTO_PATH/python_protos" \
+       --grpc_python_out="$PROTO_PATH/python_protos" \
+       "$PROTO_PATH/query.proto" "$PROTO_PATH/infaas_request_status.proto"
+
 
 # -------------------------------------------------
 # BUILD DIFS (LOCAL MODE, NO TRTIS, NO DIFFUSION)
