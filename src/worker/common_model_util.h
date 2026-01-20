@@ -49,6 +49,11 @@
 #include "query.grpc.pb.h"
 #include "metadata-store/redis_metadata.h"
 
+// PNB: adding forward declaration (2026.01.10)
+namespace diffusion{
+  class DiffusionService;
+}
+
 namespace infaas {
 namespace internal {
 
@@ -62,6 +67,38 @@ private:
   static bool has_blacklisted_;
   static std::mutex mutex_;  // Protect the update of map.
 };
+
+
+  // PNB: new manager class for Diffusion Model; methods are implemented in 'common_model_util.cc' file (2026.01.08)
+class DiffusionModelManager {
+public:
+  static int numReplicas(const std::string& model);
+  static int LoadModel(
+      const std::string& model,
+      std::unique_ptr<RedisMetadata>& rm);
+
+  static int Generate( // PNB: added (2026).01.15)
+      const std::string& model,
+      const std::string& prompt,
+      int steps,
+      int width,
+      int height,
+      std::string& png_bytes,
+      std::string& output_path);
+  
+  static int UnloadModel(
+      const std::string& model,
+      std::unique_ptr<RedisMetadata>& rm);
+
+  static int QueryModelOnline(
+      const std::string& model,
+      const QueryOnlineRequest* request,
+      QueryOnlineResponse* response,
+      std::unique_ptr<RedisMetadata>& rm,
+      std::unique_ptr<localfs::S3Client>& s3);
+};
+
+  
 
 // Convert timespec to uint64_t timestamp in usec.
 inline uint64_t timespec_to_us(const struct timespec& a) {

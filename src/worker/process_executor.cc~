@@ -1,0 +1,95 @@
+#include "worker/process_executor.h"
+
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstring>
+#include <iostream>
+
+namespace infaas {
+namespace internal {
+
+static void ReadFromFd(int fd, std::string* output) {
+  if (!output) return;
+
+  char buffer[4096];
+  ssize_t n;
+  while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
+    output->append(buffer, n);
+  }
+}
+
+int ForkAndExec(const std::vector<std::string>& argv,
+                std::string* stdout_out,
+                std::string* stderr_out) {
+  if (argv.empty()) {
+    return -1;
+  }
+
+  int stdout_pipe[2];
+  int stderr_pipe[2];
+
+  if (pipe(stdout_pipe) < 0 || pipe(stderr_pipe) < 0) {
+    perror("pipe");
+    return -1;
+  }
+
+  pid_t pid = fork();
+  if (pid < 0) {
+    perror("fork");
+    return -1;
+  }
+
+  if (pid == 0) {
+    // ---- CHILD PROCESS ----
+
+    // Redirect stdout
+    dup2(stdout_pipe[1], STDOUT_FILENO);
+    dup2(stderr_pipe[1], STDERR_FILENO);
+
+    close(stdout_pipe[0]);
+    close(stdout_pipe[1]);
+    close(stderr_pipe[0]);
+    close(stderr_pipe[1]);
+
+    // Build argv for execvp
+    std::vector<char*> exec_argv;
+    exec_argv.reserve(argv.size() + 1);
+    for (const auto& arg : argv) {
+      exec_argv.push_back(const_cast<char*>(arg.c_str()));
+    }
+    exec_argv.push_back(nullptr);
+
+    execvp(exec_argv[0], exec_argv.data());
+
+    // execvp only returns on failure
+    perror("execvp");
+    _exit(127);
+  }
+
+  // ---- PARENT PROCESS ----
+  close(stdout_pipe[1]);
+  close(stderr_pipe[1]);
+
+  ReadFromFd(stdout_pipe[0], stdout_out);
+  ReadFromFd(stderr_pipe[0], stderr_out);
+
+  close(stdout_pipe[0]);
+  close(stderr_pipe[0]);
+
+  int status = 0;
+  waitpid(pid, &status, 0);
+
+  if (WIFEXITED(status)) {
+    return WEXITSTATUS(status);
+  } else if (WIFSIGNALED(status)) {
+    return 128 + WTERMSIG(status);
+  }
+
+  return -1;
+}
+
+}  // namespace internal
+}  // namespace infaas

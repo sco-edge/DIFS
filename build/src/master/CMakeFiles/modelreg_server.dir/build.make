@@ -97,11 +97,11 @@ bin/modelreg_server: src/master/CMakeFiles/modelreg_server.dir/modelreg_server.c
 bin/modelreg_server: src/master/CMakeFiles/modelreg_server.dir/build.make
 bin/modelreg_server: src/master/libinf-master.so
 bin/modelreg_server: src/worker/libworker-util.a
-bin/modelreg_server: protos/libinfaas-protos.a
 bin/modelreg_server: /usr/local/lib/libprotobuf.so
 bin/modelreg_server: src/metadata-store/libredis-md.so
 bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libev.so
+bin/modelreg_server: protos/libinfaas-protos.a
 bin/modelreg_server: /usr/lib/x86_64-linux-gnu/libcurl.so
 bin/modelreg_server: protos/internal/libinfaas-protos-internal.a
 bin/modelreg_server: /usr/local/lib/libprotobuf.so

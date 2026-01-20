@@ -43,11 +43,14 @@
 #include "metadata-store/redis_metadata.h"
 #include "modelreg.grpc.pb.h"
 #include <grpcpp/grpcpp.h>
+#include "model.pb.h" //PNB: (2026.01.16)
 
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
+
+using infaas::internal::ModelType;
 
 // Function to compute the linear regression parameters for batch prediction
 void compute_linreg(const double *batch_sizes, const double *measured_inflat,
@@ -500,64 +503,92 @@ if (check_outcome.IsSuccess()) {
     compute_linreg(batch_values, inf_latency, num_batch_items, &slope,
                    &intercept);
     
-    // PNB: Original code ensuring task is stored (2025.12.22)
-    // Store model metadata
-    // rc = rm_->add_model(variant_name, parent_model, grandparent_model,
-    //                     comp_size, accuracy, dataset, submitter, framework,
-    //                     task, input_dim, batch_size, load_latency,
-    //                     inf_latency[0], peak_memory, slope, intercept);
+    //// PNB: Original code ensuring task is stored (2025.12.22)
+    //// Store model metadata
+    //// rc = rm_->add_model(variant_name, parent_model, grandparent_model,
+    ////                     comp_size, accuracy, dataset, submitter, framework,
+    ////                     task, input_dim, batch_size, load_latency,
+    ////                     inf_latency[0], peak_memory, slope, intercept);
 
-    // PNB: ensuring task is stored for diffusion model (2025.12.22)
-    if (request->task() == "DIFFUSION") {
-      std::string model_type = "default";
-      double comp_size = std::stod(request->comp_size());
-      double accuracy  = request->accuracy();
+    //// PNB: ensuring task is stored for diffusion model (2025.12.22)
+    //if (request->task() == "DIFFUSION") {
+      //std::string model_type = "default";
+      //double comp_size = std::stod(request->comp_size());
+      //double accuracy  = request->accuracy();
+//rc = rm_->add_model(
+    //variant_name,
+    //parent_model,
+    //grandparent_model,
+    //comp_size,          
+    //accuracy,
+    //dataset,
+    //submitter,
+    //framework,
+    //task,
+    //"local-container",
+    //50052,              
+    //input_dim,
+    //batch_size,
+    //load_latency,
+    //inf_latency[0],
+    //peak_memory,
+    //slope,
+    //intercept
+//);
+    //} else {
+      //// existing call for other tasks
+      //std::string model_type = "default";
+      //double comp_size = std::stod(request->comp_size());
+      //double accuracy  = request->accuracy();
+      //double cost = 0.0;  // TODO: compute later
+      //rc = rm_->add_model(variant_name,
+			  //parent_model,
+			  //grandparent_model,
+			  //comp_size,
+			  //accuracy,
+			  //model_type,
+			  //dataset,
+			  //submitter,
+			  //framework,
+			  //task,
+			  //input_dim,
+			  //batch_size,
+			  //load_latency,
+			  //inf_latency[0],
+			  //peak_memory,
+			  //slope,
+			  //intercept,
+			  //cost);
+    //}
+    
+  // PNB: Replaces the commented section directly above (2026.01.08)  
+ // Model type is now explicit
+    ModelType model_type = ModelType::MODEL_DIFFUSION;
+
+    std::string model_type_str = (model_type == ModelType::MODEL_DIFFUSION) ? "DIFFUSION" : "DNN";
+
+// Common registration path for ALL models
 rc = rm_->add_model(
     variant_name,
     parent_model,
     grandparent_model,
-    comp_size,          
+    comp_size,
     accuracy,
+    model_type_str,        // ← key change
     dataset,
     submitter,
-    framework,
-    task,
-    "local-container",
-    50052,              
+    framework,         // e.g. "diffusers"
+    task,              // e.g. "IMAGE_GENERATION"
     input_dim,
     batch_size,
+    batch_size,  // max_batch size
     load_latency,
     inf_latency[0],
     peak_memory,
     slope,
     intercept
 );
-    } else {
-      // existing call for other tasks
-      std::string model_type = "default";
-      double comp_size = std::stod(request->comp_size());
-      double accuracy  = request->accuracy();
-      double cost = 0.0;  // TODO: compute later
-      rc = rm_->add_model(variant_name,
-			  parent_model,
-			  grandparent_model,
-			  comp_size,
-			  accuracy,
-			  model_type,
-			  dataset,
-			  submitter,
-			  framework,
-			  task,
-			  input_dim,
-			  batch_size,
-			  load_latency,
-			  inf_latency[0],
-			  peak_memory,
-			  slope,
-			  intercept,
-			  cost);
-    }
-    
+
     
     if (rc) {
       rs->set_status(RequestReplyEnum::INVALID);

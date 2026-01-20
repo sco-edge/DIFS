@@ -54,9 +54,13 @@
 #include "constants.h" //PNB: (2025.11.28)
 #include "query.grpc.pb.h"
 #include "metadata-store/redis_metadata.h"
+#include "process_executor.h"
+#include "infaas_request_status.pb.h" // PNB: (2026.01.19)
 
 //#include "worker/local_storage_backend.h"//PNB: (2025.11.28)
 #include "local_storage_backend.h"//PNB: (2025.12.28)
+#include "model.pb.h" //PNB: (2026.01.16)
+#include "model_executor.h" //PNB (2026.01.20)
 
 #ifdef ENABLE_AWS
 using Aws::S3::S3Client;
@@ -71,7 +75,7 @@ using grpc::Status;
 #ifdef ENABLE_DIFFUSION
 using infaas::internal::InternalDiffusionQuery;
 using infaas::internal::InternalDiffusionResponse;
-using infaas::internal::DiffusionService;
+//using infaas::internal::DiffusionService;
 #endif
 
 const std::string query_exe_addr = "0.0.0.0:50051";
@@ -105,8 +109,10 @@ static unsigned long long lastTotalUser, lastTotalUserLow, lastTotalSys,
 // From answer: https://stackoverflow.com/a/1911863
 void initCPUutil() {
   FILE *file = fopen("/proc/stat", "r");
-  fscanf(file, "cpu %llu %llu %llu %llu", &lastTotalUser, &lastTotalUserLow,
-         &lastTotalSys, &lastTotalIdle);
+  if(fscanf(file, "cpu %llu %llu %llu %llu", &lastTotalUser, &lastTotalUserLow,
+	    &lastTotalSys, &lastTotalIdle) < 0){
+    return;
+  }
   fclose(file);
 }
 
@@ -263,6 +269,8 @@ private:
   static std::map<std::string, std::atomic<uint64_t>> model_total_comp_;
   // Sum of slo-latency per model.
   static std::map<std::string, std::atomic<uint64_t>> model_total_slo_;
+
+  RedisMetadata* rm_; //PNB: (2026.01.20)
 };
 
 std::map<std::string, std::atomic<uint64_t>>
@@ -288,192 +296,313 @@ Status QueryServiceImpl::Heartbeat(ServerContext *context,
   return Status::OK;
 }
 
-Status QueryServiceImpl::QueryOnline(ServerContext *context,
-                                     const QueryOnlineRequest *request,
-                                     QueryOnlineResponse *reply) {
-  uint64_t time1, time2;
-  time1 = get_curr_timestamp();
+// Status QueryServiceImpl::QueryOnline(ServerContext *context,
+//                                      const QueryOnlineRequest *request,
+//                                      QueryOnlineResponse *reply) {
+//   uint64_t time1, time2;
+//   time1 = get_curr_timestamp();
 
-  auto models = request->model();
-  auto slo = request->slo();
+//   auto models = request->model();
+//   auto slo = request->slo();
 
-  InfaasRequestStatus *request_status = reply->mutable_status();
+//   InfaasRequestStatus *request_status = reply->mutable_status();
 
-  // Check model pool not empty.
-  if (models.size() == 0) {
-    request_status->set_status(InfaasRequestStatusEnum::INVALID);
-    request_status->set_msg("No model provided!");
-    return Status(grpc::StatusCode::INVALID_ARGUMENT, "No model provided!");
-  }
+//   // Check model pool not empty.
+//   if (models.size() == 0) {
+//     request_status->set_status(InfaasRequestStatusEnum::INVALID);
+//     request_status->set_msg("No model provided!");
+//     return Status(grpc::StatusCode::INVALID_ARGUMENT, "No model provided!");
+//   }
 
-  // The main part of scheduling
-  // 1. Check how many models provided. If only one:
-  // 1.1. Check whether a model instance exists.
-  // 1.2. If doesn't exist, create a container (for CPU) or add the model
-  //      to TRTIS models/ (for GPU)
-  // 1.3. If model instance exists, direct the request to that container.
-  // 2. If multiple models provided, pick up one model based on whether the
-  // model is running and latency/accuracy trade-off.
+// //   // The main part of scheduling
+// //   // 1. Check how many models provided. If only one:
+// //   // 1.1. Check whether a model instance exists.
+// //   // 1.2. If doesn't exist, create a container (for CPU) or add the model
+// //   //      to TRTIS models/ (for GPU)
+// //   // 1.3. If model instance exists, direct the request to that container.
+// //   // 2. If multiple models provided, pick up one model based on whether the
+// //   // model is running and latency/accuracy trade-off.
 
-  if (models.size() == 1) {
-    // For tests:
-    if (models[0] == test_model) {
-      reply->add_raw_output("SUCCESSFULQUERY");
-      request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
+// //   //PNB: Connect Query Routing (Worker Side); To get the stable diffusion model working end-to-end  (2026.01.08)
+// //   auto model_name = request->model(0);//first model entry
 
-      time2 = get_curr_timestamp();
-      printf("worker [query_executor.cc] QueryOnline total time: %.4lf ms.\n",
-             get_duration_ms(time1, time2));
-      fflush(stdout);
-      return Status::OK;
-    }
 
-    // Choose targeting hardware (GPU, CPU, etc).
-    auto hw = ChooseHardware(models[0], redis_metadata_);
-    model_total_slo_[models[0]].fetch_add(slo.latencyinusec());
-    if (hw == "GPU") {
-      model_total_reqs_[models[0]].fetch_add(1);
-      model_total_batch_[models[0]].fetch_add(request->raw_input().size());
+// //   auto model_type = rm_->get_model_type(model_name);// assuming rm_ = registry manager, which INFaaS already uses
+// //   bool is_diffusion =
+// //     (request->framework() == "diffusers") ||
+// //     (request->task() == "IMAGE_GENERATION");
+ 
+// //  if (model_type == ModelType::MODEL_DIFFUSION) {
+// //     return DiffusionModelManager::QueryModelOnline(
+// //         model_name,
+// //         request,
+// //         response,
+// //         //rm_,
+// //         s3_);
+// // }
 
-      GpuModelManager manager(worker_name_);
-      uint64_t time3, time4;
-      time3 = get_curr_timestamp();
-      // printf("[query_executor.cc] manager QueryModelOnline start time:
-      // %lu.\n",
-      //       time3);
-    localfs::ClientConfiguration s3cfg;  //PNB: 2025.12.28
-    //localfs::LocalClientConfig s3cfg;
-    s3cfg.connectTimeoutMs = 1000 * 60 * 3; // Connection timeout = 3min
-    s3cfg.requestTimeoutMs = 1000 * 60 * 3; // Request timeout = 3min.
-    s3cfg.root_dir = "/var/lib/infaas/models";
-    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
 
-   s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
-   int8_t res = manager.QueryModelOnline(models[0], request, reply, redis_metadata_, s3_client_);
+
+//  // 1. Build ModelSpec (this already exists)
+//   ModelSpec spec;
+//   spec.model_name   = request->model(0);
+//   spec.framework    = request->framework();  // if present
+//   spec.task         = request->task();       // if present
+//   spec.exec_path    = request->exec_path();
+//   spec.entry_point  = request->entry_point();
+//   spec.env_path     = request->env_path();
+
+//   // 2. Execute model
+//   std::string output;
+//   int rc = ExecuteModel(spec, request->raw_input(), &output);
+
+//   if (rc != 0) {
+//     return grpc::Status(grpc::StatusCode::INTERNAL,
+//                         "Model execution failed");
+//   }
+
+//   // 3. Return output
+//   reply->add_raw_output(output);
+  
+    
+//   if (models.size() == 1) {
+//     // For tests:
+//     if (models[0] == test_model) {
+//       reply->add_raw_output("SUCCESSFULQUERY");
+//       request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
+
+//       time2 = get_curr_timestamp();
+//       printf("worker [query_executor.cc] QueryOnline total time: %.4lf ms.\n",
+//              get_duration_ms(time1, time2));
+//       fflush(stdout);
+//       return Status::OK;
+//     }
+
+//     // Choose targeting hardware (GPU, CPU, etc).
+//     auto hw = ChooseHardware(models[0], redis_metadata_);
+//     model_total_slo_[models[0]].fetch_add(slo.latencyinusec());
+//     if (hw == "GPU") {
+//       model_total_reqs_[models[0]].fetch_add(1);
+//       model_total_batch_[models[0]].fetch_add(request->raw_input().size());
+
+//       GpuModelManager manager(worker_name_);
+//       uint64_t time3, time4;
+//       time3 = get_curr_timestamp();
+//       // printf("[query_executor.cc] manager QueryModelOnline start time:
+//       // %lu.\n",
+//       //       time3);
+//     localfs::ClientConfiguration s3cfg;  //PNB: 2025.12.28
+//     //localfs::LocalClientConfig s3cfg;
+//     s3cfg.connectTimeoutMs = 1000 * 60 * 3; // Connection timeout = 3min
+//     s3cfg.requestTimeoutMs = 1000 * 60 * 3; // Request timeout = 3min.
+//     s3cfg.root_dir = "/var/lib/infaas/models";
+//     s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
+
+//    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
+//    int8_t res = manager.QueryModelOnline(models[0], request, reply, redis_metadata_, s3_client_);
   
 
-      time4 = get_curr_timestamp();
-      // printf("[query_executor.cc] manager QueryModelOnline end time: %lu.\n",
-      //       time4);
-      model_total_comp_[models[0]].fetch_add(1);
-      model_total_lat_[models[0]].fetch_add(time4 - time3);
+//       time4 = get_curr_timestamp();
+//       // printf("[query_executor.cc] manager QueryModelOnline end time: %lu.\n",
+//       //       time4);
+//       model_total_comp_[models[0]].fetch_add(1);
+//       model_total_lat_[models[0]].fetch_add(time4 - time3);
 
-      printf("[query_executor.cc] manager QueryModelOnline total time: %.4lf "
-             "ms.\n",
-             get_duration_ms(time3, time4));
+//       printf("[query_executor.cc] manager QueryModelOnline total time: %.4lf "
+//              "ms.\n",
+//              get_duration_ms(time3, time4));
 
-      if (res < 0) {
-        // TODO: probably try to run on other hardware or retry instead of
-        // failing.
-        std::cerr << "Failed to query, res = " << int(res) << std::endl;
-        request_status->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
-        request_status->set_msg("Failed to serve online query on GPU!");
-        return Status(grpc::StatusCode::UNAVAILABLE, "Failed to serve!");
-      }
-      // time2 = get_curr_timestamp();
-      // printf("worker [query_executor.cc] QueryOnline total time: %.4lf
-      // ms.\n",
-      //       get_duration_ms(time1, time2));
-      // fflush(stdout);
-      request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
-      return Status::OK;
-    } else if (hw == "CPU") {
-      model_total_reqs_[models[0]].fetch_add(1);
-      model_total_batch_[models[0]].fetch_add(request->raw_input().size());
+//       if (res < 0) {
+//         // TODO: probably try to run on other hardware or retry instead of
+//         // failing.
+//         std::cerr << "Failed to query, res = " << int(res) << std::endl;
+//         request_status->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
+//         request_status->set_msg("Failed to serve online query on GPU!");
+//         return Status(grpc::StatusCode::UNAVAILABLE, "Failed to serve!");
+//       }
+//       // time2 = get_curr_timestamp();
+//       // printf("worker [query_executor.cc] QueryOnline total time: %.4lf
+//       // ms.\n",
+//       //       get_duration_ms(time1, time2));
+//       // fflush(stdout);
+//       request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
+//       return Status::OK;
+//     } else if (hw == "CPU") {
+//       model_total_reqs_[models[0]].fetch_add(1);
+//       model_total_batch_[models[0]].fetch_add(request->raw_input().size());
 
-      CpuModelManager manager(worker_name_);
-      uint64_t time3, time4;
-      time3 = get_curr_timestamp();
-      // printf("[query_executor.cc] manager QueryModelOnline start time:
-      // %lu.\n",
-      //       time3);
+//       CpuModelManager manager(worker_name_);
+//       uint64_t time3, time4;
+//       time3 = get_curr_timestamp();
+//       // printf("[query_executor.cc] manager QueryModelOnline start time:
+//       // %lu.\n",
+//       //       time3);
 
-	localfs::ClientConfiguration s3cfg; //PNB: 2025.12.28
-    //localfs::LocalClientConfig s3cfg;
-    s3cfg.connectTimeoutMs = 1000 * 60 * 3; // Connection timeout = 3min
-    s3cfg.requestTimeoutMs = 1000 * 60 * 3; // Request timeout = 3min.
-    s3cfg.root_dir = "/var/lib/infaas/models";
-    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
-    s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));  
-    int8_t res = manager.QueryModelOnline(models[0], request, reply,redis_metadata_, s3_client_);
+// 	localfs::ClientConfiguration s3cfg; //PNB: 2025.12.28
+//     //localfs::LocalClientConfig s3cfg;
+//     s3cfg.connectTimeoutMs = 1000 * 60 * 3; // Connection timeout = 3min
+//     s3cfg.requestTimeoutMs = 1000 * 60 * 3; // Request timeout = 3min.
+//     s3cfg.root_dir = "/var/lib/infaas/models";
+//     s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));
+//     s3_client_ = std::unique_ptr<localfs::S3Client>(new localfs::S3Client(s3cfg));  
+//     int8_t res = manager.QueryModelOnline(models[0], request, reply,redis_metadata_, s3_client_);
    
    
       
-      time4 = get_curr_timestamp();
-      // printf("[query_executor.cc] manager QueryModelOnline end time: %lu.\n",
-      //       time4);
-      model_total_comp_[models[0]].fetch_add(1);
-      model_total_lat_[models[0]].fetch_add(time4 - time3);
+//       time4 = get_curr_timestamp();
+//       // printf("[query_executor.cc] manager QueryModelOnline end time: %lu.\n",
+//       //       time4);
+//       model_total_comp_[models[0]].fetch_add(1);
+//       model_total_lat_[models[0]].fetch_add(time4 - time3);
 
-      printf("[query_executor.cc] manager QueryModelOnline total time: %.4lf "
-             "ms.\n",
-             get_duration_ms(time3, time4));
+//       printf("[query_executor.cc] manager QueryModelOnline total time: %.4lf "
+//              "ms.\n",
+//              get_duration_ms(time3, time4));
 
-      if (res < 0) {
-        // TODO: probably try to run on other hardware or retry instead of
-        // failing.
-        std::cerr << "Failed to query, res = " << int(res) << std::endl;
-        request_status->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
-        request_status->set_msg("Failed to serve online query on CPU!");
-        return Status(grpc::StatusCode::UNAVAILABLE, "Failed to serve!");
-      }
-      // time2 = get_curr_timestamp();
-      // printf("worker [query_executor.cc] QueryOnline total time: %.4lf
-      // ms.\n",
-      //       get_duration_ms(time1, time2));
-      // fflush(stdout);
+//       if (res < 0) {
+//         // TODO: probably try to run on other hardware or retry instead of
+//         // failing.
+//         std::cerr << "Failed to query, res = " << int(res) << std::endl;
+//         request_status->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
+//         request_status->set_msg("Failed to serve online query on CPU!");
+//         return Status(grpc::StatusCode::UNAVAILABLE, "Failed to serve!");
+//       }
+//       // time2 = get_curr_timestamp();
+//       // printf("worker [query_executor.cc] QueryOnline total time: %.4lf
+//       // ms.\n",
+//       //       get_duration_ms(time1, time2));
+//       // fflush(stdout);
 
-      // Must reassign here, because reply was changed.
-      request_status = reply->mutable_status();
-      request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
-      return Status::OK;
-    } else if (hw == "INFA") {
-      model_total_reqs_[models[0]].fetch_add(1);
-      model_total_batch_[models[0]].fetch_add(request->raw_input().size());
+//       // Must reassign here, because reply was changed.
+//       request_status = reply->mutable_status();
+//       request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
+//       return Status::OK;
+//     } else if (hw == "INFA") {
+//       model_total_reqs_[models[0]].fetch_add(1);
+//       model_total_batch_[models[0]].fetch_add(request->raw_input().size());
 
-      InfaModelManager manager(worker_name_);
-      uint64_t time3, time4;
-      time3 = get_curr_timestamp();
-      int8_t res = manager.QueryModelOnline(models[0], request, reply,
-                                            redis_metadata_, s3_client_);
-      time4 = get_curr_timestamp();
-      model_total_comp_[models[0]].fetch_add(1);
-      model_total_lat_[models[0]].fetch_add(time4 - time3);
+//       InfaModelManager manager(worker_name_);
+//       uint64_t time3, time4;
+//       time3 = get_curr_timestamp();
+//       int8_t res = manager.QueryModelOnline(models[0], request, reply,
+//                                             redis_metadata_, s3_client_);
+//       time4 = get_curr_timestamp();
+//       model_total_comp_[models[0]].fetch_add(1);
+//       model_total_lat_[models[0]].fetch_add(time4 - time3);
 
-      printf("[query_executor.cc] manager QueryModelOnline total time: %.4lf "
-             "ms.\n",
-             get_duration_ms(time3, time4));
+//       printf("[query_executor.cc] manager QueryModelOnline total time: %.4lf "
+//              "ms.\n",
+//              get_duration_ms(time3, time4));
 
-      if (res < 0) {
-        std::cerr << "Failed to query, res = " << int(res) << std::endl;
-        request_status->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
-        request_status->set_msg("Failed to serve online query on Inferentia!");
-        return Status(grpc::StatusCode::UNAVAILABLE, "Failed to serve!");
-      }
+//       if (res < 0) {
+//         std::cerr << "Failed to query, res = " << int(res) << std::endl;
+//         request_status->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
+//         request_status->set_msg("Failed to serve online query on Inferentia!");
+//         return Status(grpc::StatusCode::UNAVAILABLE, "Failed to serve!");
+//       }
 
-      // Must reassign here, because reply was changed.
-      request_status = reply->mutable_status();
-      request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
-      return Status::OK;
+//       // Must reassign here, because reply was changed.
+//       request_status = reply->mutable_status();
+//       request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
+//       return Status::OK;
 
-    } else {
-      std::cerr << "No support hardware: " << hw << std::endl;
-      request_status->set_status(InfaasRequestStatusEnum::INVALID);
-      request_status->set_msg("No support hardware");
-      return Status::OK;
-    }
-  } else {
-    std::cerr << "[NOT IMPLEMENTED] multiple model variants: " << models.size()
-              << std::endl;
-    request_status->set_status(InfaasRequestStatusEnum::INVALID);
-    request_status->set_msg(
-        "[NOT IMPLEMENTED] Don't support more than one model variants!");
-    return Status::OK;
+//     } else {
+//       std::cerr << "No support hardware: " << hw << std::endl;
+//       request_status->set_status(InfaasRequestStatusEnum::INVALID);
+//       request_status->set_msg("No support hardware");
+//       return Status::OK;
+//     }
+//   } else {
+//     std::cerr << "[NOT IMPLEMENTED] multiple model variants: " << models.size()
+//               << std::endl;
+//     request_status->set_status(InfaasRequestStatusEnum::INVALID);
+//     request_status->set_msg(
+//         "[NOT IMPLEMENTED] Don't support more than one model variants!");
+//     return Status::OK;
+//   }
+//   request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
+
+//   return grpc::Status::OK;
+// }
+
+
+// PNB: Replaces above QueryOnline method which was missing both New Exectuion model (my addition) with Old INFaaS logic (CPU/CPU managers; albeit slightly changed to be local) ; (2026.01.19)
+Status QueryServiceImpl::QueryOnline(
+    ServerContext *context,
+    const QueryOnlineRequest *request,
+    QueryOnlineResponse *reply) {
+
+  // 1. Validate request
+  if (request->model_size() == 0) {
+    reply->mutable_status()->set_status(
+        InfaasRequestStatusEnum::INVALID);
+    reply->mutable_status()->set_msg("No model specified");
+    return Status(grpc::StatusCode::INVALID_ARGUMENT, "No model specified");
   }
-  request_status->set_status(InfaasRequestStatusEnum::SUCCESS);
+
+  // 2. Build execution spec
+	ModelSpec spec;
+	std::string model_name = request->model(0);
+
+	// rm_ already exists in QueryServiceImpl (INFaaS standard)
+	spec.model_name = model_name;
+
+	// Pull execution metadata from Redis
+	std::string framework;
+	std::string task;
+	std::string exec_path;
+	std::string entry_point;
+	std::string env_path;
+
+	// RedisMetadata API (already present in your codebase)
+	int rc = rm_->get_model_exec_info(
+	    model_name,
+	    &framework,
+	    &task,
+	    &exec_path,
+	    &entry_point,
+	    &env_path);
+
+	if (rc != 0) {
+
+	  auto* status = reply->mutable_status();
+	  status->set_status(InfaasRequestStatusEnum::INVALID);
+	  status->set_msg("Model execution failed");
+	  return grpc::Status::OK;
+	}
+
+	spec.framework   = framework;
+	spec.task        = task;
+	spec.exec_path   = exec_path;
+	spec.entry_point = entry_point;
+	spec.env_path    = env_path;
+
+  // 3. Execute model
+  std::string output;
+  std::string input;
+  for (const auto& s : request->raw_input()) {
+    input += s;
+  }
+  
+  int rc2 = ExecuteModel(spec, input, &output);
+
+  if (rc2 != 0) {
+    reply->mutable_status()->set_status(
+        InfaasRequestStatusEnum::INVALID);
+    reply->mutable_status()->set_msg("Model execution failed");
+    return Status(grpc::StatusCode::INTERNAL,
+                  "Model execution failed");
+  }
+
+  // 4. Return output
+  reply->add_raw_output(output);
+  reply->mutable_status()->set_status(
+      InfaasRequestStatusEnum::SUCCESS);
+
   return Status::OK;
 }
 
+  
 Status QueryServiceImpl::QueryOffline(ServerContext *context,
                                       const QueryOfflineRequest *request,
                                       QueryOfflineResponse *reply) {

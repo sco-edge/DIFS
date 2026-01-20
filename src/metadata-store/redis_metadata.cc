@@ -27,6 +27,7 @@
 #include <sstream>
 
 #include "redis_metadata.h"
+#include <redox.hpp>
 
 using namespace redox;
 
@@ -41,6 +42,75 @@ struct ModelRecord {
   int port;
   // etc...
 };
+
+
+
+//================================================
+// PNB: Custom Methods added for DIFS (2026.01.20)
+//================================================
+
+int RedisMetadata::get_model_exec_info(
+    const std::string& model_name,
+    std::string* framework,
+    std::string* task,
+    std::string* exec_path,
+    std::string* entry_point,
+    std::string* env_path) {
+
+  // Redis key: model:<model_name>
+  std::string key = "model:" + model_name;
+
+  try {
+    // auto future = rdx_.command<std::vector<std::string>>(
+    //     {"HMGET",
+    //      key,
+    //      "framework",
+    //      "task",
+    //      "exec_path",
+    //      "entry_point",
+    //      "env_path"});
+
+    // auto values = future.get();
+
+std::vector<std::string> cmd = {
+      "HMGET",
+      key,
+      "framework",
+      "task",
+      "exec_path",
+      "entry_point",
+      "env_path"
+  };
+
+// ✅ move-only Command handled correctly
+  auto& cmd_handle = rdx_.commandSync<std::vector<std::string>>(cmd);
+
+  // ✅ reply() returns the actual vector
+  std::vector<std::string> values = cmd_handle.reply();
+
+ 
+  if (values.size() != 5) {
+    return -1;
+  }
+
+  *framework   = values[0];
+  *task        = values[1];
+  *exec_path   = values[2];
+  *entry_point = values[3];
+  *env_path    = values[4];
+
+  return 0;
+ 
+  } catch (const std::exception& e) {
+    std::cerr << "Redis error in get_model_exec_info: "
+              << e.what() << std::endl;
+    return -1;
+  }
+}
+//========================================================
+// PNB: End of Custom Methods added for DIFS (2026.01.20)
+//========================================================
+
 
 
 const struct Address RedisMetadata::empty_addr = {"0", "0"};

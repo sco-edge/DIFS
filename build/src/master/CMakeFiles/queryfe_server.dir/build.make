@@ -98,11 +98,12 @@ bin/queryfe_server: src/master/CMakeFiles/queryfe_server.dir/build.make
 bin/queryfe_server: src/master/libinf-master.so
 bin/queryfe_server: src/worker/libinf-worker.so
 bin/queryfe_server: src/worker/libworker-util.a
-bin/queryfe_server: protos/libinfaas-protos.a
+bin/queryfe_server: protos/internal/libinfaas-protos-internal.a
 bin/queryfe_server: /usr/local/lib/libprotobuf.so
 bin/queryfe_server: src/metadata-store/libredis-md.so
 bin/queryfe_server: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/queryfe_server: /usr/lib/x86_64-linux-gnu/libev.so
+bin/queryfe_server: protos/libinfaas-protos.a
 bin/queryfe_server: protos/internal/libinfaas-protos-internal.a
 bin/queryfe_server: /usr/local/lib/libprotobuf.so
 bin/queryfe_server: /usr/lib/x86_64-linux-gnu/libcurl.so

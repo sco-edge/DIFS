@@ -97,11 +97,11 @@ bin/modelreg_heartbeat: src/master/CMakeFiles/modelreg_heartbeat.dir/modelreg_he
 bin/modelreg_heartbeat: src/master/CMakeFiles/modelreg_heartbeat.dir/build.make
 bin/modelreg_heartbeat: src/master/libinf-master.so
 bin/modelreg_heartbeat: src/worker/libworker-util.a
-bin/modelreg_heartbeat: protos/libinfaas-protos.a
 bin/modelreg_heartbeat: /usr/local/lib/libprotobuf.so
 bin/modelreg_heartbeat: src/metadata-store/libredis-md.so
 bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libhiredis.so
 bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libev.so
+bin/modelreg_heartbeat: protos/libinfaas-protos.a
 bin/modelreg_heartbeat: /usr/lib/x86_64-linux-gnu/libcurl.so
 bin/modelreg_heartbeat: protos/internal/libinfaas-protos-internal.a
 bin/modelreg_heartbeat: /usr/local/lib/libprotobuf.so

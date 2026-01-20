@@ -1,0 +1,8 @@
+//Date: 2026.01.08
+//Purpose: Update model type enum; For defining Diffusion as a First-Class Model Type
+
+enum ModelType{
+  MODEL_CPU = 0;
+  MODEL_GPU = 1;
+  MODEL_DIFFUSION =2; //NEW
+}

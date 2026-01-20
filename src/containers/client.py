@@ -19,87 +19,30 @@ import time
 import os
 
 def run():
-    # 1. 서버 채널 연결 (대용량 이미지 수신을 위해 메시지 크기 제한 확장 권장)
-    options = [
-        ('grpc.max_receive_message_length', 100 * 1024 * 1024) # 100MB까지 허용
-    ]
-    #with grpc.insecure_channel('localhost:50051') as channel:
-    with grpc.insecure_channel('192.168.128.8:50010') as channel:
-        stub = query_pb2_grpc.QueryStub(channel)
+    # channel = grpc.insecure_channel('192.168.128.8:50010') # PNB(ip address of lab GPU-based machine together with port on which the server is running)
+    channel = grpc.insecure_channel("127.0.0.1:50051")
+    stub = query_pb2_grpc.QueryServiceStub(channel)
 
-        #prompts = ["A rainbow on the moutain", "A beautlful woman in the sunset"]
-        prompts = ["dog", "dog", "dog", "dog", "dog", "car", "car", "car", "car", "car"]
-        #prompts = ["take a rest"]
+	 request = query_pb2.QueryOnlineRequest(
+        model_name="stable-diffusion-v1",
+        task="DIFFUSION",
+        prompt="a futuristic city at sunset",
+        steps=30,
+        guidance_scale=7.5,
+        width=512,
+        height=512
+    )
 
-        # 2. QueryOnlineRequest 생성
-        # repeated 필드는 파이썬의 list를 그대로 대입하면 됩니다.
-#        request = query_pb2.QueryOnlineImageRequest(
-        request = query_pb2.QueryOnlineRequest(
-            Prompt=prompts,           # ["sentence1", "sentence2"] 형식
-            Steps=25,
-            CFG_Scale=7.5,
-            BatchSize=len(prompts),   # 프롬프트 개수에 맞춰 BatchSize 설정
-            Seed=42
-            #model=["stable-diffusion-v1-5"],
-            #submitter="user_test"
-        )
-        print(f"[클라이언트] 요청 전송 (QueryOnlineImage): '{request.Prompt}'")
+    response = stub.QueryOnline(request)
 
-        try:
-            # --- 시간 측정 시작 ---
-            start_time = time.perf_counter()
+    if response.status != "OK":
+        print("Error:", response.error_message)
+        return
 
-            # 3. RPC 호출 및 응답 수신 [cite: 5, 13, 14]
-            # response = stub.QueryOnlineImage(request)
-            response = stub.QueryOnline(request)
+    with open("output.png", "wb") as f:
+        f.write(response.image_png)
 
-            # --- 시간 측정 종료 및 계산 ---
-            end_time = time.perf_counter()
-            elapsed_time = end_time - start_time
-
-            # 4. 상태 확인 및 결과 출력
-            if response.status.status == 1: # SUCCESS = 1 [cite: 2]
-                print(f"[클라이언트] 서버 응답 수신 성공")
-                print(f"[성능 로그] 총 쿼리 소요 시간: {elapsed_time:.4f} 초 (RTT)")
-                #print(f"- 생성된 이미지 개수: {len(response.image_paths)}개")
-
-                # --- [추가 포인트] 수신된 바이너리 데이터를 파일로 저장 ---
-                save_dir = "./client_received"
-                os.makedirs(save_dir, exist_ok=True)
-
-
-
-				# print(f"- 수신된 이미지 개수: {len(response.image_data)}개")
-
-                # for i, img_bytes in enumerate(response.image_data):
-                #     # 파일명 결정 (서버 경로에서 파일명만 추출하거나 새로 명명)
-                #     file_name = f"received_image_{i+1}_{int(time.time())}.png"
-                #     save_path = os.path.join(save_dir, file_name)
-
-                    # # 바이너리 쓰기 모드('wb')로 파일 저장
-                    # with open(save_path, "wb") as f:
-                        # f.write(img_bytes)
-                        
-                    # print(f"  [{i+1}] 파일 저장 완료: {save_path}")                        
-                
-                print(f"- 수신된 이미지 개수: {len(response.image_paths)}개")
-
-                for i, img_path in enumerate(response.image_paths):
-                    print(f"  [{i+1}] 서버 이미지 경로: {img_path}")        
-                        
-                        
-                        
-
-
-            else:
-                print(f"[클라이언트] 서버 처리 실패: {response.status.msg}")
-
-        except grpc.RpcError as e:
-            # RPC 오류 발생 시에도 시간 출력 (타임아웃 확인용)
-            end_time = time.perf_counter()
-            elapsed_time = end_time - start_time
-            print(f"[클라이언트] gRPC 오류 발생: {e.code()} - {e.details()}")
-            print(f"[성능 로그] 오류 발생 시점까지의 시간: {elapsed_time:.4f} 초")
+    print("Image saved to output.png")
 
 if __name__ == "__main__":
     run()

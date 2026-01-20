@@ -1,0 +1,30 @@
+#include "worker/model_executor.h"
+#include "worker/process_executor.h"
+
+int ExecuteModel(const ModelSpec& spec,
+                 const std::string& input,
+                 std::string* output) {
+
+  std::vector<std::string> argv;
+
+  // Python-based execution (diffusion included)
+  argv.push_back(spec.env_path + "/bin/python3");
+  argv.push_back(spec.entry_point);
+  argv.push_back("--model");
+  argv.push_back(spec.model_name);
+
+  if (!input.empty()) {
+    argv.push_back("--input");
+    argv.push_back(input);
+  }
+
+  std::string stderr_out;
+  int rc = ForkAndExec(argv, output, &stderr_out);
+
+  if (rc != 0) {
+    *output = stderr_out;
+    return rc;
+  }
+
+  return 0;
+}

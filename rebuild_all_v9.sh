@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Author: KB
+# Purpose: For downloading all dependencies and building the entire project
+
 set -e
 set -o pipefail
 
@@ -107,11 +111,15 @@ sudo make install
 sudo ldconfig
 echo -e "${GREEN}✔ gRPC installed${NC}"
 
-# -------------------------------------------------
-# REGENERATE modelreg.proto ONLY (no diffusion, no TRTIS)
-# -------------------------------------------------
+# --------------------------------------------------------------------
+# REGENERATE C++ protos; modelreg.proto ONLY (no diffusion, no TRTIS)
+# --------------------------------------------------------------------
 echo -e "${BLUE}==> Regenerating modelreg.proto only${NC}"
-PROTO_PATH="$INFAAS_SRC/protos"
+
+cd "$INFAAS_SRC"
+
+# PROTO_PATH="$INFAAS_SRC/protos"
+PROTO_PATH="protos"
 
 if [ ! -f "$PROTO_PATH/modelreg.proto" ]; then
     echo -e "${RED}Error: modelreg.proto not found at $PROTO_PATH${NC}"
@@ -120,18 +128,53 @@ fi
 
 # PNB: for cpp base protoc compilation  (2026.01.06)
 protoc \
-  --proto_path="$PROTO_PATH" \
+  -I protos \
   --cpp_out="$INFAAS_SRC/src/master" \
   --grpc_out="$INFAAS_SRC/src/master" \
   --plugin=protoc-gen-grpc="$(which grpc_cpp_plugin)" \
   "$PROTO_PATH/modelreg.proto"
 
-# PNB: for python base protoc compilation  (2026.01.06)
-python -m grpc_tools.protoc  -I=protos   \
-       --python_out="$PROTO_PATH/python_protos" \
-       --grpc_python_out="$PROTO_PATH/python_protos" \
-       "$PROTO_PATH/query.proto" "$PROTO_PATH/infaas_request_status.proto"
 
+
+# --------------------------------------------------------------------
+# REGENERATE C++ protos; now I add in diffusion (2026.01.10)
+# --------------------------------------------------------------------
+
+# PNB: for cpp base protoc compilation  (2026.01.10)
+protoc \
+  -I protos \
+  --cpp_out="src/protos/internal" \
+  --grpc_out="src/protos/internal" \
+  --plugin=protoc-gen-grpc="$(which grpc_cpp_plugin)" \
+  "protos/internal/diffusion_service.proto"
+
+
+
+
+# -------------------------------------------------
+# REGENERATE Python protos (query + status)
+# -------------------------------------------------
+
+# PNB: for python base protoc compilation  (2026.01.06)
+
+# python -m grpc_tools.protoc  -I=protos   \
+#        --python_out="$PROTO_PATH/python_protos" \
+#        --grpc_python_out="$PROTO_PATH/python_protos" \
+#        "$PROTO_PATH/query.proto" "$PROTO_PATH/infaas_request_status.proto"
+
+echo -e "${BLUE}==> Regenerating Python protobufs${NC}"
+
+cd "$INFAAS_SRC"
+
+PY_PROTO_OUT="protos/python_protos"
+mkdir -p "$PY_PROTO_OUT"
+
+python3 -m grpc_tools.protoc \
+  -I protos \
+  --python_out="$PY_PROTO_OUT" \
+  --grpc_python_out="$PY_PROTO_OUT" \
+  protos/query.proto \
+  protos/infaas_request_status.proto
 
 # -------------------------------------------------
 # BUILD DIFS (LOCAL MODE, NO TRTIS, NO DIFFUSION)
@@ -151,7 +194,8 @@ cmake .. \
     -DENABLE_AWS_AUTOSCALING=OFF \
     -DENABLE_TRTIS=OFF \
     -DBUILD_TRTIS_PROTO=OFF \
-    -DBUILD_TRITON_PROTO=OFF
+    -DBUILD_TRITON_PROTO=OFF \
+    -DENABLE_DIFFUSION=ON # PNB Turn on code to build difussion (2026.01.10)
 
 # First pass (may show harmless parallel error)
 make -j$(nproc) || true
@@ -160,7 +204,7 @@ make -j$(nproc) || true
 cmake .
 
 # Final build
-make -j$(nproc)
+make -j$(nproc) || true
 
 # -------------------------------------------------
 # VERIFY REQUIRED BINARIES

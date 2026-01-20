@@ -101,6 +101,229 @@ namespace internal {
 
 // ===================================================================
 
+class QueryOnlineRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.QueryOnlineRequest) */ {
+ public:
+  inline QueryOnlineRequest() : QueryOnlineRequest(nullptr) {}
+  ~QueryOnlineRequest() override;
+  explicit constexpr QueryOnlineRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  QueryOnlineRequest(const QueryOnlineRequest& from);
+  QueryOnlineRequest(QueryOnlineRequest&& from) noexcept
+    : QueryOnlineRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline QueryOnlineRequest& operator=(const QueryOnlineRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline QueryOnlineRequest& operator=(QueryOnlineRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const QueryOnlineRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const QueryOnlineRequest* internal_default_instance() {
+    return reinterpret_cast<const QueryOnlineRequest*>(
+               &_QueryOnlineRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(QueryOnlineRequest& a, QueryOnlineRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(QueryOnlineRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(QueryOnlineRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  QueryOnlineRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<QueryOnlineRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const QueryOnlineRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const QueryOnlineRequest& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(QueryOnlineRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "infaas.internal.QueryOnlineRequest";
+  }
+  protected:
+  explicit QueryOnlineRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRawInputFieldNumber = 1,
+    kModelFieldNumber = 2,
+    kSubmitterFieldNumber = 4,
+    kSloFieldNumber = 3,
+  };
+  // repeated bytes raw_input = 1;
+  int raw_input_size() const;
+  private:
+  int _internal_raw_input_size() const;
+  public:
+  void clear_raw_input();
+  const std::string& raw_input(int index) const;
+  std::string* mutable_raw_input(int index);
+  void set_raw_input(int index, const std::string& value);
+  void set_raw_input(int index, std::string&& value);
+  void set_raw_input(int index, const char* value);
+  void set_raw_input(int index, const void* value, size_t size);
+  std::string* add_raw_input();
+  void add_raw_input(const std::string& value);
+  void add_raw_input(std::string&& value);
+  void add_raw_input(const char* value);
+  void add_raw_input(const void* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& raw_input() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_raw_input();
+  private:
+  const std::string& _internal_raw_input(int index) const;
+  std::string* _internal_add_raw_input();
+  public:
+
+  // repeated string model = 2;
+  int model_size() const;
+  private:
+  int _internal_model_size() const;
+  public:
+  void clear_model();
+  const std::string& model(int index) const;
+  std::string* mutable_model(int index);
+  void set_model(int index, const std::string& value);
+  void set_model(int index, std::string&& value);
+  void set_model(int index, const char* value);
+  void set_model(int index, const char* value, size_t size);
+  std::string* add_model();
+  void add_model(const std::string& value);
+  void add_model(std::string&& value);
+  void add_model(const char* value);
+  void add_model(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& model() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_model();
+  private:
+  const std::string& _internal_model(int index) const;
+  std::string* _internal_add_model();
+  public:
+
+  // string submitter = 4;
+  void clear_submitter();
+  const std::string& submitter() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_submitter(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_submitter();
+  PROTOBUF_NODISCARD std::string* release_submitter();
+  void set_allocated_submitter(std::string* submitter);
+  private:
+  const std::string& _internal_submitter() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_submitter(const std::string& value);
+  std::string* _internal_mutable_submitter();
+  public:
+
+  // .infaas.internal.QuerySLO slo = 3;
+  bool has_slo() const;
+  private:
+  bool _internal_has_slo() const;
+  public:
+  void clear_slo();
+  const ::infaas::internal::QuerySLO& slo() const;
+  PROTOBUF_NODISCARD ::infaas::internal::QuerySLO* release_slo();
+  ::infaas::internal::QuerySLO* mutable_slo();
+  void set_allocated_slo(::infaas::internal::QuerySLO* slo);
+  private:
+  const ::infaas::internal::QuerySLO& _internal_slo() const;
+  ::infaas::internal::QuerySLO* _internal_mutable_slo();
+  public:
+  void unsafe_arena_set_allocated_slo(
+      ::infaas::internal::QuerySLO* slo);
+  ::infaas::internal::QuerySLO* unsafe_arena_release_slo();
+
+  // @@protoc_insertion_point(class_scope:infaas.internal.QueryOnlineRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> raw_input_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> model_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr submitter_;
+  ::infaas::internal::QuerySLO* slo_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_query_2eproto;
+};
+// -------------------------------------------------------------------
+
 class InternalDiffusionQuery final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.InternalDiffusionQuery) */ {
  public:
@@ -149,7 +372,7 @@ class InternalDiffusionQuery final :
                &_InternalDiffusionQuery_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    1;
 
   friend void swap(InternalDiffusionQuery& a, InternalDiffusionQuery& b) {
     a.Swap(&b);
@@ -355,7 +578,7 @@ class InternalDiffusionResponse final :
                &_InternalDiffusionResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(InternalDiffusionResponse& a, InternalDiffusionResponse& b) {
     a.Swap(&b);
@@ -475,319 +698,6 @@ class InternalDiffusionResponse final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr image_;
   int32_t width_;
   int32_t height_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_query_2eproto;
-};
-// -------------------------------------------------------------------
-
-class QueryOnlineRequest final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.QueryOnlineRequest) */ {
- public:
-  inline QueryOnlineRequest() : QueryOnlineRequest(nullptr) {}
-  ~QueryOnlineRequest() override;
-  explicit constexpr QueryOnlineRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  QueryOnlineRequest(const QueryOnlineRequest& from);
-  QueryOnlineRequest(QueryOnlineRequest&& from) noexcept
-    : QueryOnlineRequest() {
-    *this = ::std::move(from);
-  }
-
-  inline QueryOnlineRequest& operator=(const QueryOnlineRequest& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline QueryOnlineRequest& operator=(QueryOnlineRequest&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const QueryOnlineRequest& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const QueryOnlineRequest* internal_default_instance() {
-    return reinterpret_cast<const QueryOnlineRequest*>(
-               &_QueryOnlineRequest_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    2;
-
-  friend void swap(QueryOnlineRequest& a, QueryOnlineRequest& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(QueryOnlineRequest* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(QueryOnlineRequest* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  QueryOnlineRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<QueryOnlineRequest>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const QueryOnlineRequest& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const QueryOnlineRequest& from);
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(QueryOnlineRequest* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "infaas.internal.QueryOnlineRequest";
-  }
-  protected:
-  explicit QueryOnlineRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kPromptFieldNumber = 1,
-    kRawInputFieldNumber = 6,
-    kModelFieldNumber = 7,
-    kSubmitterFieldNumber = 9,
-    kSloFieldNumber = 8,
-    kDiffusionFieldNumber = 10,
-    kStepsFieldNumber = 2,
-    kCFGScaleFieldNumber = 3,
-    kSeedFieldNumber = 5,
-    kBatchSizeFieldNumber = 4,
-  };
-  // repeated string Prompt = 1;
-  int prompt_size() const;
-  private:
-  int _internal_prompt_size() const;
-  public:
-  void clear_prompt();
-  const std::string& prompt(int index) const;
-  std::string* mutable_prompt(int index);
-  void set_prompt(int index, const std::string& value);
-  void set_prompt(int index, std::string&& value);
-  void set_prompt(int index, const char* value);
-  void set_prompt(int index, const char* value, size_t size);
-  std::string* add_prompt();
-  void add_prompt(const std::string& value);
-  void add_prompt(std::string&& value);
-  void add_prompt(const char* value);
-  void add_prompt(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& prompt() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_prompt();
-  private:
-  const std::string& _internal_prompt(int index) const;
-  std::string* _internal_add_prompt();
-  public:
-
-  // repeated bytes raw_input = 6;
-  int raw_input_size() const;
-  private:
-  int _internal_raw_input_size() const;
-  public:
-  void clear_raw_input();
-  const std::string& raw_input(int index) const;
-  std::string* mutable_raw_input(int index);
-  void set_raw_input(int index, const std::string& value);
-  void set_raw_input(int index, std::string&& value);
-  void set_raw_input(int index, const char* value);
-  void set_raw_input(int index, const void* value, size_t size);
-  std::string* add_raw_input();
-  void add_raw_input(const std::string& value);
-  void add_raw_input(std::string&& value);
-  void add_raw_input(const char* value);
-  void add_raw_input(const void* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& raw_input() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_raw_input();
-  private:
-  const std::string& _internal_raw_input(int index) const;
-  std::string* _internal_add_raw_input();
-  public:
-
-  // repeated string model = 7;
-  int model_size() const;
-  private:
-  int _internal_model_size() const;
-  public:
-  void clear_model();
-  const std::string& model(int index) const;
-  std::string* mutable_model(int index);
-  void set_model(int index, const std::string& value);
-  void set_model(int index, std::string&& value);
-  void set_model(int index, const char* value);
-  void set_model(int index, const char* value, size_t size);
-  std::string* add_model();
-  void add_model(const std::string& value);
-  void add_model(std::string&& value);
-  void add_model(const char* value);
-  void add_model(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& model() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_model();
-  private:
-  const std::string& _internal_model(int index) const;
-  std::string* _internal_add_model();
-  public:
-
-  // string submitter = 9;
-  void clear_submitter();
-  const std::string& submitter() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_submitter(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_submitter();
-  PROTOBUF_NODISCARD std::string* release_submitter();
-  void set_allocated_submitter(std::string* submitter);
-  private:
-  const std::string& _internal_submitter() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_submitter(const std::string& value);
-  std::string* _internal_mutable_submitter();
-  public:
-
-  // .infaas.internal.QuerySLO slo = 8;
-  bool has_slo() const;
-  private:
-  bool _internal_has_slo() const;
-  public:
-  void clear_slo();
-  const ::infaas::internal::QuerySLO& slo() const;
-  PROTOBUF_NODISCARD ::infaas::internal::QuerySLO* release_slo();
-  ::infaas::internal::QuerySLO* mutable_slo();
-  void set_allocated_slo(::infaas::internal::QuerySLO* slo);
-  private:
-  const ::infaas::internal::QuerySLO& _internal_slo() const;
-  ::infaas::internal::QuerySLO* _internal_mutable_slo();
-  public:
-  void unsafe_arena_set_allocated_slo(
-      ::infaas::internal::QuerySLO* slo);
-  ::infaas::internal::QuerySLO* unsafe_arena_release_slo();
-
-  // .infaas.internal.InternalDiffusionQuery diffusion = 10;
-  bool has_diffusion() const;
-  private:
-  bool _internal_has_diffusion() const;
-  public:
-  void clear_diffusion();
-  const ::infaas::internal::InternalDiffusionQuery& diffusion() const;
-  PROTOBUF_NODISCARD ::infaas::internal::InternalDiffusionQuery* release_diffusion();
-  ::infaas::internal::InternalDiffusionQuery* mutable_diffusion();
-  void set_allocated_diffusion(::infaas::internal::InternalDiffusionQuery* diffusion);
-  private:
-  const ::infaas::internal::InternalDiffusionQuery& _internal_diffusion() const;
-  ::infaas::internal::InternalDiffusionQuery* _internal_mutable_diffusion();
-  public:
-  void unsafe_arena_set_allocated_diffusion(
-      ::infaas::internal::InternalDiffusionQuery* diffusion);
-  ::infaas::internal::InternalDiffusionQuery* unsafe_arena_release_diffusion();
-
-  // int32 Steps = 2;
-  void clear_steps();
-  int32_t steps() const;
-  void set_steps(int32_t value);
-  private:
-  int32_t _internal_steps() const;
-  void _internal_set_steps(int32_t value);
-  public:
-
-  // float CFG_Scale = 3;
-  void clear_cfg_scale();
-  float cfg_scale() const;
-  void set_cfg_scale(float value);
-  private:
-  float _internal_cfg_scale() const;
-  void _internal_set_cfg_scale(float value);
-  public:
-
-  // int64 Seed = 5;
-  void clear_seed();
-  int64_t seed() const;
-  void set_seed(int64_t value);
-  private:
-  int64_t _internal_seed() const;
-  void _internal_set_seed(int64_t value);
-  public:
-
-  // int32 BatchSize = 4;
-  void clear_batchsize();
-  int32_t batchsize() const;
-  void set_batchsize(int32_t value);
-  private:
-  int32_t _internal_batchsize() const;
-  void _internal_set_batchsize(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:infaas.internal.QueryOnlineRequest)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> prompt_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> raw_input_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> model_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr submitter_;
-  ::infaas::internal::QuerySLO* slo_;
-  ::infaas::internal::InternalDiffusionQuery* diffusion_;
-  int32_t steps_;
-  float cfg_scale_;
-  int64_t seed_;
-  int32_t batchsize_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_query_2eproto;
 };
@@ -1083,36 +993,10 @@ class QueryOnlineResponse final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kImagePathsFieldNumber = 1,
-    kRawOutputFieldNumber = 3,
+    kRawOutputFieldNumber = 1,
     kStatusFieldNumber = 2,
-    kDiffusionFieldNumber = 10,
   };
-  // repeated string image_paths = 1;
-  int image_paths_size() const;
-  private:
-  int _internal_image_paths_size() const;
-  public:
-  void clear_image_paths();
-  const std::string& image_paths(int index) const;
-  std::string* mutable_image_paths(int index);
-  void set_image_paths(int index, const std::string& value);
-  void set_image_paths(int index, std::string&& value);
-  void set_image_paths(int index, const char* value);
-  void set_image_paths(int index, const char* value, size_t size);
-  std::string* add_image_paths();
-  void add_image_paths(const std::string& value);
-  void add_image_paths(std::string&& value);
-  void add_image_paths(const char* value);
-  void add_image_paths(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& image_paths() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_image_paths();
-  private:
-  const std::string& _internal_image_paths(int index) const;
-  std::string* _internal_add_image_paths();
-  public:
-
-  // repeated bytes raw_output = 3;
+  // repeated bytes raw_output = 1;
   int raw_output_size() const;
   private:
   int _internal_raw_output_size() const;
@@ -1154,24 +1038,6 @@ class QueryOnlineResponse final :
       ::infaas::internal::InfaasRequestStatus* status);
   ::infaas::internal::InfaasRequestStatus* unsafe_arena_release_status();
 
-  // .infaas.internal.InternalDiffusionResponse diffusion = 10;
-  bool has_diffusion() const;
-  private:
-  bool _internal_has_diffusion() const;
-  public:
-  void clear_diffusion();
-  const ::infaas::internal::InternalDiffusionResponse& diffusion() const;
-  PROTOBUF_NODISCARD ::infaas::internal::InternalDiffusionResponse* release_diffusion();
-  ::infaas::internal::InternalDiffusionResponse* mutable_diffusion();
-  void set_allocated_diffusion(::infaas::internal::InternalDiffusionResponse* diffusion);
-  private:
-  const ::infaas::internal::InternalDiffusionResponse& _internal_diffusion() const;
-  ::infaas::internal::InternalDiffusionResponse* _internal_mutable_diffusion();
-  public:
-  void unsafe_arena_set_allocated_diffusion(
-      ::infaas::internal::InternalDiffusionResponse* diffusion);
-  ::infaas::internal::InternalDiffusionResponse* unsafe_arena_release_diffusion();
-
   // @@protoc_insertion_point(class_scope:infaas.internal.QueryOnlineResponse)
  private:
   class _Internal;
@@ -1179,10 +1045,8 @@ class QueryOnlineResponse final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> image_paths_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> raw_output_;
   ::infaas::internal::InfaasRequestStatus* status_;
-  ::infaas::internal::InternalDiffusionResponse* diffusion_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_query_2eproto;
 };
@@ -1310,18 +1174,13 @@ class QueryOfflineRequest final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kModelFieldNumber = 7,
-    kPromptFieldNumber = 1,
-    kInputUrlFieldNumber = 6,
-    kOutputUrlFieldNumber = 8,
-    kSubmitterFieldNumber = 10,
-    kSloFieldNumber = 9,
-    kStepsFieldNumber = 2,
-    kCFGScaleFieldNumber = 3,
-    kSeedFieldNumber = 5,
-    kBatchSizeFieldNumber = 4,
+    kModelFieldNumber = 2,
+    kInputUrlFieldNumber = 1,
+    kOutputUrlFieldNumber = 3,
+    kSubmitterFieldNumber = 5,
+    kSloFieldNumber = 4,
   };
-  // repeated string model = 7;
+  // repeated string model = 2;
   int model_size() const;
   private:
   int _internal_model_size() const;
@@ -1345,21 +1204,7 @@ class QueryOfflineRequest final :
   std::string* _internal_add_model();
   public:
 
-  // string Prompt = 1;
-  void clear_prompt();
-  const std::string& prompt() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_prompt(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_prompt();
-  PROTOBUF_NODISCARD std::string* release_prompt();
-  void set_allocated_prompt(std::string* prompt);
-  private:
-  const std::string& _internal_prompt() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_prompt(const std::string& value);
-  std::string* _internal_mutable_prompt();
-  public:
-
-  // string input_url = 6;
+  // string input_url = 1;
   void clear_input_url();
   const std::string& input_url() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1373,7 +1218,7 @@ class QueryOfflineRequest final :
   std::string* _internal_mutable_input_url();
   public:
 
-  // string output_url = 8;
+  // string output_url = 3;
   void clear_output_url();
   const std::string& output_url() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1387,7 +1232,7 @@ class QueryOfflineRequest final :
   std::string* _internal_mutable_output_url();
   public:
 
-  // string submitter = 10;
+  // string submitter = 5;
   void clear_submitter();
   const std::string& submitter() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -1401,7 +1246,7 @@ class QueryOfflineRequest final :
   std::string* _internal_mutable_submitter();
   public:
 
-  // .infaas.internal.QuerySLO slo = 9;
+  // .infaas.internal.QuerySLO slo = 4;
   bool has_slo() const;
   private:
   bool _internal_has_slo() const;
@@ -1419,42 +1264,6 @@ class QueryOfflineRequest final :
       ::infaas::internal::QuerySLO* slo);
   ::infaas::internal::QuerySLO* unsafe_arena_release_slo();
 
-  // int32 Steps = 2;
-  void clear_steps();
-  int32_t steps() const;
-  void set_steps(int32_t value);
-  private:
-  int32_t _internal_steps() const;
-  void _internal_set_steps(int32_t value);
-  public:
-
-  // float CFG_Scale = 3;
-  void clear_cfg_scale();
-  float cfg_scale() const;
-  void set_cfg_scale(float value);
-  private:
-  float _internal_cfg_scale() const;
-  void _internal_set_cfg_scale(float value);
-  public:
-
-  // int64 Seed = 5;
-  void clear_seed();
-  int64_t seed() const;
-  void set_seed(int64_t value);
-  private:
-  int64_t _internal_seed() const;
-  void _internal_set_seed(int64_t value);
-  public:
-
-  // int32 BatchSize = 4;
-  void clear_batchsize();
-  int32_t batchsize() const;
-  void set_batchsize(int32_t value);
-  private:
-  int32_t _internal_batchsize() const;
-  void _internal_set_batchsize(int32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:infaas.internal.QueryOfflineRequest)
  private:
   class _Internal;
@@ -1463,15 +1272,10 @@ class QueryOfflineRequest final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> model_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr prompt_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr input_url_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr output_url_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr submitter_;
   ::infaas::internal::QuerySLO* slo_;
-  int32_t steps_;
-  float cfg_scale_;
-  int64_t seed_;
-  int32_t batchsize_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_query_2eproto;
 };
@@ -1949,6 +1753,301 @@ class HeartbeatResponse final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// QueryOnlineRequest
+
+// repeated bytes raw_input = 1;
+inline int QueryOnlineRequest::_internal_raw_input_size() const {
+  return raw_input_.size();
+}
+inline int QueryOnlineRequest::raw_input_size() const {
+  return _internal_raw_input_size();
+}
+inline void QueryOnlineRequest::clear_raw_input() {
+  raw_input_.Clear();
+}
+inline std::string* QueryOnlineRequest::add_raw_input() {
+  std::string* _s = _internal_add_raw_input();
+  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineRequest.raw_input)
+  return _s;
+}
+inline const std::string& QueryOnlineRequest::_internal_raw_input(int index) const {
+  return raw_input_.Get(index);
+}
+inline const std::string& QueryOnlineRequest::raw_input(int index) const {
+  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.raw_input)
+  return _internal_raw_input(index);
+}
+inline std::string* QueryOnlineRequest::mutable_raw_input(int index) {
+  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.raw_input)
+  return raw_input_.Mutable(index);
+}
+inline void QueryOnlineRequest::set_raw_input(int index, const std::string& value) {
+  raw_input_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline void QueryOnlineRequest::set_raw_input(int index, std::string&& value) {
+  raw_input_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline void QueryOnlineRequest::set_raw_input(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  raw_input_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline void QueryOnlineRequest::set_raw_input(int index, const void* value, size_t size) {
+  raw_input_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline std::string* QueryOnlineRequest::_internal_add_raw_input() {
+  return raw_input_.Add();
+}
+inline void QueryOnlineRequest::add_raw_input(const std::string& value) {
+  raw_input_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline void QueryOnlineRequest::add_raw_input(std::string&& value) {
+  raw_input_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline void QueryOnlineRequest::add_raw_input(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  raw_input_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline void QueryOnlineRequest::add_raw_input(const void* value, size_t size) {
+  raw_input_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineRequest.raw_input)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+QueryOnlineRequest::raw_input() const {
+  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineRequest.raw_input)
+  return raw_input_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+QueryOnlineRequest::mutable_raw_input() {
+  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineRequest.raw_input)
+  return &raw_input_;
+}
+
+// repeated string model = 2;
+inline int QueryOnlineRequest::_internal_model_size() const {
+  return model_.size();
+}
+inline int QueryOnlineRequest::model_size() const {
+  return _internal_model_size();
+}
+inline void QueryOnlineRequest::clear_model() {
+  model_.Clear();
+}
+inline std::string* QueryOnlineRequest::add_model() {
+  std::string* _s = _internal_add_model();
+  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineRequest.model)
+  return _s;
+}
+inline const std::string& QueryOnlineRequest::_internal_model(int index) const {
+  return model_.Get(index);
+}
+inline const std::string& QueryOnlineRequest::model(int index) const {
+  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.model)
+  return _internal_model(index);
+}
+inline std::string* QueryOnlineRequest::mutable_model(int index) {
+  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.model)
+  return model_.Mutable(index);
+}
+inline void QueryOnlineRequest::set_model(int index, const std::string& value) {
+  model_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.model)
+}
+inline void QueryOnlineRequest::set_model(int index, std::string&& value) {
+  model_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.model)
+}
+inline void QueryOnlineRequest::set_model(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  model_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineRequest.model)
+}
+inline void QueryOnlineRequest::set_model(int index, const char* value, size_t size) {
+  model_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineRequest.model)
+}
+inline std::string* QueryOnlineRequest::_internal_add_model() {
+  return model_.Add();
+}
+inline void QueryOnlineRequest::add_model(const std::string& value) {
+  model_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.model)
+}
+inline void QueryOnlineRequest::add_model(std::string&& value) {
+  model_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.model)
+}
+inline void QueryOnlineRequest::add_model(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  model_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineRequest.model)
+}
+inline void QueryOnlineRequest::add_model(const char* value, size_t size) {
+  model_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineRequest.model)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+QueryOnlineRequest::model() const {
+  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineRequest.model)
+  return model_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+QueryOnlineRequest::mutable_model() {
+  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineRequest.model)
+  return &model_;
+}
+
+// .infaas.internal.QuerySLO slo = 3;
+inline bool QueryOnlineRequest::_internal_has_slo() const {
+  return this != internal_default_instance() && slo_ != nullptr;
+}
+inline bool QueryOnlineRequest::has_slo() const {
+  return _internal_has_slo();
+}
+inline void QueryOnlineRequest::clear_slo() {
+  if (GetArenaForAllocation() == nullptr && slo_ != nullptr) {
+    delete slo_;
+  }
+  slo_ = nullptr;
+}
+inline const ::infaas::internal::QuerySLO& QueryOnlineRequest::_internal_slo() const {
+  const ::infaas::internal::QuerySLO* p = slo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::infaas::internal::QuerySLO&>(
+      ::infaas::internal::_QuerySLO_default_instance_);
+}
+inline const ::infaas::internal::QuerySLO& QueryOnlineRequest::slo() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.slo)
+  return _internal_slo();
+}
+inline void QueryOnlineRequest::unsafe_arena_set_allocated_slo(
+    ::infaas::internal::QuerySLO* slo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(slo_);
+  }
+  slo_ = slo;
+  if (slo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:infaas.internal.QueryOnlineRequest.slo)
+}
+inline ::infaas::internal::QuerySLO* QueryOnlineRequest::release_slo() {
+  
+  ::infaas::internal::QuerySLO* temp = slo_;
+  slo_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::infaas::internal::QuerySLO* QueryOnlineRequest::unsafe_arena_release_slo() {
+  // @@protoc_insertion_point(field_release:infaas.internal.QueryOnlineRequest.slo)
+  
+  ::infaas::internal::QuerySLO* temp = slo_;
+  slo_ = nullptr;
+  return temp;
+}
+inline ::infaas::internal::QuerySLO* QueryOnlineRequest::_internal_mutable_slo() {
+  
+  if (slo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::infaas::internal::QuerySLO>(GetArenaForAllocation());
+    slo_ = p;
+  }
+  return slo_;
+}
+inline ::infaas::internal::QuerySLO* QueryOnlineRequest::mutable_slo() {
+  ::infaas::internal::QuerySLO* _msg = _internal_mutable_slo();
+  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.slo)
+  return _msg;
+}
+inline void QueryOnlineRequest::set_allocated_slo(::infaas::internal::QuerySLO* slo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete slo_;
+  }
+  if (slo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::infaas::internal::QuerySLO>::GetOwningArena(slo);
+    if (message_arena != submessage_arena) {
+      slo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, slo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  slo_ = slo;
+  // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOnlineRequest.slo)
+}
+
+// string submitter = 4;
+inline void QueryOnlineRequest::clear_submitter() {
+  submitter_.ClearToEmpty();
+}
+inline const std::string& QueryOnlineRequest::submitter() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.submitter)
+  return _internal_submitter();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void QueryOnlineRequest::set_submitter(ArgT0&& arg0, ArgT... args) {
+ 
+ submitter_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.submitter)
+}
+inline std::string* QueryOnlineRequest::mutable_submitter() {
+  std::string* _s = _internal_mutable_submitter();
+  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.submitter)
+  return _s;
+}
+inline const std::string& QueryOnlineRequest::_internal_submitter() const {
+  return submitter_.Get();
+}
+inline void QueryOnlineRequest::_internal_set_submitter(const std::string& value) {
+  
+  submitter_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* QueryOnlineRequest::_internal_mutable_submitter() {
+  
+  return submitter_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* QueryOnlineRequest::release_submitter() {
+  // @@protoc_insertion_point(field_release:infaas.internal.QueryOnlineRequest.submitter)
+  return submitter_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void QueryOnlineRequest::set_allocated_submitter(std::string* submitter) {
+  if (submitter != nullptr) {
+    
+  } else {
+    
+  }
+  submitter_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), submitter,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (submitter_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    submitter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOnlineRequest.submitter)
+}
+
+// -------------------------------------------------------------------
+
 // InternalDiffusionQuery
 
 // string prompt = 1;
@@ -2199,546 +2298,6 @@ inline void InternalDiffusionResponse::set_height(int32_t value) {
 
 // -------------------------------------------------------------------
 
-// QueryOnlineRequest
-
-// repeated string Prompt = 1;
-inline int QueryOnlineRequest::_internal_prompt_size() const {
-  return prompt_.size();
-}
-inline int QueryOnlineRequest::prompt_size() const {
-  return _internal_prompt_size();
-}
-inline void QueryOnlineRequest::clear_prompt() {
-  prompt_.Clear();
-}
-inline std::string* QueryOnlineRequest::add_prompt() {
-  std::string* _s = _internal_add_prompt();
-  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineRequest.Prompt)
-  return _s;
-}
-inline const std::string& QueryOnlineRequest::_internal_prompt(int index) const {
-  return prompt_.Get(index);
-}
-inline const std::string& QueryOnlineRequest::prompt(int index) const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.Prompt)
-  return _internal_prompt(index);
-}
-inline std::string* QueryOnlineRequest::mutable_prompt(int index) {
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.Prompt)
-  return prompt_.Mutable(index);
-}
-inline void QueryOnlineRequest::set_prompt(int index, const std::string& value) {
-  prompt_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline void QueryOnlineRequest::set_prompt(int index, std::string&& value) {
-  prompt_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline void QueryOnlineRequest::set_prompt(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  prompt_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline void QueryOnlineRequest::set_prompt(int index, const char* value, size_t size) {
-  prompt_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline std::string* QueryOnlineRequest::_internal_add_prompt() {
-  return prompt_.Add();
-}
-inline void QueryOnlineRequest::add_prompt(const std::string& value) {
-  prompt_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline void QueryOnlineRequest::add_prompt(std::string&& value) {
-  prompt_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline void QueryOnlineRequest::add_prompt(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  prompt_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline void QueryOnlineRequest::add_prompt(const char* value, size_t size) {
-  prompt_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineRequest.Prompt)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-QueryOnlineRequest::prompt() const {
-  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineRequest.Prompt)
-  return prompt_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-QueryOnlineRequest::mutable_prompt() {
-  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineRequest.Prompt)
-  return &prompt_;
-}
-
-// int32 Steps = 2;
-inline void QueryOnlineRequest::clear_steps() {
-  steps_ = 0;
-}
-inline int32_t QueryOnlineRequest::_internal_steps() const {
-  return steps_;
-}
-inline int32_t QueryOnlineRequest::steps() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.Steps)
-  return _internal_steps();
-}
-inline void QueryOnlineRequest::_internal_set_steps(int32_t value) {
-  
-  steps_ = value;
-}
-inline void QueryOnlineRequest::set_steps(int32_t value) {
-  _internal_set_steps(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.Steps)
-}
-
-// float CFG_Scale = 3;
-inline void QueryOnlineRequest::clear_cfg_scale() {
-  cfg_scale_ = 0;
-}
-inline float QueryOnlineRequest::_internal_cfg_scale() const {
-  return cfg_scale_;
-}
-inline float QueryOnlineRequest::cfg_scale() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.CFG_Scale)
-  return _internal_cfg_scale();
-}
-inline void QueryOnlineRequest::_internal_set_cfg_scale(float value) {
-  
-  cfg_scale_ = value;
-}
-inline void QueryOnlineRequest::set_cfg_scale(float value) {
-  _internal_set_cfg_scale(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.CFG_Scale)
-}
-
-// int32 BatchSize = 4;
-inline void QueryOnlineRequest::clear_batchsize() {
-  batchsize_ = 0;
-}
-inline int32_t QueryOnlineRequest::_internal_batchsize() const {
-  return batchsize_;
-}
-inline int32_t QueryOnlineRequest::batchsize() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.BatchSize)
-  return _internal_batchsize();
-}
-inline void QueryOnlineRequest::_internal_set_batchsize(int32_t value) {
-  
-  batchsize_ = value;
-}
-inline void QueryOnlineRequest::set_batchsize(int32_t value) {
-  _internal_set_batchsize(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.BatchSize)
-}
-
-// int64 Seed = 5;
-inline void QueryOnlineRequest::clear_seed() {
-  seed_ = int64_t{0};
-}
-inline int64_t QueryOnlineRequest::_internal_seed() const {
-  return seed_;
-}
-inline int64_t QueryOnlineRequest::seed() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.Seed)
-  return _internal_seed();
-}
-inline void QueryOnlineRequest::_internal_set_seed(int64_t value) {
-  
-  seed_ = value;
-}
-inline void QueryOnlineRequest::set_seed(int64_t value) {
-  _internal_set_seed(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.Seed)
-}
-
-// repeated bytes raw_input = 6;
-inline int QueryOnlineRequest::_internal_raw_input_size() const {
-  return raw_input_.size();
-}
-inline int QueryOnlineRequest::raw_input_size() const {
-  return _internal_raw_input_size();
-}
-inline void QueryOnlineRequest::clear_raw_input() {
-  raw_input_.Clear();
-}
-inline std::string* QueryOnlineRequest::add_raw_input() {
-  std::string* _s = _internal_add_raw_input();
-  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineRequest.raw_input)
-  return _s;
-}
-inline const std::string& QueryOnlineRequest::_internal_raw_input(int index) const {
-  return raw_input_.Get(index);
-}
-inline const std::string& QueryOnlineRequest::raw_input(int index) const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.raw_input)
-  return _internal_raw_input(index);
-}
-inline std::string* QueryOnlineRequest::mutable_raw_input(int index) {
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.raw_input)
-  return raw_input_.Mutable(index);
-}
-inline void QueryOnlineRequest::set_raw_input(int index, const std::string& value) {
-  raw_input_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline void QueryOnlineRequest::set_raw_input(int index, std::string&& value) {
-  raw_input_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline void QueryOnlineRequest::set_raw_input(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  raw_input_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline void QueryOnlineRequest::set_raw_input(int index, const void* value, size_t size) {
-  raw_input_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline std::string* QueryOnlineRequest::_internal_add_raw_input() {
-  return raw_input_.Add();
-}
-inline void QueryOnlineRequest::add_raw_input(const std::string& value) {
-  raw_input_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline void QueryOnlineRequest::add_raw_input(std::string&& value) {
-  raw_input_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline void QueryOnlineRequest::add_raw_input(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  raw_input_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline void QueryOnlineRequest::add_raw_input(const void* value, size_t size) {
-  raw_input_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineRequest.raw_input)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-QueryOnlineRequest::raw_input() const {
-  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineRequest.raw_input)
-  return raw_input_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-QueryOnlineRequest::mutable_raw_input() {
-  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineRequest.raw_input)
-  return &raw_input_;
-}
-
-// repeated string model = 7;
-inline int QueryOnlineRequest::_internal_model_size() const {
-  return model_.size();
-}
-inline int QueryOnlineRequest::model_size() const {
-  return _internal_model_size();
-}
-inline void QueryOnlineRequest::clear_model() {
-  model_.Clear();
-}
-inline std::string* QueryOnlineRequest::add_model() {
-  std::string* _s = _internal_add_model();
-  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineRequest.model)
-  return _s;
-}
-inline const std::string& QueryOnlineRequest::_internal_model(int index) const {
-  return model_.Get(index);
-}
-inline const std::string& QueryOnlineRequest::model(int index) const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.model)
-  return _internal_model(index);
-}
-inline std::string* QueryOnlineRequest::mutable_model(int index) {
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.model)
-  return model_.Mutable(index);
-}
-inline void QueryOnlineRequest::set_model(int index, const std::string& value) {
-  model_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.model)
-}
-inline void QueryOnlineRequest::set_model(int index, std::string&& value) {
-  model_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.model)
-}
-inline void QueryOnlineRequest::set_model(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  model_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineRequest.model)
-}
-inline void QueryOnlineRequest::set_model(int index, const char* value, size_t size) {
-  model_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineRequest.model)
-}
-inline std::string* QueryOnlineRequest::_internal_add_model() {
-  return model_.Add();
-}
-inline void QueryOnlineRequest::add_model(const std::string& value) {
-  model_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.model)
-}
-inline void QueryOnlineRequest::add_model(std::string&& value) {
-  model_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineRequest.model)
-}
-inline void QueryOnlineRequest::add_model(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  model_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineRequest.model)
-}
-inline void QueryOnlineRequest::add_model(const char* value, size_t size) {
-  model_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineRequest.model)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-QueryOnlineRequest::model() const {
-  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineRequest.model)
-  return model_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-QueryOnlineRequest::mutable_model() {
-  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineRequest.model)
-  return &model_;
-}
-
-// .infaas.internal.QuerySLO slo = 8;
-inline bool QueryOnlineRequest::_internal_has_slo() const {
-  return this != internal_default_instance() && slo_ != nullptr;
-}
-inline bool QueryOnlineRequest::has_slo() const {
-  return _internal_has_slo();
-}
-inline void QueryOnlineRequest::clear_slo() {
-  if (GetArenaForAllocation() == nullptr && slo_ != nullptr) {
-    delete slo_;
-  }
-  slo_ = nullptr;
-}
-inline const ::infaas::internal::QuerySLO& QueryOnlineRequest::_internal_slo() const {
-  const ::infaas::internal::QuerySLO* p = slo_;
-  return p != nullptr ? *p : reinterpret_cast<const ::infaas::internal::QuerySLO&>(
-      ::infaas::internal::_QuerySLO_default_instance_);
-}
-inline const ::infaas::internal::QuerySLO& QueryOnlineRequest::slo() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.slo)
-  return _internal_slo();
-}
-inline void QueryOnlineRequest::unsafe_arena_set_allocated_slo(
-    ::infaas::internal::QuerySLO* slo) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(slo_);
-  }
-  slo_ = slo;
-  if (slo) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:infaas.internal.QueryOnlineRequest.slo)
-}
-inline ::infaas::internal::QuerySLO* QueryOnlineRequest::release_slo() {
-  
-  ::infaas::internal::QuerySLO* temp = slo_;
-  slo_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::infaas::internal::QuerySLO* QueryOnlineRequest::unsafe_arena_release_slo() {
-  // @@protoc_insertion_point(field_release:infaas.internal.QueryOnlineRequest.slo)
-  
-  ::infaas::internal::QuerySLO* temp = slo_;
-  slo_ = nullptr;
-  return temp;
-}
-inline ::infaas::internal::QuerySLO* QueryOnlineRequest::_internal_mutable_slo() {
-  
-  if (slo_ == nullptr) {
-    auto* p = CreateMaybeMessage<::infaas::internal::QuerySLO>(GetArenaForAllocation());
-    slo_ = p;
-  }
-  return slo_;
-}
-inline ::infaas::internal::QuerySLO* QueryOnlineRequest::mutable_slo() {
-  ::infaas::internal::QuerySLO* _msg = _internal_mutable_slo();
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.slo)
-  return _msg;
-}
-inline void QueryOnlineRequest::set_allocated_slo(::infaas::internal::QuerySLO* slo) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete slo_;
-  }
-  if (slo) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::infaas::internal::QuerySLO>::GetOwningArena(slo);
-    if (message_arena != submessage_arena) {
-      slo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, slo, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  slo_ = slo;
-  // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOnlineRequest.slo)
-}
-
-// string submitter = 9;
-inline void QueryOnlineRequest::clear_submitter() {
-  submitter_.ClearToEmpty();
-}
-inline const std::string& QueryOnlineRequest::submitter() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.submitter)
-  return _internal_submitter();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void QueryOnlineRequest::set_submitter(ArgT0&& arg0, ArgT... args) {
- 
- submitter_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineRequest.submitter)
-}
-inline std::string* QueryOnlineRequest::mutable_submitter() {
-  std::string* _s = _internal_mutable_submitter();
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.submitter)
-  return _s;
-}
-inline const std::string& QueryOnlineRequest::_internal_submitter() const {
-  return submitter_.Get();
-}
-inline void QueryOnlineRequest::_internal_set_submitter(const std::string& value) {
-  
-  submitter_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
-}
-inline std::string* QueryOnlineRequest::_internal_mutable_submitter() {
-  
-  return submitter_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
-}
-inline std::string* QueryOnlineRequest::release_submitter() {
-  // @@protoc_insertion_point(field_release:infaas.internal.QueryOnlineRequest.submitter)
-  return submitter_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
-}
-inline void QueryOnlineRequest::set_allocated_submitter(std::string* submitter) {
-  if (submitter != nullptr) {
-    
-  } else {
-    
-  }
-  submitter_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), submitter,
-      GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (submitter_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    submitter_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOnlineRequest.submitter)
-}
-
-// .infaas.internal.InternalDiffusionQuery diffusion = 10;
-inline bool QueryOnlineRequest::_internal_has_diffusion() const {
-  return this != internal_default_instance() && diffusion_ != nullptr;
-}
-inline bool QueryOnlineRequest::has_diffusion() const {
-  return _internal_has_diffusion();
-}
-inline void QueryOnlineRequest::clear_diffusion() {
-  if (GetArenaForAllocation() == nullptr && diffusion_ != nullptr) {
-    delete diffusion_;
-  }
-  diffusion_ = nullptr;
-}
-inline const ::infaas::internal::InternalDiffusionQuery& QueryOnlineRequest::_internal_diffusion() const {
-  const ::infaas::internal::InternalDiffusionQuery* p = diffusion_;
-  return p != nullptr ? *p : reinterpret_cast<const ::infaas::internal::InternalDiffusionQuery&>(
-      ::infaas::internal::_InternalDiffusionQuery_default_instance_);
-}
-inline const ::infaas::internal::InternalDiffusionQuery& QueryOnlineRequest::diffusion() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineRequest.diffusion)
-  return _internal_diffusion();
-}
-inline void QueryOnlineRequest::unsafe_arena_set_allocated_diffusion(
-    ::infaas::internal::InternalDiffusionQuery* diffusion) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(diffusion_);
-  }
-  diffusion_ = diffusion;
-  if (diffusion) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:infaas.internal.QueryOnlineRequest.diffusion)
-}
-inline ::infaas::internal::InternalDiffusionQuery* QueryOnlineRequest::release_diffusion() {
-  
-  ::infaas::internal::InternalDiffusionQuery* temp = diffusion_;
-  diffusion_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::infaas::internal::InternalDiffusionQuery* QueryOnlineRequest::unsafe_arena_release_diffusion() {
-  // @@protoc_insertion_point(field_release:infaas.internal.QueryOnlineRequest.diffusion)
-  
-  ::infaas::internal::InternalDiffusionQuery* temp = diffusion_;
-  diffusion_ = nullptr;
-  return temp;
-}
-inline ::infaas::internal::InternalDiffusionQuery* QueryOnlineRequest::_internal_mutable_diffusion() {
-  
-  if (diffusion_ == nullptr) {
-    auto* p = CreateMaybeMessage<::infaas::internal::InternalDiffusionQuery>(GetArenaForAllocation());
-    diffusion_ = p;
-  }
-  return diffusion_;
-}
-inline ::infaas::internal::InternalDiffusionQuery* QueryOnlineRequest::mutable_diffusion() {
-  ::infaas::internal::InternalDiffusionQuery* _msg = _internal_mutable_diffusion();
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineRequest.diffusion)
-  return _msg;
-}
-inline void QueryOnlineRequest::set_allocated_diffusion(::infaas::internal::InternalDiffusionQuery* diffusion) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete diffusion_;
-  }
-  if (diffusion) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::infaas::internal::InternalDiffusionQuery>::GetOwningArena(diffusion);
-    if (message_arena != submessage_arena) {
-      diffusion = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, diffusion, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  diffusion_ = diffusion;
-  // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOnlineRequest.diffusion)
-}
-
-// -------------------------------------------------------------------
-
 // QuerySLO
 
 // int64 LatencyInUSec = 1;
@@ -2805,79 +2364,79 @@ inline void QuerySLO::set_maxcost(float value) {
 
 // QueryOnlineResponse
 
-// repeated string image_paths = 1;
-inline int QueryOnlineResponse::_internal_image_paths_size() const {
-  return image_paths_.size();
+// repeated bytes raw_output = 1;
+inline int QueryOnlineResponse::_internal_raw_output_size() const {
+  return raw_output_.size();
 }
-inline int QueryOnlineResponse::image_paths_size() const {
-  return _internal_image_paths_size();
+inline int QueryOnlineResponse::raw_output_size() const {
+  return _internal_raw_output_size();
 }
-inline void QueryOnlineResponse::clear_image_paths() {
-  image_paths_.Clear();
+inline void QueryOnlineResponse::clear_raw_output() {
+  raw_output_.Clear();
 }
-inline std::string* QueryOnlineResponse::add_image_paths() {
-  std::string* _s = _internal_add_image_paths();
-  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineResponse.image_paths)
+inline std::string* QueryOnlineResponse::add_raw_output() {
+  std::string* _s = _internal_add_raw_output();
+  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineResponse.raw_output)
   return _s;
 }
-inline const std::string& QueryOnlineResponse::_internal_image_paths(int index) const {
-  return image_paths_.Get(index);
+inline const std::string& QueryOnlineResponse::_internal_raw_output(int index) const {
+  return raw_output_.Get(index);
 }
-inline const std::string& QueryOnlineResponse::image_paths(int index) const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineResponse.image_paths)
-  return _internal_image_paths(index);
+inline const std::string& QueryOnlineResponse::raw_output(int index) const {
+  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineResponse.raw_output)
+  return _internal_raw_output(index);
 }
-inline std::string* QueryOnlineResponse::mutable_image_paths(int index) {
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineResponse.image_paths)
-  return image_paths_.Mutable(index);
+inline std::string* QueryOnlineResponse::mutable_raw_output(int index) {
+  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineResponse.raw_output)
+  return raw_output_.Mutable(index);
 }
-inline void QueryOnlineResponse::set_image_paths(int index, const std::string& value) {
-  image_paths_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineResponse.image_paths)
+inline void QueryOnlineResponse::set_raw_output(int index, const std::string& value) {
+  raw_output_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineResponse.raw_output)
 }
-inline void QueryOnlineResponse::set_image_paths(int index, std::string&& value) {
-  image_paths_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineResponse.image_paths)
+inline void QueryOnlineResponse::set_raw_output(int index, std::string&& value) {
+  raw_output_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineResponse.raw_output)
 }
-inline void QueryOnlineResponse::set_image_paths(int index, const char* value) {
+inline void QueryOnlineResponse::set_raw_output(int index, const char* value) {
   GOOGLE_DCHECK(value != nullptr);
-  image_paths_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineResponse.image_paths)
+  raw_output_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineResponse.raw_output)
 }
-inline void QueryOnlineResponse::set_image_paths(int index, const char* value, size_t size) {
-  image_paths_.Mutable(index)->assign(
+inline void QueryOnlineResponse::set_raw_output(int index, const void* value, size_t size) {
+  raw_output_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineResponse.image_paths)
+  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineResponse.raw_output)
 }
-inline std::string* QueryOnlineResponse::_internal_add_image_paths() {
-  return image_paths_.Add();
+inline std::string* QueryOnlineResponse::_internal_add_raw_output() {
+  return raw_output_.Add();
 }
-inline void QueryOnlineResponse::add_image_paths(const std::string& value) {
-  image_paths_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineResponse.image_paths)
+inline void QueryOnlineResponse::add_raw_output(const std::string& value) {
+  raw_output_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineResponse.raw_output)
 }
-inline void QueryOnlineResponse::add_image_paths(std::string&& value) {
-  image_paths_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineResponse.image_paths)
+inline void QueryOnlineResponse::add_raw_output(std::string&& value) {
+  raw_output_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineResponse.raw_output)
 }
-inline void QueryOnlineResponse::add_image_paths(const char* value) {
+inline void QueryOnlineResponse::add_raw_output(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
-  image_paths_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineResponse.image_paths)
+  raw_output_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineResponse.raw_output)
 }
-inline void QueryOnlineResponse::add_image_paths(const char* value, size_t size) {
-  image_paths_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineResponse.image_paths)
+inline void QueryOnlineResponse::add_raw_output(const void* value, size_t size) {
+  raw_output_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineResponse.raw_output)
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-QueryOnlineResponse::image_paths() const {
-  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineResponse.image_paths)
-  return image_paths_;
+QueryOnlineResponse::raw_output() const {
+  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineResponse.raw_output)
+  return raw_output_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-QueryOnlineResponse::mutable_image_paths() {
-  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineResponse.image_paths)
-  return &image_paths_;
+QueryOnlineResponse::mutable_raw_output() {
+  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineResponse.raw_output)
+  return &raw_output_;
 }
 
 // .infaas.internal.InfaasRequestStatus status = 2;
@@ -2966,307 +2525,11 @@ inline void QueryOnlineResponse::set_allocated_status(::infaas::internal::Infaas
   // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOnlineResponse.status)
 }
 
-// repeated bytes raw_output = 3;
-inline int QueryOnlineResponse::_internal_raw_output_size() const {
-  return raw_output_.size();
-}
-inline int QueryOnlineResponse::raw_output_size() const {
-  return _internal_raw_output_size();
-}
-inline void QueryOnlineResponse::clear_raw_output() {
-  raw_output_.Clear();
-}
-inline std::string* QueryOnlineResponse::add_raw_output() {
-  std::string* _s = _internal_add_raw_output();
-  // @@protoc_insertion_point(field_add_mutable:infaas.internal.QueryOnlineResponse.raw_output)
-  return _s;
-}
-inline const std::string& QueryOnlineResponse::_internal_raw_output(int index) const {
-  return raw_output_.Get(index);
-}
-inline const std::string& QueryOnlineResponse::raw_output(int index) const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineResponse.raw_output)
-  return _internal_raw_output(index);
-}
-inline std::string* QueryOnlineResponse::mutable_raw_output(int index) {
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineResponse.raw_output)
-  return raw_output_.Mutable(index);
-}
-inline void QueryOnlineResponse::set_raw_output(int index, const std::string& value) {
-  raw_output_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline void QueryOnlineResponse::set_raw_output(int index, std::string&& value) {
-  raw_output_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline void QueryOnlineResponse::set_raw_output(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  raw_output_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline void QueryOnlineResponse::set_raw_output(int index, const void* value, size_t size) {
-  raw_output_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline std::string* QueryOnlineResponse::_internal_add_raw_output() {
-  return raw_output_.Add();
-}
-inline void QueryOnlineResponse::add_raw_output(const std::string& value) {
-  raw_output_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline void QueryOnlineResponse::add_raw_output(std::string&& value) {
-  raw_output_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline void QueryOnlineResponse::add_raw_output(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  raw_output_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline void QueryOnlineResponse::add_raw_output(const void* value, size_t size) {
-  raw_output_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:infaas.internal.QueryOnlineResponse.raw_output)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-QueryOnlineResponse::raw_output() const {
-  // @@protoc_insertion_point(field_list:infaas.internal.QueryOnlineResponse.raw_output)
-  return raw_output_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-QueryOnlineResponse::mutable_raw_output() {
-  // @@protoc_insertion_point(field_mutable_list:infaas.internal.QueryOnlineResponse.raw_output)
-  return &raw_output_;
-}
-
-// .infaas.internal.InternalDiffusionResponse diffusion = 10;
-inline bool QueryOnlineResponse::_internal_has_diffusion() const {
-  return this != internal_default_instance() && diffusion_ != nullptr;
-}
-inline bool QueryOnlineResponse::has_diffusion() const {
-  return _internal_has_diffusion();
-}
-inline void QueryOnlineResponse::clear_diffusion() {
-  if (GetArenaForAllocation() == nullptr && diffusion_ != nullptr) {
-    delete diffusion_;
-  }
-  diffusion_ = nullptr;
-}
-inline const ::infaas::internal::InternalDiffusionResponse& QueryOnlineResponse::_internal_diffusion() const {
-  const ::infaas::internal::InternalDiffusionResponse* p = diffusion_;
-  return p != nullptr ? *p : reinterpret_cast<const ::infaas::internal::InternalDiffusionResponse&>(
-      ::infaas::internal::_InternalDiffusionResponse_default_instance_);
-}
-inline const ::infaas::internal::InternalDiffusionResponse& QueryOnlineResponse::diffusion() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOnlineResponse.diffusion)
-  return _internal_diffusion();
-}
-inline void QueryOnlineResponse::unsafe_arena_set_allocated_diffusion(
-    ::infaas::internal::InternalDiffusionResponse* diffusion) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(diffusion_);
-  }
-  diffusion_ = diffusion;
-  if (diffusion) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:infaas.internal.QueryOnlineResponse.diffusion)
-}
-inline ::infaas::internal::InternalDiffusionResponse* QueryOnlineResponse::release_diffusion() {
-  
-  ::infaas::internal::InternalDiffusionResponse* temp = diffusion_;
-  diffusion_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::infaas::internal::InternalDiffusionResponse* QueryOnlineResponse::unsafe_arena_release_diffusion() {
-  // @@protoc_insertion_point(field_release:infaas.internal.QueryOnlineResponse.diffusion)
-  
-  ::infaas::internal::InternalDiffusionResponse* temp = diffusion_;
-  diffusion_ = nullptr;
-  return temp;
-}
-inline ::infaas::internal::InternalDiffusionResponse* QueryOnlineResponse::_internal_mutable_diffusion() {
-  
-  if (diffusion_ == nullptr) {
-    auto* p = CreateMaybeMessage<::infaas::internal::InternalDiffusionResponse>(GetArenaForAllocation());
-    diffusion_ = p;
-  }
-  return diffusion_;
-}
-inline ::infaas::internal::InternalDiffusionResponse* QueryOnlineResponse::mutable_diffusion() {
-  ::infaas::internal::InternalDiffusionResponse* _msg = _internal_mutable_diffusion();
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOnlineResponse.diffusion)
-  return _msg;
-}
-inline void QueryOnlineResponse::set_allocated_diffusion(::infaas::internal::InternalDiffusionResponse* diffusion) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete diffusion_;
-  }
-  if (diffusion) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::infaas::internal::InternalDiffusionResponse>::GetOwningArena(diffusion);
-    if (message_arena != submessage_arena) {
-      diffusion = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, diffusion, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  diffusion_ = diffusion;
-  // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOnlineResponse.diffusion)
-}
-
 // -------------------------------------------------------------------
 
 // QueryOfflineRequest
 
-// string Prompt = 1;
-inline void QueryOfflineRequest::clear_prompt() {
-  prompt_.ClearToEmpty();
-}
-inline const std::string& QueryOfflineRequest::prompt() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOfflineRequest.Prompt)
-  return _internal_prompt();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void QueryOfflineRequest::set_prompt(ArgT0&& arg0, ArgT... args) {
- 
- prompt_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOfflineRequest.Prompt)
-}
-inline std::string* QueryOfflineRequest::mutable_prompt() {
-  std::string* _s = _internal_mutable_prompt();
-  // @@protoc_insertion_point(field_mutable:infaas.internal.QueryOfflineRequest.Prompt)
-  return _s;
-}
-inline const std::string& QueryOfflineRequest::_internal_prompt() const {
-  return prompt_.Get();
-}
-inline void QueryOfflineRequest::_internal_set_prompt(const std::string& value) {
-  
-  prompt_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
-}
-inline std::string* QueryOfflineRequest::_internal_mutable_prompt() {
-  
-  return prompt_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
-}
-inline std::string* QueryOfflineRequest::release_prompt() {
-  // @@protoc_insertion_point(field_release:infaas.internal.QueryOfflineRequest.Prompt)
-  return prompt_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
-}
-inline void QueryOfflineRequest::set_allocated_prompt(std::string* prompt) {
-  if (prompt != nullptr) {
-    
-  } else {
-    
-  }
-  prompt_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), prompt,
-      GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (prompt_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
-    prompt_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOfflineRequest.Prompt)
-}
-
-// int32 Steps = 2;
-inline void QueryOfflineRequest::clear_steps() {
-  steps_ = 0;
-}
-inline int32_t QueryOfflineRequest::_internal_steps() const {
-  return steps_;
-}
-inline int32_t QueryOfflineRequest::steps() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOfflineRequest.Steps)
-  return _internal_steps();
-}
-inline void QueryOfflineRequest::_internal_set_steps(int32_t value) {
-  
-  steps_ = value;
-}
-inline void QueryOfflineRequest::set_steps(int32_t value) {
-  _internal_set_steps(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOfflineRequest.Steps)
-}
-
-// float CFG_Scale = 3;
-inline void QueryOfflineRequest::clear_cfg_scale() {
-  cfg_scale_ = 0;
-}
-inline float QueryOfflineRequest::_internal_cfg_scale() const {
-  return cfg_scale_;
-}
-inline float QueryOfflineRequest::cfg_scale() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOfflineRequest.CFG_Scale)
-  return _internal_cfg_scale();
-}
-inline void QueryOfflineRequest::_internal_set_cfg_scale(float value) {
-  
-  cfg_scale_ = value;
-}
-inline void QueryOfflineRequest::set_cfg_scale(float value) {
-  _internal_set_cfg_scale(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOfflineRequest.CFG_Scale)
-}
-
-// int32 BatchSize = 4;
-inline void QueryOfflineRequest::clear_batchsize() {
-  batchsize_ = 0;
-}
-inline int32_t QueryOfflineRequest::_internal_batchsize() const {
-  return batchsize_;
-}
-inline int32_t QueryOfflineRequest::batchsize() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOfflineRequest.BatchSize)
-  return _internal_batchsize();
-}
-inline void QueryOfflineRequest::_internal_set_batchsize(int32_t value) {
-  
-  batchsize_ = value;
-}
-inline void QueryOfflineRequest::set_batchsize(int32_t value) {
-  _internal_set_batchsize(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOfflineRequest.BatchSize)
-}
-
-// int64 Seed = 5;
-inline void QueryOfflineRequest::clear_seed() {
-  seed_ = int64_t{0};
-}
-inline int64_t QueryOfflineRequest::_internal_seed() const {
-  return seed_;
-}
-inline int64_t QueryOfflineRequest::seed() const {
-  // @@protoc_insertion_point(field_get:infaas.internal.QueryOfflineRequest.Seed)
-  return _internal_seed();
-}
-inline void QueryOfflineRequest::_internal_set_seed(int64_t value) {
-  
-  seed_ = value;
-}
-inline void QueryOfflineRequest::set_seed(int64_t value) {
-  _internal_set_seed(value);
-  // @@protoc_insertion_point(field_set:infaas.internal.QueryOfflineRequest.Seed)
-}
-
-// string input_url = 6;
+// string input_url = 1;
 inline void QueryOfflineRequest::clear_input_url() {
   input_url_.ClearToEmpty();
 }
@@ -3317,7 +2580,7 @@ inline void QueryOfflineRequest::set_allocated_input_url(std::string* input_url)
   // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOfflineRequest.input_url)
 }
 
-// repeated string model = 7;
+// repeated string model = 2;
 inline int QueryOfflineRequest::_internal_model_size() const {
   return model_.size();
 }
@@ -3392,7 +2655,7 @@ QueryOfflineRequest::mutable_model() {
   return &model_;
 }
 
-// string output_url = 8;
+// string output_url = 3;
 inline void QueryOfflineRequest::clear_output_url() {
   output_url_.ClearToEmpty();
 }
@@ -3443,7 +2706,7 @@ inline void QueryOfflineRequest::set_allocated_output_url(std::string* output_ur
   // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOfflineRequest.output_url)
 }
 
-// .infaas.internal.QuerySLO slo = 9;
+// .infaas.internal.QuerySLO slo = 4;
 inline bool QueryOfflineRequest::_internal_has_slo() const {
   return this != internal_default_instance() && slo_ != nullptr;
 }
@@ -3533,7 +2796,7 @@ inline void QueryOfflineRequest::set_allocated_slo(::infaas::internal::QuerySLO*
   // @@protoc_insertion_point(field_set_allocated:infaas.internal.QueryOfflineRequest.slo)
 }
 
-// string submitter = 10;
+// string submitter = 5;
 inline void QueryOfflineRequest::clear_submitter() {
   submitter_.ClearToEmpty();
 }

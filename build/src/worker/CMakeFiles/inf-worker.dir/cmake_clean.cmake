@@ -1,4 +1,8 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/inf-worker.dir/model_executor.cc.o"
+  "CMakeFiles/inf-worker.dir/model_executor.cc.o.d"
+  "CMakeFiles/inf-worker.dir/process_executor.cc.o"
+  "CMakeFiles/inf-worker.dir/process_executor.cc.o.d"
   "CMakeFiles/inf-worker.dir/query_client.cc.o"
   "CMakeFiles/inf-worker.dir/query_client.cc.o.d"
   "libinf-worker.pdb"

@@ -416,6 +416,19 @@ public:
   // Convenient function to turn Address struct into string
   static const std::string Address_to_str(const struct Address& addr);
 
+
+  //=========================================
+  // PNB: Methods added for DIFS (2026.01.20)
+  //=========================================
+
+  int get_model_exec_info(
+    const std::string& model_name,
+    std::string* framework,
+    std::string* task,
+    std::string* exec_path,
+    std::string* entry_point,
+    std::string* env_path);
+
 private:
   bool key_exists(const std::string& key);
   bool set_member(const std::string& key, const std::string& field);
@@ -430,6 +443,7 @@ private:
 
   struct Address redis_server_;
   redox::Redox rdx_;
+  redox::Redox redis_;
 };
 
 #endif

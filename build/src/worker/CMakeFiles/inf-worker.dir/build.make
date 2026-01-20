@@ -86,14 +86,46 @@ src/worker/CMakeFiles/inf-worker.dir/query_client.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/inf-worker.dir/query_client.cc.s"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.cc -o CMakeFiles/inf-worker.dir/query_client.cc.s
 
+src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.o: src/worker/CMakeFiles/inf-worker.dir/flags.make
+src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.o: ../src/worker/model_executor.cc
+src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.o: src/worker/CMakeFiles/inf-worker.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.o -MF CMakeFiles/inf-worker.dir/model_executor.cc.o.d -o CMakeFiles/inf-worker.dir/model_executor.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/model_executor.cc
+
+src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/inf-worker.dir/model_executor.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/model_executor.cc > CMakeFiles/inf-worker.dir/model_executor.cc.i
+
+src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/inf-worker.dir/model_executor.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/model_executor.cc -o CMakeFiles/inf-worker.dir/model_executor.cc.s
+
+src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o: src/worker/CMakeFiles/inf-worker.dir/flags.make
+src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o: ../src/worker/process_executor.cc
+src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o: src/worker/CMakeFiles/inf-worker.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o -MF CMakeFiles/inf-worker.dir/process_executor.cc.o.d -o CMakeFiles/inf-worker.dir/process_executor.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/process_executor.cc
+
+src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/inf-worker.dir/process_executor.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/process_executor.cc > CMakeFiles/inf-worker.dir/process_executor.cc.i
+
+src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/inf-worker.dir/process_executor.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/process_executor.cc -o CMakeFiles/inf-worker.dir/process_executor.cc.s
+
 # Object files for target inf-worker
 inf__worker_OBJECTS = \
-"CMakeFiles/inf-worker.dir/query_client.cc.o"
+"CMakeFiles/inf-worker.dir/query_client.cc.o" \
+"CMakeFiles/inf-worker.dir/model_executor.cc.o" \
+"CMakeFiles/inf-worker.dir/process_executor.cc.o"
 
 # External object files for target inf-worker
 inf__worker_EXTERNAL_OBJECTS =
 
 src/worker/libinf-worker.so: src/worker/CMakeFiles/inf-worker.dir/query_client.cc.o
+src/worker/libinf-worker.so: src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.o
+src/worker/libinf-worker.so: src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o
 src/worker/libinf-worker.so: src/worker/CMakeFiles/inf-worker.dir/build.make
 src/worker/libinf-worker.so: src/metadata-store/libredis-md.so
 src/worker/libinf-worker.so: protos/internal/libinfaas-protos-internal.a
@@ -101,7 +133,7 @@ src/worker/libinf-worker.so: /usr/local/lib/libprotobuf.so
 src/worker/libinf-worker.so: /usr/lib/x86_64-linux-gnu/libhiredis.so
 src/worker/libinf-worker.so: /usr/lib/x86_64-linux-gnu/libev.so
 src/worker/libinf-worker.so: src/worker/CMakeFiles/inf-worker.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared library libinf-worker.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared library libinf-worker.so"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/inf-worker.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

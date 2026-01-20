@@ -44,7 +44,11 @@ endif()
 # ------------------------------------------------------------
 # Worker shared library
 # ------------------------------------------------------------
-add_library(inf-worker SHARED query_client.cc)
+add_library(inf-worker SHARED
+    query_client.cc
+    model_executor.cc
+    process_executor.cc
+)
 
 target_link_libraries(inf-worker
     redis-md
@@ -86,12 +90,6 @@ target_include_directories(inf-worker
     ${CMAKE_SOURCE_DIR}/src
 )
 
-## include_directories("${CMAKE_SOURCE_DIR}/src") # PNB: (2025.12.27)
-#target_include_directories(worker-util PUBLIC
-  #${CMAKE_SOURCE_DIR}   # PNB: (2025.12.27)
-  #${CMAKE_SOURCE_DIR}/src
-  #${PROJECT_BINARY_DIR}/protos/internal
-#)
 
 # PNB: (2025.12.28)
 target_include_directories(worker-util PUBLIC
@@ -104,6 +102,7 @@ target_link_libraries(worker-util PUBLIC
 	CURL::libcurl # PNB: (2025.12.29)
     trtis-request
     redis-md
+    infaas-protos
     infaas-protos-internal
     grpc++_unsecure
     grpc
@@ -115,23 +114,37 @@ target_link_libraries(worker-util PUBLIC
 # ------------------------------------------------------------
 # Worker executables
 # ------------------------------------------------------------
-add_executable(query_executor query_executor.cc)
+add_executable(query_executor
+    query_executor.cc
+    model_executor.cc
+    process_executor.cc
+)
 add_executable(query_heartbeat query_heartbeat.cc)
 
 target_link_libraries(query_executor
-	worker-util
-	CURL::libcurl
-    absl::synchronization
-    absl::strings
-    absl::base
-    absl::time
-    absl::status
-    ${OpenCV_LIBS}
-    $<$<BOOL:${_has_nvidia}>:cuda>
+    PUBLIC
+        worker-util
+	    CURL::libcurl
+        absl::synchronization
+        absl::strings
+        absl::base
+        absl::time
+        absl::status
+        ${OpenCV_LIBS}
+        $<$<BOOL:${_has_nvidia}>:cuda>
+    PRIVATE
+        infaas-protos-internal
 )
-    
+
+
 target_link_libraries(query_heartbeat
     inf-worker
+)
+
+
+# 2026.01.15
+target_sources(worker-util PRIVATE
+  diffusion_service_impl.cc
 )
 
 # ------------------------------------------------------------

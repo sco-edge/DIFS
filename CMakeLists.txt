@@ -87,3 +87,9 @@ if(NOT LOCAL_MODE)
   message(STATUS "Skipping metadata-store tests (LOCAL_MODE)")
   add_subdirectory(src/metadata-store)
 endif()
+
+
+# # ----------------------------------------------------------------------
+# # Protobuf / gRPC internal protos (includes diffusion); PNB (2026.01.10)
+# # ----------------------------------------------------------------------
+# add_subdirectory(protos/internal) 

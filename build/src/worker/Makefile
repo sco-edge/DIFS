@@ -247,6 +247,81 @@ common_model_util.cc.s:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/worker-util.dir/build.make src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.s
 .PHONY : common_model_util.cc.s
 
+diffusion_service_impl.o: diffusion_service_impl.cc.o
+.PHONY : diffusion_service_impl.o
+
+# target to build an object file
+diffusion_service_impl.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/worker-util.dir/build.make src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o
+.PHONY : diffusion_service_impl.cc.o
+
+diffusion_service_impl.i: diffusion_service_impl.cc.i
+.PHONY : diffusion_service_impl.i
+
+# target to preprocess a source file
+diffusion_service_impl.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/worker-util.dir/build.make src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.i
+.PHONY : diffusion_service_impl.cc.i
+
+diffusion_service_impl.s: diffusion_service_impl.cc.s
+.PHONY : diffusion_service_impl.s
+
+# target to generate assembly for a file
+diffusion_service_impl.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/worker-util.dir/build.make src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.s
+.PHONY : diffusion_service_impl.cc.s
+
+model_executor.o: model_executor.cc.o
+.PHONY : model_executor.o
+
+# target to build an object file
+model_executor.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.o
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_executor.dir/build.make src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o
+.PHONY : model_executor.cc.o
+
+model_executor.i: model_executor.cc.i
+.PHONY : model_executor.i
+
+# target to preprocess a source file
+model_executor.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.i
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_executor.dir/build.make src/worker/CMakeFiles/query_executor.dir/model_executor.cc.i
+.PHONY : model_executor.cc.i
+
+model_executor.s: model_executor.cc.s
+.PHONY : model_executor.s
+
+# target to generate assembly for a file
+model_executor.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/model_executor.cc.s
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_executor.dir/build.make src/worker/CMakeFiles/query_executor.dir/model_executor.cc.s
+.PHONY : model_executor.cc.s
+
+process_executor.o: process_executor.cc.o
+.PHONY : process_executor.o
+
+# target to build an object file
+process_executor.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o
+.PHONY : process_executor.cc.o
+
+process_executor.i: process_executor.cc.i
+.PHONY : process_executor.i
+
+# target to preprocess a source file
+process_executor.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.i
+.PHONY : process_executor.cc.i
+
+process_executor.s: process_executor.cc.s
+.PHONY : process_executor.s
+
+# target to generate assembly for a file
+process_executor.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.s
+.PHONY : process_executor.cc.s
+
 query_client.o: query_client.cc.o
 .PHONY : query_client.o
 
@@ -340,6 +415,15 @@ help:
 	@echo "... common_model_util.o"
 	@echo "... common_model_util.i"
 	@echo "... common_model_util.s"
+	@echo "... diffusion_service_impl.o"
+	@echo "... diffusion_service_impl.i"
+	@echo "... diffusion_service_impl.s"
+	@echo "... model_executor.o"
+	@echo "... model_executor.i"
+	@echo "... model_executor.s"
+	@echo "... process_executor.o"
+	@echo "... process_executor.i"
+	@echo "... process_executor.s"
 	@echo "... query_client.o"
 	@echo "... query_client.i"
 	@echo "... query_client.s"

@@ -72,78 +72,62 @@ include protos/internal/CMakeFiles/infaas-protos-internal.dir/progress.make
 # Include the compile flags for this target's objects.
 include protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
 
-protos/internal/query.pb.h: ../protos/internal/query.proto
-protos/internal/query.pb.h: /usr/local/bin/protoc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Running cpp protocol buffer compiler on query.proto"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/local/bin/protoc --cpp_out /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal -I /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal/query.proto
+protos/internal/infaas_request_status.pb.cc: ../protos/internal/infaas_request_status.proto
+protos/internal/infaas_request_status.pb.cc: ../protos/internal/diffusion_service.proto
+protos/internal/infaas_request_status.pb.cc: ../protos/internal/query.proto
+protos/internal/infaas_request_status.pb.cc: ../protos/internal/model.proto
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating infaas_request_status.pb.cc, diffusion_service.pb.cc, query.pb.cc, model.pb.cc, infaas_request_status.pb.h, diffusion_service.pb.h, query.pb.h, model.pb.h, infaas_request_status.grpc.pb.cc, diffusion_service.grpc.pb.cc, query.grpc.pb.cc, model.grpc.pb.cc, infaas_request_status.grpc.pb.h, diffusion_service.grpc.pb.h, query.grpc.pb.h, model.grpc.pb.h"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/local/bin/protoc --cpp_out=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal --grpc_out=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal --plugin=protoc-gen-grpc=/usr/local/bin/grpc_cpp_plugin -I /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal infaas_request_status.proto diffusion_service.proto query.proto model.proto
 
-protos/internal/query.pb.cc: protos/internal/query.pb.h
+protos/internal/diffusion_service.pb.cc: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/diffusion_service.pb.cc
+
+protos/internal/query.pb.cc: protos/internal/infaas_request_status.pb.cc
 	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/query.pb.cc
 
-protos/internal/sys_monitor.pb.h: ../protos/internal/sys_monitor.proto
-protos/internal/sys_monitor.pb.h: /usr/local/bin/protoc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Running cpp protocol buffer compiler on sys_monitor.proto"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/local/bin/protoc --cpp_out /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal -I /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal/sys_monitor.proto
+protos/internal/model.pb.cc: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/model.pb.cc
 
-protos/internal/sys_monitor.pb.cc: protos/internal/sys_monitor.pb.h
-	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/sys_monitor.pb.cc
+protos/internal/infaas_request_status.pb.h: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/infaas_request_status.pb.h
 
-protos/internal/infaas_request_status.pb.h: ../protos/internal/infaas_request_status.proto
-protos/internal/infaas_request_status.pb.h: /usr/local/bin/protoc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Running cpp protocol buffer compiler on infaas_request_status.proto"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/local/bin/protoc --cpp_out /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal -I /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal/infaas_request_status.proto
+protos/internal/diffusion_service.pb.h: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/diffusion_service.pb.h
 
-protos/internal/infaas_request_status.pb.cc: protos/internal/infaas_request_status.pb.h
-	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/infaas_request_status.pb.cc
+protos/internal/query.pb.h: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/query.pb.h
 
-protos/internal/query.grpc.pb.cc: ../protos/internal/query.proto
-protos/internal/query.grpc.pb.cc: /usr/local/bin/protoc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Running gRPC C++ protocol buffer compiler on query.proto"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/local/bin/protoc --grpc_out=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal --plugin=protoc-gen-grpc=/usr/local/bin/grpc_cpp_plugin -I /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal/query.proto
+protos/internal/model.pb.h: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/model.pb.h
 
-protos/internal/query.grpc.pb.h: protos/internal/query.grpc.pb.cc
+protos/internal/infaas_request_status.grpc.pb.cc: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/infaas_request_status.grpc.pb.cc
+
+protos/internal/diffusion_service.grpc.pb.cc: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/diffusion_service.grpc.pb.cc
+
+protos/internal/query.grpc.pb.cc: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/query.grpc.pb.cc
+
+protos/internal/model.grpc.pb.cc: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/model.grpc.pb.cc
+
+protos/internal/infaas_request_status.grpc.pb.h: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/infaas_request_status.grpc.pb.h
+
+protos/internal/diffusion_service.grpc.pb.h: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/diffusion_service.grpc.pb.h
+
+protos/internal/query.grpc.pb.h: protos/internal/infaas_request_status.pb.cc
 	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/query.grpc.pb.h
 
-protos/internal/sys_monitor.grpc.pb.cc: ../protos/internal/sys_monitor.proto
-protos/internal/sys_monitor.grpc.pb.cc: /usr/local/bin/protoc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Running gRPC C++ protocol buffer compiler on sys_monitor.proto"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/local/bin/protoc --grpc_out=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal --plugin=protoc-gen-grpc=/usr/local/bin/grpc_cpp_plugin -I /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal/sys_monitor.proto
-
-protos/internal/sys_monitor.grpc.pb.h: protos/internal/sys_monitor.grpc.pb.cc
-	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/sys_monitor.grpc.pb.h
-
-protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
-protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o: protos/internal/query.pb.cc
-protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.cc
-
-protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/query.pb.cc.i"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.cc > CMakeFiles/infaas-protos-internal.dir/query.pb.cc.i
-
-protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/query.pb.cc.s"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.cc -o CMakeFiles/infaas-protos-internal.dir/query.pb.cc.s
-
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o: protos/internal/sys_monitor.pb.cc
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/sys_monitor.pb.cc
-
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.i"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/sys_monitor.pb.cc > CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.i
-
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.s"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/sys_monitor.pb.cc -o CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.s
+protos/internal/model.grpc.pb.h: protos/internal/infaas_request_status.pb.cc
+	@$(CMAKE_COMMAND) -E touch_nocreate protos/internal/model.grpc.pb.h
 
 protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
 protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o: protos/internal/infaas_request_status.pb.cc
 protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.pb.cc
 
 protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.i: cmake_force
@@ -154,10 +138,80 @@ protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.s"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.pb.cc -o CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.s
 
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o: protos/internal/diffusion_service.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.pb.cc
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.pb.cc > CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.i
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.pb.cc -o CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.s
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
+protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o: protos/internal/query.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.cc
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/query.pb.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.cc > CMakeFiles/infaas-protos-internal.dir/query.pb.cc.i
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/query.pb.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.cc -o CMakeFiles/infaas-protos-internal.dir/query.pb.cc.s
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o: protos/internal/model.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/model.pb.cc
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/model.pb.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/model.pb.cc > CMakeFiles/infaas-protos-internal.dir/model.pb.cc.i
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/model.pb.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/model.pb.cc -o CMakeFiles/infaas-protos-internal.dir/model.pb.cc.s
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
+protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o: protos/internal/infaas_request_status.grpc.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.grpc.pb.cc
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.grpc.pb.cc > CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.i
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.grpc.pb.cc -o CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.s
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o: protos/internal/diffusion_service.grpc.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.grpc.pb.cc
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.grpc.pb.cc > CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.i
+
+protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.grpc.pb.cc -o CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.s
+
 protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
 protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o: protos/internal/query.grpc.pb.cc
 protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.cc
 
 protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.i: cmake_force
@@ -168,39 +222,45 @@ protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.s: cmake_
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.s"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.cc -o CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.s
 
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o: protos/internal/sys_monitor.grpc.pb.cc
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/sys_monitor.grpc.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/flags.make
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o: protos/internal/model.grpc.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o: protos/internal/CMakeFiles/infaas-protos-internal.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o -MF CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o.d -o CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/model.grpc.pb.cc
 
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.i"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/sys_monitor.grpc.pb.cc > CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.i
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/model.grpc.pb.cc > CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.i
 
-protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.s"
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/sys_monitor.grpc.pb.cc -o CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.s
+protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/model.grpc.pb.cc -o CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.s
 
 # Object files for target infaas-protos-internal
 infaas__protos__internal_OBJECTS = \
-"CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o" \
-"CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o" \
 "CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o" \
+"CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o" \
+"CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o" \
+"CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o" \
+"CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o" \
+"CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o" \
 "CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o" \
-"CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o"
+"CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o"
 
 # External object files for target infaas-protos-internal
 infaas__protos__internal_EXTERNAL_OBJECTS =
 
-protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o
-protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o
 protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.o
+protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o
+protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.o
+protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o
+protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o
+protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o
 protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/query.grpc.pb.cc.o
-protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o
+protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o
 protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make
 protos/internal/libinfaas-protos-internal.a: protos/internal/CMakeFiles/infaas-protos-internal.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX static library libinfaas-protos-internal.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX static library libinfaas-protos-internal.a"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && $(CMAKE_COMMAND) -P CMakeFiles/infaas-protos-internal.dir/cmake_clean_target.cmake
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/infaas-protos-internal.dir/link.txt --verbose=$(VERBOSE)
 
@@ -212,16 +272,22 @@ protos/internal/CMakeFiles/infaas-protos-internal.dir/clean:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal && $(CMAKE_COMMAND) -P CMakeFiles/infaas-protos-internal.dir/cmake_clean.cmake
 .PHONY : protos/internal/CMakeFiles/infaas-protos-internal.dir/clean
 
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/diffusion_service.grpc.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/diffusion_service.grpc.pb.h
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/diffusion_service.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/diffusion_service.pb.h
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/infaas_request_status.grpc.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/infaas_request_status.grpc.pb.h
 protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/infaas_request_status.pb.cc
 protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/infaas_request_status.pb.h
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/model.grpc.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/model.grpc.pb.h
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/model.pb.cc
+protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/model.pb.h
 protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/query.grpc.pb.cc
 protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/query.grpc.pb.h
 protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/query.pb.cc
 protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/query.pb.h
-protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/sys_monitor.grpc.pb.cc
-protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/sys_monitor.grpc.pb.h
-protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/sys_monitor.pb.cc
-protos/internal/CMakeFiles/infaas-protos-internal.dir/depend: protos/internal/sys_monitor.pb.h
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/protos/internal /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/CMakeFiles/infaas-protos-internal.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : protos/internal/CMakeFiles/infaas-protos-internal.dir/depend
 

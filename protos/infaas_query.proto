@@ -1,20 +1,25 @@
 //PNB: Diffusion model implemementation related (2025.12.19)
 
 message DiffusionQuery {
-  string prompt = 1;
-  int32 steps = 2;
+  string model = 1;
+  repeated string prompt = 2;
+  int32 steps = 3;  // steps N = 10 PNB: other parameters suggested by Jieun
   //int32 batchSize = 10; //PNB: other parameters suggested by Jieun
-  //N = 10  //PNB: other parameters suggested by Jieun
-  float guidance_scale = 3;
-  int32 seed = 4;
+  float guidance_scale = 4;
   int32 width = 5;
   int32 height = 6;
+  int32 seed = 7;
+  string input_text = 8;
 }
 
 message DiffusionResponse {
-  bytes image = 1;
-  int32 width = 2;
-  int32 height = 3;
+  string image_path = 1;
+  bool success = 2;
+  string error_message = 3;
+  // bytes image = 1;
+  // int32 width = 2;
+  // int32 height = 3;
+  stromg set_image_path = 4;
 }
 
 // Extending request

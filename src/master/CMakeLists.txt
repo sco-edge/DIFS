@@ -71,9 +71,12 @@ target_link_libraries(modelreg_heartbeat
 )
 
 target_link_libraries(queryfe_server
-    inf-master
-    inf-worker
-    worker-util
+    PUBLIC
+        inf-master
+        inf-worker
+        worker-util
+    PRIVATE
+        infaas-protos-internal
 )
 
 target_link_libraries(queryfe_heartbeat

@@ -114,11 +114,26 @@ src/worker/CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.s: cmake_
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.s"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/utils/filesystem_utils.cpp -o CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.s
 
+src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o: src/worker/CMakeFiles/worker-util.dir/flags.make
+src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o: ../src/worker/diffusion_service_impl.cc
+src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o: src/worker/CMakeFiles/worker-util.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o -MF CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o.d -o CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/diffusion_service_impl.cc
+
+src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/worker-util.dir/diffusion_service_impl.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/diffusion_service_impl.cc > CMakeFiles/worker-util.dir/diffusion_service_impl.cc.i
+
+src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/worker-util.dir/diffusion_service_impl.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/diffusion_service_impl.cc -o CMakeFiles/worker-util.dir/diffusion_service_impl.cc.s
+
 # Object files for target worker-util
 worker__util_OBJECTS = \
 "CMakeFiles/worker-util.dir/common_model_util.cc.o" \
 "CMakeFiles/worker-util.dir/autoscaler.cc.o" \
-"CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.o"
+"CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.o" \
+"CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o"
 
 # External object files for target worker-util
 worker__util_EXTERNAL_OBJECTS =
@@ -126,9 +141,10 @@ worker__util_EXTERNAL_OBJECTS =
 src/worker/libworker-util.a: src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o
 src/worker/libworker-util.a: src/worker/CMakeFiles/worker-util.dir/autoscaler.cc.o
 src/worker/libworker-util.a: src/worker/CMakeFiles/worker-util.dir/__/__/utils/filesystem_utils.cpp.o
+src/worker/libworker-util.a: src/worker/CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o
 src/worker/libworker-util.a: src/worker/CMakeFiles/worker-util.dir/build.make
 src/worker/libworker-util.a: src/worker/CMakeFiles/worker-util.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libworker-util.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library libworker-util.a"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && $(CMAKE_COMMAND) -P CMakeFiles/worker-util.dir/cmake_clean_target.cmake
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/worker-util.dir/link.txt --verbose=$(VERBOSE)
 

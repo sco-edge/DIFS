@@ -86,14 +86,30 @@ src/worker/CMakeFiles/query_executor.dir/query_executor.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/query_executor.dir/query_executor.cc.s"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_executor.cc -o CMakeFiles/query_executor.dir/query_executor.cc.s
 
+src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o: src/worker/CMakeFiles/query_executor.dir/flags.make
+src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o: ../src/worker/model_executor.cc
+src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o: src/worker/CMakeFiles/query_executor.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o -MF CMakeFiles/query_executor.dir/model_executor.cc.o.d -o CMakeFiles/query_executor.dir/model_executor.cc.o -c /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/model_executor.cc
+
+src/worker/CMakeFiles/query_executor.dir/model_executor.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/query_executor.dir/model_executor.cc.i"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/model_executor.cc > CMakeFiles/query_executor.dir/model_executor.cc.i
+
+src/worker/CMakeFiles/query_executor.dir/model_executor.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/query_executor.dir/model_executor.cc.s"
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/model_executor.cc -o CMakeFiles/query_executor.dir/model_executor.cc.s
+
 # Object files for target query_executor
 query_executor_OBJECTS = \
-"CMakeFiles/query_executor.dir/query_executor.cc.o"
+"CMakeFiles/query_executor.dir/query_executor.cc.o" \
+"CMakeFiles/query_executor.dir/model_executor.cc.o"
 
 # External object files for target query_executor
 query_executor_EXTERNAL_OBJECTS =
 
 src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/query_executor.cc.o
+src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o
 src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/build.make
 src/worker/query_executor: src/worker/libworker-util.a
 src/worker/query_executor: /usr/lib/x86_64-linux-gnu/libcurl.so
@@ -103,9 +119,11 @@ src/worker/query_executor: /usr/local/lib/libopencv_ts.a
 src/worker/query_executor: /usr/local/lib/libopencv_superres.so.2.4.13
 src/worker/query_executor: /usr/local/lib/libopencv_stitching.so.2.4.13
 src/worker/query_executor: /usr/local/lib/libopencv_contrib.so.2.4.13
+src/worker/query_executor: protos/internal/libinfaas-protos-internal.a
 src/worker/query_executor: src/metadata-store/libredis-md.so
 src/worker/query_executor: /usr/lib/x86_64-linux-gnu/libhiredis.so
 src/worker/query_executor: /usr/lib/x86_64-linux-gnu/libev.so
+src/worker/query_executor: protos/libinfaas-protos.a
 src/worker/query_executor: protos/internal/libinfaas-protos-internal.a
 src/worker/query_executor: /usr/local/lib/libprotobuf.so
 src/worker/query_executor: /usr/local/lib/libabsl_cord.so.2206.0.0
@@ -150,7 +168,7 @@ src/worker/query_executor: /usr/local/lib/libopencv_imgproc.so.2.4.13
 src/worker/query_executor: /usr/local/lib/libopencv_flann.so.2.4.13
 src/worker/query_executor: /usr/local/lib/libopencv_core.so.2.4.13
 src/worker/query_executor: src/worker/CMakeFiles/query_executor.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable query_executor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable query_executor"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/query_executor.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

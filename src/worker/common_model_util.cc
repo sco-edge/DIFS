@@ -61,6 +61,13 @@
 #include "query.grpc.pb.h" // PNB: (2025.12.27)
 #include "query.pb.h" // PNB: (2025.12.27)
 
+// PNB: Vital for "External gRPC Service Only" section of "CpuModelManager::QueryModelOnline" (2026.01.08)
+#include <grpcpp/grpcpp.h>
+#ifdef ENABLE_DIFFUSION // (2026.01.08)
+#include "diffusion_service.pb.h"
+#include "diffusion_service.grpc.pb.h"
+#endif
+
 #ifdef INFAAS_NEURON_WORKER
 #include "trtis_request.h"
 #endif
@@ -146,6 +153,9 @@ inline int8_t createdir(const std::string& path) {
 inline int8_t rmdir(const std::string& path) {
     return rmdir(path.c_str());
 }
+
+
+
 
 // S3 UTILITY STUBS FOR LOCAL_MODE
 inline int8_t parse_s3_url(const std::string& url, std::string& bucket, std::string& objname) {
@@ -254,6 +264,64 @@ bool RunDiffusionModel(const std::string& modelname, const std::string& inputpat
     }
     return true;
 }
+
+
+
+// // NEW UTILITY/HELPER FUNCTIONS; WORKER -> CONTAINER BRIDGE (2026.01.10)
+// namespace {
+
+//   std::vector<unsigned char> call_diffusion_container(const infaas::internal::DiffusionRequest& request)
+// {
+//     const std::string diffusion_addr = "localhost:50052";
+
+//     auto channel = grpc::CreateChannel(
+//         diffusion_addr, grpc::InsecureChannelCredentials());
+
+//     std::unique_ptr<infaas::internal::DiffusionService::Stub> stub =
+//         infaas::internal::DiffusionService::NewStub(channel);
+
+//     infaas::internal::DiffusionRequest dreq;
+//     infaas::internal::DiffusionReply drep;
+//     grpc::ClientContext ctx;
+
+//     dreq.set_prompt(request.prompt());
+//     dreq.set_steps(request.steps());
+//     dreq.set_guidancescale(request.guidancescale());
+//     dreq.set_width(request.width());
+//     dreq.set_height(request.height());
+//     dreq.set_seed(request.seed());
+
+//     grpc::Status status = stub->Generate(&ctx, dreq, &drep);
+
+//     if (!status.ok()) {
+//         throw std::runtime_error(
+//             "Diffusion gRPC failed: " + status.error_message());
+//     }
+
+//     const std::string& png = drep.image_png();
+    
+//     return std::vector<unsigned char>(png.begin(),png.end());
+
+// }
+// } // anonymous namespace
+
+
+
+static std::vector<unsigned char> run_diffusion(const infaas::internal::DiffusionRequest& request) {// PNB: added (2026.01.15)
+
+  // ---- call dockerized diffusion server (HTTP or local RPC) ----
+  // This example assumes local container exposes HTTP on 127.0.0.1:8080
+
+  // TODO: replace with actual HTTP/gRPC client
+  // For now, placeholder logic
+  std::vector<unsigned char> image_png;
+
+  // Simulate output to unblock build
+  image_png.assign(1024, 0x89); // fake PNG header bytes
+
+  return image_png;
+}
+
 
 // ================================================
 // CPU MODEL MANAGER - FULL IMPLEMENTATION
@@ -616,7 +684,7 @@ namespace CpuModelManager {
     }
     
     int8_t QueryModelOnline(const std::string& modelname, const QueryOnlineRequest& request,
-                           QueryOnlineResponse& reply, std::unique_ptr<RedisMetadata>& rmd,
+                           QueryOnlineResponse& response, std::unique_ptr<RedisMetadata>& rmd,
                            std::unique_ptr<S3Client>& s3c) {
         if (modelname.empty()) {
             std::cerr << "CPU Manager: model name is empty!" << std::endl;
@@ -684,7 +752,7 @@ namespace CpuModelManager {
             
             ClientContext context;
             uint64_t time1 = get_curr_timestamp(), time2;
-            Status status = stub->QueryOnline(&context, request, &reply);
+            Status status = stub->QueryOnline(&context, request, &response);
             time2 = get_curr_timestamp();
             printf("[common_model_util.cc] Pytorch inference time %.4lf ms.\n",
                    get_duration_ms(time1, time2));
@@ -771,7 +839,7 @@ namespace CpuModelManager {
                 for (auto& i : *it) {
                     predv[cntit++] = std::stof(i.dump());
                 }
-                reply.add_raw_output(reinterpret_cast<const char*>(predv), 
+                response.add_raw_output(reinterpret_cast<const char*>(predv), 
                                   it->size() * sizeof(float));
             }
             if (predv) delete[] predv;
@@ -787,8 +855,8 @@ namespace CpuModelManager {
             return -1;
         }
         
-        std::cout << "rawoutput batch size " << reply.raw_output_size() 
-                  << " each dimension " << reply.raw_output(0).size() << std::endl;
+        std::cout << "rawoutput batch size " << response.raw_output_size() 
+                  << " each dimension " << response.raw_output(0).size() << std::endl;
         return 0;
     }
     
@@ -877,7 +945,7 @@ namespace CpuModelManager {
             grpc::CreateCustomChannel(addr, grpc::InsecureChannelCredentials(), arguments));
         
         QueryOfflineRequest containerrequest;
-        QueryOfflineResponse reply;
+        QueryOfflineResponse response;
         containerrequest.set_input_url(localinstancename);
         containerrequest.add_model(modelname);
         containerrequest.set_output_url(localinstancename);
@@ -925,10 +993,10 @@ namespace CpuModelManager {
             }
             
             ClientContext context;  // context should not be reused!
-            Status status = stub->QueryOffline(&context, containerrequest, &reply);
-            if (!status.ok() || !reply.status().status() == InfaasRequestStatusEnum::SUCCESS) {
+            Status status = stub->QueryOffline(&context, containerrequest, &response);
+            if (!status.ok() || !response.status().status() == InfaasRequestStatusEnum::SUCCESS) {
                 std::cerr << "Offline Execution failed RPC " << status.error_message() 
-                          << " INFaaS " << reply.status().msg() << std::endl;
+                          << " INFaaS " << response.status().msg() << std::endl;
             }
         }
         
@@ -984,7 +1052,7 @@ namespace CpuModelManager {
 }
 
 // ================================================
-// INFA MODEL MANAGER (Inferentia) - SIMPLIFIED
+// INFAAS MODEL MANAGER (Inferentia) - SIMPLIFIED
 // ================================================
 #ifdef INFAAS_NEURON_WORKER
 namespace InfaModelManager {
@@ -1115,10 +1183,13 @@ int8_t GpuModelManager::UnloadModel(
 int8_t GpuModelManager::QueryModelOnline(
     const std::string& model_name,
     const QueryOnlineRequest* request,
-    QueryOnlineResponse* reply,
+    QueryOnlineResponse* response,
     std::unique_ptr<RedisMetadata>& rmd,
     std::unique_ptr<localfs::S3Client>& s3c) {
+
     // implementation
+
+  return 0;
 }
 
 // ============================================================
@@ -1147,12 +1218,39 @@ int8_t CpuModelManager::UnloadModel(
 }
 
 int8_t CpuModelManager::QueryModelOnline(
-    const std::string& model_name,
+    const std::string& model_type,
     const QueryOnlineRequest* request,
-    QueryOnlineResponse* reply,
+    QueryOnlineResponse* response,
     std::unique_ptr<RedisMetadata>& rmd,
     std::unique_ptr<localfs::S3Client>& s3c) {
-    // implementation
+
+   // ======================================
+    // DIFFUSION TASK EARLY EXIT (2026.01.10)
+    // =====================================
+
+ //  if (request->has_diffusion()) {
+
+//   infaas::internal::DiffusionRequest dreq;
+//   // dreq.set_prompt(request->diffusion().prompt());
+//   // dreq.set_steps(request->diffusion().steps());
+//   // dreq.set_width(request->diffusion().width());
+//   // dreq.set_height(request->diffusion().height());
+//   // dreq.set_seed(request->diffusion().seed());
+//   // dreq.set_guidancescale(request->diffusion().guidance_scale());
+//   const auto& diff = request->diffusion();
+//   drep.CopyFrom(diff);
+  
+//   auto image = run_diffusion(dreq);
+
+//   response->add_raw_output(
+//   std::string(reinterpret_cast<const char*>(image.data()),
+//                 image.size()));
+//   //response->set_status(SUCCESS);
+
+//   return 0;
+// }
+
+  return 0;
 }
 
 int8_t CpuModelManager::QueryModelOffline(
@@ -1160,7 +1258,11 @@ int8_t CpuModelManager::QueryModelOffline(
     const QueryOfflineRequest& request,
     std::unique_ptr<RedisMetadata>& rmd,
     std::unique_ptr<localfs::S3Client>& s3c) {
+
+
     // implementation
+
+  return 0;
 }
 
 // ============================================================
@@ -1178,6 +1280,78 @@ bool CommonModelUtil::HasBlacklisted() {
   std::lock_guard<std::mutex> lock(mutex_);
   return has_blacklisted_;
 }
+
+
+
+
+// ============================================================
+// DiffusionModelManager definitions  PNB: (2026.01.08)
+// ============================================================
+
+// LoadModel defintion  
+int DiffusionModelManager::LoadModel(
+    const std::string& model,
+    std::unique_ptr<RedisMetadata>& rm) {
+
+  // Launch container if not running
+  system(("docker run -d --gpus all "
+          "--name sd_" + model +
+          " diffusion_server").c_str());
+
+  //  rm->increment_replica(model);
+  return 0;
+}
+
+
+int DiffusionModelManager::Generate( // PNB: added (2026).01.15)
+    const std::string& model,
+    const std::string& prompt,
+    int steps,
+    int width,
+    int height,
+    std::string& png_bytes,
+    std::string& output_path) {
+
+  // Example: invoke local diffusion server
+  std::string cmd =
+      "python3 generate.py "
+      "--prompt \"" + prompt + "\" "
+      "--steps " + std::to_string(steps) +
+      " --width " + std::to_string(width) +
+      " --height " + std::to_string(height) +
+      " --output /tmp/out.png";
+
+  if (system(cmd.c_str()) != 0) {
+    return -1;
+  }
+
+  output_path = "/tmp/out.png";
+
+  // Read PNG into memory
+  std::ifstream f(output_path, std::ios::binary);
+  if (!f) return -1;
+
+  png_bytes.assign(
+      std::istreambuf_iterator<char>(f),
+      std::istreambuf_iterator<char>());
+
+  return 0;
+}
+
+
+  
+  // UnloadModel definition 
+int DiffusionModelManager::UnloadModel(
+    const std::string& model,
+    std::unique_ptr<RedisMetadata>& rm) {
+
+  system(("docker rm -f sd_" + model).c_str());
+  //  rm->decrement_replica(model);
+  return 0;
+}
+
+  
+  
 }  // namespace internal
 }  // namespace infaas
 
@@ -1190,7 +1364,7 @@ bool CommonModelUtil::HasBlacklisted() {
 // ================================================
 #ifdef INFAAS_GPU_WORKER
 int8_t QueryGeneralModel(const std::string& modelname, const QueryOnlineRequest& request,
-                        QueryOnlineResponse& reply) {
+                        QueryOnlineResponse& response) {
     // GPU TRTIS implementation would go here
     // For now, stub returns success
     return 0;

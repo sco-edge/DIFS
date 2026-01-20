@@ -102,6 +102,7 @@ bin/queryfe_heartbeat: /usr/lib/x86_64-linux-gnu/libev.so
 bin/queryfe_heartbeat: protos/libinfaas-protos.a
 bin/queryfe_heartbeat: protos/internal/libinfaas-protos-internal.a
 bin/queryfe_heartbeat: /usr/local/lib/libprotobuf.so
+bin/queryfe_heartbeat: /usr/local/lib/libprotobuf.so
 bin/queryfe_heartbeat: src/master/CMakeFiles/queryfe_heartbeat.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../../bin/queryfe_heartbeat"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/master && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/queryfe_heartbeat.dir/link.txt --verbose=$(VERBOSE)

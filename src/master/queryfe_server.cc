@@ -62,6 +62,7 @@ Aws::S3::S3Client UNUSED_S3_CLIENT;
 #include "worker/query_client.h"
 #include "query.pb.h"
 #include "infaas_request_status.pb.h"
+// #include "protos/internal/diffusion_service.grpc.pb.h" //PNB: (2026.01.15)
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -72,9 +73,9 @@ using grpc::Status;
 #ifdef ENABLE_DIFFUSION
 /* PNB: If you need to turn on the "diffusion" functionalities, all you needot do is to uncomment the line "# diffusion_service.proto" in your "protos/CMakeLists.txt" and add the "ENABLE_DIFFUSION" flag (-DENABLE_DIFFUSION=ON) during compilation*/
 // PNB (2025.12.27)
-  using infaas::internal::DiffusionRequest;
-  using infaas::internal::DiffusionReply;
-  using infaas::internal::DiffusionService;
+  // using infaas::internal::DiffusionRequest;
+  // using infaas::internal::DiffusionReply;
+  // using infaas::internal::DiffusionService;
   using infaas::internal::InternalDiffusionQuery;
   using infaas::internal::InternalDiffusionResponse;
 #endif
@@ -1145,61 +1146,61 @@ private:
     //    const std::string& model_name = request->model();
     const std::string& model_name = request->model_variant();//PNB: (2025.12.27)
 
-    // Get model metadata to check its task.
-if (!rm_->model_registered(model_name)) {
-    return grpc::Status(grpc::StatusCode::NOT_FOUND, "Model not found");
+    // ================= DIFFUSION FAST PATH =================
+// if (request->has_diffusion()) {
+//   // 3.2 Extract diffusion request
+//   const auto& dreq = request->diffusion();
 
-// #ifdef ENABLE_DIFFUSION
-//       if(request->has_diffusion()){
-//       InternalDiffusionQuery dq = request->diffusion();
-//       InternalDiffusionResponse dresp;
- 
-//       // Fallback: if not filled, decode DiffusionQuery from raw_input[0].
-//       if (dq.prompt().empty() && request->raw_input_size() > 0) {
-//         infaaspublic::DiffusionQuery public_q;
-//         if (public_q.ParseFromString(request->raw_input(0))) {
-//           dq.set_prompt(public_q.prompt());
-//           dq.set_steps(public_q.steps());
-//           dq.set_guidancescale(public_q.guidancescale());
-//           dq.set_seed(public_q.seed());
-//           dq.set_width(public_q.width());
-//           dq.set_height(public_q.height());
-//         }
-//       }
+//   infaas::internal::QueryOnlineRequest worker_req;
+//   worker_req.set_model_name(model_name);
+//   // worker_req.mutable_diffusion()->CopyFrom(dreq);
+//   worker_req.set_model(model_name);
+//   worker_req.set_model_type(infaas::internal::MODEL_DIFFUSION);
+//   worker_req.set_input(request->input());
 
-//       InternalDiffusionResponse dresp;
-//       auto status = CallDiffusionContainer(model_info, dq, &dresp);
-//       if (!status.ok()) {
-//         auto* st = reply->mutable_status();
-//         st->set_status(InfaasRequestStatusEnum::UNAVAILABLE);
-//         st->set_msg(status.error_message());
-//         return ::grpc::Status::OK;  // gRPC OK; INFaaS status indicates failure.
-//       }
+//   infaas::internal::QueryOnlineResponse worker_resp;
 
-//       *(reply->mutable_diffusion()) = dresp;
-//       }
-//  #else
-//       if (request->has_diffusion()) {
-//   st->set_status(InfaasRequestStatusEnum::UNSUPPORTED);
-//   return grpc::Status(grpc::StatusCode::UNIMPLEMENTED,
-//                       "Diffusion is disabled at build time");
+//   // 3.3 Forward directly to worker (no SLO routing)
+//   // int8_t rc = cpu_model_manager_->QueryModelOnline(
+//   //     model_name,
+//   //     &worker_req,
+//   //     &worker_resp,
+//   //     redis_md_,
+//   //     s3_client_);
+
+//   if (rc != 0) {
+//     reply->mutable_status()->set_status(
+//         infaaspublic::RequestReplyEnum::ERROR);
+//     reply->mutable_status()->set_msg("Diffusion worker execution failed");
+//     return grpc::Status::OK;
+//   }
+
+//   // Return diffusion output verbatim
+//   //  reply->add_raw_output(worker_resp.raw_output());
+//   for (const auto& s : worker_resp.raw_output()) { // PNB: added (2026.01.16)
+//     reply->add_raw_output(s);
+//   }
+//   reply->mutable_status()->set_status(
+//       infaaspublic::RequestReplyEnum::SUCCESS);
+//   reply->mutable_status()->set_msg("OK");
+//   return grpc::Status::OK;
 // }
-//      reply->add_raw_output(dresp.image());
-// #endif
+// =======================================================
 
-      
-      
-      
-      //auto* st = reply->mutable_status();
-      //st->set_status(infaas::internal::InfaasRequestStatusEnum::SUCCESS);
-      //st->set_msg("OK");
-      //return ::grpc::Status::OK;
-    }
+
+    
+
+//     // Get model metadata to check its task.
+// if (!rm_->model_registered(model_name)) {
+//     return grpc::Status(grpc::StatusCode::NOT_FOUND, "Model not found");
+
+
+//     }
 
   // ==== end diffusion branch ====
 
 
-    
+ // for everything else not in DIFFUSION branch
     struct timeval time1, time2, time3;
     gettimeofday(&time1, NULL);
 
@@ -1874,6 +1875,8 @@ if (!rm_->model_registered(model_name)) {
     rs->set_status(infaaspublic::RequestReplyEnum::SUCCESS);
     rs->set_msg("Successfully executed query");
     return Status::OK;
+  
+    
   }
 
   Status QueryOffline(ServerContext *context,

@@ -133,6 +133,78 @@ infaas-protos-internal/fast:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/build
 .PHONY : infaas-protos-internal/fast
 
+diffusion_service.grpc.pb.o: diffusion_service.grpc.pb.cc.o
+.PHONY : diffusion_service.grpc.pb.o
+
+# target to build an object file
+diffusion_service.grpc.pb.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.o
+.PHONY : diffusion_service.grpc.pb.cc.o
+
+diffusion_service.grpc.pb.i: diffusion_service.grpc.pb.cc.i
+.PHONY : diffusion_service.grpc.pb.i
+
+# target to preprocess a source file
+diffusion_service.grpc.pb.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.i
+.PHONY : diffusion_service.grpc.pb.cc.i
+
+diffusion_service.grpc.pb.s: diffusion_service.grpc.pb.cc.s
+.PHONY : diffusion_service.grpc.pb.s
+
+# target to generate assembly for a file
+diffusion_service.grpc.pb.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.grpc.pb.cc.s
+.PHONY : diffusion_service.grpc.pb.cc.s
+
+diffusion_service.pb.o: diffusion_service.pb.cc.o
+.PHONY : diffusion_service.pb.o
+
+# target to build an object file
+diffusion_service.pb.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.o
+.PHONY : diffusion_service.pb.cc.o
+
+diffusion_service.pb.i: diffusion_service.pb.cc.i
+.PHONY : diffusion_service.pb.i
+
+# target to preprocess a source file
+diffusion_service.pb.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.i
+.PHONY : diffusion_service.pb.cc.i
+
+diffusion_service.pb.s: diffusion_service.pb.cc.s
+.PHONY : diffusion_service.pb.s
+
+# target to generate assembly for a file
+diffusion_service.pb.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/diffusion_service.pb.cc.s
+.PHONY : diffusion_service.pb.cc.s
+
+infaas_request_status.grpc.pb.o: infaas_request_status.grpc.pb.cc.o
+.PHONY : infaas_request_status.grpc.pb.o
+
+# target to build an object file
+infaas_request_status.grpc.pb.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.o
+.PHONY : infaas_request_status.grpc.pb.cc.o
+
+infaas_request_status.grpc.pb.i: infaas_request_status.grpc.pb.cc.i
+.PHONY : infaas_request_status.grpc.pb.i
+
+# target to preprocess a source file
+infaas_request_status.grpc.pb.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.i
+.PHONY : infaas_request_status.grpc.pb.cc.i
+
+infaas_request_status.grpc.pb.s: infaas_request_status.grpc.pb.cc.s
+.PHONY : infaas_request_status.grpc.pb.s
+
+# target to generate assembly for a file
+infaas_request_status.grpc.pb.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.grpc.pb.cc.s
+.PHONY : infaas_request_status.grpc.pb.cc.s
+
 infaas_request_status.pb.o: infaas_request_status.pb.cc.o
 .PHONY : infaas_request_status.pb.o
 
@@ -156,6 +228,54 @@ infaas_request_status.pb.s: infaas_request_status.pb.cc.s
 infaas_request_status.pb.cc.s:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/infaas_request_status.pb.cc.s
 .PHONY : infaas_request_status.pb.cc.s
+
+model.grpc.pb.o: model.grpc.pb.cc.o
+.PHONY : model.grpc.pb.o
+
+# target to build an object file
+model.grpc.pb.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.o
+.PHONY : model.grpc.pb.cc.o
+
+model.grpc.pb.i: model.grpc.pb.cc.i
+.PHONY : model.grpc.pb.i
+
+# target to preprocess a source file
+model.grpc.pb.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.i
+.PHONY : model.grpc.pb.cc.i
+
+model.grpc.pb.s: model.grpc.pb.cc.s
+.PHONY : model.grpc.pb.s
+
+# target to generate assembly for a file
+model.grpc.pb.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/model.grpc.pb.cc.s
+.PHONY : model.grpc.pb.cc.s
+
+model.pb.o: model.pb.cc.o
+.PHONY : model.pb.o
+
+# target to build an object file
+model.pb.cc.o:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.o
+.PHONY : model.pb.cc.o
+
+model.pb.i: model.pb.cc.i
+.PHONY : model.pb.i
+
+# target to preprocess a source file
+model.pb.cc.i:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.i
+.PHONY : model.pb.cc.i
+
+model.pb.s: model.pb.cc.s
+.PHONY : model.pb.s
+
+# target to generate assembly for a file
+model.pb.cc.s:
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/model.pb.cc.s
+.PHONY : model.pb.cc.s
 
 query.grpc.pb.o: query.grpc.pb.cc.o
 .PHONY : query.grpc.pb.o
@@ -205,54 +325,6 @@ query.pb.cc.s:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/query.pb.cc.s
 .PHONY : query.pb.cc.s
 
-sys_monitor.grpc.pb.o: sys_monitor.grpc.pb.cc.o
-.PHONY : sys_monitor.grpc.pb.o
-
-# target to build an object file
-sys_monitor.grpc.pb.cc.o:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.o
-.PHONY : sys_monitor.grpc.pb.cc.o
-
-sys_monitor.grpc.pb.i: sys_monitor.grpc.pb.cc.i
-.PHONY : sys_monitor.grpc.pb.i
-
-# target to preprocess a source file
-sys_monitor.grpc.pb.cc.i:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.i
-.PHONY : sys_monitor.grpc.pb.cc.i
-
-sys_monitor.grpc.pb.s: sys_monitor.grpc.pb.cc.s
-.PHONY : sys_monitor.grpc.pb.s
-
-# target to generate assembly for a file
-sys_monitor.grpc.pb.cc.s:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.grpc.pb.cc.s
-.PHONY : sys_monitor.grpc.pb.cc.s
-
-sys_monitor.pb.o: sys_monitor.pb.cc.o
-.PHONY : sys_monitor.pb.o
-
-# target to build an object file
-sys_monitor.pb.cc.o:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.o
-.PHONY : sys_monitor.pb.cc.o
-
-sys_monitor.pb.i: sys_monitor.pb.cc.i
-.PHONY : sys_monitor.pb.i
-
-# target to preprocess a source file
-sys_monitor.pb.cc.i:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.i
-.PHONY : sys_monitor.pb.cc.i
-
-sys_monitor.pb.s: sys_monitor.pb.cc.s
-.PHONY : sys_monitor.pb.s
-
-# target to generate assembly for a file
-sys_monitor.pb.cc.s:
-	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f protos/internal/CMakeFiles/infaas-protos-internal.dir/build.make protos/internal/CMakeFiles/infaas-protos-internal.dir/sys_monitor.pb.cc.s
-.PHONY : sys_monitor.pb.cc.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -262,21 +334,30 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... infaas-protos-internal"
+	@echo "... diffusion_service.grpc.pb.o"
+	@echo "... diffusion_service.grpc.pb.i"
+	@echo "... diffusion_service.grpc.pb.s"
+	@echo "... diffusion_service.pb.o"
+	@echo "... diffusion_service.pb.i"
+	@echo "... diffusion_service.pb.s"
+	@echo "... infaas_request_status.grpc.pb.o"
+	@echo "... infaas_request_status.grpc.pb.i"
+	@echo "... infaas_request_status.grpc.pb.s"
 	@echo "... infaas_request_status.pb.o"
 	@echo "... infaas_request_status.pb.i"
 	@echo "... infaas_request_status.pb.s"
+	@echo "... model.grpc.pb.o"
+	@echo "... model.grpc.pb.i"
+	@echo "... model.grpc.pb.s"
+	@echo "... model.pb.o"
+	@echo "... model.pb.i"
+	@echo "... model.pb.s"
 	@echo "... query.grpc.pb.o"
 	@echo "... query.grpc.pb.i"
 	@echo "... query.grpc.pb.s"
 	@echo "... query.pb.o"
 	@echo "... query.pb.i"
 	@echo "... query.pb.s"
-	@echo "... sys_monitor.grpc.pb.o"
-	@echo "... sys_monitor.grpc.pb.i"
-	@echo "... sys_monitor.grpc.pb.s"
-	@echo "... sys_monitor.pb.o"
-	@echo "... sys_monitor.pb.i"
-	@echo "... sys_monitor.pb.s"
 .PHONY : help
 
 

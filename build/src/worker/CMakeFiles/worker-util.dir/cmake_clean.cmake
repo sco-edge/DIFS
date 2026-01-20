@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/worker-util.dir/autoscaler.cc.o.d"
   "CMakeFiles/worker-util.dir/common_model_util.cc.o"
   "CMakeFiles/worker-util.dir/common_model_util.cc.o.d"
+  "CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o"
+  "CMakeFiles/worker-util.dir/diffusion_service_impl.cc.o.d"
   "libworker-util.a"
   "libworker-util.pdb"
 )
