@@ -1,0 +1,18 @@
+[  
+  {
+    "id": 1,
+    "filename": "sd-v1-1.safetensors"
+  },
+  {
+    "id": 2,
+    "filename": "sd-v1-2.safetensors"
+  },
+  {
+    "id": 4,
+    "filename": "sd-v1-4.safetensors"
+  },
+    {
+    "id": 5,
+    "filename": "v1-5-pruned-emaonly.safetensors"
+  }
+]

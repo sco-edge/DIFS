@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+c4a3e22a8bc7f1961420a03f59503a6f generated/query.pb.cc

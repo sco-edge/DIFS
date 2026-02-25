@@ -1,0 +1,61 @@
+cmake_minimum_required(VERSION 3.10)
+project(DiffServClient CXX)
+
+# C++17 표준 사용
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 패키지 찾기
+find_package(Threads REQUIRED)
+find_package(protobuf CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
+
+# gRPC 및 Protobuf 실행 파일 및 라이브러리 설정
+set(_PROTOBUF_LIBPROTOBUF protobuf::libprotobuf)
+set(_REFLECTION gRPC::grpc++_reflection)
+set(_GRPC_GRPCPP gRPC::grpc++)
+set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
+
+# Proto 파일 경로 설정 (사용자 환경에 맞게 수정)
+set(PROTO_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protos")
+set(GEN_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
+file(MAKE_DIRECTORY ${GEN_DIR})
+
+# 1. Protobuf 및 gRPC 소스 생성 규칙
+set(PROTO_FILES "${PROTO_DIR}/query.proto" "${PROTO_DIR}/infaas_request_status.proto")
+set(GEN_PROTO_SRCS "${GEN_DIR}/query.pb.cc" "${GEN_DIR}/infaas_request_status.pb.cc")
+set(GEN_PROTO_HDRS "${GEN_DIR}/query.pb.h" "${GEN_DIR}/infaas_request_status.pb.h")
+set(GEN_GRPC_SRCS "${GEN_DIR}/query.grpc.pb.cc")
+set(GEN_GRPC_HDRS "${GEN_DIR}/query.grpc.pb.h")
+
+add_custom_command(
+      OUTPUT ${GEN_PROTO_SRCS} ${GEN_PROTO_HDRS} ${GEN_GRPC_SRCS} ${GEN_GRPC_HDRS}
+      COMMAND protobuf::protoc
+      ARGS --grpc_out=${GEN_DIR}
+           --cpp_out=${GEN_DIR}
+           -I ${PROTO_DIR}
+           --plugin=protoc-gen-grpc=${_GRPC_CPP_PLUGIN_EXECUTABLE}
+           ${PROTO_FILES}
+      DEPENDS ${PROTO_FILES}
+)
+
+# 2. 실행 파일 타겟 설정
+add_executable(client 
+    src/client.cc 
+    ${GEN_PROTO_SRCS} 
+    ${GEN_GRPC_SRCS}
+)
+
+# 인클루드 경로 설정
+target_include_directories(client PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src 
+    ${GEN_DIR}
+)
+
+# 라이브러리 링크
+target_link_libraries(client
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF}
+    ${_REFLECTION}
+    Threads::Threads
+)

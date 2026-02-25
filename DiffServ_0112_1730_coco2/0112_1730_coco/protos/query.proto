@@ -1,0 +1,87 @@
+// For internal communication of queries between the master and workers.
+// Note that some service names/message names may be the same as public APIs,
+// clients are not supposed to directly use them.
+
+syntax = "proto3";
+
+// The namepace for internal communications
+package infaas.internal;
+
+import "infaas_request_status.proto";
+
+// Service provided by the workers that the master can talk to.
+service Query {
+  // Online query, send input data in the payload
+  rpc QueryOnline(QueryOnlineRequest) returns (QueryOnlineResponse) {}
+
+  // Online query(image), send input data in the payload
+  rpc QueryOnlineImage(QueryOnlineImageRequest) returns (stream QueryOnlineImageResponse) {}
+
+  // Offline query, input data are stored on the cloud
+  rpc QueryOffline(QueryOfflineRequest) returns (QueryOfflineResponse) {}
+
+  // Heartbeat
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {}
+}
+
+message QueryOnlineRequest {
+  repeated string Prompt = 1; // Prompt
+  int32  Steps = 2;  // timestep
+  float  CFG_Scale = 3;  // 7.0 ~ 8.0
+  int32  BatchSize = 4; // 동시생성갯수
+  int64  Seed = 5;          // 이미지 고유번호
+}
+
+message QuerySLO {
+  int64 LatencyInUSec = 1;  // Latency in micro-seconds.
+  float MinAccuracy = 2;    // Minimum accuracy.
+  float MaxCost = 3;        // Maximum cost in dollar.
+}
+
+message QueryOnlineResponse {
+// 변경: 생성된 이미지 파일 경로들의 리스트를 반환
+  repeated string image_paths = 1; 
+  InfaasRequestStatus status = 2;
+}
+
+message QueryOnlineImageRequest {
+  repeated string Prompt = 1; // Prompt
+  int32  Steps = 2;           // timestep
+  float  CFG_Scale = 3;       // 7.0 ~ 8.0
+  int32  BatchSize = 4;       // 동시생성갯수
+  int64  Seed = 5;            // 이미지 고유번호
+  int32  Sampler_Type = 6;    // 추가: 샘플러 ID (int)
+}
+
+message QueryOnlineImageResponse {
+  // 단일 이미지 정보만 담도록 변경
+  string image_path = 1;     // 현재 전송 중인 이미지 1개의 경로
+  bytes image_data = 2;      // 현재 전송 중인 이미지 1개의 바이너리
+  InfaasRequestStatus status = 3; 
+}
+//message QueryOnlineImageResponse {
+//  // 변경: 생성된 이미지 파일 경로들의 리스트를 반환
+//  repeated string image_paths = 1;
+//  repeated bytes image_data = 2;   // 실제 파일 데이터를 담을 필드 추가 
+//  InfaasRequestStatus status = 3;
+//}
+
+message QueryOfflineRequest {
+  string Prompt = 1; // Prompt
+  int32  Steps = 2;  // timestep
+  float  CFG_Scale = 3;  // 7.0 ~ 8.0
+  int32  BatchSize = 4; // 동시생성갯수
+  int64  Seed = 5;          // 이미지 고유번호
+}
+
+message QueryOfflineResponse {
+  InfaasRequestStatus status = 1;
+}
+
+message HeartbeatRequest {
+  InfaasRequestStatus status = 1;
+}
+
+message HeartbeatResponse {
+  InfaasRequestStatus status = 1;
+}

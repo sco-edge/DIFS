@@ -1,0 +1,10 @@
+# PNB: created to install dependencies. Was not part of the original files sent by Heesik (2026. 01. 26. (월) 12:41:06 KST)
+
+grpcio
+grpcio-tools
+torch
+torchvision
+torchaudio
+diffusers
+torchmetrics
+scipy

@@ -1,0 +1,56 @@
+# 1. 지정하신 최신 PyTorch 베이스 이미지 사용
+FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
+
+WORKDIR /workspace
+
+# 2. 시스템 패키지 업데이트 및 도구 설치
+RUN apt-get update && apt-get install -y \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. gRPC 및 Protobuf 의존성 설치
+# 최신 환경에서는 grpcio의 최신 버전을 사용하는 것이 안정적입니다.
+RUN pip install --no-cache-dir \
+    grpcio \
+    grpcio-tools \
+    "protobuf<5.0.0" \
+    accelerate==1.12.0 \
+    diffusers==0.36.0 \
+    transformers==4.57.3 \
+    safetensors==0.7.0 \
+    huggingface-hub==0.36.0 \
+    # 기타 핵심 라이브러리:
+    PyYAML==6.0.3 \
+    requests==2.32.5 \
+    tqdm==4.67.1 \
+    tokenizers==0.22.1 \
+    pillow \
+    torchmetrics \
+    scipy \
+    torchmetrics[image]     
+    # 권장 방식: torchmetrics의 이미지 확장팩 전체 설치
+
+# 4. 디렉토리 구조 생성 및 파일 복사
+RUN mkdir proto
+COPY protos/query.proto protos/
+COPY protos/infaas_request_status.proto protos/
+COPY src/pytorch_container_diffusion_async_v2.py .
+COPY real_stats.npz .
+COPY models.json .
+COPY samplers.json .
+
+# 5. Proto 컴파일 (루트에 .py 파일 생성)
+# -I 옵션으로 proto 디렉토리를 지정하고 결과를 현재 위치(.)에 생성합니다.
+RUN python -m grpc_tools.protoc \
+    -I./protos \
+    --python_out=. \
+    --grpc_python_out=. \
+    ./protos/query.proto ./protos/infaas_request_status.proto
+
+# 6. 환경 변수 설정
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+ENV PYTHONUNBUFFERED=1
+
+# 7. 서버 실행
+#ENTRYPOINT ["python", "pytorch_container_diffusion_v3.py", "-model", "1", "-sampler", "1", "-npz", "/workspace/real_stats.npz", "-thread", "10", "-port", "50052"]
+ENTRYPOINT ["python", "pytorch_container_diffusion_async_v2.py"]

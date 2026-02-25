@@ -1,0 +1,14 @@
+[  
+  {
+    "id": 1,
+    "address": "localhost:50010"
+  },
+  {
+    "id": 2,
+    "address": "localhost:50020"
+  },
+  {
+    "id": 3,
+    "address": "localhost:50060"
+  }
+]
