@@ -417,6 +417,133 @@ src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o: \
  /usr/include/c++/12/pstl/glue_numeric_defs.h /usr/include/c++/12/sstream \
  /usr/include/c++/12/bits/sstream.tcc \
  /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_local_paths.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/utils/local_s3cfg.h \
+ /usr/local/include/google/protobuf/repeated_field.h \
+ /usr/local/include/google/protobuf/stubs/logging.h \
+ /usr/local/include/google/protobuf/stubs/macros.h \
+ /usr/local/include/google/protobuf/stubs/port.h \
+ /usr/local/include/google/protobuf/stubs/platform_macros.h \
+ /usr/local/include/google/protobuf/port_def.inc /usr/include/byteswap.h \
+ /usr/local/include/google/protobuf/port_undef.inc \
+ /usr/local/include/google/protobuf/stubs/status.h \
+ /usr/local/include/google/protobuf/stubs/stringpiece.h \
+ /usr/local/include/google/protobuf/stubs/hash.h \
+ /usr/include/c++/12/unordered_set \
+ /usr/include/c++/12/bits/unordered_set.h \
+ /usr/local/include/google/protobuf/stubs/common.h \
+ /usr/local/include/google/protobuf/repeated_ptr_field.h \
+ /usr/local/include/google/protobuf/arena.h \
+ /usr/local/include/google/protobuf/arena_impl.h \
+ /usr/local/include/google/protobuf/port.h \
+ /usr/local/include/google/protobuf/message_lite.h \
+ /usr/local/include/google/protobuf/io/coded_stream.h \
+ /usr/local/include/google/protobuf/stubs/strutil.h \
+ /usr/local/include/google/protobuf/explicitly_constructed.h \
+ /usr/local/include/google/protobuf/metadata_lite.h \
+ /usr/local/include/google/protobuf/stubs/once.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.h \
+ /usr/local/include/google/protobuf/arenastring.h \
+ /usr/local/include/google/protobuf/generated_message_table_driven.h \
+ /usr/local/include/google/protobuf/map.h \
+ /usr/local/include/google/protobuf/generated_enum_util.h \
+ /usr/local/include/google/protobuf/map_type_handler.h \
+ /usr/local/include/google/protobuf/parse_context.h \
+ /usr/local/include/google/protobuf/io/zero_copy_stream.h \
+ /usr/local/include/google/protobuf/implicit_weak_message.h \
+ /usr/local/include/google/protobuf/inlined_string_field.h \
+ /usr/local/include/google/protobuf/wire_format_lite.h \
+ /usr/local/include/google/protobuf/stubs/casts.h \
+ /usr/local/include/google/protobuf/map_entry_lite.h \
+ /usr/local/include/google/protobuf/generated_message_util.h \
+ /usr/local/include/google/protobuf/any.h \
+ /usr/local/include/google/protobuf/has_bits.h \
+ /usr/local/include/google/protobuf/map_field_lite.h \
+ /usr/local/include/google/protobuf/generated_message_reflection.h \
+ /usr/local/include/google/protobuf/descriptor.h \
+ /usr/local/include/google/protobuf/stubs/mutex.h \
+ /usr/local/include/google/protobuf/generated_enum_reflection.h \
+ /usr/local/include/google/protobuf/unknown_field_set.h \
+ /usr/local/include/google/protobuf/io/zero_copy_stream_impl_lite.h \
+ /usr/local/include/google/protobuf/stubs/callback.h \
+ /usr/local/include/google/protobuf/stubs/stl_util.h \
+ /usr/local/include/google/protobuf/message.h \
+ /usr/local/include/google/protobuf/extension_set.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.pb.h \
+ /usr/local/include/grpcpp/impl/codegen/async_generic_service.h \
+ /usr/local/include/grpcpp/impl/codegen/async_stream.h \
+ /usr/local/include/grpcpp/impl/codegen/service_type.h \
+ /usr/local/include/grpcpp/impl/codegen/server_callback_handlers.h \
+ /usr/local/include/grpcpp/impl/codegen/async_unary_call.h \
+ /usr/local/include/grpcpp/impl/codegen/client_callback.h \
+ /usr/local/include/grpcpp/impl/codegen/method_handler.h \
+ /usr/local/include/grpcpp/impl/codegen/sync_stream.h \
+ /usr/local/include/grpcpp/impl/codegen/proto_utils.h \
+ /usr/local/include/grpcpp/impl/codegen/config_protobuf.h \
+ /usr/local/include/google/protobuf/descriptor.pb.h \
+ /usr/local/include/google/protobuf/descriptor_database.h \
+ /usr/local/include/google/protobuf/util/json_util.h \
+ /usr/local/include/google/protobuf/util/type_resolver.h \
+ /usr/local/include/google/protobuf/type.pb.h \
+ /usr/local/include/google/protobuf/any.pb.h \
+ /usr/local/include/google/protobuf/source_context.pb.h \
+ /usr/local/include/google/protobuf/stubs/bytestream.h \
+ /usr/local/include/google/protobuf/util/type_resolver_util.h \
+ /usr/local/include/grpcpp/impl/codegen/proto_buffer_reader.h \
+ /usr/local/include/grpcpp/impl/codegen/proto_buffer_writer.h \
+ /usr/local/include/grpcpp/impl/codegen/stub_options.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h \
+ /usr/local/include/redox.hpp /usr/local/include/redox/client.hpp \
+ /usr/include/c++/12/thread /usr/include/c++/12/bits/std_thread.h \
+ /usr/include/c++/12/bits/this_thread_sleep.h \
+ /usr/include/c++/12/condition_variable /usr/include/c++/12/queue \
+ /usr/include/c++/12/bits/stl_queue.h /usr/include/hiredis/hiredis.h \
+ /usr/include/hiredis/read.h /usr/include/hiredis/sds.h \
+ /usr/include/hiredis/alloc.h /usr/include/hiredis/async.h \
+ /usr/include/hiredis/hiredis.h /usr/include/hiredis/adapters/libev.h \
+ /usr/include/ev.h /usr/include/signal.h \
+ /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
+ /usr/include/x86_64-linux-gnu/bits/signum-arch.h \
+ /usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h \
+ /usr/include/x86_64-linux-gnu/bits/siginfo-arch.h \
+ /usr/include/x86_64-linux-gnu/bits/siginfo-consts.h \
+ /usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h \
+ /usr/include/x86_64-linux-gnu/bits/types/sigval_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h \
+ /usr/include/x86_64-linux-gnu/bits/sigevent-consts.h \
+ /usr/include/x86_64-linux-gnu/bits/sigaction.h \
+ /usr/include/x86_64-linux-gnu/bits/sigcontext.h \
+ /usr/include/x86_64-linux-gnu/bits/types/stack_t.h \
+ /usr/include/x86_64-linux-gnu/sys/ucontext.h \
+ /usr/include/x86_64-linux-gnu/bits/sigstack.h \
+ /usr/include/x86_64-linux-gnu/bits/sigstksz.h \
+ /usr/include/x86_64-linux-gnu/bits/ss_flags.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
+ /usr/include/x86_64-linux-gnu/bits/sigthread.h \
+ /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
+ /usr/include/hiredis/hiredis.h /usr/include/hiredis/async.h \
+ /usr/local/include/redox/utils/logger.hpp \
+ /usr/local/include/redox/command.hpp \
+ /usr/local/include/redox/subscriber.hpp \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/include/base64.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/include/constants.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/include/json.hpp \
+ /usr/include/c++/12/forward_list /usr/include/c++/12/bits/forward_list.h \
+ /usr/include/c++/12/bits/forward_list.tcc /usr/include/c++/12/valarray \
+ /usr/include/c++/12/bits/valarray_array.h \
+ /usr/include/c++/12/bits/valarray_array.tcc \
+ /usr/include/c++/12/bits/valarray_before.h \
+ /usr/include/c++/12/bits/slice_array.h \
+ /usr/include/c++/12/bits/valarray_after.h \
+ /usr/include/c++/12/bits/gslice.h \
+ /usr/include/c++/12/bits/gslice_array.h \
+ /usr/include/c++/12/bits/mask_array.h \
+ /usr/include/c++/12/bits/indirect_array.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.h \
+ /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/autoscaler.h \
  /usr/local/include/aws/core/Aws.h \
  /usr/local/include/aws/core/Core_EXPORTS.h \
  /usr/local/include/aws/core/SDKConfig.h \
@@ -516,10 +643,7 @@ src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o: \
  /usr/local/include/aws/core/client/RetryStrategy.h \
  /usr/local/include/aws/core/utils/threading/ReaderWriterLock.h \
  /usr/local/include/aws/core/utils/threading/Semaphore.h \
- /usr/include/c++/12/condition_variable \
  /usr/local/include/aws/core/utils/memory/stl/AWSSet.h \
- /usr/include/c++/12/unordered_set \
- /usr/include/c++/12/bits/unordered_set.h \
  /usr/local/include/aws/core/auth/AWSAuthSigner.h \
  /usr/local/include/aws/core/auth/signer/AWSAuthSignerBase.h \
  /usr/local/include/aws/core/utils/DateTime.h \
@@ -574,8 +698,6 @@ src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o: \
  /usr/local/include/aws/core/utils/crypto/Factories.h \
  /usr/local/include/aws/core/utils/logging/CRTLogSystem.h \
  /usr/local/include/aws/core/utils/logging/DefaultCRTLogSystem.h \
- /usr/include/c++/12/thread /usr/include/c++/12/bits/std_thread.h \
- /usr/include/c++/12/bits/this_thread_sleep.h \
  /usr/local/include/aws/crt/io/Bootstrap.h \
  /usr/local/include/aws/crt/io/EventLoopGroup.h \
  /usr/local/include/aws/io/event_loop.h \
@@ -596,7 +718,6 @@ src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o: \
  /usr/local/include/aws/core/utils/threading/PooledThreadExecutor.h \
  /usr/local/include/aws/core/utils/memory/stl/AWSQueue.h \
  /usr/local/include/aws/core/utils/memory/stl/AWSDeque.h \
- /usr/include/c++/12/queue /usr/include/c++/12/bits/stl_queue.h \
  /usr/local/include/aws/core/utils/logging/ErrorMacros.h \
  /usr/local/include/aws/core/utils/RAIICounter.h \
  /usr/local/include/aws/core/utils/component-registry/ComponentRegistry.h \
@@ -861,138 +982,6 @@ src/worker/CMakeFiles/worker-util.dir/common_model_util.cc.o: \
  /usr/local/include/aws/s3/model/UploadPartCopyResult.h \
  /usr/local/include/aws/s3/model/CopyPartResult.h \
  /usr/local/include/aws/s3/model/UploadPartResult.h \
- /usr/local/include/aws/s3/model/DeleteObjectsRequest.h \
- /usr/local/include/aws/s3/model/Delete.h \
- /usr/local/include/aws/s3/model/ObjectIdentifier.h \
- /usr/local/include/aws/s3/model/RequestPayer.h \
- /usr/local/include/aws/s3/model/GetObjectRequest.h \
- /usr/local/include/aws/s3/model/ChecksumMode.h \
- /usr/local/include/aws/s3/model/ListObjectsV2Request.h \
- /usr/local/include/aws/s3/model/OptionalObjectAttributes.h \
- /usr/local/include/aws/s3/model/PutObjectRequest.h \
- /usr/local/include/aws/s3/model/ObjectCannedACL.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/common_model_util.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/utils/local_s3cfg.h \
- /usr/local/include/google/protobuf/repeated_field.h \
- /usr/local/include/google/protobuf/stubs/logging.h \
- /usr/local/include/google/protobuf/stubs/macros.h \
- /usr/local/include/google/protobuf/stubs/port.h \
- /usr/local/include/google/protobuf/stubs/platform_macros.h \
- /usr/local/include/google/protobuf/port_def.inc /usr/include/byteswap.h \
- /usr/local/include/google/protobuf/port_undef.inc \
- /usr/local/include/google/protobuf/stubs/status.h \
- /usr/local/include/google/protobuf/stubs/stringpiece.h \
- /usr/local/include/google/protobuf/stubs/hash.h \
- /usr/local/include/google/protobuf/stubs/common.h \
- /usr/local/include/google/protobuf/repeated_ptr_field.h \
- /usr/local/include/google/protobuf/arena.h \
- /usr/local/include/google/protobuf/arena_impl.h \
- /usr/local/include/google/protobuf/port.h \
- /usr/local/include/google/protobuf/message_lite.h \
- /usr/local/include/google/protobuf/io/coded_stream.h \
- /usr/local/include/google/protobuf/stubs/strutil.h \
- /usr/local/include/google/protobuf/explicitly_constructed.h \
- /usr/local/include/google/protobuf/metadata_lite.h \
- /usr/local/include/google/protobuf/stubs/once.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.grpc.pb.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.h \
- /usr/local/include/google/protobuf/arenastring.h \
- /usr/local/include/google/protobuf/generated_message_table_driven.h \
- /usr/local/include/google/protobuf/map.h \
- /usr/local/include/google/protobuf/generated_enum_util.h \
- /usr/local/include/google/protobuf/map_type_handler.h \
- /usr/local/include/google/protobuf/parse_context.h \
- /usr/local/include/google/protobuf/io/zero_copy_stream.h \
- /usr/local/include/google/protobuf/implicit_weak_message.h \
- /usr/local/include/google/protobuf/inlined_string_field.h \
- /usr/local/include/google/protobuf/wire_format_lite.h \
- /usr/local/include/google/protobuf/stubs/casts.h \
- /usr/local/include/google/protobuf/map_entry_lite.h \
- /usr/local/include/google/protobuf/generated_message_util.h \
- /usr/local/include/google/protobuf/any.h \
- /usr/local/include/google/protobuf/has_bits.h \
- /usr/local/include/google/protobuf/map_field_lite.h \
- /usr/local/include/google/protobuf/generated_message_reflection.h \
- /usr/local/include/google/protobuf/descriptor.h \
- /usr/local/include/google/protobuf/stubs/mutex.h \
- /usr/local/include/google/protobuf/generated_enum_reflection.h \
- /usr/local/include/google/protobuf/unknown_field_set.h \
- /usr/local/include/google/protobuf/io/zero_copy_stream_impl_lite.h \
- /usr/local/include/google/protobuf/stubs/callback.h \
- /usr/local/include/google/protobuf/stubs/stl_util.h \
- /usr/local/include/google/protobuf/message.h \
- /usr/local/include/google/protobuf/extension_set.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/infaas_request_status.pb.h \
- /usr/local/include/grpcpp/impl/codegen/async_generic_service.h \
- /usr/local/include/grpcpp/impl/codegen/async_stream.h \
- /usr/local/include/grpcpp/impl/codegen/service_type.h \
- /usr/local/include/grpcpp/impl/codegen/server_callback_handlers.h \
- /usr/local/include/grpcpp/impl/codegen/async_unary_call.h \
- /usr/local/include/grpcpp/impl/codegen/client_callback.h \
- /usr/local/include/grpcpp/impl/codegen/method_handler.h \
- /usr/local/include/grpcpp/impl/codegen/sync_stream.h \
- /usr/local/include/grpcpp/impl/codegen/proto_utils.h \
- /usr/local/include/grpcpp/impl/codegen/config_protobuf.h \
- /usr/local/include/google/protobuf/descriptor.pb.h \
- /usr/local/include/google/protobuf/descriptor_database.h \
- /usr/local/include/google/protobuf/util/json_util.h \
- /usr/local/include/google/protobuf/util/type_resolver.h \
- /usr/local/include/google/protobuf/type.pb.h \
- /usr/local/include/google/protobuf/any.pb.h \
- /usr/local/include/google/protobuf/source_context.pb.h \
- /usr/local/include/google/protobuf/stubs/bytestream.h \
- /usr/local/include/google/protobuf/util/type_resolver_util.h \
- /usr/local/include/grpcpp/impl/codegen/proto_buffer_reader.h \
- /usr/local/include/grpcpp/impl/codegen/proto_buffer_writer.h \
- /usr/local/include/grpcpp/impl/codegen/stub_options.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store/redis_metadata.h \
- /usr/local/include/redox.hpp /usr/local/include/redox/client.hpp \
- /usr/include/hiredis/hiredis.h /usr/include/hiredis/read.h \
- /usr/include/hiredis/sds.h /usr/include/hiredis/alloc.h \
- /usr/include/hiredis/async.h /usr/include/hiredis/hiredis.h \
- /usr/include/hiredis/adapters/libev.h /usr/include/ev.h \
- /usr/include/signal.h \
- /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
- /usr/include/x86_64-linux-gnu/bits/signum-arch.h \
- /usr/include/x86_64-linux-gnu/bits/types/sig_atomic_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/siginfo_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h \
- /usr/include/x86_64-linux-gnu/bits/siginfo-arch.h \
- /usr/include/x86_64-linux-gnu/bits/siginfo-consts.h \
- /usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h \
- /usr/include/x86_64-linux-gnu/bits/types/sigval_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/sigevent_t.h \
- /usr/include/x86_64-linux-gnu/bits/sigevent-consts.h \
- /usr/include/x86_64-linux-gnu/bits/sigaction.h \
- /usr/include/x86_64-linux-gnu/bits/sigcontext.h \
- /usr/include/x86_64-linux-gnu/bits/types/stack_t.h \
- /usr/include/x86_64-linux-gnu/sys/ucontext.h \
- /usr/include/x86_64-linux-gnu/bits/sigstack.h \
- /usr/include/x86_64-linux-gnu/bits/sigstksz.h \
- /usr/include/x86_64-linux-gnu/bits/ss_flags.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
- /usr/include/x86_64-linux-gnu/bits/sigthread.h \
- /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
- /usr/include/hiredis/hiredis.h /usr/include/hiredis/async.h \
- /usr/local/include/redox/utils/logger.hpp \
- /usr/local/include/redox/command.hpp \
- /usr/local/include/redox/subscriber.hpp \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/include/base64.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/include/constants.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/include/json.hpp \
- /usr/include/c++/12/forward_list /usr/include/c++/12/bits/forward_list.h \
- /usr/include/c++/12/bits/forward_list.tcc /usr/include/c++/12/valarray \
- /usr/include/c++/12/bits/valarray_array.h \
- /usr/include/c++/12/bits/valarray_array.tcc \
- /usr/include/c++/12/bits/valarray_before.h \
- /usr/include/c++/12/bits/slice_array.h \
- /usr/include/c++/12/bits/valarray_after.h \
- /usr/include/c++/12/bits/gslice.h \
- /usr/include/c++/12/bits/gslice_array.h \
- /usr/include/c++/12/bits/mask_array.h \
- /usr/include/c++/12/bits/indirect_array.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_client.h \
- /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/autoscaler.h \
  /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/query.pb.h \
  /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.pb.h \
  /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/diffusion_service.grpc.pb.h \

@@ -41,14 +41,14 @@
 // PNB 2025.11.28 - Local paths
 #include "common_local_paths.h"
 
-#ifndef LOCAL_MODE
-#include <aws/core/Aws.h>
-#include <aws/s3/S3Client.h>
-#include <aws/s3/model/DeleteObjectsRequest.h>
-#include <aws/s3/model/GetObjectRequest.h>
-#include <aws/s3/model/ListObjectsV2Request.h>
-#include <aws/s3/model/PutObjectRequest.h>
-#endif
+// #ifndef LOCAL_MODE
+// #include <aws/core/Aws.h>
+// #include <aws/s3/S3Client.h>
+// #include <aws/s3/model/DeleteObjectsRequest.h>
+// #include <aws/s3/model/GetObjectRequest.h>
+// #include <aws/s3/model/ListObjectsV2Request.h>
+// #include <aws/s3/model/PutObjectRequest.h>
+// #endif
 
 #include "common_model_util.h"
 #include "include/base64.h"

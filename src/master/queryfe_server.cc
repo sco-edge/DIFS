@@ -45,6 +45,10 @@
 // Disabling AWS S3 client calls globally (2025.11.28)
 #if LOCAL_MODE
 #define s3_client UNUSED_S3_CLIENT
+#endif
+
+#ifdef ENABLE_AWS
+#include <aws/s3/S3Client.h>
 Aws::S3::S3Client UNUSED_S3_CLIENT;
 #endif
 

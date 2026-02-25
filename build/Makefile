@@ -328,6 +328,19 @@ infaas_modelregistration/fast:
 .PHONY : infaas_modelregistration/fast
 
 #=============================================================================
+# Target rules for targets named client
+
+# Build rule for target.
+client: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 client
+.PHONY : client
+
+# fast build rule for target.
+client/fast:
+	$(MAKE) $(MAKESILENT) -f DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/build.make DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/build
+.PHONY : client/fast
+
+#=============================================================================
 # Target rules for targets named redis-md
 
 # Build rule for target.
@@ -374,6 +387,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... client"
 	@echo "... inf-master"
 	@echo "... inf-worker"
 	@echo "... infaas-protos"

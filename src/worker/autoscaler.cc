@@ -32,8 +32,8 @@
 #include <memory>
 #include <string>
 
-#include <aws/core/Aws.h>
-#include <aws/s3/S3Client.h>
+//#include <aws/core/Aws.h>
+//#include <aws/s3/S3Client.h>
 
 #include "autoscaler.h"
 #include "common_model_util.h"

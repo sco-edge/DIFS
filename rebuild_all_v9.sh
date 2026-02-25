@@ -75,6 +75,7 @@ mkdir -p build && cd build
 
 cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
+    -DLOCAL_MODE=OFF\
     -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
     -Dprotobuf_BUILD_TESTS=OFF \
     -DBUILD_SHARED_LIBS=ON \
@@ -184,6 +185,7 @@ cd "$INFAAS_SRC"
 mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR"
 
 cmake .. \
+    -DLOCAL_MODE=OFF -DCMAKE_CXX_FLAGS="-DLOCAL_MODE"\
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX" \
     -DProtobuf_DIR="$INSTALL_PREFIX/lib/cmake/protobuf" \

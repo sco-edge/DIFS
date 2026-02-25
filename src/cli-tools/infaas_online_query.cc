@@ -26,9 +26,15 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+
+// #include <opencv2/core/core.hpp>
+// #include <opencv2/highgui/highgui.hpp>
+// #include <opencv2/imgproc/imgproc.hpp>
+
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/core.hpp>
+
 #include <string>
 #include <vector>
 
@@ -72,15 +78,20 @@ static void Preprocess(const cv::Mat& img, int img_type1, int img_type3,
   // most likely ordering and so change the channels to that ordering.
   cv::Mat sample;
   if ((img.channels() == 3) && (img_channels == 1)) {
-    cv::cvtColor(img, sample, CV_BGR2GRAY);
+      // cv::cvtColor(img, sample, CV_BGR2GRAY);
+    cv::cvtColor(img, sample, cv::COLOR_BGR2GRAY);
   } else if ((img.channels() == 4) && (img_channels == 1)) {
-    cv::cvtColor(img, sample, CV_BGRA2GRAY);
+      // cv::cvtColor(img, sample, CV_BGRA2GRAY);
+    cv::cvtColor(img, sample, cv::COLOR_BGRA2GRAY);
   } else if ((img.channels() == 3) && (img_channels == 3)) {
-    cv::cvtColor(img, sample, CV_BGR2RGB);
+      // cv::cvtColor(img, sample, CV_BGR2RGB);
+    cv::cvtColor(img, sample, cv::COLOR_BGR2RGB);
   } else if ((img.channels() == 4) && (img_channels == 3)) {
-    cv::cvtColor(img, sample, CV_BGRA2RGB);
+      // cv::cvtColor(img, sample, CV_BGRA2RGB);
+    cv::cvtColor(img, sample, cv::COLOR_BGRA2RGB);    
   } else if ((img.channels() == 1) && (img_channels == 3)) {
-    cv::cvtColor(img, sample, CV_GRAY2RGB);
+      // cv::cvtColor(img, sample, CV_GRAY2RGB);
+    cv::cvtColor(img, sample, cv::COLOR_GRAY2RGB);    
   } else {
     std::cerr << "unexpected number of channels in input image or model"
               << std::endl;

@@ -51,7 +51,7 @@ CMAKE_CXX_COMPILER_AR:FILEPATH=/usr/bin/gcc-ar-12
 CMAKE_CXX_COMPILER_RANLIB:FILEPATH=/usr/bin/gcc-ranlib-12
 
 //Flags used by the CXX compiler during all build types.
-CMAKE_CXX_FLAGS:STRING=
+CMAKE_CXX_FLAGS:STRING=-DLOCAL_MODE
 
 //Flags used by the CXX compiler during DEBUG builds.
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g
@@ -387,6 +387,15 @@ CURL_LIBRARY_DEBUG:FILEPATH=CURL_LIBRARY_DEBUG-NOTFOUND
 //Path to a library.
 CURL_LIBRARY_RELEASE:FILEPATH=/usr/lib/x86_64-linux-gnu/libcurl.so
 
+//Value Computed by CMake
+DiffServClient_BINARY_DIR:STATIC=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/DiffServ_0112_1730_coco2/0112_1730_coco
+
+//Value Computed by CMake
+DiffServClient_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+DiffServClient_SOURCE_DIR:STATIC=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+
 //Enable AWS s3 backend
 ENABLE_AWS:BOOL=OFF
 
@@ -413,6 +422,9 @@ LIBEV_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
 LIBEV_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libev.so
+
+//No help, variable specified on the command line.
+LOCAL_MODE:UNINITIALIZED=OFF
 
 //Path to a library.
 OPENSSL_CRYPTO_LIBRARY:FILEPATH=/usr/local/lib/libcrypto.so
@@ -495,7 +507,7 @@ gRPC_DIR:UNINITIALIZED=/usr/local/lib/cmake/grpc
 inf-master_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos;general;/usr/local/lib/libprotobuf.so;
 
 //Dependencies for the target
-inf-worker_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos-internal;general;grpc++_unsecure;general;grpc;general;gpr;general;protobuf::libprotobuf;
+inf-worker_LIB_DEPENDS:STATIC=general;redis-md;general;infaas-protos-internal;general;grpc++_unsecure;general;grpc;general;gpr;general;protobuf::libprotobuf;general;absl::base;general;absl::synchronization;general;absl::strings;general;absl::time;
 
 //Value Computed by CMake
 infaas-cli_BINARY_DIR:STATIC=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/cli-tools
@@ -565,6 +577,15 @@ pkgcfg_lib__OPENSSL_crypto:FILEPATH=/usr/lib/x86_64-linux-gnu/libcrypto.so
 
 //Path to a library.
 pkgcfg_lib__OPENSSL_ssl:FILEPATH=/usr/lib/x86_64-linux-gnu/libssl.so
+
+//The directory containing a CMake configuration file for protobuf.
+protobuf_DIR:PATH=/usr/local/lib/cmake/protobuf
+
+//CMake built-in FindProtobuf.cmake module compatible
+protobuf_MODULE_COMPATIBLE:BOOL=OFF
+
+//Enable for verbose output
+protobuf_VERBOSE:BOOL=OFF
 
 //Dependencies for the target
 redis-md_LIB_DEPENDS:STATIC=general;redox;general;/usr/lib/x86_64-linux-gnu/libhiredis.so;general;/usr/lib/x86_64-linux-gnu/libev.so;
@@ -681,7 +702,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=8
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=9
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -974,4 +995,8 @@ pkgcfg_lib__OPENSSL_crypto-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: pkgcfg_lib__OPENSSL_ssl
 pkgcfg_lib__OPENSSL_ssl-ADVANCED:INTERNAL=1
 prefix_result:INTERNAL=AsynchDNS;GSS-API;HSTS;HTTP2;HTTPS-proxy;IDN;IPv6;Kerberos;Largefile;NTLM;NTLM_WB;PSL;SPNEGO;SSL;TLS-SRP;UnixSockets;alt-svc;brotli;libz;zstd
+//ADVANCED property for variable: protobuf_MODULE_COMPATIBLE
+protobuf_MODULE_COMPATIBLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: protobuf_VERBOSE
+protobuf_VERBOSE-ADVANCED:INTERNAL=1
 

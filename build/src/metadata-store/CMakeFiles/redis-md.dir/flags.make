@@ -6,5 +6,5 @@ CXX_DEFINES = -DDISABLE_TRTIS -DENABLE_DIFFUSION -Dredis_md_EXPORTS
 
 CXX_INCLUDES = -I/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/utils -I/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src -I/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/include -I/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/metadata-store
 
-CXX_FLAGS =  -std=c++11 -O3 -DNDEBUG -fPIC -std=gnu++17
+CXX_FLAGS = -DLOCAL_MODE -std=c++11 -O3 -DNDEBUG -fPIC -std=gnu++17
 

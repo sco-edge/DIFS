@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/model_executor.cc" "src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o" "gcc" "src/worker/CMakeFiles/query_executor.dir/model_executor.cc.o.d"
+  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/process_executor.cc" "src/worker/CMakeFiles/query_executor.dir/process_executor.cc.o" "gcc" "src/worker/CMakeFiles/query_executor.dir/process_executor.cc.o.d"
   "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_executor.cc" "src/worker/CMakeFiles/query_executor.dir/query_executor.cc.o" "gcc" "src/worker/CMakeFiles/query_executor.dir/query_executor.cc.o.d"
   )
 

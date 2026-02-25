@@ -304,6 +304,7 @@ process_executor.o: process_executor.cc.o
 # target to build an object file
 process_executor.cc.o:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.o
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_executor.dir/build.make src/worker/CMakeFiles/query_executor.dir/process_executor.cc.o
 .PHONY : process_executor.cc.o
 
 process_executor.i: process_executor.cc.i
@@ -312,6 +313,7 @@ process_executor.i: process_executor.cc.i
 # target to preprocess a source file
 process_executor.cc.i:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.i
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_executor.dir/build.make src/worker/CMakeFiles/query_executor.dir/process_executor.cc.i
 .PHONY : process_executor.cc.i
 
 process_executor.s: process_executor.cc.s
@@ -320,6 +322,7 @@ process_executor.s: process_executor.cc.s
 # target to generate assembly for a file
 process_executor.cc.s:
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/inf-worker.dir/build.make src/worker/CMakeFiles/inf-worker.dir/process_executor.cc.s
+	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build && $(MAKE) $(MAKESILENT) -f src/worker/CMakeFiles/query_executor.dir/build.make src/worker/CMakeFiles/query_executor.dir/process_executor.cc.s
 .PHONY : process_executor.cc.s
 
 query_client.o: query_client.cc.o

@@ -101,6 +101,7 @@ cd "$INFAAS_SRC"
 mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR"
 
 cmake .. \
+  -DLOCAL_MODE=OFF -DCMAKE_CXX_FLAGS="-DLOCAL_MODE"\
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX" \
   -DProtobuf_DIR="$INSTALL_PREFIX/lib/cmake/protobuf" \

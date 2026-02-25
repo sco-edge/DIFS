@@ -7,6 +7,7 @@ find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(gRPC REQUIRED)
+find_package(absl REQUIRED) # PNB: (2026.01.25
 
 # AWS ALWAYS OFF in offline mode
 add_compile_definitions(AWS_SDK_DISABLED)
@@ -57,6 +58,11 @@ target_link_libraries(inf-worker
     grpc
     gpr
     protobuf::libprotobuf # ${PROTOBUF_LIBRARY} # PNB: (2025.12.27)
+
+    absl::base # PNB: (2025.01.25)
+    absl::synchronization
+    absl::strings
+    absl::time
 )
 
 

@@ -81,7 +81,7 @@ else()
   add_subdirectory(protos)
 endif()
 add_subdirectory(src)
-
+add_subdirectory(DiffServ_0112_1730_coco2/0112_1730_coco)
 
 if(NOT LOCAL_MODE)
   message(STATUS "Skipping metadata-store tests (LOCAL_MODE)")
@@ -92,4 +92,4 @@ endif()
 # # ----------------------------------------------------------------------
 # # Protobuf / gRPC internal protos (includes diffusion); PNB (2026.01.10)
 # # ----------------------------------------------------------------------
-# add_subdirectory(protos/internal) 
+# add_subdirectory(protos/internal)

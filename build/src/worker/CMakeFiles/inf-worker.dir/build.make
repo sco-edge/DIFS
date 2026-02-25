@@ -130,8 +130,26 @@ src/worker/libinf-worker.so: src/worker/CMakeFiles/inf-worker.dir/build.make
 src/worker/libinf-worker.so: src/metadata-store/libredis-md.so
 src/worker/libinf-worker.so: protos/internal/libinfaas-protos-internal.a
 src/worker/libinf-worker.so: /usr/local/lib/libprotobuf.so
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_synchronization.so.2206.0.0
 src/worker/libinf-worker.so: /usr/lib/x86_64-linux-gnu/libhiredis.so
 src/worker/libinf-worker.so: /usr/lib/x86_64-linux-gnu/libev.so
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_graphcycles_internal.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_time.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_civil_time.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_time_zone.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_stacktrace.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_symbolize.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_strings.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_strings_internal.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_int128.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_throw_delegate.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_malloc_internal.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_debugging_internal.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_demangle_internal.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_base.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_raw_logging_internal.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_log_severity.so.2206.0.0
+src/worker/libinf-worker.so: /usr/local/lib/libabsl_spinlock_wait.so.2206.0.0
 src/worker/libinf-worker.so: src/worker/CMakeFiles/inf-worker.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared library libinf-worker.so"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/inf-worker.dir/link.txt --verbose=$(VERBOSE)

@@ -1,4 +1,5 @@
 # Hashes of file build rules.
+8790b27c6e1d713fec2e6fe2dd04d4fa DiffServ_0112_1730_coco2/0112_1730_coco/generated/query.pb.cc
 c5e07811057f627e1c3c74adaa145506 protos/internal/infaas_request_status.pb.cc
 9633eb083f94ddd35355405a5d72f45b protos/modelreg.grpc.pb.cc
 4de7ec01c491a4cd058b569df15a4d9d protos/modelreg.pb.h

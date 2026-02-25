@@ -101,6 +101,24 @@ src/worker/query_heartbeat: /usr/lib/x86_64-linux-gnu/libhiredis.so
 src/worker/query_heartbeat: /usr/lib/x86_64-linux-gnu/libev.so
 src/worker/query_heartbeat: protos/internal/libinfaas-protos-internal.a
 src/worker/query_heartbeat: /usr/local/lib/libprotobuf.so
+src/worker/query_heartbeat: /usr/local/lib/libabsl_synchronization.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_graphcycles_internal.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_stacktrace.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_symbolize.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_malloc_internal.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_debugging_internal.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_demangle_internal.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_time.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_strings.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_strings_internal.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_base.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_spinlock_wait.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_throw_delegate.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_raw_logging_internal.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_log_severity.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_int128.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_civil_time.so.2206.0.0
+src/worker/query_heartbeat: /usr/local/lib/libabsl_time_zone.so.2206.0.0
 src/worker/query_heartbeat: src/worker/CMakeFiles/query_heartbeat.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable query_heartbeat"
 	cd /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/query_heartbeat.dir/link.txt --verbose=$(VERBOSE)
