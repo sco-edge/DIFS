@@ -11,7 +11,7 @@ DiffServ_0112_1730_coco2/0112_1730_coco/client_received/*
 DiffServ_0112_1730_coco2/0112_1730_coco/src/venv_diffserve/*
 DiffServ_0112_1730_coco2/0112_1730_coco/venv_diffserve/*
 DiffServ_0112_1730_coco2/stable-diffusion-v1-4/*
-DiffServ_0112_1730_coco2/huggingface_tokens.md
+huggingface_tokens.md
 dump_codebase.sh
 codebase_dump.txt
 config/*.json
