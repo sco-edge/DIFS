@@ -1,0 +1,9 @@
+from autoscaler import AutoScaler
+
+autoscaler = AutoScaler(
+    scheduler,
+    worker_pool,
+    config
+)
+
+autoscaler.start()
