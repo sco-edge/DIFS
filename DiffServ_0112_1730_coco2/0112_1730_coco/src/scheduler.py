@@ -26,6 +26,24 @@ class Scheduler:
 
         self.lock = threading.Lock()
 
+        self.active_requests = 0;
+
+  ############################################################
+    # ACTIVE REQUEST TRACKING (FOR AUTOSCALER)
+  ############################################################        
+        
+    def increment_active(self):
+        with self.lock:
+            self.active_requests += 1
+
+    def decrement_active(self):
+        with self.lock:
+            if self.active_requests > 0:
+                self.active_requests -= 1
+
+    ############################################################
+    # CORE METHODS (UNCHANGED)
+    ############################################################                
     def handle_request(self, request):
 
         print("[SCHEDULER] Processing request:", request)
@@ -46,16 +64,21 @@ class Scheduler:
             else:
                 time.sleep(0.01)
 
+    ############################################################
+    # 🔥 UPDATED METRIC (KEY CHANGE)
+    ############################################################                
     def get_total_queue_length(self):
+        queue_total = sum(q.qsize() for q in self.class_queues)
+        
+        with self.lock:
+            active = self.active_requests
 
-        total = 0
+        return queue_total + active # now metric becomes TOTAL LOAD = queued requests + active requests
 
-        for q in self.class_queues:
-            total += q.qsize()
-
-        return total
-
-
+    
+    ############################################################
+    # EXISTING METRICS (UNCHANGED)
+    ############################################################
     def enqueue(self, request, cls=2):
 
         self.class_queues[cls].put(request)

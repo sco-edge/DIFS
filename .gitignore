@@ -4,6 +4,9 @@
 *.secret
 *.pem
 *.p12
+*.md
+*.odt
+*.docx
 Notes/*
 #DiffServ_0112_1730_coco2/*
 DiffServ_0112_1730_coco2/0112_1730_coco/annotations/*

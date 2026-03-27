@@ -1,0 +1,356 @@
+
+src/pytorch_container_diffusion_async_v2.py,1439
+import numpy as npnp32,581
+MODEL_DIRECTORY = '/tmp/model'MODEL_DIRECTORY44,935
+OUTPUT_ROOT_DIR = '/tmp/diffusion_output' OUTPUT_ROOT_DIR45,966
+MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"MODEL_FILE_NAME46,1009
+CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAMECKPT_FILE_PATH47,1061
+OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)OUTPUT_DIR48,1118
+DiffusionPipeline = StableDiffusionPipelineDiffusionPipeline51,1235
+def load_json(file_path):load_json54,1327
+def get_filename_by_id(data, target_id):get_filename_by_id61,1568
+class ModelExecutor(query_pb2_grpc.QueryServicer):ModelExecutor67,1728
+    def __init__(__init__69,1780
+    def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:load_model112,3556
+    def QueryOnline(self, request, context):QueryOnline175,6101
+    async def QueryOnlineImage(self, request, context):QueryOnlineImage246,9151
+    async def QueryOnlineImage_Old(self, request, context):QueryOnlineImage_Old406,17235
+    def ExecuteInference(self, prompt: list, steps: int, cfg: float, batch_size: int, seed: int,ExecuteInference549,24155
+    def get_statistics(self, image_dir, device):get_statistics627,28124
+    def calculate_fid_from_stats(self, mu1, sigma1, mu2, sigma2):calculate_fid_from_stats656,29334
+    def run_startup_test(self):run_startup_test702,31417
+    def Heartbeat(self, request, context):Heartbeat729,32674
+async def serve():serve737,33063
+
+src/query_pb2.py,713
+from google.protobuf import descriptor as _descriptor_descriptor7,210
+from google.protobuf import descriptor_pool as _descriptor_pool_descriptor_pool8,264
+from google.protobuf import runtime_version as _runtime_version_runtime_version9,328
+from google.protobuf import symbol_database as _symbol_database_symbol_database10,392
+from google.protobuf.internal import builder as _builder_builder11,456
+_sym_db = _symbol_database.Default()_sym_db22,685
+import infaas_request_status_pb2 as infaas__request__status__pb2infaas__request__status__pb225,724
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bquery.proto\x12\x0finfaas.inteDESCRIPTOR28,791
+_globals = globals()_globals30,2909
+
+src/metrics.py,174
+class Metrics:Metrics6,92
+    def __init__(self):__init__8,108
+    def record_latency(self, latency):record_latency13,193
+    def avg_latency(self):avg_latency17,273
+
+src/cvt_format.py,338
+ckpt_path = "sd-v1-4.ckpt" # 여기에 실제 경로를 입력하세요.ckpt_path24,526
+    weights = torch.load(ckpt_path, map_location="cpu", weights_only=False)weights31,871
+    state_dict = weights["state_dict"] if "state_dict" in weights else weightsstate_dict33,953
+    output_path = "sd-v1-4.safetensors"output_path35,1038
+
+src/1/convert_and_save.py,160
+def load_and_save_ckpt(ckpt_path, save_dir="./models/sd-v1-2-diffusers"):load_and_save_ckpt5,74
+    target_ckpt = "./models/sd-v1-2.ckpt"target_ckpt41,1558
+
+src/1/calc_fid.py,293
+import numpy as npnp4,98
+def load_images_from_folder(folder_path):load_images_from_folder8,143
+def calculate_fid(real_path, fake_path):calculate_fid25,966
+        fake_folder = sys.argv[2]fake_folder54,2026
+        fid_value = calculate_fid(real_folder, fake_folder)fid_value56,2071
+
+src/1/Get_Real_Image7_cat.py,117
+import torchvision.transforms as transformstransforms3,34
+def get_real_images_fixed():get_real_images_fixed7,115
+
+src/1/download_modelfile.py,69
+def download_sd_model(save_dir="/tmp/model"):download_sd_model4,58
+
+src/1/client_test.py,20
+def run():run7,97
+
+src/1/pytorch_container_diffusion.py,1018
+MODEL_DIRECTORY = '/tmp/model'MODEL_DIRECTORY30,681
+OUTPUT_ROOT_DIR = '/tmp/infaas_output' OUTPUT_ROOT_DIR31,712
+MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"MODEL_FILE_NAME32,752
+CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAMECKPT_FILE_PATH33,804
+OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)OUTPUT_DIR34,861
+DiffusionPipeline = StableDiffusionPipelineDiffusionPipeline37,978
+class ModelExecutor(query_pb2_grpc.QueryServicer):ModelExecutor40,1024
+    def __init__(self):__init__46,1341
+    def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:load_model69,2275
+    def QueryOnline(self, request, context):QueryOnline153,5741
+    def QueryOnlineImage(self, request, context):QueryOnlineImage224,8792
+    def ExecuteInference(self, prompt: list, steps: int, cfg: float, batch_size: int, seed: int,ExecuteInference301,12187
+    def run_startup_test(self):run_startup_test378,16104
+    def Heartbeat(self, request, context):Heartbeat405,17361
+def serve():serve413,17750
+
+src/1/pytorch_container_diffusion_v3.py,1335
+import numpy as npnp30,550
+MODEL_DIRECTORY = '/tmp/model'MODEL_DIRECTORY42,904
+OUTPUT_ROOT_DIR = '/tmp/diffusion_output' OUTPUT_ROOT_DIR43,935
+MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"MODEL_FILE_NAME44,978
+CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAMECKPT_FILE_PATH45,1030
+OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)OUTPUT_DIR46,1087
+DiffusionPipeline = StableDiffusionPipelineDiffusionPipeline49,1204
+def load_json(file_path):load_json52,1296
+def get_filename_by_id(data, target_id):get_filename_by_id59,1537
+class ModelExecutor(query_pb2_grpc.QueryServicer):ModelExecutor65,1697
+    def __init__(__init__67,1825
+    def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:load_model112,3647
+    def QueryOnline(self, request, context):QueryOnline175,6192
+    def QueryOnlineImage(self, request, context):QueryOnlineImage246,9243
+    def ExecuteInference(self, prompt: list, steps: int, cfg: float, batch_size: int, seed: int,ExecuteInference361,14626
+    def get_statistics(self, image_dir, device):get_statistics439,18595
+    def calculate_fid_from_stats(self, mu1, sigma1, mu2, sigma2):calculate_fid_from_stats468,19805
+    def run_startup_test(self):run_startup_test490,20541
+    def Heartbeat(self, request, context):Heartbeat517,21798
+def serve():serve525,22187
+
+src/1/client_v2.py,208
+def load_json(file_path):load_json12,179
+def get_address_by_id(data, target_id):get_address_by_id19,388
+def extract_coco_prompts(json_path, count=10000):extract_coco_prompts26,603
+def run():run38,985
+
+src/1/client_read_prompts.py,208
+def load_json(file_path):load_json12,179
+def get_address_by_id(data, target_id):get_address_by_id19,388
+def extract_coco_prompts(json_path, count=10000):extract_coco_prompts26,603
+def run():run38,985
+
+src/1/prompt_list.py,98
+def extract_coco_prompts(json_path, count=10000):extract_coco_prompts4,27
+def run():run19,503
+
+src/1/download_modelfile2.py,78
+def download_sd_model(save_dir="./model_checkpoints"):download_sd_model5,70
+
+src/1/Get_Real_Image7.py,117
+import torchvision.transforms as transformstransforms3,34
+def get_real_images_fixed():get_real_images_fixed7,115
+
+src/1/unique_name.py,196
+now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")now4,35
+random_str = secrets.token_hex(3) # 6자리 랜덤 문자열random_str5,92
+unique_name = f"{now}_{random_str}"unique_name6,154
+
+src/1/down_save.py,483
+model_url = "https://huggingface.co/CompVis/stable-diffusion-v-1-1-archive/resolve/main/sd-v1-2.model_url6,87
+save_path = "./models/sd-v1-2-diffusers"save_path7,190
+device = "cuda" if torch.cuda.is_available() else "cpu"device11,394
+torch_dtype = torch.float16 if device == "cuda" else torch.float32torch_dtype12,451
+pipe = StableDiffusionPipeline.from_single_file(pipe17,691
+image = pipe("a professional photograph of an astronaut riding a horse").images[0]image36,1395
+
+src/1/process_option.py,132
+def load_json(file_path):load_json6,55
+def get_filename_by_id(data, target_id):get_filename_by_id14,362
+def main():main21,595
+
+src/1/Get_Real_Image7_car.py,117
+import torchvision.transforms as transformstransforms3,34
+def get_real_images_fixed():get_real_images_fixed7,115
+
+src/1/pytorch_container_diffusion_v2.py,1227
+import numpy as npnp30,550
+MODEL_DIRECTORY = '/tmp/model'MODEL_DIRECTORY39,851
+OUTPUT_ROOT_DIR = '/tmp/diffusion_output' OUTPUT_ROOT_DIR40,882
+MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"MODEL_FILE_NAME41,925
+CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAMECKPT_FILE_PATH42,977
+OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)OUTPUT_DIR43,1034
+DiffusionPipeline = StableDiffusionPipelineDiffusionPipeline46,1151
+class ModelExecutor(query_pb2_grpc.QueryServicer):ModelExecutor49,1197
+    def __init__(self):__init__55,1514
+    def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:load_model78,2448
+    def QueryOnline(self, request, context):QueryOnline162,5914
+    def QueryOnlineImage(self, request, context):QueryOnlineImage233,8965
+    def ExecuteInference(self, prompt: list, steps: int, cfg: float, batch_size: int, seed: int,ExecuteInference346,14185
+    def get_statistics(self, image_dir, device):get_statistics424,18154
+    def calculate_fid_from_stats(self, mu1, sigma1, mu2, sigma2):calculate_fid_from_stats453,19364
+    def run_startup_test(self):run_startup_test475,20100
+    def Heartbeat(self, request, context):Heartbeat502,21357
+def serve():serve510,21746
+
+src/1/Down_Real_image.py,537
+dataset = load_dataset("huggan/afhq", split="train", streaming=True)dataset7,206
+save_dir = "./real_images"save_dir9,278
+targets = {"dog": 5, "cat": 5}  # 각각 5장씩 총 10장 목표targets12,346
+counts = {"dog": 0, "cat": 0}counts13,413
+    label = example['label'] # 0: cat, 1: dog, 2: wildlife (데이터셋 사양에 따라 다름label17,515
+    category = "cat" if label == 0 else "dog" if label == 1 else Nonecategory20,672
+        img = example['image'].convert("RGB").resize((512, 512), Image.LANCZOS)img23,808
+
+src/1/pytorch_container_diffusion_async.py,1348
+import numpy as npnp32,581
+MODEL_DIRECTORY = '/tmp/model'MODEL_DIRECTORY44,935
+OUTPUT_ROOT_DIR = '/tmp/diffusion_output' OUTPUT_ROOT_DIR45,966
+MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"MODEL_FILE_NAME46,1009
+CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAMECKPT_FILE_PATH47,1061
+OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)OUTPUT_DIR48,1118
+DiffusionPipeline = StableDiffusionPipelineDiffusionPipeline51,1235
+def load_json(file_path):load_json54,1327
+def get_filename_by_id(data, target_id):get_filename_by_id61,1568
+class ModelExecutor(query_pb2_grpc.QueryServicer):ModelExecutor67,1728
+    def __init__(__init__69,1856
+    def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:load_model114,3678
+    def QueryOnline(self, request, context):QueryOnline177,6223
+    async def QueryOnlineImage(self, request, context):QueryOnlineImage248,9273
+    def ExecuteInference(self, prompt: list, steps: int, cfg: float, batch_size: int, seed: int,ExecuteInference391,16189
+    def get_statistics(self, image_dir, device):get_statistics469,20158
+    def calculate_fid_from_stats(self, mu1, sigma1, mu2, sigma2):calculate_fid_from_stats498,21368
+    def run_startup_test(self):run_startup_test520,22104
+    def Heartbeat(self, request, context):Heartbeat547,23361
+async def serve():serve555,23750
+
+src/1/save_stats2.py,101
+import numpy as npnp2,14
+def save_real_statistics(real_dir, save_path):save_real_statistics7,131
+
+src/config.py,373
+SCALE_UP_THRESHOLD = 5SCALE_UP_THRESHOLD6,101
+SCALE_DOWN_THRESHOLD = 1SCALE_DOWN_THRESHOLD7,124
+UTILIZATION_SCALE_UP = 0.8UTILIZATION_SCALE_UP9,150
+UTILIZATION_SCALE_DOWN = 0.3UTILIZATION_SCALE_DOWN10,177
+MIN_WORKERS = 1MIN_WORKERS12,207
+MAX_WORKERS = 5MAX_WORKERS13,223
+AUTOSCALE_INTERVAL = 5AUTOSCALE_INTERVAL15,240
+CHECK_INTERVAL = 5CHECK_INTERVAL16,263
+
+src/scheduler.py,559
+class Scheduler:Scheduler11,143
+    def __init__(self):__init__13,161
+    def increment_active(self):increment_active31,540
+    def decrement_active(self):decrement_active35,635
+    def handle_request(self, request):handle_request40,783
+    def start(self):start45,883
+    def get_total_queue_length(self):get_total_queue_length60,1147
+    def enqueue(self, request, cls=2):enqueue69,1431
+    def dequeue(self):dequeue77,1578
+    def get_arrival_rate(self):get_arrival_rate91,1801
+    def get_service_rate(self):get_service_rate110,2147
+
+src/query_pb2_grpc.py,1149
+import query_pb2 as query__pb2query__pb26,175
+GRPC_GENERATED_VERSION = '1.78.1'GRPC_GENERATED_VERSION8,207
+GRPC_VERSION = grpc.__version__GRPC_VERSION9,241
+_version_not_supported = False_version_not_supported10,273
+    _version_not_supported = first_version_is_lower(GRPC_VERSION, GRPC_GENERATED_VERSION)_version_not_supported14,365
+    _version_not_supported = True_version_not_supported16,475
+class QueryStub(object):QueryStub28,918
+    def __init__(self, channel):__init__32,1020
+class QueryServicer(object):QueryServicer60,2392
+    def QueryOnline(self, request, context):QueryOnline64,2498
+    def QueryOnlineImage(self, request, context):QueryOnlineImage71,2784
+    def QueryOffline(self, request, context):QueryOffline78,3082
+    def Heartbeat(self, request, context):Heartbeat85,3374
+def add_QueryServicer_to_server(servicer, server):add_QueryServicer_to_server93,3624
+class Query(object):Query123,5212
+    def QueryOnline(request,QueryOnline128,5328
+    def QueryOnlineImage(request,QueryOnlineImage155,6130
+    def QueryOffline(request,QueryOffline182,6953
+    def Heartbeat(request,Heartbeat209,7759
+
+src/server.py,323
+class SchedulerService(query_pb2_grpc.QueryServicer):SchedulerService24,494
+    def __init__(self, scheduler, worker_pool):__init__26,549
+    async def QueryOnlineImage(self, request, context):QueryOnlineImage30,672
+async def serve():serve53,1367
+async def run_scheduler_loop(scheduler):run_scheduler_loop94,2308
+
+src/autoscaler.py,306
+class AutoScaler:AutoScaler11,189
+    def __init__(self, scheduler, worker_pool, config):__init__13,208
+    def start_worker(self):start_worker36,878
+    def stop_worker(self):stop_worker61,1569
+    def scale(self):scale79,2089
+    def run(self):run102,2804
+    def start(self):start112,3034
+
+src/worker_pool.py,259
+class WorkerPool:WorkerPool8,120
+    def __init__(self):__init__10,139
+    def size(self):size15,222
+    def add_worker(self):add_worker18,276
+    def remove_worker(self):remove_worker45,1111
+    def get_worker_ports(self):get_worker_ports56,1383
+
+src/client_h.py,52
+def check_server_health():check_server_health6,90
+
+src/client.py,130
+def load_json(file_path):load_json11,165
+def get_address_by_id(data, target_id):get_address_by_id18,374
+def run():run25,589
+
+src/coco_prompt.py,138
+def extract_coco_prompts(json_path, count=10):extract_coco_prompts4,30
+json_file = 'annotations/captions_val2014.json'json_file26,760
+
+src/client_async_v2.py,212
+def load_json(file_path):load_json14,244
+def get_address_by_id(data, target_id):get_address_by_id21,453
+def extract_coco_prompts(json_path, count=10):extract_coco_prompts28,668
+async def run():run48,1303
+
+src/infaas_request_status_pb2_grpc.py,358
+GRPC_GENERATED_VERSION = '1.78.1'GRPC_GENERATED_VERSION7,176
+GRPC_VERSION = grpc.__version__GRPC_VERSION8,210
+_version_not_supported = False_version_not_supported9,242
+    _version_not_supported = first_version_is_lower(GRPC_VERSION, GRPC_GENERATED_VERSION)_version_not_supported13,334
+    _version_not_supported = True_version_not_supported15,444
+
+src/infaas_request_status_pb2.py,612
+from google.protobuf import descriptor as _descriptor_descriptor7,226
+from google.protobuf import descriptor_pool as _descriptor_pool_descriptor_pool8,280
+from google.protobuf import runtime_version as _runtime_version_runtime_version9,344
+from google.protobuf import symbol_database as _symbol_database_symbol_database10,408
+from google.protobuf.internal import builder as _builder_builder11,472
+_sym_db = _symbol_database.Default()_sym_db22,717
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1binfaas_request_status.proto\x1DESCRIPTOR27,758
+_globals = globals()_globals29,1159
+
+src/client_async.py,136
+def load_json(file_path):load_json14,244
+def get_address_by_id(data, target_id):get_address_by_id21,453
+async def run():run28,668
+
+src/calc_fid_v3.py,202
+import numpy as npnp2,14
+def get_statistics(image_dir, device):get_statistics10,218
+def calculate_fid_from_stats(mu1, sigma1, mu2, sigma2):calculate_fid_from_stats40,1405
+def main():main59,1964
+
+src/client_async_v3.py,103
+def extract_coco_prompts(json_path, count=10):extract_coco_prompts19,279
+async def run():run37,816
+
+protos/query_pb2.py,713
+from google.protobuf import descriptor as _descriptor_descriptor7,210
+from google.protobuf import descriptor_pool as _descriptor_pool_descriptor_pool8,264
+from google.protobuf import runtime_version as _runtime_version_runtime_version9,328
+from google.protobuf import symbol_database as _symbol_database_symbol_database10,392
+from google.protobuf.internal import builder as _builder_builder11,456
+_sym_db = _symbol_database.Default()_sym_db22,685
+import infaas_request_status_pb2 as infaas__request__status__pb2infaas__request__status__pb225,724
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bquery.proto\x12\x0finfaas.inteDESCRIPTOR28,791
+_globals = globals()_globals30,2909
+
+protos/query_pb2_grpc.py,1149
+import query_pb2 as query__pb2query__pb26,175
+GRPC_GENERATED_VERSION = '1.70.0'GRPC_GENERATED_VERSION8,207
+GRPC_VERSION = grpc.__version__GRPC_VERSION9,241
+_version_not_supported = False_version_not_supported10,273
+    _version_not_supported = first_version_is_lower(GRPC_VERSION, GRPC_GENERATED_VERSION)_version_not_supported14,365
+    _version_not_supported = True_version_not_supported16,475
+class QueryStub(object):QueryStub28,919
+    def __init__(self, channel):__init__32,1021
+class QueryServicer(object):QueryServicer60,2393
+    def QueryOnline(self, request, context):QueryOnline64,2499
+    def QueryOnlineImage(self, request, context):QueryOnlineImage71,2785
+    def QueryOffline(self, request, context):QueryOffline78,3083
+    def Heartbeat(self, request, context):Heartbeat85,3375
+def add_QueryServicer_to_server(servicer, server):add_QueryServicer_to_server93,3625
+class Query(object):Query123,5213
+    def QueryOnline(request,QueryOnline128,5329
+    def QueryOnlineImage(request,QueryOnlineImage155,6131
+    def QueryOffline(request,QueryOffline182,6954
+    def Heartbeat(request,Heartbeat209,7760

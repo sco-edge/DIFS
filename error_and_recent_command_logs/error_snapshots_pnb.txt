@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 110, in <module>
+    asyncio.run(serve())
+  File "/home/kwadwo/.pyenv/versions/3.11.14/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/home/kwadwo/.pyenv/versions/3.11.14/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kwadwo/.pyenv/versions/3.11.14/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 59, in serve
+    autoscaler = AutoScaler(
+                 ^^^^^^^^^^^
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/autoscaler.py", line 24, in __init__
+    self.check_interval = config.CHECK_INTERVAL
+                          ^^^^^^^^^^^^^^^^^^^^^

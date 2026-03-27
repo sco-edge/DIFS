@@ -1,9 +1,0 @@
-File "src/client_async_v2.py", line 4, in <module>
-    import query_pb2
-  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/query_pb2.py", line 12, in <module>
-    _runtime_version.ValidateProtobufRuntimeVersion(
-  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/MrHeeSikDocsAndCodes_NetLab_Server/20260113/DiffServ_0112_1730_coco2/0112_1730_coco/venv_diffserve/lib/python3.8/site-packages/google/protobuf/runtime_version.py", line 106, in ValidateProtobufRuntimeVersion
-    _ReportVersionError(
-  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/MrHeeSikDocsAndCodes_NetLab_Server/20260113/DiffServ_0112_1730_coco2/0112_1730_coco/venv_diffserve/lib/python3.8/site-packages/google/protobuf/runtime_version.py", line 50, in _ReportVersionError
-    raise VersionError(msg)
-google.protobuf.runtime_version.VersionError: Detected mismatched Protobuf Gencode/Runtime major versions when loading query.proto: gencode 6.31.1 runtime 5.29.5. Same major version is required. See Protobuf version guarantees at https://protobuf.dev/support/cross-version-runtime-guarantee.

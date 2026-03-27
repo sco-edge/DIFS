@@ -1,0 +1,15 @@
+1. Start server (scheduler + autoscaler)
+python src/server.py
+
+You should see:
+
+[SERVER] Autoscaler started
+[SERVER] Scheduler gRPC running on port 50050
+[AUTOSCALER] Starting worker on port 50060
+2. Watch containers
+docker ps
+3. Run client (heavy load)
+python src/client_async_v2.py -query Q3 -steps 20 -sampler 3
+4. Observe scaling
+[AUTOSCALER] Queue=10, Workers=1
+[AUTOSCALER] Starting worker on port 50061
