@@ -1,8 +1,0 @@
-add_libray(infaas-protos-diffusion
-   diffusion_service.pb.cc
-)
-
-
-target_link_libraries(worker-util
-   infaas-protos-diffusion
-)
