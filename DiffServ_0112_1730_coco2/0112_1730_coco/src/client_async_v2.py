@@ -3,7 +3,7 @@ import grpc
 import grpc.aio  # 비동기 gRPC 라이브러리
 import query_pb2
 import query_pb2_grpc
-import infaas_request_status_pb2
+# import infaas_request_status_pb2
 import time
 import os
 import json

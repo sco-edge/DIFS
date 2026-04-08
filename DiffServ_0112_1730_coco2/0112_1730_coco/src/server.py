@@ -27,23 +27,92 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
         self.scheduler = scheduler
         self.worker_pool = worker_pool
 
+    # async def QueryOnlineImage(self, request, context):
+
+    #     # 🔥 Ask scheduler for next worker
+    #     worker_addr = self.worker_pool.get_next_worker()
+
+    #     print(f"[SCHEDULER] Routing request to {worker_addr}")
+
+    #     try:
+    #         async with grpc.aio.insecure_channel(worker_addr) as channel:
+
+    #             stub = query_pb2_grpc.QueryStub(channel)
+
+    #             async for response in stub.QueryOnlineImage(request):
+    #                 yield response
+
+    #     except Exception as e:
+    #         print(f"[SCHEDULER ERROR] {e}")
+
     async def QueryOnlineImage(self, request, context):
+    #def QueryOnlineImage(self, request, context):
+    
+        # 🔥 START tracking load
+        self.scheduler.increment_active()
 
-        # 🔥 Ask scheduler for next worker
-        worker_addr = self.worker_pool.get_next_worker()
-
-        print(f"[SCHEDULER] Routing request to {worker_addr}")
+        worker_addr = None
 
         try:
-            async with grpc.aio.insecure_channel(worker_addr) as channel:
+            worker_addr = self.worker_pool.get_next_worker()
+            # 🔥 HEALTH CHECK
+            import socket
 
-                stub = query_pb2_grpc.QueryStub(channel)
+            def is_port_open(host, port):
+                s = socket.socket()
+                try:
+                    s.settimeout(1)
+                    s.connect((host, port))
+                    return True
+                except Exception:
+                    return False
+                finally:
+                    s.close()
 
-                async for response in stub.QueryOnlineImage(request):
-                    yield response
+            # 🔥 Extract host + port
+            host, port = worker_addr.split(":")
+            port = int(port)
+
+            # 🔥 Health check
+            if not is_port_open(host, port):
+                print(f"[HEALTH CHECK] Worker {worker_addr} not ready")
+                return
+
+            print(f"[SCHEDULER] Active={self.scheduler.get_total_queue_length()} → {worker_addr}")
+
+            # 🔥 RETRY LOGIC
+            # import asyncio
+
+            success = False
+
+            for attempt in range(3):
+
+                try:
+                    print(f"[RETRY] Attempt {attempt+1} → {worker_addr}")
+
+                    async with grpc.aio.insecure_channel(worker_addr) as channel:
+
+                        stub = query_pb2_grpc.QueryStub(channel)
+
+                        async for response in stub.QueryOnlineImage(request):
+                            yield response
+
+                    success = True
+                    break
+
+                except Exception as e:
+                    print(f"[RETRY {attempt+1}] Failed: {e}")
+                    await asyncio.sleep(2)
+
+            if not success:
+                print(f"[SCHEDULER ERROR] Worker {worker_addr} failed after retries")
 
         except Exception as e:
             print(f"[SCHEDULER ERROR] {e}")
+
+        finally:
+            # 🔥 END tracking load
+            self.scheduler.decrement_active()
 
 
 ############################################################
@@ -81,8 +150,8 @@ async def serve():
 
     await server.start()
 
-    # 🔥 run scheduler loop in background if needed
-    asyncio.create_task(run_scheduler_loop(scheduler))
+    # # 🔥 run scheduler loop in background if needed
+    # asyncio.create_task(run_scheduler_loop(scheduler))
 
     await server.wait_for_termination()
 
@@ -91,15 +160,15 @@ async def serve():
 # OPTIONAL: background scheduler loop
 ############################################################
 
-async def run_scheduler_loop(scheduler):
+# async def run_scheduler_loop(scheduler):
 
-    while True:
-        try:
-            scheduler.schedule()   # or whatever your method is
-        except AttributeError:
-            pass
+#     while True:
+#         try:
+#             scheduler.schedule()   # or whatever your method is
+#         except AttributeError:
+#             pass
 
-        await asyncio.sleep(0.1)
+#         await asyncio.sleep(0.1)
 
 
 ############################################################

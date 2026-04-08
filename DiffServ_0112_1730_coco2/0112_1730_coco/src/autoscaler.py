@@ -25,50 +25,33 @@ class AutoScaler:
 
         self.running = False
 
-        # track ports
-        self.next_port = 50060
-        self.active_ports = []
+        
 
     ############################################################
     # DOCKER CONTROL
     ############################################################
 
     def start_worker(self):
+    
+        print("[AUTOSCALER] Requesting worker_pool to add worker")
 
-        port = self.next_port
-        self.next_port += 1
+        before = self.worker_pool.size()
 
-        cmd = [
-            "docker", "run", "--rm", "--gpus", "all",
-            "-p", f"{port}:50060",
-            "-v", "/tmp/model:/tmp/model",
-            "-v", "/tmp/diffusion_output:/tmp/diffusion_output",
-            "pytorch-diffusion-server",
-            "-model", "4",
-            "-sampler", "2",
-            "-thread", "10",
-            "-port", "50060",
-            "-npz", "/tmp/model/real_stats.npz"
-        ]
+        self.worker_pool.add_worker()
 
-        print(f"[AUTOSCALER] Starting worker on port {port}")
+        time.sleep(5)  # give worker time to boot
 
-        subprocess.Popen(cmd)
+        after = self.worker_pool.size()
 
-        self.worker_pool.add_worker(port)
-        self.active_ports.append(port)
+        # ADDING FAILURE VISIBILITY
+        if after == before:
+            print("[AUTOSCALER ERROR] Worker failed to start!")
+        else:
+            print("[AUTOSCALER] Worker successfully added")
 
     def stop_worker(self):
-
-        if not self.active_ports:
-            return
-
-        port = self.active_ports.pop()
-
-        print(f"[AUTOSCALER] Stopping worker on port {port}")
-
-        # kill container using port
-        subprocess.call(f"docker ps | grep {port} | awk '{{print $1}}' | xargs docker stop", shell=True)
+    
+        print("[AUTOSCALER] Requesting worker_pool to remove worker")
 
         self.worker_pool.remove_worker()
 
@@ -83,7 +66,10 @@ class AutoScaler:
         except:
             queue_length = 0
 
-        worker_count = self.worker_pool.get_worker_count()
+        worker_count = self.worker_pool.size()
+
+        if worker_count == 0:
+            print("[AUTOSCALER WARNING] No workers available!")
 
         print(f"[AUTOSCALER] Queue={queue_length}, Workers={worker_count}")
 
@@ -105,9 +91,12 @@ class AutoScaler:
         for _ in range(self.min_workers):
             self.start_worker()
 
-        while self.running:
-            self.scale()
-            time.sleep(self.check_interval)
+        print("[AUTOSCALER] Initial workers launched. Waiting for stabilization...")
+        time.sleep(20)
+
+        # while self.running:
+        #     self.scale()
+        #     time.sleep(self.check_interval)
 
     def start(self):
 

@@ -71,7 +71,8 @@ async def run():
         ############################################################
 
         json_file = 'annotations/captions_val2014.json'
-        prompt_count = 10000
+        # prompt_count = 10000
+        prompt_count = 5
 
         try:
             prompts = extract_coco_prompts(json_file, prompt_count)
@@ -91,7 +92,8 @@ async def run():
             Steps=args.steps,
             Sampler_Type=args.sampler,
             CFG_Scale=7.5,
-            BatchSize=len(prompts),
+            #BatchSize=len(prompts),
+            BatchSize=1,
             Seed=42
         )
 
