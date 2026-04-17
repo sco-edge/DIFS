@@ -13,6 +13,7 @@ import os
 import json
 import argparse
 import random
+import numpy as np
 
 
 # --- 유틸리티 함수 ---
@@ -104,7 +105,9 @@ async def run():
         ############################################################
 
         try:
+            latencies = []
             start_time = time.perf_counter()
+            request_start_time = time.perf_counter()
             image_count = 0
 
             save_dir = "./client_received"
@@ -117,6 +120,11 @@ async def run():
                 if response.status.status == 1:
 
                     image_count += 1
+
+                    image_latency = time.perf_counter() - request_start_time
+                    latencies.append(image_latency)
+
+                    print(f"[LATENCY] Image {image_count}: {image_latency:.3f}s")
 
                     if response.image_data:
 
@@ -146,7 +154,14 @@ async def run():
             print(f"Images received: {image_count}")
             print(f"Total time: {total_time:.2f}s")
             if image_count > 0:
+                
                 print(f"Avg latency/image: {total_time / image_count:.2f}s")
+
+                print(f"Avg latency: {np.mean(latencies):.3f}s")
+                print(f"P95 latency: {np.percentile(latencies, 95):.3f}s")
+                print(f"P99 latency: {np.percentile(latencies, 99):.3f}s")
+                print(f"Throughput: {image_count / total_time:.2f} images/sec")
+                
 
         except grpc.RpcError as e:
 

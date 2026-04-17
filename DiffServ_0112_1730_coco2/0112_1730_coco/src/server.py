@@ -15,6 +15,7 @@ import query_pb2_grpc
 from scheduler import Scheduler
 from worker_pool import WorkerPool
 from autoscaler import AutoScaler
+import time
 
 
 ############################################################
@@ -49,12 +50,14 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
     #def QueryOnlineImage(self, request, context):
     
         # 🔥 START tracking load
+        start_time = time.perf_counter()
         self.scheduler.increment_active()
 
         worker_addr = None
 
         try:
             worker_addr = self.worker_pool.get_next_worker()
+            print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
             # 🔥 HEALTH CHECK
             import socket
 
@@ -95,6 +98,9 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
                         stub = query_pb2_grpc.QueryStub(channel)
 
                         async for response in stub.QueryOnlineImage(request):
+                            elapsed = time.perf_counter() - start_time # PNB (2026.04.10)
+                            print(f"[SERVER LATENCY] {worker_addr}: {elapsed:.3f}s") # PNB (2026.04.10)
+
                             yield response
 
                     success = True
