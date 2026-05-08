@@ -36,7 +36,9 @@ class WorkerPool:
             "-v", "/tmp/diffusion_output:/tmp/diffusion_output",
             "pytorch-diffusion-server",
             #"python", "pytorch_container_diffusion_async_v2.py",
-            "-model", "4",
+            #"-model", "4",
+            "-model", "/tmp/model/sd-v1-4.saftetensors", # explicitly pass full model path
+            "-w", "/workspace", # force correct working directory
             "-sampler", "2",
             "-thread", "10",
             "-port", "50060",
@@ -45,7 +47,17 @@ class WorkerPool:
 
         # Handle Docker failure gracefully
         try:
-            container_id = subprocess.check_output(cmd).decode().strip()
+            # container_id = subprocess.check_output(cmd).decode().strip()
+
+            # Adding debugging visibility (2026.04.23)
+            result = subprocess.run(cmd, capture_output=True, text=True)
+
+            if result.returncode != 0:
+                print("[WORKER ERROR]", result.stderr)
+                return
+
+            container_id = result.stdout.strip()
+
         except subprocess.CalledProcessError as e:
             print(f"[WORKER_POOL ERROR] Failed to start container: {e}")
             return

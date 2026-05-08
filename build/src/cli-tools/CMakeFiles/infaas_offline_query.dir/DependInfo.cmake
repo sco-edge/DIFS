@@ -8,15 +8,16 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/cli-tools/infaas_offline_query.cc" "src/cli-tools/CMakeFiles/infaas_offline_query.dir/infaas_offline_query.cc.o" "gcc" "src/cli-tools/CMakeFiles/infaas_offline_query.dir/infaas_offline_query.cc.o.d"
+  "/home/daniel08/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/cli-tools/infaas_offline_query.cc" "src/cli-tools/CMakeFiles/infaas_offline_query.dir/infaas_offline_query.cc.o" "gcc" "src/cli-tools/CMakeFiles/infaas_offline_query.dir/infaas_offline_query.cc.o.d"
+  "" "bin/infaas_offline_query" "gcc" "src/cli-tools/CMakeFiles/infaas_offline_query.dir/link.d"
   )
 
-# Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/master/CMakeFiles/inf-master.dir/DependInfo.cmake"
-  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/metadata-store/CMakeFiles/redis-md.dir/DependInfo.cmake"
-  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/CMakeFiles/infaas-protos.dir/DependInfo.cmake"
-  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/CMakeFiles/infaas-protos-internal.dir/DependInfo.cmake"
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.

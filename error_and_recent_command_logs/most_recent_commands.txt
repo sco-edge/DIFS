@@ -1,15 +1,44 @@
-1. Start server (scheduler + autoscaler)
-python src/server.py
+SOME NEXT STEPS SUGGESTED:
 
-You should see:
+After codes edits related to performance metrics
 
-[SERVER] Autoscaler started
-[SERVER] Scheduler gRPC running on port 50050
-[AUTOSCALER] Starting worker on port 50060
-2. Watch containers
-docker ps
-3. Run client (heavy load)
-python src/client_async_v2.py -query Q3 -steps 20 -sampler 3
-4. Observe scaling
-[AUTOSCALER] Queue=10, Workers=1
-[AUTOSCALER] Starting worker on port 50061
+🚀 OPTIONAL NEXT STEP
+
+If you want to go full research-grade:
+
+I can help you build:
+
+📊 real-time dashboard (Grafana)
+📈 logging pipeline
+📉 latency distribution plots
+📚 paper-ready evaluation section
+
+
+
+
+=============================
+-------ADMINISTRATION--------
+=============================
+
+docker ps -aq | xargs -r docker stop # stopping running docker instances
+
+======================
+-------TESTING--------
+======================
+AT TWO DIFFERENT TERMINALS
+- CONTROLLER TEMINAL
+
+
+- WORKER TERMINAL
+# To run 3 instances concurrently (The '&' at the; before the done is what signifies concurrency)
+for i in {1..3}; do python src/client_async_v3.py -query Q3 -steps 20 -sample 3 -port 50050 & done
+
+
+# COMMAND FOR CHECKING RUNNING PROGRAM STATISTICS ADMINISTRATIVELY
+btop
+
+# for docker concerns
+docker stats # this will show you what is eating up your ramspace
+
+# for gRPC concerns => check your bandwidth
+nload or iftop

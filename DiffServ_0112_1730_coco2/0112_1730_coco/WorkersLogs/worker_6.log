@@ -1,0 +1,8 @@
+[CLIENT] Steps: 20, Sampler: 3
+[CLIENT] Connecting to scheduler at localhost:50050
+✅ Loaded 5 prompts
+[CLIENT] Sending request to scheduler...
+
+[CLIENT] ===== SUMMARY =====
+Images received: 0
+Total time: 0.00s

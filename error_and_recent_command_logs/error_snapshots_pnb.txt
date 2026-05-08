@@ -1,18 +1,200 @@
-Traceback (most recent call last):
-  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 110, in <module>
-    asyncio.run(serve())
-  File "/home/kwadwo/.pyenv/versions/3.11.14/lib/python3.11/asyncio/runners.py", line 190, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/home/kwadwo/.pyenv/versions/3.11.14/lib/python3.11/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kwadwo/.pyenv/versions/3.11.14/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
-    return future.result()
-           ^^^^^^^^^^^^^^^
-  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 59, in serve
-    autoscaler = AutoScaler(
-                 ^^^^^^^^^^^
-  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/autoscaler.py", line 24, in __init__
-    self.check_interval = config.CHECK_INTERVAL
-                          ^^^^^^^^^^^^^^^^^^^^^
+After taking STEP 1 and testing, the following is the output after initially running src/server.py
+
+[AUTOSCALER] Requesting worker_pool to add worker
+[SERVER] Autoscaler started
+[SERVER] Scheduler gRPC running on port 50050
+[WORKER_POOL] Waiting for worker on port 50060...
+[WORKER_POOL] Started container eba8dd53 on port 50060
+[AUTOSCALER] Worker successfully added
+[AUTOSCALER] Initial workers launched. Waiting for stabilization...
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1
+[AUTOSCALER] Queue=0, Workers=1
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1
+[AUTOSCALER] Queue=0, Workers=1
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1
+[AUTOSCALER] Queue=0, Workers=1
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1
+[AUTOSCALER] Queue=0, Workers=1
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1
+[AUTOSCALER] Queue=0, Workers=1
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1
+[AUTOSCALER] Queue=0, Workers=1
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1
+
+The output then changes to the following after executing ./run_multiple_workers.sh
+"
+[AUTOSCALER] Queue=0, Workers=1                                                                                                                                                                                                                                                           
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[AUTOSCALER] Queue=0, Workers=1                                                                                                                                                                                                                                                           
+[SCHEDULER] Routing request to localhost:50060                                                                                                                                                                                                                                            
+[SCHEDULER] Active=2 → localhost:50060                                                                                                                                                                                                                                                    
+[RETRY] Attempt 1 → localhost:50060                                                                                                                                                                                                                                                       
+[SCHEDULER] Batched 1 requests → 5 prompts                                                                                                                                                                                                                                                
+[RETRY 1] Failed: <AioRpcError of RPC that terminated with:                                                                                                                                                                                                                               
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"                                                                                                                                                   
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14}"                                                                     
+>                                                                                                                                                                                                                                                                                         
+[SCHEDULER] Routing request to localhost:50060                                                                                                                                                                                                                                            
+[SCHEDULER] Active=4 → localhost:50060                                                                                                                                                                                                                                                    
+[RETRY] Attempt 1 → localhost:50060                                                                                                                                                                                                                                                       
+[SCHEDULER] Batched 1 requests → 5 prompts                                                                                                                                                                                                                                                
+[RETRY 1] Failed: <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE                               
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"                                                                     
+>                                                                     
+[SCHEDULER] Routing request to localhost:50060                        
+[SCHEDULER] Active=6 → localhost:50060                                                                                                       
+[RETRY] Attempt 1 → localhost:50060                                                                                                                                                                                                                                                       
+[SCHEDULER] Batched 1 requests → 5 prompts                            
+[RETRY 1] Failed: <AioRpcError of RPC that terminated with:           
+        status = StatusCode.UNAVAILABLE                               
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"                                                                     
+>                                                                     
+[SCHEDULER] Routing request to localhost:50060                        
+[SCHEDULER] Active=8 → localhost:50060                     
+[RETRY] Attempt 1 → localhost:50060                                   
+[SCHEDULER] Batched 1 requests → 5 prompts                                                                                                   
+[RETRY 1] Failed: <AioRpcError of RPC that terminated with:                                                                                                                                                                                                                               
+        status = StatusCode.UNAVAILABLE                               
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14}"
+...
+[RETRY] Attempt 2 → localhost:50060
+[SCHEDULER] No batch available
+[RETRY] Attempt 2 → localhost:50060
+[SCHEDULER] No batch available
+[RETRY] Attempt 2 → localhost:50060
+[SCHEDULER] No batch available
+[RETRY] Attempt 2 → localhost:50060
+[SCHEDULER] No batch available
+[RETRY] Attempt 2 → localhost:50060
+[SCHEDULER] No batch available
+[WORKER_POOL] Started container 5929bac3 on port 50061
+[AUTOSCALER] Worker successfully added
+[VERTICAL AUTOSCALER] Queue=10, λ=0.27, μ=0.00
+[VERTICAL] Batch size → 4
+[AUTOSCALER] Queue=10, Workers=2
+[AUTOSCALER] Requesting worker_pool to add worker
+[WORKER_POOL] Waiting for worker on port 50062...
+[WORKER_POOL] Started container afa60ac5 on port 50062
+[AUTOSCALER] Worker successfully added
+[VERTICAL AUTOSCALER] Queue=10, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 4
+[AUTOSCALER] Queue=10, Workers=3
+[AUTOSCALER] Requesting worker_pool to add worker
+[WORKER_POOL] Waiting for worker on port 50063...
+[WORKER_POOL] Started container ac4bab0b on port 50063
+[AUTOSCALER] Worker successfully added
+[VERTICAL AUTOSCALER] Queue=10, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 4
+[AUTOSCALER] Queue=10, Workers=4
+[AUTOSCALER] Requesting worker_pool to add worker
+[WORKER_POOL] Waiting for worker on port 50064...
+[WORKER_POOL] Started container d1dedadc on port 50064
+[AUTOSCALER] Worker successfully added
+[VERTICAL AUTOSCALER] Queue=10, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 4
+[AUTOSCALER] Queue=10, Workers=5
+[VERTICAL AUTOSCALER] Queue=10, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 4
+[AUTOSCALER] Queue=10, Workers=5
+[VERTICAL AUTOSCALER] Queue=10, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 4
+[AUTOSCALER] Queue=10, Workers=5
+[VERTICAL AUTOSCALER] Queue=10, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 4
+[AUTOSCALER] Queue=10, Workers=5
+
+        
+        
+"
+
+Doing ./run_multiple_workers.sh for multiple executings of clients results in 
+
+"
+Launching 10 clients...
+Starting instance 1 of 10...
+Starting instance 2 of 10...
+Starting instance 3 of 10...
+Starting instance 4 of 10...
+Starting instance 5 of 10...
+Starting instance 6 of 10...
+Starting instance 7 of 10...
+Starting instance 8 of 10...
+Starting instance 9 of 10...
+Starting instance 10 of 10...
+All 10 clients are running in the background."
+Use './monitor_system.sh' to view resource usage.
+"
+
+Diagnose and suggest corrections
+
+
+
+STEP 1 — Inspect worker crash logs (MANDATORY) results in
+
+"[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 4(sd-v1-4.safetensors) 로딩 시작...
+[인포] ModelExecutor 초기화 (Model ID: 4, File: sd-v1-4.safetensors)
+[타이머] 1단계: 가중치 파일 로딩 시작... (/tmp/model/sd-v1-4.safetensors)
+cuda
+[인포] 모델 로드 시도: /tmp/model/sd-v1-4.safetensors
+[오류] 모델 로드 중 예외 발생: Invalid `pretrained_model_name_or_path` provided. Please set it to a valid URL.
+Downloading: "https://github.com/toshas/torch-fidelity/releases/download/v0.2.0/weights-inception-2015-12-05-6726825d.pth" to /root/.cache/torch/hub/checkpoints/weights-inception-2015-12-05-6726825d.pth
+100%|██████████| 91.2M/91.2M [00:08<00:00, 11.2MB/s]
+[오류] 모델 로드 실패
+📊 실사 이미지의 mu 값 ([0.47221427 0.24937508 0.36007017 ... 0.13225297 0.3696733  0.08423958])
+📊 실사 이미지의 sigma 값 계산 ([[ 0.01443284 -0.0092687  -0.01496326 ...  0.01543761  0.04348524
+  -0.00668914]
+ [-0.0092687   0.00595232  0.00960934 ... -0.00991396 -0.02792602
+   0.00429573]
+ [-0.01496326  0.00960934  0.01551317 ... -0.01600495 -0.04508336
+   0.00693497]
+ ...
+ [ 0.01543761 -0.00991396 -0.01600495 ...  0.01651232  0.04651253
+  -0.00715482]
+ [ 0.04348524 -0.02792602 -0.04508336 ...  0.04651253  0.13101828
+  -0.02015396]
+ [-0.00668914  0.00429573  0.00693497 ... -0.00715482 -0.02015396
+   0.00310019]])
+"
+
+
+
+TRY:
+
+
+docker run -it \
+  --gpus all \
+  -p 50060:50060 \
+  -v /tmp/model:/tmp/model \
+  pytorch-diffusion-server \
+  -model 4 \
+  -sampler 2 \
+  -thread 10 \
+  -port 50060 \
+  -npz /tmp/model/real_stats.npz
+
+Running     
+  
+python src/client_async_v3.py -host localhost -port 50060 -query Q1 -steps 20 -sampler 3
+
+after the suggested modification to worker_pool.py and server.py results
+
+"
+[CLIENT] Steps: 20, Sampler: 3
+[CLIENT] Connecting to scheduler at localhost:50060
+✅ Loaded 5 prompts
+[CLIENT] Sending request to scheduler...
+[CLIENT] gRPC Error: StatusCode.UNAVAILABLE - failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50060: Failed to connect to remote host: Connection refused"

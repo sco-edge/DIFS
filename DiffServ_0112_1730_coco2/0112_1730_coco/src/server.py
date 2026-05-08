@@ -53,10 +53,12 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
         start_time = time.perf_counter()
         self.scheduler.increment_active()
 
+        self.scheduler.enqueue(request)
+
         worker_addr = None
 
         try:
-            worker_addr = self.worker_pool.get_next_worker()
+            worker_addr = self.worker_pool.get_next_worker() # this preserve horizontal scaling
             print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
             # 🔥 HEALTH CHECK
             import socket
@@ -95,11 +97,49 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
 
                     async with grpc.aio.insecure_channel(worker_addr) as channel:
 
+                        ## =======  1 CLIENT REQUEST -> 1 WORKER CALL ========
+
+                        # stub = query_pb2_grpc.QueryStub(channel)
+
+                        # async for response in stub.QueryOnlineImage(request): # for direct forwarding
+                        #     elapsed = time.perf_counter() - start_time # PNB (2026.04.10)
+                        #     print(f"[SERVER LATENCY] {worker_addr}: {elapsed:.3f}s") # PNB (2026.04.10)
+
+                        #     yield response
+
+
+                        # =======  MULTIPLE CLIENT REQUESTS -> batched -> 1 WORKER CALL ========
                         stub = query_pb2_grpc.QueryStub(channel)
 
-                        async for response in stub.QueryOnlineImage(request):
-                            elapsed = time.perf_counter() - start_time # PNB (2026.04.10)
-                            print(f"[SERVER LATENCY] {worker_addr}: {elapsed:.3f}s") # PNB (2026.04.10)
+                        # 🔥 STEP 1: form batch
+                        batch = self.scheduler.get_batch()
+
+                        if not batch:
+                            print("[SCHEDULER] No batch available")
+                            return
+
+                        # 🔥 STEP 2: merge prompts
+                        all_prompts = []
+                        for req in batch:
+                            all_prompts.extend(req.Prompt)
+
+                        print(f"[SCHEDULER] Batched {len(batch)} requests → {len(all_prompts)} prompts")
+
+                        # 🔥 STEP 3: create batched request
+                        batched_request = query_pb2.QueryOnlineImageRequest(
+                            Prompt=all_prompts,
+                            Steps=request.Steps,
+                            Sampler_Type=request.Sampler_Type,
+                            CFG_Scale=request.CFG_Scale,
+                            BatchSize=len(all_prompts),
+                            Seed=request.Seed
+                        )
+
+                        # 🔥 STEP 4: send to worker
+                        async for response in stub.QueryOnlineImage(batched_request):
+
+                            elapsed = time.perf_counter() - start_time
+                            print(f"[SERVER LATENCY] {worker_addr}: {elapsed:.3f}s")
 
                             yield response
 

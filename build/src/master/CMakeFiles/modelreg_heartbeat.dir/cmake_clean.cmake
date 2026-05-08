@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "../../bin/modelreg_heartbeat"
   "../../bin/modelreg_heartbeat.pdb"
+  "CMakeFiles/modelreg_heartbeat.dir/link.d"
   "CMakeFiles/modelreg_heartbeat.dir/modelreg_heartbeat.cc.o"
   "CMakeFiles/modelreg_heartbeat.dir/modelreg_heartbeat.cc.o.d"
 )

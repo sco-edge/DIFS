@@ -1,0 +1,23 @@
+[CLIENT] Steps: 20, Sampler: 3
+[CLIENT] Connecting to scheduler at localhost:50050
+✅ Loaded 5 prompts
+[CLIENT] Sending request to scheduler...
+[LATENCY] Image 1: 151.074s
+[1] Saved (151.07s): ./client_received/received_1_1776394197.png
+[LATENCY] Image 2: 176.172s
+[2] Saved (176.17s): ./client_received/received_2_1776394222.png
+[LATENCY] Image 3: 208.615s
+[3] Saved (208.62s): ./client_received/received_3_1776394255.png
+[LATENCY] Image 4: 231.212s
+[4] Saved (231.21s): ./client_received/received_4_1776394277.png
+[LATENCY] Image 5: 253.933s
+[5] Saved (253.93s): ./client_received/received_5_1776394300.png
+
+[CLIENT] ===== SUMMARY =====
+Images received: 5
+Total time: 298.35s
+Avg latency/image: 59.67s
+Avg latency: 204.201s
+P95 latency: 249.389s
+P99 latency: 253.024s
+Throughput: 0.02 images/sec

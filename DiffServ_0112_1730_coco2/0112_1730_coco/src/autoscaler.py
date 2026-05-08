@@ -14,6 +14,7 @@ class AutoScaler:
 
         self.scheduler = scheduler
         self.worker_pool = worker_pool
+        self.config = config
 
         self.min_workers = config.MIN_WORKERS
         self.max_workers = config.MAX_WORKERS
@@ -81,22 +82,63 @@ class AutoScaler:
         elif queue_length < self.scale_down_threshold and worker_count > self.min_workers:
             self.stop_worker()
 
+
+    def scale_vertical(self):
+        
+        try:
+            queue_length = self.scheduler.get_total_queue_length()
+        except:
+            queue_length = 0
+
+        # vertical scaling depends on the following
+        arrival_rate = self.scheduler.get_arrival_rate()
+        service_rate = self.scheduler.get_service_rate()
+
+        print(
+            f"[VERTICAL AUTOSCALER] Queue={queue_length}, "
+            f"λ={arrival_rate:.2f}, μ={service_rate:.2f}"
+        )
+
+        # 🔥 Dynamic batching logic
+        if queue_length > 10:
+            self.scheduler.set_batch_size(8)
+            print("[VERTICAL] Batch size → 8")
+
+        elif queue_length > 5:
+            self.scheduler.set_batch_size(4)
+            print("[VERTICAL] Batch size → 4")
+
+        else:
+            self.scheduler.set_batch_size(1)
+            print("[VERTICAL] Batch size → 1")
+
     ############################################################
     # MAIN LOOP
     ############################################################
 
     def run(self):
-
-        # start with minimum workers
+    
+        # 🔥 Step 1: Start minimum workers (horizontal base)
         for _ in range(self.min_workers):
             self.start_worker()
 
         print("[AUTOSCALER] Initial workers launched. Waiting for stabilization...")
-        time.sleep(20)
+        time.sleep(10)
 
-        # while self.running:
-        #     self.scale()
-        #     time.sleep(self.check_interval)
+        # 🔥 Step 2: Continuous scaling loop
+        while self.running:
+
+            if self.config.SCALING_MODE == "vertical":
+                self.scale_vertical()
+
+            elif self.config.SCALING_MODE == "horizontal":
+                self.scale()
+
+            else:  # hybrid (recommended)
+                self.scale_vertical()
+                self.scale()
+
+            time.sleep(self.check_interval)
 
     def start(self):
 

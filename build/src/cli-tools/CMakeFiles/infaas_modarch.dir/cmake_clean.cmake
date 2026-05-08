@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "../../bin/infaas_modarch"
   "../../bin/infaas_modarch.pdb"
+  "CMakeFiles/infaas_modarch.dir/link.d"
   "CMakeFiles/infaas_modarch.dir/infaas_modarch.cc.o"
   "CMakeFiles/infaas_modarch.dir/infaas_modarch.cc.o.d"
 )

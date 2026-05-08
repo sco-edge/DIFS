@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "../../bin/infaas_modinfo"
   "../../bin/infaas_modinfo.pdb"
+  "CMakeFiles/infaas_modinfo.dir/link.d"
   "CMakeFiles/infaas_modinfo.dir/infaas_modinfo.cc.o"
   "CMakeFiles/infaas_modinfo.dir/infaas_modinfo.cc.o.d"
 )

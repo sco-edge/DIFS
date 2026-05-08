@@ -12,11 +12,15 @@ class Scheduler:
 
     def __init__(self):
 
+        self.batch_size = 1
+
         self.class_queues = [
             queue.Queue(),
             queue.Queue(),
             queue.Queue()
-        ]
+        ] # for scheduling / priority
+
+        self.request_queue = queue.Queue() # for batching / throughput
 
         self.arrival_count = 0
         self.service_count = 0
@@ -80,8 +84,13 @@ class Scheduler:
     # EXISTING METRICS (UNCHANGED)
     ############################################################
     def enqueue(self, request, cls=2):
+        '''
+        Goes into both queues
+        '''
 
         self.class_queues[cls].put(request)
+
+        self.request_queue.put(request)
 
         with self.lock:
             self.arrival_count += 1
@@ -120,7 +129,7 @@ class Scheduler:
         return rate
 
 
-    def get_service_rate(self):
+    def get_service_rate(self): 
 
         now = time.time()
 
@@ -137,3 +146,21 @@ class Scheduler:
             self.service_window_start = now
 
         return rate
+
+    def set_batch_size(self, size): # PNB(2026.04.23)
+        self.batch_size = size
+
+    def get_batch(self): # Core of vertical scaling. PNB(2026.04.23)
+        batch = []
+
+        while len(batch) < self.batch_size:
+            try:
+                req = self.request_queue.get(timeout=0.01)
+                batch.append(req)
+            except:
+                break
+        
+        return batch
+
+    def get_batch_size(self):
+        return self.batch_size
