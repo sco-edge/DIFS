@@ -1,7 +1,7 @@
 # Author: KB 
 # Date: 2026-03-06 
 # Purpose: To register different possible model requirements. Together with "workload_classifier.py", it helps determine which model to load based on workload.
-# File: workload_classifier.py 
+# File:
 
 MODEL_CONFIGS = {
 
