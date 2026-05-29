@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
   "../../bin/queryfe_server"
   "../../bin/queryfe_server.pdb"
-  "CMakeFiles/queryfe_server.dir/link.d"
   "CMakeFiles/queryfe_server.dir/queryfe_server.cc.o"
   "CMakeFiles/queryfe_server.dir/queryfe_server.cc.o.d"
 )

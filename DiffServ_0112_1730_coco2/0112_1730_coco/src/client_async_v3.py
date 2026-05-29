@@ -14,6 +14,7 @@ import json
 import argparse
 import random
 import numpy as np
+import csv
 
 
 # --- 유틸리티 함수 ---
@@ -61,6 +62,24 @@ async def run():
     options = [
         ('grpc.max_receive_message_length', 100 * 1024 * 1024)
     ]
+
+    # 0. METRICS: Client side latency logging (2026.05.15)
+    os.makedirs("metrics", exist_ok=True)
+
+    client_metrics_file = "metrics/client_metrics.csv"
+
+    if not os.path.exists(client_metrics_file):
+
+        with open(client_metrics_file, "w", newline="") as f:
+
+            writer = csv.writer(f)
+
+            writer.writerow([
+                "timestamp",
+                "image_id",
+                "latency",
+                "total_images"
+            ])   
 
     async with grpc.aio.insecure_channel(f"{args.host}:{args.port}", options=options) as channel:
 
@@ -139,6 +158,18 @@ async def run():
                         elapsed = time.perf_counter() - start_time
 
                         print(f"[{image_count}] Saved ({elapsed:.2f}s): {save_path}")
+
+                        # METRICS: Logging image latency
+                        with open("metrics/client_metrics.csv", "a", newline="") as f:
+                            
+                            writer = csv.writer(f)
+
+                            writer.writerow([
+                                time.time(),
+                                image_count,
+                                elapsed,
+                                image_count
+                            ])                        
 
                 else:
                     print(f"[CLIENT] Server error: {response.status.msg}")

@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
   "../../bin/infaas_modelregistration"
   "../../bin/infaas_modelregistration.pdb"
-  "CMakeFiles/infaas_modelregistration.dir/link.d"
   "CMakeFiles/infaas_modelregistration.dir/infaas_modelregistration.cc.o"
   "CMakeFiles/infaas_modelregistration.dir/infaas_modelregistration.cc.o.d"
 )

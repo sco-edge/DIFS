@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
   "../../bin/modelreg_server"
   "../../bin/modelreg_server.pdb"
-  "CMakeFiles/modelreg_server.dir/link.d"
   "CMakeFiles/modelreg_server.dir/modelreg_server.cc.o"
   "CMakeFiles/modelreg_server.dir/modelreg_server.cc.o.d"
 )

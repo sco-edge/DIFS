@@ -223,7 +223,8 @@ def main(args):
     options=[('grpc.max_send_message_length', MAX_GRPC_MSG_SIZE),
              ('grpc.max_receive_message_length', MAX_GRPC_MSG_SIZE)])
   infaas_query_grpc.add_QueryServicer_to_server(ModelExecutor(args.scale, args.model), server)
-  server.add_insecure_port('[::]:' + port)
+  #server.add_insecure_port('[::]:' + port)
+  server.add_insecure_port('0.0.0.0:' + port)
   server.start()
   try:
     while True:

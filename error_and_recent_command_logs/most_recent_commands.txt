@@ -1,17 +1,24 @@
 SOME NEXT STEPS SUGGESTED:
+MOST IMPORTANT NEXT STEP
 
-After codes edits related to performance metrics
+Before anything else:
 
-🚀 OPTIONAL NEXT STEP
+run this manually OUTSIDE autoscaler:
 
-If you want to go full research-grade:
+docker run -it \
+-v $(pwd):/workspace \
+-w /workspace \
+--gpus all \
+pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime \
+bash
 
-I can help you build:
+Then inside container:
 
-📊 real-time dashboard (Grafana)
-📈 logging pipeline
-📉 latency distribution plots
-📚 paper-ready evaluation section
+python 1/pytorch_container_diffusion_v3.py
+
+You will immediately discover the remaining missing modules/import/path problems.
+
+That is the fastest “follow the debugger” approach for your DIFS system.
 
 
 
@@ -25,20 +32,110 @@ docker ps -aq | xargs -r docker stop # stopping running docker instances
 ======================
 -------TESTING--------
 ======================
-AT TWO DIFFERENT TERMINALS
-- CONTROLLER TEMINAL
+8️⃣ HOW TO VERIFY THE SYSTEM IS FULLY WORKING
+A. Start scheduler
+python src/server.py
+
+Expected:
+
+[SERVER] Scheduler gRPC running on port 50050
+[WORKER_POOL] Worker READY: localhost:50060
+B. Run ONE client
+python src/client_async_v3.py \
+    -host localhost \
+    -port 50050 \
+    -query Q1 \
+    -steps 20 \
+    -sampler 3
+
+Expected:
+
+image generated
+inference latency printed
+worker logs show:
+요청 수신
+이미지 추론 시작
+C. Run MANY clients
+./run_multiple_workers.sh
+
+Expected:
+
+[SCHEDULER] Routing request to localhost:50060
+[SCHEDULER] Routing request to localhost:50061
+[SCHEDULER] Routing request to localhost:50062
+
+This proves:
+
+distributed routing
+horizontal scaling
+worker expansion
+D. Verify diffusion is actually running
+
+Run:
+
+docker stats
+
+You should see:
+
+GPU usage
+VRAM usage
+multiple containers active
 
 
-- WORKER TERMINAL
-# To run 3 instances concurrently (The '&' at the; before the done is what signifies concurrency)
-for i in {1..3}; do python src/client_async_v3.py -query Q3 -steps 20 -sample 3 -port 50050 & done
 
 
-# COMMAND FOR CHECKING RUNNING PROGRAM STATISTICS ADMINISTRATIVELY
-btop
+server.py
+worker_pool.py
+scheduler.py
+autoscaler.py
+config.py
+client_async_v3.py
+run_multiple_workers.sh
+pytorch_container_diffusion_async_v2.py
+Dockerfile for pytorch-diffusion-server
 
-# for docker concerns
-docker stats # this will show you what is eating up your ramspace
+If possible, also include:
 
-# for gRPC concerns => check your bandwidth
-nload or iftop
+query.proto
+generated query_pb2.py
+generated query_pb2_grpc.py
+
+
+
+
+IF IT STILL FAILS
+
+Immediately run:
+
+docker ps -a
+
+Then inspect logs:
+
+docker logs <container_id>
+
+That will reveal whether:
+
+model loading failed
+CUDA failed
+missing .safetensors
+missing real_stats.npz
+protobuf mismatch
+gRPC startup crash
+diffusers import failure
+
+Those are the next most likely failure points after the Docker argument issue.
+
+
+===============================
+---MEMORY SPACE RECOVERY-------
+===============================
+# WHEN THERE IS A NOTICEABLE LOSS OF STORAGE SPACE (MOst likely due to docker)
+Option D — Docker cleanup (common culprit)
+
+If using Docker:
+
+docker system df
+
+Then cleanup:
+
+docker system prune -a

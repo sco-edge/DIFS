@@ -6,6 +6,7 @@
 import queue
 import time
 import threading
+from workload_classifier import WorkloadClassifier
 
 
 class Scheduler:
@@ -31,6 +32,7 @@ class Scheduler:
         self.lock = threading.Lock()
 
         self.active_requests = 0;
+        self.classifier = WorkloadClassifier()
 
   ############################################################
     # ACTIVE REQUEST TRACKING (FOR AUTOSCALER)
@@ -89,6 +91,16 @@ class Scheduler:
         '''
 
         self.class_queues[cls].put(request)
+        # -----------------------------------------
+        # Workload classification
+        # -----------------------------------------
+
+        workload_type = self.classifier.classify(request)
+
+        # attach dynamic metadata
+        request.workload_type = workload_type
+
+        print(f"[SCHEDULER] Classified request as: {workload_type}")
 
         self.request_queue.put(request)
 
@@ -97,15 +109,23 @@ class Scheduler:
 
 
     def dequeue(self):
-
+    
         for q in self.class_queues:
 
             if not q.empty():
 
+                req = q.get()
+
+                # remove corresponding request from batching queue
+                try:
+                    self.request_queue.get_nowait()
+                except:
+                    pass
+
                 with self.lock:
                     self.service_count += 1
 
-                return q.get()
+                return req
 
         return None
 

@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
   "../../bin/redis_md_test"
   "../../bin/redis_md_test.pdb"
-  "CMakeFiles/redis_md_test.dir/link.d"
   "CMakeFiles/redis_md_test.dir/redis_md_test.cc.o"
   "CMakeFiles/redis_md_test.dir/redis_md_test.cc.o.d"
   "CMakeFiles/redis_md_test.dir/redis_metadata.cc.o"

@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/client.dir/link.d"
   "CMakeFiles/client.dir/generated/infaas_request_status.pb.cc.o"
   "CMakeFiles/client.dir/generated/infaas_request_status.pb.cc.o.d"
   "CMakeFiles/client.dir/generated/query.grpc.pb.cc.o"

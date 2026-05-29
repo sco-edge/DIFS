@@ -6,7 +6,7 @@
 import time
 import subprocess
 import threading
-
+from collections import Counter
 
 class AutoScaler:
 
@@ -26,19 +26,52 @@ class AutoScaler:
 
         self.running = False
 
+    ############################################################
+    # WORKLOAD ANALYSIS
+    ############################################################
+
+    def get_dominant_workload(self):
+
+        workloads = []
+
+        try:
+
+            for q in self.scheduler.class_queues:
+
+                items = list(q.queue)
+
+                for req in items:
+
+                    if hasattr(req, "workload_type"):
+                        workloads.append(req.workload_type)
+
+        except Exception as e:
+
+            print(f"[AUTOSCALER WARNING] Workload inspection failed: {e}")
+
+        if not workloads:
+            return "balanced"
+
+        dominant = Counter(workloads).most_common(1)[0][0]
+
+        print(f"[AUTOSCALER] Dominant workload: {dominant}")
+
+        return dominant
+
         
 
     ############################################################
     # DOCKER CONTROL
     ############################################################
 
-    def start_worker(self):
+    def start_worker(self, workload_type="balanced"):
     
         print("[AUTOSCALER] Requesting worker_pool to add worker")
 
         before = self.worker_pool.size()
 
-        self.worker_pool.add_worker()
+        #self.worker_pool.add_worker()
+        self.worker_pool.add_worker(workload_type)
 
         time.sleep(5)  # give worker time to boot
 
@@ -69,14 +102,24 @@ class AutoScaler:
 
         worker_count = self.worker_pool.size()
 
+        # -----------------------------------------
+        # Determine dominant workload
+        # -----------------------------------------
+
+        dominant_workload = self.get_dominant_workload()
+
         if worker_count == 0:
             print("[AUTOSCALER WARNING] No workers available!")
 
         print(f"[AUTOSCALER] Queue={queue_length}, Workers={worker_count}")
 
         # SCALE UP
-        if queue_length > self.scale_up_threshold and worker_count < self.max_workers:
-            self.start_worker()
+        # if queue_length > self.scale_up_threshold and worker_count < self.max_workers:
+        #     self.start_worker()
+
+        if queue_length > self.scale_up_threshold and worker_count < self.max_workers:    
+            print(f"[AUTOSCALER] Scaling for workload: {dominant_workload}")
+            self.start_worker(dominant_workload)
 
         # SCALE DOWN
         elif queue_length < self.scale_down_threshold and worker_count > self.min_workers:
@@ -119,8 +162,18 @@ class AutoScaler:
     def run(self):
     
         # 🔥 Step 1: Start minimum workers (horizontal base)
-        for _ in range(self.min_workers):
-            self.start_worker()
+        # Start workers ONLY for horizontal or hybrid scaling
+        if self.config.SCALING_MODE in ["horizontal", "hybrid"]:
+
+            for _ in range(self.min_workers):
+                # self.start_worker()
+                self.start_worker("balanced")
+
+            print("[AUTOSCALER] Initial workers launched. Waiting for stabilization...")
+            time.sleep(10)
+
+        else:
+            print("[AUTOSCALER] Vertical mode selected — skipping worker container startup")
 
         print("[AUTOSCALER] Initial workers launched. Waiting for stabilization...")
         time.sleep(10)

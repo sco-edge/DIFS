@@ -14,4 +14,8 @@ MAX_WORKERS = 5
 
 AUTOSCALE_INTERVAL = 5
 CHECK_INTERVAL = 5
-SCALING_MODE = "hybrid" # Options: "vertical", "horizontal", "hybrid" # hard coding scaling mode
+
+# Options: "vertical", "horizontal", "hybrid" # hard coding scaling mode
+#SCALING_MODE = "horizontal"
+SCALING_MODE = "vertical"
+# SCALING_MODE = "hybrid"

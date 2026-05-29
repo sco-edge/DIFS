@@ -16,7 +16,8 @@ from scheduler import Scheduler
 from worker_pool import WorkerPool
 from autoscaler import AutoScaler
 import time
-
+import csv
+import os
 
 ############################################################
 # 🔥 gRPC WRAPPER AROUND YOUR SCHEDULER
@@ -53,37 +54,64 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
         start_time = time.perf_counter()
         self.scheduler.increment_active()
 
-        self.scheduler.enqueue(request)
+        ############################################################
+        # ENQUEUE REQUEST INTO SCHEDULER
+        ############################################################
+
+        # self.scheduler.enqueue(request)        
+
 
         worker_addr = None
 
         try:
-            worker_addr = self.worker_pool.get_next_worker() # this preserve horizontal scaling
-            print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
-            # 🔥 HEALTH CHECK
-            import socket
 
-            def is_port_open(host, port):
-                s = socket.socket()
-                try:
-                    s.settimeout(1)
-                    s.connect((host, port))
-                    return True
-                except Exception:
-                    return False
-                finally:
-                    s.close()
+            ############################################################
+            # VERTICAL MODE → LOCAL EXECUTION
+            ############################################################
 
-            # 🔥 Extract host + port
-            host, port = worker_addr.split(":")
-            port = int(port)
+            if config.SCALING_MODE == "vertical":
 
-            # 🔥 Health check
-            if not is_port_open(host, port):
-                print(f"[HEALTH CHECK] Worker {worker_addr} not ready")
+                print("[SERVER] Vertical mode active")
+
+                yield query_pb2.QueryOnlineImageResponse(
+                    status=infaas_request_status_pb2.InfaasRequestStatus(
+                        status=1,
+                        msg="Vertical mode placeholder"
+                    )
+                )
+
                 return
 
-            print(f"[SCHEDULER] Active={self.scheduler.get_total_queue_length()} → {worker_addr}")
+            ############################################################
+            # HORIZONTAL/HYBRID MODE
+            ############################################################
+
+            worker_addr = self.worker_pool.get_next_worker() # this preserve horizontal scaling
+            print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
+            
+            ############################################################
+            # gRPC HEALTH CHECK
+            ############################################################
+
+            try:
+
+                async with grpc.aio.insecure_channel(worker_addr) as health_channel:
+
+                    health_stub = query_pb2_grpc.QueryStub(health_channel)
+
+                    heartbeat = await health_stub.Heartbeat(
+                        query_pb2.HeartbeatRequest()
+                    )
+
+                    if heartbeat.status.status != 1:
+
+                        print(f"[HEALTH CHECK] Worker unhealthy: {worker_addr}")
+                        return
+
+            except Exception as e:
+
+                print(f"[HEALTH CHECK FAILED] {worker_addr}: {e}")
+                return
 
             # 🔥 RETRY LOGIC
             # import asyncio
@@ -111,35 +139,34 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
                         # =======  MULTIPLE CLIENT REQUESTS -> batched -> 1 WORKER CALL ========
                         stub = query_pb2_grpc.QueryStub(channel)
 
-                        # 🔥 STEP 1: form batch
-                        batch = self.scheduler.get_batch()
-
-                        if not batch:
-                            print("[SCHEDULER] No batch available")
-                            return
-
-                        # 🔥 STEP 2: merge prompts
-                        all_prompts = []
-                        for req in batch:
-                            all_prompts.extend(req.Prompt)
-
-                        print(f"[SCHEDULER] Batched {len(batch)} requests → {len(all_prompts)} prompts")
-
-                        # 🔥 STEP 3: create batched request
-                        batched_request = query_pb2.QueryOnlineImageRequest(
-                            Prompt=all_prompts,
-                            Steps=request.Steps,
-                            Sampler_Type=request.Sampler_Type,
-                            CFG_Scale=request.CFG_Scale,
-                            BatchSize=len(all_prompts),
-                            Seed=request.Seed
-                        )
-
-                        # 🔥 STEP 4: send to worker
-                        async for response in stub.QueryOnlineImage(batched_request):
+                        async for response in stub.QueryOnlineImage(request):
 
                             elapsed = time.perf_counter() - start_time
+
                             print(f"[SERVER LATENCY] {worker_addr}: {elapsed:.3f}s")
+                            print(f"[INFERENCE SUCCESS] Worker={worker_addr}")
+
+                            throughput = 1 / elapsed
+
+                            print(f"[THROUGHPUT] {throughput:.2f} req/sec")
+
+                            ############################################################
+                            # METRICS LOGGING
+                            ############################################################
+
+                            with open("metrics/server_metrics.csv", "a", newline="") as f:
+
+                                writer = csv.writer(f)
+
+                                writer.writerow([
+                                    time.time(),
+                                    worker_addr,
+                                    elapsed,
+                                    self.scheduler.get_total_queue_length(),
+                                    getattr(self.scheduler, "arrival_rate", 0),
+                                    getattr(self.scheduler, "service_rate", 0),
+                                    len(self.worker_pool.workers)
+                                ])
 
                             yield response
 
@@ -147,7 +174,8 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
                     break
 
                 except Exception as e:
-                    print(f"[RETRY {attempt+1}] Failed: {e}")
+                    print(f"[RETRY {attempt+1}] Failed:")
+                    traceback.print_exc()
                     await asyncio.sleep(2)
 
             if not success:
@@ -166,6 +194,28 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
 ############################################################
 
 async def serve():
+
+    # 0. METRICS: creating csv file to store performance metrics (2026.05.15)
+    os.makedirs("metrics", exist_ok=True)
+    
+    server_metrics_file = "metrics/server_metrics.csv"
+
+    if not os.path.exists(server_metrics_file):
+
+        with open(server_metrics_file, "w", newline="") as f:
+
+            writer = csv.writer(f)
+
+            writer.writerow([
+                "timestamp",
+                "worker",
+                "latency",
+                "queue_length",
+                "arrival_rate",
+                "service_rate",
+                "workers"
+            ])
+
 
     # 1. Initialize components (UNCHANGED)
     scheduler = Scheduler()

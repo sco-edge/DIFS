@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
   "../../bin/queryfe_heartbeat"
   "../../bin/queryfe_heartbeat.pdb"
-  "CMakeFiles/queryfe_heartbeat.dir/link.d"
   "CMakeFiles/queryfe_heartbeat.dir/queryfe_heartbeat.cc.o"
   "CMakeFiles/queryfe_heartbeat.dir/queryfe_heartbeat.cc.o.d"
 )

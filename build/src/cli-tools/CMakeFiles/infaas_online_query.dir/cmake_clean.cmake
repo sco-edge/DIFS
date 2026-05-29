@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
   "../../bin/infaas_online_query"
   "../../bin/infaas_online_query.pdb"
-  "CMakeFiles/infaas_online_query.dir/link.d"
   "CMakeFiles/infaas_online_query.dir/infaas_online_query.cc.o"
   "CMakeFiles/infaas_online_query.dir/infaas_online_query.cc.o.d"
 )

@@ -12,7 +12,7 @@ echo "Launching $NUM_CLIENTS clients..."
 
 for i in $(seq 1 $NUM_CLIENTS); do
    echo "Starting instance $i of $NUM_CLIENTS..."
-   python src/client_async_v3.py -query Q3 -steps 20 -sample 3 -port 50050 > "$LOG_DIR/worker_$i.log" 2>&1 &
+   python src/client_async_v3.py -query Q3 -steps 20 -sampler 3 -port 50050 > "$LOG_DIR/worker_$i.log" 2>&1 &
    sleep 0.5
 done
 

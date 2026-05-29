@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/redis-md.dir/link.d"
   "CMakeFiles/redis-md.dir/redis_metadata.cc.o"
   "CMakeFiles/redis-md.dir/redis_metadata.cc.o.d"
   "libredis-md.pdb"

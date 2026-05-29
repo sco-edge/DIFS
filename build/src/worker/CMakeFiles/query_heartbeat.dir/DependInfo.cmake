@@ -8,16 +8,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/daniel08/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_heartbeat.cc" "src/worker/CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o" "gcc" "src/worker/CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o.d"
-  "" "src/worker/query_heartbeat" "gcc" "src/worker/CMakeFiles/query_heartbeat.dir/link.d"
+  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/src/worker/query_heartbeat.cc" "src/worker/CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o" "gcc" "src/worker/CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o.d"
   )
 
-# Targets to which this target links which contain Fortran sources.
-set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
-  )
-
-# Targets to which this target links which contain Fortran sources.
-set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/worker/CMakeFiles/inf-worker.dir/DependInfo.cmake"
+  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/src/metadata-store/CMakeFiles/redis-md.dir/DependInfo.cmake"
+  "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/build/protos/internal/CMakeFiles/infaas-protos-internal.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

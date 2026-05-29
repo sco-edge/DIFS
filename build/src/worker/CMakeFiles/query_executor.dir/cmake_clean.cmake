@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/query_executor.dir/link.d"
   "CMakeFiles/query_executor.dir/model_executor.cc.o"
   "CMakeFiles/query_executor.dir/model_executor.cc.o.d"
   "CMakeFiles/query_executor.dir/process_executor.cc.o"
