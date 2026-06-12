@@ -2,6 +2,18 @@ import grpc
 from concurrent import futures
 import torch
 import io
+import os
+import sys
+import traceback
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+SRC_DIR = os.path.abspath(
+    os.path.join(CURRENT_DIR, "..")
+)
+
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
+
 from pathlib import Path
 
 # 컴파일된 파일들을 루트에서 임포트
@@ -13,7 +25,15 @@ import infaas_request_status_pb2
 from diffusers import StableDiffusionPipeline
 import torch
 from pathlib import Path
-import os
+
+import diffusers
+import transformers
+
+print("TORCH=", torch.__version__)
+print("DIFFUSERS=", diffusers.__version__)
+print("TRANSFORMERS=", transformers.__version__)
+
+
 from typing import List, Optional, Tuple
 import time
 
@@ -41,7 +61,8 @@ import json      # 추가
 # ===============================================
 MODEL_DIRECTORY = '/tmp/model'
 OUTPUT_ROOT_DIR = '/tmp/diffusion_output' 
-MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"
+MODEL_FILE_NAME = "sd-v1-4.safetensors"
+#MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"
 CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAME
 OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)
 
@@ -77,7 +98,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         """
         ModelExecutor 초기화 및 모델 로드
         """        
-        print(f"[인포] ModelExecutor 초기화 (Model ID: {model_id}, File: {model_filename})")
+        print(f"[Info] Initializing ModelExecutor (Model ID: {model_id}, File: {model_filename})")
         self.model_id = model_id # 모델 ID 저장
         self.model_directory = '/tmp/model'
         self.model_file_name = model_filename # 전달받은 파일명 사용
@@ -93,7 +114,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         self.pipe, self.device = self.load_model()
         
         if self.pipe is None:
-            print("[오류] 모델 로드 실패")
+            print("[Error] Failed to load model")
         # 2. 서버 시작 시 테스트 추론 1회 실행 (Warm-up)
         #if self.pipe:
         #    self.run_startup_test()
@@ -106,8 +127,8 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             real_stats = np.load(real_stats_path)
             self.mu_real = real_stats['mu']
             self.sigma_real = real_stats['sigma']
-            print(f"📊 실사 이미지의 mu 값 ({self.mu_real})")
-            print(f"📊 실사 이미지의 sigma 값 계산 ({self.sigma_real})")
+            print(f"📊 The mu value of a real-world image ({self.mu_real})")
+            print(f"📊 Calculating the sigma value of a real-world image ({self.sigma_real})")
 
     def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:
         """
@@ -116,7 +137,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
 
         total_start = time.perf_counter()
         # 1. 파일 시스템 로드 측정
-        print(f"[타이머] 1단계: 가중치 파일 로딩 시작... ({self.ckpt_file_path})")
+        print(f"[Timer] Step 1: Starting to load the weight file... ({self.ckpt_file_path})")
         load_start = time.perf_counter()
         
         if torch.cuda.is_available():
@@ -129,7 +150,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             print(f"cpu")
 
         try:
-            print(f"[인포] 모델 로드 시도: {self.ckpt_file_path}")
+            print(f"[Info] Attempting to load model: {self.ckpt_file_path}")
             # from_single_file 메서드를 사용하여 체크포인트 로드
             pipe = StableDiffusionPipeline.from_single_file(
                 str(self.ckpt_file_path),
@@ -139,12 +160,12 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             )
             pipe.to(device)
             load_end = time.perf_counter()
-            print(f" ✅ [완료] 파일 로드 시간: {load_end - load_start:.2f}초")
+            print(f" ✅ [Complete] File load time: {load_end - load_start:.2f}초")
             
 
             # 2. 예열(Warm-up) 시간 측정
             # 여기서 model.safetensors 진행바가 다시 뜬다면 이 구간이 병목입니다.
-            print(f"[타이머] 2단계: 컴포넌트 최적화(Warm-up) 시작...")
+            print(f"[Timer] Step 2: Component Optimization (Warm-up) Begins...")
             warmup_start = time.perf_counter()
 
             with torch.inference_mode():
@@ -159,17 +180,18 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                 )
             
             warmup_end = time.perf_counter()
-            print(f" ✅ [완료] Warm-up 실행 시간: {warmup_end - warmup_start:.2f}초")
+            print(f" ✅ [Completed] Warm-up execution time: {warmup_end - warmup_start:.2f}초")
 
             total_end = time.perf_counter()
             print("=" * 60)
-            print(f"🚀 [최종] 서버 준비 완료 총 소요 시간: {total_end - total_start:.2f}초")
+            print(f"🚀 [Final] Server setup complete. Total time taken: {total_end - total_start:.2f}초")
             print("=" * 60)
 
-            print(f"[인포] 가중치 로딩 100% 완료 ! GPU 준비됨")
+            print(f"[Info] Weight loading 100% complete! GPU ready")
             return pipe, device
         except Exception as e:
-            print(f"[오류] 모델 로드 중 예외 발생: {e}")
+            print(f"[Error] An exception occurred while loading the model: {e}")
+            traceback.print_exc()
             return None, device
     
     def QueryOnline(self, request, context):
@@ -183,7 +205,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             )
             return query_pb2.QueryOnlineResponse(status=status_msg)
 
-        print(f"[인포] 요청 수신 - 프롬프트: {request.Prompt}")
+        print(f"[Info] Request Received - Prompt: {request.Prompt}")
 
         # 추론 실행
         try:
@@ -557,7 +579,7 @@ def serve():
         return
 
     print(f"[시스템] 모델 ID {args.model}({model_filename}) 로딩 시작...")
-    print(f"[시스템] Sampler ID {args.model}({model_filename}) 로딩 시작...") 
+    print(f"[시스템] Sampler ID {args.sampler}({model_filename}) 로딩 시작...") 
 
     # 4. ModelExecutor 초기화 (모든 파라미터 전달)
     executor = ModelExecutor(

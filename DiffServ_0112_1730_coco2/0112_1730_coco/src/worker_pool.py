@@ -51,8 +51,8 @@ class WorkerPool:
                         print(f"[WORKER_POOL] Worker READY: {addr}")
                         return True
 
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[WORKER_POOL HEALTHCHECK] {e}")
 
             print(f"[WORKER_POOL] Waiting for worker {addr}...")
             await asyncio.sleep(2)
@@ -63,7 +63,7 @@ class WorkerPool:
     def size(self):
         return len(self.workers)
 
-    def add_worker(self, workload_type="balanced"):
+    async def add_worker(self, workload_type="balanced"):
         # -----------------------------------------
         # Dynamic model selection
         # -----------------------------------------
@@ -85,6 +85,7 @@ class WorkerPool:
 
         # worker = InferenceWorker()
         #  worker.start()
+        print(f"Execution Started In Directory: {os.getcwd()}")
 
         cmd = [
             "docker", "run", "-d",
@@ -116,7 +117,7 @@ class WorkerPool:
             "difs-diffusion-worker",
 
             #"pytorch-diffusion-server",
-            "python", "1/pytorch_container_diffusion_v3.py",
+            "python", "src/1/pytorch_container_diffusion_v3.py",
 
             #-------------------------------------
             # Arguments passed to python server
@@ -156,6 +157,21 @@ class WorkerPool:
 
         print(f"[WORKER_POOL] Waiting for worker on port {port}...")
 
+        # ---------------------------------------------------
+        # DEBUG: show worker logs during startup
+        # ---------------------------------------------------
+        time.sleep(5)
+
+        print("\n[WORKER_POOL DEBUG] Docker container logs:\n")
+
+        subprocess.call([
+            "docker",
+            "logs",
+            container_id
+        ])
+
+        print("\n[WORKER_POOL DEBUG END]\n")
+
         #time.sleep(8)   # 🔥 increase to 8–10 seconds
 
         # PNB Instead of using sleep to wait, run only if worker is healthy or passes health check test # (2026.06.15)
@@ -164,18 +180,21 @@ class WorkerPool:
         # ready = asyncio.run(
         #     self.wait_until_worker_ready(worker_addr)
         # )
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        
 
-        ready = loop.run_until_complete(
-            self.wait_until_worker_ready(worker_addr)
-        )
+        ready = await  self.wait_until_worker_ready(worker_addr)
+        
 
-        loop.close()
+        #loop.close()
 
 
         if not ready:
-            print(f"[WORKER_POOL ERROR] Worker failed startup")
+            print("[WORKER_POOL ERROR] Worker failed startup")
+            
+            # To prevent dead containers from accumulating
+            subprocess.call(["docker", "logs", container_id])
+            subprocess.call(["docker", "rm","-f", container_id])
+
             return
 
         print(f"[WORKER_POOL] Worker READY: {worker_addr}")

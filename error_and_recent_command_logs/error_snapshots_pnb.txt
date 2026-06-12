@@ -1,48 +1,49 @@
-* with the scaling set as horizontal, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh
-[AUTOSCALER] Vertical mode selected — skipping worker container startup                                                                                                                                                                                                                   
-[AUTOSCALER] Initial workers launched. Waiting for stabilization...                                                                                                                                                                                                                       
-[SERVER] Autoscaler started                                                                                                                                                                                                                                                               
-[SERVER] Scheduler gRPC running on port 50050                                                                                                                                                                                                                                             
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                                                                                                                                                             
-[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                                                                                                                                                             
-[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                                                                                                                                                             
-[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                                                                                                                                                             
-[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                                                                                                                                                                         
-[SERVER] Vertical mode active                                                                                                                                                                                                                                                             
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined     
-[SERVER] Vertical mode active                                         
-[SCHEDULER ERROR] name 'infaas_request_status_pb2' is not defined                                                                            
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
-[VERTICAL] Batch size → 1                                                                                                                    
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
-[VERTICAL] Batch size → 1                                                                                                                    
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                      
-[VERTICAL] Batch size → 1                                                                                                                    
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00              
-[VERTICAL] Batch size → 1                                             
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
-[VERTICAL] Batch size → 1                                             
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
-[VERTICAL] Batch size → 1              
+* with the scaling set as vertical, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh
+[SCHEDULER] Scheduler started
+[SERVER] Scheduler thread started
+[SERVER] Starting single worker for vertical mode
+[WORKER_POOL] Launching workload type: balanced
+[WORKER_POOL] Model=4, Sampler=2
+Execution Started In Directory: /home/user/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+[WORKER_POOL] Container ID: 795458be8ff3dd67b337b19a89eb4eecb493e696ed95d46fc9138e14cc47ff1f
+[WORKER_POOL] Waiting for worker on port 50060...
+
+[WORKER_POOL DEBUG] Docker container logs:
+
+Traceback (most recent call last):
+  File "/workspace/src/1/pytorch_container_diffusion_v3.py", line 20, in <module>
+    import query_pb2
+  File "/workspace/src/query_pb2.py", line 12, in <module>
+    _runtime_version.ValidateProtobufRuntimeVersion(
+  File "/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py", line 100, in ValidateProtobufRuntimeVersion
+    _ReportVersionError(
+  File "/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py", line 50, in _ReportVersionError
+    raise VersionError(msg)
+google.protobuf.runtime_version.VersionError: Detected incompatible Protobuf Gencode/Runtime versions when loading query.proto: gencode 6.31.1 runtime 5.29.6. Runtime version cannot be older than the linked gencode version. See Protobuf version guarantees at https://protobuf.dev/support/cross-version-runtime-guarantee.
+
+[WORKER_POOL DEBUG END]
+
+[WORKER_POOL HEALTHCHECK] <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50060: Failed to connect to remote host: Connection refused"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50060: Failed to connect to remote host: Connection refused"}"
+>
+[WORKER_POOL] Waiting for worker localhost:50060...
+^CTraceback (most recent call last):
+  File "/home/user/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 294, in <module>
+    asyncio.run(serve())
+  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 636, in run_until_complete
+    self.run_forever()
+  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 603, in run_forever
+    self._run_once()
+  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/selectors.py", line 469, in select
+    fd_event_list = self._selector.poll(timeout, max_ev)
+KeyboardInterrupt
+
 
 
 * with the scaling set as vertical, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh

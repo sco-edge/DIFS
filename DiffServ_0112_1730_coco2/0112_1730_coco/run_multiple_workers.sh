@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default to 10 clients if no argument is provided
-NUM_CLIENTS=${1:-10}
+NUM_CLIENTS=${1:-3}
 LOG_DIR="WorkersLogs"
 
 # Ensure log directory exists and is clean

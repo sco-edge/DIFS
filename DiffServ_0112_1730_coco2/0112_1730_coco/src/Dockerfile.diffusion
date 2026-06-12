@@ -3,7 +3,8 @@
 # Purpose: for working with "worker_pool.txt" to properly create docker immage instead of doing it directly in that file (as was done previously)
 # How to use it: run "docker build -f src/Dockerfile.diffusion -t difs-diffusion-worker ." to create difs-diffusion-worker which is then used in worker_pool.py
 
-FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+# FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
 
 WORKDIR /workspace
 
@@ -11,8 +12,14 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install grpcio grpcio-tools \
-    diffusers transformers accelerate safetensors \
+RUN pip install \
+    protobuf==6.31.1 \
+    grpcio==1.74.0 \
+    grpcio-tools==1.74.0 \
+    diffusers==0.24.0 \
+    transformers==4.35.2 \
+    accelerate==0.24.1 \
+    safetensors==0.4.2 \
     scipy pillow torchmetrics
 
 CMD ["bash"]

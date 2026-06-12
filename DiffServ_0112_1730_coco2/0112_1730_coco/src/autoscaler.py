@@ -174,9 +174,7 @@ class AutoScaler:
 
         else:
             print("[AUTOSCALER] Vertical mode selected — skipping worker container startup")
-
-        print("[AUTOSCALER] Initial workers launched. Waiting for stabilization...")
-        time.sleep(10)
+        #time.sleep(10)
 
         # 🔥 Step 2: Continuous scaling loop
         while self.running:

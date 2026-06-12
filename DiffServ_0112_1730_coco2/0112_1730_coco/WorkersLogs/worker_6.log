@@ -2,7 +2,5 @@
 [CLIENT] Connecting to scheduler at localhost:50050
 ✅ Loaded 5 prompts
 [CLIENT] Sending request to scheduler...
-
-[CLIENT] ===== SUMMARY =====
-Images received: 0
-Total time: 0.00s
+[CLIENT] gRPC Error: StatusCode.UNAVAILABLE - failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50050: Failed to connect to remote host: Connection refused
+[CLIENT] Time before failure: 0.00s

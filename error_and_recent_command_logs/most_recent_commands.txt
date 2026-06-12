@@ -139,3 +139,32 @@ docker system df
 Then cleanup:
 
 docker system prune -a
+
+===============================
+---BUILDING DOCKER IMAGE-------
+===============================
+
+docker build -f src/Dockerfile.diffusion -t difs-diffusion-worker . 
+
+- The Docker.diffusion file is used to specify the template docker image as well
+as the requirements file to do he build. It is my custom file instead of using the
+standard file "DockerFile"
+
+
+
+===============================
+---CURRENT STATUS OF SYSTEM-------
+===============================
+
+Current status of the system
+Component	Status
+Scheduler	✅ Working
+Autoscaler	✅ Working
+WorkerPool	✅ Working
+Docker launch	✅ Working
+Port mapping	✅ Working
+Health check loop	✅ Working
+Model file mount	✅ Working
+HF downloads	✅ Working
+Stable Diffusion initialization	❌ Failing
+gRPC worker startup	❌ Never reached

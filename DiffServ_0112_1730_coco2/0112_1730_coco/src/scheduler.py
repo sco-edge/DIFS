@@ -90,6 +90,7 @@ class Scheduler:
         Goes into both queues
         '''
 
+        print(f"[SCHEDULER DEBUG] enqueue class={cls}")
         self.class_queues[cls].put(request)
         # -----------------------------------------
         # Workload classification

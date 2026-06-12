@@ -137,28 +137,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         except Exception as e:
             print(f"[오류] 모델 로드 중 예외 발생: {e}")
             return None, device
-    """
-    def load_model(self):
-        print("[인포] ModelExecutor 초기화 및 모델 로드 중...")
-        # 전역 상수 설정 반영
-        self.model_directory = '/tmp/model'
-        self.model_file_name = "v1-5-pruned-emaonly.safetensors"
-        self.ckpt_file_path = Path(self.model_directory) / self.model_file_name
-        
-        # 모델 로드
-        self.pipe, self.device = self.load_model()
-        
-        if self.pipe is None:
-            print("[오류] 모델 로드 실패. 서버가 정상적으로 작동하지 않을 수 있습니다.")
-            
-        model_id = "runwayml/stable-diffusion-v1-5"
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        dtype = torch.float16 if device == "cuda" else torch.float32
-        
-        pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=dtype)
-        pipe.to(device)
-        return pipe, device
-    """
+
     def QueryOnline(self, request, context):
         """
         gRPC QueryOnline 요청 처리

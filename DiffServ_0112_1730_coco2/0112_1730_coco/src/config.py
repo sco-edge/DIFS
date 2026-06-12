@@ -18,4 +18,4 @@ CHECK_INTERVAL = 5
 # Options: "vertical", "horizontal", "hybrid" # hard coding scaling mode
 #SCALING_MODE = "horizontal"
 SCALING_MODE = "vertical"
-# SCALING_MODE = "hybrid"
+#SCALING_MODE = "hybrid"

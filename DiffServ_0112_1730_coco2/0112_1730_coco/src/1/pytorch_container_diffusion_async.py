@@ -43,7 +43,8 @@ import json      # 추가
 # ===============================================
 MODEL_DIRECTORY = '/tmp/model'
 OUTPUT_ROOT_DIR = '/tmp/diffusion_output' 
-MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"
+MODEL_FILE_NAME = "sd-v1-4.safetensors"
+#MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"
 CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAME
 OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)
 

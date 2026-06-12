@@ -6,11 +6,15 @@
 import asyncio
 import grpc
 from concurrent import futures
+import traceback
+import threading
 
 import config
 
 import query_pb2
 import query_pb2_grpc
+import infaas_request_status_pb2
+import infaas_request_status_pb2_grpc
 
 from scheduler import Scheduler
 from worker_pool import WorkerPool
@@ -18,6 +22,7 @@ from autoscaler import AutoScaler
 import time
 import csv
 import os
+import threading
 
 ############################################################
 # 🔥 gRPC WRAPPER AROUND YOUR SCHEDULER
@@ -58,8 +63,8 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
         # ENQUEUE REQUEST INTO SCHEDULER
         ############################################################
 
-        # self.scheduler.enqueue(request)        
-
+        print("[SERVER DEBUG] Request received")
+        self.scheduler.enqueue(request)
 
         worker_addr = None
 
@@ -68,26 +73,19 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
             ############################################################
             # VERTICAL MODE → LOCAL EXECUTION
             ############################################################
-
             if config.SCALING_MODE == "vertical":
-
                 print("[SERVER] Vertical mode active")
-
-                yield query_pb2.QueryOnlineImageResponse(
-                    status=infaas_request_status_pb2.InfaasRequestStatus(
-                        status=1,
-                        msg="Vertical mode placeholder"
-                    )
+                worker_addr = self.worker_pool.get_next_worker()
+                print(
+                    f"[VERTICAL ROUTER] Using worker {worker_addr}"
                 )
-
-                return
 
             ############################################################
             # HORIZONTAL/HYBRID MODE
             ############################################################
-
-            worker_addr = self.worker_pool.get_next_worker() # this preserve horizontal scaling
-            print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
+            if worker_addr is None:
+                worker_addr = self.worker_pool.get_next_worker() # this preserve horizontal scaling
+                print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
             
             ############################################################
             # gRPC HEALTH CHECK
@@ -219,7 +217,28 @@ async def serve():
 
     # 1. Initialize components (UNCHANGED)
     scheduler = Scheduler()
+
+    ## getting the server to consume requests
+    threading.Thread(
+        target=scheduler.start,
+        daemon=True
+    ).start()
+
+    print("[SERVER] Scheduler thread started")
+
     worker_pool = WorkerPool()
+
+
+    ############################################################
+    # VERTICAL MODE NEEDS ONE EXECUTION BACKEND
+    ############################################################
+
+    if config.SCALING_MODE == "vertical":
+
+        print("[SERVER] Starting single worker for vertical mode")
+
+        await worker_pool.add_worker("balanced")
+
 
     autoscaler = AutoScaler(
         scheduler,
