@@ -1,0 +1,6 @@
+[CLIENT] Steps: 20, Sampler: 3
+[CLIENT] Connecting to scheduler at localhost:50050
+✅ Loaded 5 prompts
+[CLIENT] Sending request to scheduler...
+[CLIENT] gRPC Error: StatusCode.UNAVAILABLE - failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50050: connection attempt timed out before receiving SETTINGS frame
+[CLIENT] Time before failure: 20.26s

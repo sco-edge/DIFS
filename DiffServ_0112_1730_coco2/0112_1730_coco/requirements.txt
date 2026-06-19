@@ -1,7 +1,8 @@
 # PNB: created to install dependencies. Was not part of the original files sent by Heesik (2026. 01. 26. (월) 12:41:06 KST)
 
-grpcio==1.66.1
-grpcio-tools==1.66.1
+grpcio==1.74.0
+grpcio-tools==1.74.0
+protobuf==6.31.1
 
 torch
 torchvision
@@ -11,6 +12,8 @@ diffusers==0.24.0
 transformers==4.35.2
 accelerate==0.24.1
 safetensors==0.4.2
+huggingface-hub==0.19.4
+omegaconf==2.3.0
 
 torchmetrics
 scipy

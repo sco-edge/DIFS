@@ -152,6 +152,24 @@ standard file "DockerFile"
 
 
 
+=============================================================================
+---REGENERATING AFTER DELETION OF FILES GENERATED FROM THOSE IN PROTOS-------
+=============================================================================
+- DELETION
+rm src/query_pb2.py
+rm src/query_pb2_grpc.py
+
+rm src/infaas_request_status_pb2.py
+rm src/infaas_request_status_pb2_grpc.py
+
+- REGENERATION
+python -m grpc_tools.protoc \
+  -I=protos \
+  --python_out=src \
+  --grpc_python_out=src \
+  protos/query.proto \
+  protos/infaas_request_status.proto
+
 ===============================
 ---CURRENT STATUS OF SYSTEM-------
 ===============================

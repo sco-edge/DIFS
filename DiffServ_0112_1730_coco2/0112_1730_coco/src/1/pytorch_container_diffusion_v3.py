@@ -151,13 +151,37 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
 
         try:
             print(f"[Info] Attempting to load model: {self.ckpt_file_path}")
-            # from_single_file 메서드를 사용하여 체크포인트 로드
+
+            print("=" * 60)
+            print("CHECKPOINT PATH =", self.ckpt_file_path)
+            print("EXISTS =", os.path.exists(self.ckpt_file_path))
+
+            if os.path.exists("/tmp/model"):
+                print("CONTENTS OF /tmp/model:")
+                print(os.listdir("/tmp/model"))
+            else:
+                print("/tmp/model DOES NOT EXIST")
+
+            print("=" * 60)
+
             pipe = StableDiffusionPipeline.from_single_file(
                 str(self.ckpt_file_path),
                 torch_dtype=dtype,
                 load_safety_checker=False,
-                low_cpu_mem_usage=False, # <--- 이 옵션을 추가하여 지연 로딩 방지
+                low_cpu_mem_usage=False,
             )
+
+            print("ROOT DIRECTORY")
+            print(os.listdir("/"))
+
+            print("TMP DIRECTORY")
+            print(os.listdir("/tmp"))
+
+            for root, dirs, files in os.walk("/tmp"):
+                for file in files:
+                    if file.endswith(".safetensors"):
+                        print("FOUND SAFETENSOR:", os.path.join(root, file))
+
             pipe.to(device)
             load_end = time.perf_counter()
             print(f" ✅ [Complete] File load time: {load_end - load_start:.2f}초")

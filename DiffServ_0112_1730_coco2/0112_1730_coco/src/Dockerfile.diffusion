@@ -20,6 +20,8 @@ RUN pip install \
     transformers==4.35.2 \
     accelerate==0.24.1 \
     safetensors==0.4.2 \
+    huggingface-hub==0.19.4 \
+    omegaconf==2.3.0 \
     scipy pillow torchmetrics
 
 CMD ["bash"]
