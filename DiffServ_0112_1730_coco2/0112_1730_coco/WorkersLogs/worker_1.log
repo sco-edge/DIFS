@@ -2,5 +2,5 @@
 [CLIENT] Connecting to scheduler at localhost:50050
 ✅ Loaded 5 prompts
 [CLIENT] Sending request to scheduler...
-[CLIENT] gRPC Error: StatusCode.UNAVAILABLE - failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50050: Failed to connect to remote host: Connection refused
+[CLIENT] gRPC Error: StatusCode.UNKNOWN - Unexpected <class 'AttributeError'>: Protocol message QueryOnlineImageRequest has no "workload_type" field.
 [CLIENT] Time before failure: 0.00s

@@ -1,49 +1,99 @@
 * with the scaling set as vertical, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh
-[SCHEDULER] Scheduler started
-[SERVER] Scheduler thread started
-[SERVER] Starting single worker for vertical mode
+[SCHEDULER] Scheduler started                                                                                                                
+[SERVER] Scheduler thread started                                    
+[SERVER] Starting single worker for vertical mode                                                                                            
 [WORKER_POOL] Launching workload type: balanced
-[WORKER_POOL] Model=4, Sampler=2
-Execution Started In Directory: /home/user/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
-[WORKER_POOL] Container ID: 795458be8ff3dd67b337b19a89eb4eecb493e696ed95d46fc9138e14cc47ff1f
-[WORKER_POOL] Waiting for worker on port 50060...
+[WORKER_POOL] Model=4, Sampler=2                    
+Execution Started In Directory: /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+[WORKER ERROR]                                                        
+docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint keen_golick (8ca889666972fa751a332941399f6dac0ab4c7e1988fb1b5a43fec1dd2f71a91): Bind for 0.0.0.0:50060 failed: port is already allocated
+                                                                      
+Run 'docker run --help' for more information                          
 
-[WORKER_POOL DEBUG] Docker container logs:
+8a7c87a637d6928a9d49851fb3b1e5915c560ea25e7435ae4b319f2f9bee345d
+                                                                      
+[AUTOSCALER] Vertical mode selected — skipping worker container startup
+[SERVER] Autoscaler started                                           
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[SERVER] Scheduler gRPC running on port 50050                         
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
+[VERTICAL] Batch size → 1               
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
+[VERTICAL] Batch size → 1                                             
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
+[VERTICAL] Batch size → 1                                             
+[SERVER DEBUG] Request received                                                                                                              
+[SCHEDULER DEBUG] enqueue class=2                                     
+[SCHEDULER] Processing request: Prompt: "There is a stop sign with graffiti on it."                                                          
+Prompt: "a smorgasbord filled with different kinds of pizzas "
+Prompt: "a single person snowboarding down a hill by some trees"      
+Prompt: "A person on a snowboard jumping off a small hill. "     
+Prompt: "Two people on a beach flying  akite"                         
+Steps: 20                                                                                                                                    
+CFG_Scale: 7.5                                                                                                                               
+BatchSize: 1                                                                                                                                 
+Seed: 42                                                                                                                                     
+Sampler_Type: 3                                                                                                                              
+                                                                      
+[SERVER DEBUG] Request received                                                                                                              
+[SCHEDULER DEBUG] enqueue class=2                                                                                                                                                                                                                                                         
+[SCHEDULER] Processing request: Prompt: "A performer balancing a ball  on top of an umbrella"
+Prompt: "A girl that is wearing fishnet stockings and laying on a park bench."                                                               
+Prompt: "Two hot dogs with chili, cheese and tomatoes."          
+Prompt: "A cat sleeping inside of a black piece of luggage."          
+Prompt: "Two horses standing near a fence in the snow."                                                                                      
+Steps: 20                                                                                                                                    
+CFG_Scale: 7.5                                                                                                                               
+BatchSize: 1                                                                                                                                 
+Seed: 42                                                                                                                                     
+Sampler_Type: 3                                                       
+                                                                                                                                             
+[SERVER DEBUG] Request received                                       
+[SCHEDULER DEBUG] enqueue class=2                                                                                                                                                                                                                                                         
+[SCHEDULER] Processing request: Prompt: "Guys playing badminton on the beach on a cold day."                                                 
+Prompt: "A girl is dancing in the bathroom to music on her lap top. "
+Prompt: "A man sitting on a horse while rubbing him and kids are rubbing him also."                                                          
+Prompt: "A bird is perched on a tree branch."  
+Prompt: "A man that is holding a baby on his chest."
+Steps: 20                                                                                                                                                                                                                                                                                 
+CFG_Scale: 7.5                                                        
+BatchSize: 1                                                                                                                                                                                                                                                                              
+Seed: 42                                                              
+Sampler_Type: 3                                                       
 
-Traceback (most recent call last):
-  File "/workspace/src/1/pytorch_container_diffusion_v3.py", line 20, in <module>
-    import query_pb2
-  File "/workspace/src/query_pb2.py", line 12, in <module>
-    _runtime_version.ValidateProtobufRuntimeVersion(
-  File "/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py", line 100, in ValidateProtobufRuntimeVersion
-    _ReportVersionError(
-  File "/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py", line 50, in _ReportVersionError
-    raise VersionError(msg)
-google.protobuf.runtime_version.VersionError: Detected incompatible Protobuf Gencode/Runtime versions when loading query.proto: gencode 6.31.1 runtime 5.29.6. Runtime version cannot be older than the linked gencode version. See Protobuf version guarantees at https://protobuf.dev/support/cross-version-runtime-guarantee.
-
-[WORKER_POOL DEBUG END]
-
-[WORKER_POOL HEALTHCHECK] <AioRpcError of RPC that terminated with:
-        status = StatusCode.UNAVAILABLE
-        details = "failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50060: Failed to connect to remote host: Connection refused"
-        debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNKNOWN: ipv4:127.0.0.1:50060: Failed to connect to remote host: Connection refused"}"
->
-[WORKER_POOL] Waiting for worker localhost:50060...
-^CTraceback (most recent call last):
-  File "/home/user/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 294, in <module>
-    asyncio.run(serve())
-  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/runners.py", line 44, in run
+[VERTICAL AUTOSCALER] Queue=3, λ=0.00, μ=0.60                   
+[VERTICAL] Batch size → 1                                             
+[VERTICAL AUTOSCALER] Queue=3, λ=0.00, μ=0.00                                                                                                
+[VERTICAL] Batch size → 1                                             
+^CTraceback (most recent call last):         
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 294, in <module>                                                                                                                        
+    asyncio.run(serve())                                              
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/runners.py", line 44, in run                                                 
     return loop.run_until_complete(main)
-  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 636, in run_until_complete
-    self.run_forever()
-  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 603, in run_forever
-    self._run_once()
-  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once
-    event_list = self._selector.select(timeout)
-  File "/home/user/anaconda3/envs/DIFS/lib/python3.10/selectors.py", line 469, in select
-    fd_event_list = self._selector.poll(timeout, max_ev)
-KeyboardInterrupt
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 636, in run_until_complete                             
+    self.run_forever()                                                
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 603, in run_forever                                    
+    self._run_once()                                                  
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once                                     
+    event_list = self._selector.select(timeout)                       
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/selectors.py", line 469, in select                                                   
+    fd_event_list = self._selector.poll(timeout, max_ev)      
+KeyboardInterrupt                                                     
+Exception ignored in: <function Server.__del__ at 0x7948fde785e0>
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_server.py", line 196, in __del__                             
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/common.pyx.pxi", line 121, in grpc._cython.cygrpc.schedule_coro_threadsafe                
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/common.pyx.pxi", line 113, in grpc._cython.cygrpc.schedule_coro_threadsafe                
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 436, in create_task                                    
+  File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 515, in _check_closed                                  
+RuntimeError: Event loop is closed                                    
+sys:1: RuntimeWarning: coroutine 'AioServer.shutdown' was never awaited
 
+$ docker ps
+
+CONTAINER ID   IMAGE                   COMMAND                  CREATED          STATUS          PORTS                                             NAMES
+c5bade514a17   difs-diffusion-worker   "python src/1/pytorc…"   47 minutes ago   Up 47 minutes   0.0.0.0:50060->50060/tcp, [::]:50060->50060/tcp   bold_bouman
 
 
 * with the scaling set as vertical, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh
