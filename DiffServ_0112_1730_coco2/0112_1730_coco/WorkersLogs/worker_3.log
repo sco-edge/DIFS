@@ -2,5 +2,5 @@
 [CLIENT] Connecting to scheduler at localhost:50050
 ✅ Loaded 5 prompts
 [CLIENT] Sending request to scheduler...
-[CLIENT] gRPC Error: StatusCode.UNKNOWN - Unexpected <class 'AttributeError'>: Protocol message QueryOnlineImageRequest has no "workload_type" field.
-[CLIENT] Time before failure: 0.00s
+[CLIENT] gRPC Error: StatusCode.CANCELLED - CANCELLED
+[CLIENT] Time before failure: 4.58s

@@ -1,73 +1,172 @@
-* with the scaling set as vertical, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh
-[SCHEDULER] Scheduler started                                                                                                                
-[SERVER] Scheduler thread started                                    
+* with the scaling set as vertical, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh and then breaking execution with a keyboard interrupt
+[DEBUG-B] entering vertical branch                                    
 [SERVER] Starting single worker for vertical mode                                                                                            
-[WORKER_POOL] Launching workload type: balanced
-[WORKER_POOL] Model=4, Sampler=2                    
+[WORKER_POOL] Launching workload type: balanced                                                                                                                                                                                                                                           
+[WORKER_POOL] Model=4, Sampler=2                                      
 Execution Started In Directory: /home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
-[WORKER ERROR]                                                        
-docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint keen_golick (8ca889666972fa751a332941399f6dac0ab4c7e1988fb1b5a43fec1dd2f71a91): Bind for 0.0.0.0:50060 failed: port is already allocated
+[WORKER_POOL] Container ID: e4ab3b306710e34d0fbd304dd905a5d27d99733db050af1514688685e5d2415e                                                 
+[WORKER_POOL] Waiting for worker on port 50060...                     
+                                                                                                                                                                                                                                                                                          
+[WORKER_POOL DEBUG] Docker container logs:                                                                                                   
                                                                       
-Run 'docker run --help' for more information                          
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(                                                                                                                                                                                                                                                    
+The cache for model files in Transformers v4.22.0 has been updated. Migrating your old cache. This is a one-time only operation. You can interrupt this and resume the migration later on by calling `transformers.utils.move_cache()`.
+0it [00:00, ?it/s]                                                                                                                           
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(                                                                                                       
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(                                                                                                       
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(                                                                                                 
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(                                                                                                 
+TORCH= 2.5.1+cu124                                                                                                                                                                                                                                                                        
+DIFFUSERS= 0.24.0                                                     
+TRANSFORMERS= 4.35.2                                                  
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...                  
+[시스템] Sampler ID 2(sd-v1-4.safetensors) 로딩 시작...                                                                                      
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)                                                                   
+[Timer] Step 1: Starting to load the weight file... (/tmp/model/sd-v1-4.safetensors)                                                         
+cuda                                                                                                                                                                                                                                                                                      
+[Info] Attempting to load model: /tmp/model/sd-v1-4.safetensors                                                                              
+============================================================          
+CHECKPOINT PATH = /tmp/model/sd-v1-4.safetensors                                                                                             
+EXISTS = True                                                                                                                                                                                                                                                                             
+CONTENTS OF /tmp/model:                                                                                                                                                                                                                                                          [103/882]
+['sd-v1-4.safetensors', 'real_stats.npz']
+============================================================
+config.json: 4.52kB [00:00, 14.6MB/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 5.51MB/s]                                                                      
+vocab.json: 961kB [00:00, 81.5MB/s]                                   
+merges.txt: 525kB [00:00, 52.0MB/s]                                   
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 2.71MB/s]                                                                    
+tokenizer.json: 2.22MB [00:00, 167MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results i
+n services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more
+ information, please have a look at https://github.com/huggingface/diffusers/pull/254 .                                                      
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
 
-8a7c87a637d6928a9d49851fb3b1e5915c560ea25e7435ae4b319f2f9bee345d
-                                                                      
-[AUTOSCALER] Vertical mode selected — skipping worker container startup
+[WORKER_POOL DEBUG END]                                               
+
+[WORKER_POOL HEALTHCHECK] <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>                                                                     
+[WORKER_POOL] Waiting for worker localhost:50060...
+[WORKER_POOL] Worker READY: localhost:50060
+[WORKER_POOL] Worker READY: localhost:50060
+[WORKER_POOL] Started container e4ab3b30 on port 50060
+[AUTOSCALER] Vertical mode selected — skipping worker container startup                                                                      
 [SERVER] Autoscaler started                                           
 [VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
-[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
-[SERVER] Scheduler gRPC running on port 50050                         
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
-[VERTICAL] Batch size → 1               
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
 [VERTICAL] Batch size → 1                                             
-[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                                                                                                
+[SERVER] Scheduler gRPC running on port 50050
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
 [VERTICAL] Batch size → 1                                             
-[SERVER DEBUG] Request received                                                                                                              
-[SCHEDULER DEBUG] enqueue class=2                                     
-[SCHEDULER] Processing request: Prompt: "There is a stop sign with graffiti on it."                                                          
-Prompt: "a smorgasbord filled with different kinds of pizzas "
-Prompt: "a single person snowboarding down a hill by some trees"      
-Prompt: "A person on a snowboard jumping off a small hill. "     
-Prompt: "Two people on a beach flying  akite"                         
-Steps: 20                                                                                                                                    
-CFG_Scale: 7.5                                                                                                                               
-BatchSize: 1                                                                                                                                 
-Seed: 42                                                                                                                                     
-Sampler_Type: 3                                                                                                                              
-                                                                      
-[SERVER DEBUG] Request received                                                                                                              
-[SCHEDULER DEBUG] enqueue class=2                                                                                                                                                                                                                                                         
-[SCHEDULER] Processing request: Prompt: "A performer balancing a ball  on top of an umbrella"
-Prompt: "A girl that is wearing fishnet stockings and laying on a park bench."                                                               
-Prompt: "Two hot dogs with chili, cheese and tomatoes."          
-Prompt: "A cat sleeping inside of a black piece of luggage."          
-Prompt: "Two horses standing near a fence in the snow."                                                                                      
-Steps: 20                                                                                                                                    
-CFG_Scale: 7.5                                                                                                                               
-BatchSize: 1                                                                                                                                 
-Seed: 42                                                                                                                                     
-Sampler_Type: 3                                                       
-                                                                                                                                             
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00
+[VERTICAL] Batch size → 1                                             
 [SERVER DEBUG] Request received                                       
-[SCHEDULER DEBUG] enqueue class=2                                                                                                                                                                                                                                                         
-[SCHEDULER] Processing request: Prompt: "Guys playing badminton on the beach on a cold day."                                                 
-Prompt: "A girl is dancing in the bathroom to music on her lap top. "
-Prompt: "A man sitting on a horse while rubbing him and kids are rubbing him also."                                                          
-Prompt: "A bird is perched on a tree branch."  
-Prompt: "A man that is holding a baby on his chest."
-Steps: 20                                                                                                                                                                                                                                                                                 
-CFG_Scale: 7.5                                                        
-BatchSize: 1                                                                                                                                                                                                                                                                              
-Seed: 42                                                              
-Sampler_Type: 3                                                       
-
-[VERTICAL AUTOSCALER] Queue=3, λ=0.00, μ=0.60                   
+[SCHEDULER DEBUG] enqueue class=2                                     
+[DEBUG] enqueue entered                                               
+[SCHEDULER] Classified request as: balanced
+[DEBUG] request added to queues                                       
+[DEBUG-A] enqueue returned                                            
+[DEBUG] before worker selection                                       
+[DEBUG-B] entering vertical branch                                    
+[SERVER] Vertical mode active                                         
+[DEBUG-C] about to get worker                                         
+[DEBUG-D] worker=localhost:50060                                      
+[VERTICAL ROUTER] Using worker localhost:50060
+[DEBUG] creating grpc channel                                         
+[RETRY] Attempt 1 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 1] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)                                                                                                                                                                                                                               [50/882]
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+[SERVER DEBUG] Request received                                       
+[SCHEDULER DEBUG] enqueue class=2                                     
+[DEBUG] enqueue entered                                               
+[SCHEDULER] Classified request as: balanced
+[DEBUG] request added to queues                                       
+[DEBUG-A] enqueue returned                                            
+[DEBUG] before worker selection                                       
+[DEBUG-B] entering vertical branch                                    
+[SERVER] Vertical mode active                                         
+[DEBUG-C] about to get worker                                         
+[DEBUG-D] worker=localhost:50060                                      
+[VERTICAL ROUTER] Using worker localhost:50060
+[DEBUG] creating grpc channel                                         
+[RETRY] Attempt 1 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 1] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+[SERVER DEBUG] Request received                                       
+[SCHEDULER DEBUG] enqueue class=2                                     
+[DEBUG] enqueue entered                                               
+[SCHEDULER] Classified request as: balanced
+[DEBUG] request added to queues                                       
+[DEBUG-A] enqueue returned                                            
+[DEBUG] before worker selection                                       
+[DEBUG-B] entering vertical branch                                    
+[SERVER] Vertical mode active                                         
+[DEBUG-C] about to get worker                                         
+[DEBUG-D] worker=localhost:50060                                      
+[VERTICAL ROUTER] Using worker localhost:50060
+[DEBUG] creating grpc channel                                         
+[RETRY] Attempt 1 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 1] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+[RETRY] Attempt 2 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 2] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+[RETRY] Attempt 2 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 2] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+[RETRY] Attempt 2 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 2] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+[RETRY] Attempt 3 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 3] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+[VERTICAL AUTOSCALER] Queue=3, λ=0.60, μ=0.00
 [VERTICAL] Batch size → 1                                             
-[VERTICAL AUTOSCALER] Queue=3, λ=0.00, μ=0.00                                                                                                
-[VERTICAL] Batch size → 1                                             
-^CTraceback (most recent call last):         
-  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 294, in <module>                                                                                                                        
+[RETRY] Attempt 3 → localhost:50060                                   
+[DEBUG] grpc stub created                                             
+[RETRY 3] Failed:                                                     
+Traceback (most recent call last):                                    
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 153, in QueryOnlineImage
+    response = await stub.QueryOnlineImage(request)
+TypeError: object UnaryStreamCall can't be used in 'await' expression
+^CTraceback (most recent call last):
+  File "/home/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/server.py", line 311, in <module>
     asyncio.run(serve())                                              
   File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/runners.py", line 44, in run                                                 
     return loop.run_until_complete(main)
@@ -76,11 +175,11 @@ Sampler_Type: 3
   File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 603, in run_forever                                    
     self._run_once()                                                  
   File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once                                     
-    event_list = self._selector.select(timeout)                       
+    event_list = self._selector.select(timeout)
   File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/selectors.py", line 469, in select                                                   
-    fd_event_list = self._selector.poll(timeout, max_ev)      
+    fd_event_list = self._selector.poll(timeout, max_ev)
 KeyboardInterrupt                                                     
-Exception ignored in: <function Server.__del__ at 0x7948fde785e0>
+Exception ignored in: <function Server.__del__ at 0x76e0bf7f85e0>
 Traceback (most recent call last):                                    
   File "/home/kwadwo/anaconda3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_server.py", line 196, in __del__                             
   File "src/python/grpcio/grpc/_cython/_cygrpc/aio/common.pyx.pxi", line 121, in grpc._cython.cygrpc.schedule_coro_threadsafe                
@@ -90,10 +189,133 @@ Traceback (most recent call last):
 RuntimeError: Event loop is closed                                    
 sys:1: RuntimeWarning: coroutine 'AioServer.shutdown' was never awaited
 
-$ docker ps
 
-CONTAINER ID   IMAGE                   COMMAND                  CREATED          STATUS          PORTS                                             NAMES
-c5bade514a17   difs-diffusion-worker   "python src/1/pytorc…"   47 minutes ago   Up 47 minutes   0.0.0.0:50060->50060/tcp, [::]:50060->50060/tcp   bold_bouman
+
+
+
+
+$ grep -A5 -B5  "QueryOnlineImage" DiffServ_0112_1730_coco2/0112_1730_coco/src/query_pb2_grpc.py                                                               
+        self.QueryOnline = channel.unary_unary(                                                                                                                                                                                                        
+                '/infaas.internal.Query/QueryOnline',                                                                                                                                                                                                  
+                request_serializer=query__pb2.QueryOnlineRequest.SerializeToString,                                                                                                                                                                    
+                response_deserializer=query__pb2.QueryOnlineResponse.FromString,                                                                                                                                                                       
+                _registered_method=True)                                                                                                                                                                                                               
+        self.QueryOnlineImage = channel.unary_stream(                                                                                                                                                                                                  
+                '/infaas.internal.Query/QueryOnlineImage',                                                                 
+                request_serializer=query__pb2.QueryOnlineImageRequest.SerializeToString,                            
+                response_deserializer=query__pb2.QueryOnlineImageResponse.FromString,                                      
+                _registered_method=True)                                                                                   
+        self.QueryOffline = channel.unary_unary(  
+                '/infaas.internal.Query/QueryOffline',                                                                                                                                                                                                 
+                request_serializer=query__pb2.QueryOfflineRequest.SerializeToString,                                       
+                response_deserializer=query__pb2.QueryOfflineResponse.FromString,                                          
+--                           
+        """                                                                                                                                                                                                                                            
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')                                                                                                                                                                                                 
+        raise NotImplementedError('Method not implemented!')                                                                                                                                                                                           
+                                                                                                                           
+    def QueryOnlineImage(self, request, context):                                                                          
+        """Online query(image), send input data in the payload                   
+        """                                                                                                                                                                                                                                            
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)                                                                                                                                                                                                
+        context.set_details('Method not implemented!')                                                                                                                                                                                                 
+        raise NotImplementedError('Method not implemented!')
+--                                      
+            'QueryOnline': grpc.unary_unary_rpc_method_handler(                                                            
+                    servicer.QueryOnline,                
+                    request_deserializer=query__pb2.QueryOnlineRequest.FromString,                                         
+                    response_serializer=query__pb2.QueryOnlineResponse.SerializeToString,                                                                                                                                                              
+            ),                                       
+            'QueryOnlineImage': grpc.unary_stream_rpc_method_handler(                                                                                                                                                                                  
+                    servicer.QueryOnlineImage,                                                                             
+                    request_deserializer=query__pb2.QueryOnlineImageRequest.FromString,                                    
+                    response_serializer=query__pb2.QueryOnlineImageResponse.SerializeToString,
+            ),                                                                                                                                                                                                                                         
+            'QueryOffline': grpc.unary_unary_rpc_method_handler(                                                                                                                                                                                       
+                    servicer.QueryOffline,                                                                                                                                                                                                             
+                    request_deserializer=query__pb2.QueryOfflineRequest.FromString,                                                                                                                                                                    
+                    response_serializer=query__pb2.QueryOfflineResponse.SerializeToString,
+--
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def QueryOnlineImage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+--
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/infaas.internal.Query/QueryOnlineImage',
+            query__pb2.QueryOnlineImageRequest.SerializeToString,
+            query__pb2.QueryOnlineImageResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            
+            
+$ grep -n "QueryOnlineImage" DiffServ_0112_1730_coco2/0112_1730_coco/src/query_pb2.py
+28:DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bquery.proto\x12\x0finfaas.internal\x1a\x1binfaas_request_status.proto\"g\n\x12QueryOnlineRequest\x12\x0e\n\x06Prompt\x18\x01 \x03(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\"G\n\x08QuerySLO\x12\x15\n\rLatencyInUSec\x18\x01 \x01(\x03\x12\x13\n\x0bMinAccuracy\x18\x02 \x01(\x02\x12\x0f\n\x07MaxCost\x18\x03 \x01(\x02\"`\n\x13QueryOnlineResponse\x12\x13\n\x0bimage_paths\x18\x01 \x03(\t\x12\x34\n\x06status\x18\x02 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"\x82\x01\n\x17QueryOnlineImageRequest\x12\x0e\n\x06Prompt\x18\x01 \x03(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\x12\x14\n\x0cSampler_Type\x18\x06 \x01(\x05\"x\n\x18QueryOnlineImageResponse\x12\x12\n\nimage_path\x18\x01 \x01(\t\x12\x12\n\nimage_data\x18\x02 \x01(\x0c\x12\x34\n\x06status\x18\x03 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"h\n\x13QueryOfflineRequest\x12\x0e\n\x06Prompt\x18\x01 \x01(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\"L\n\x14QueryOfflineResponse\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"H\n\x10HeartbeatRequest\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"I\n\x11HeartbeatResponse\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus2\x85\x03\n\x05Query\x12Z\n\x0bQueryOnline\x12#.infaas.internal.QueryOnlineRequest\x1a$.infaas.internal.QueryOnlineResponse\"\x00\x12k\n\x10QueryOnlineImage\x12(.infaas.internal.QueryOnlineImageRequest\x1a).infaas.internal.QueryOnlineImageResponse\"\x00\x30\x01\x12]\n\x0cQueryOffline\x12$.infaas.internal.QueryOfflineRequest\x1a%.infaas.internal.QueryOfflineResponse\"\x00\x12T\n\tHeartbeat\x12!.infaas.internal.HeartbeatRequest\x1a\".infaas.internal.HeartbeatResponse\"\x00\x62\x06proto3')
+
+
+
+
+$ grep -A5 -B5 "message QueryOnlineImageResponse" DiffServ_0112_1730_coco2/0112_1730_coco/protos/query.proto
+  int32  BatchSize = 4;       // 동시생성갯수
+  int64  Seed = 5;            // 이미지 고유번호
+  int32  Sampler_Type = 6;    // 추가: 샘플러 ID (int)
+}
+
+message QueryOnlineImageResponse {
+  // 단일 이미지 정보만 담도록 변경
+  string image_path = 1;     // 현재 전송 중인 이미지 1개의 경로
+  bytes image_data = 2;      // 현재 전송 중인 이미지 1개의 바이너리
+  InfaasRequestStatus status = 3; 
+}
+//message QueryOnlineImageResponse {
+//  // 변경: 생성된 이미지 파일 경로들의 리스트를 반환
+//  repeated string image_paths = 1;
+//  repeated bytes image_data = 2;   // 실제 파일 데이터를 담을 필드 추가 
+//  InfaasRequestStatus status = 3;
+//}
+
+sed -n '/message QueryOnlineImageResponse/,/}/p' DiffServ_0112_1730_coco2/0112_1730_coco/protos/query.proto
+message QueryOnlineImageResponse {
+  // 단일 이미지 정보만 담도록 변경
+  string image_path = 1;     // 현재 전송 중인 이미지 1개의 경로
+  bytes image_data = 2;      // 현재 전송 중인 이미지 1개의 바이너리
+  InfaasRequestStatus status = 3; 
+}
+//message QueryOnlineImageResponse {
+//  // 변경: 생성된 이미지 파일 경로들의 리스트를 반환
+//  repeated string image_paths = 1;
+//  repeated bytes image_data = 2;   // 실제 파일 데이터를 담을 필드 추가 
+//  InfaasRequestStatus status = 3;
+//}
+
+$ sed -n '/rpc QueryOnlineImage/,/;/p' DiffServ_0112_1730_coco2/0112_1730_coco/protos/query.proto
+  rpc QueryOnlineImage(QueryOnlineImageRequest) returns (stream QueryOnlineImageResponse) {}
+
+  // Offline query, input data are stored on the cloud
+  rpc QueryOffline(QueryOfflineRequest) returns (QueryOfflineResponse) {}
+
+  // Heartbeat
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {}
+}
+
+message QueryOnlineRequest {
+  repeated string Prompt = 1; // Prompt
+
 
 
 * with the scaling set as vertical, this is the result of running src/server.py for it to respond to ./run_multiple_workers.sh

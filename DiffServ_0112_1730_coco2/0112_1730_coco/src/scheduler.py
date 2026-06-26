@@ -92,19 +92,30 @@ class Scheduler:
         '''
 
         print(f"[SCHEDULER DEBUG] enqueue class={cls}")
-        self.class_queues[cls].put(request)
-        # -----------------------------------------
-        # Workload classification
-        # -----------------------------------------
+        
+        # if self.batch_size > 1: # because vertical batching uses 'self.request_queue' instead of self.class_queues; (2026.06.19)
+        #     self.class_queues[cls].put(request)
+        # # -----------------------------------------
+        # # Workload classification
+        # # -----------------------------------------
 
-        workload_type = self.classifier.classify(request)
+        print("[DEBUG] enqueue entered")
+
+
+        #self.class_queues[cls].put(request)
+
+        try:
+            workload_type = self.classifier.classify(request)
+        except Exception as e:
+            print(f"[CLASSIFIER ERROR] {e}")
+            workload_type = "balanced"
 
         # attach dynamic metadata
-        request.workload_type = workload_type
-
         print(f"[SCHEDULER] Classified request as: {workload_type}")
-
+        
         self.request_queue.put(request)
+
+        print("[DEBUG] request added to queues")
 
         with self.lock:
             self.arrival_count += 1
@@ -127,6 +138,7 @@ class Scheduler:
                 with self.lock:
                     self.service_count += 1
 
+                print("[DEBUG-DEQUEUE] request removed from queue")
                 return req
 
         return None

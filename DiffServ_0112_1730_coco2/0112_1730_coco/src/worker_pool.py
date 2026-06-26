@@ -215,7 +215,6 @@ class WorkerPool:
         if not self.workers:
             return
 
-        container_id, port = self.workers.pop()
         worker = self.workers.pop()
 
         container_id = worker["container_id"]

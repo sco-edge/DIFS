@@ -66,7 +66,11 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
         print("[SERVER DEBUG] Request received")
         self.scheduler.enqueue(request)
 
+        print("[DEBUG-A] enqueue returned")
+
         worker_addr = None
+
+        print("[DEBUG] before worker selection")
 
         try:
 
@@ -74,8 +78,11 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
             # VERTICAL MODE → LOCAL EXECUTION
             ############################################################
             if config.SCALING_MODE == "vertical":
+                print("[DEBUG-B] entering vertical branch")
                 print("[SERVER] Vertical mode active")
+                print("[DEBUG-C] about to get worker")
                 worker_addr = self.worker_pool.get_next_worker()
+                print(f"[DEBUG-D] worker={worker_addr}")
                 print(
                     f"[VERTICAL ROUTER] Using worker {worker_addr}"
                 )
@@ -84,7 +91,9 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
             # HORIZONTAL/HYBRID MODE
             ############################################################
             if worker_addr is None:
+                print("[DEBUG-C] about to get worker")
                 worker_addr = self.worker_pool.get_next_worker() # this preserve horizontal scaling
+                print(f"[DEBUG-D] worker={worker_addr}")
                 print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
             
             ############################################################
@@ -92,6 +101,7 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
             ############################################################
 
             try:
+                print("[DEBUG] creating grpc channel")
 
                 async with grpc.aio.insecure_channel(worker_addr) as health_channel:
 
@@ -136,6 +146,8 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
 
                         # =======  MULTIPLE CLIENT REQUESTS -> batched -> 1 WORKER CALL ========
                         stub = query_pb2_grpc.QueryStub(channel)
+                        
+                        print("[DEBUG] grpc stub created")
 
                         async for response in stub.QueryOnlineImage(request):
 
@@ -218,13 +230,15 @@ async def serve():
     # 1. Initialize components (UNCHANGED)
     scheduler = Scheduler()
 
-    ## getting the server to consume requests
-    threading.Thread(
-        target=scheduler.start,
-        daemon=True
-    ).start()
+    ## getting the server to consume requests; Vertical scaling does not need the queue-consumption thread
+    if config.SCALING_MODE != "vertical":
+        
+        threading.Thread(
+            target=scheduler.start,
+            daemon=True
+        ).start()
 
-    print("[SERVER] Scheduler thread started")
+        print("[SERVER] Scheduler thread started")
 
     worker_pool = WorkerPool()
 
@@ -234,7 +248,7 @@ async def serve():
     ############################################################
 
     if config.SCALING_MODE == "vertical":
-
+        print("[DEBUG-B] entering vertical branch")
         print("[SERVER] Starting single worker for vertical mode")
 
         await worker_pool.add_worker("balanced")
