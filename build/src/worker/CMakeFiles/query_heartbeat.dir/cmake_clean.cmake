@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/query_heartbeat.dir/link.d"
   "CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o"
   "CMakeFiles/query_heartbeat.dir/query_heartbeat.cc.o.d"
   "query_heartbeat"

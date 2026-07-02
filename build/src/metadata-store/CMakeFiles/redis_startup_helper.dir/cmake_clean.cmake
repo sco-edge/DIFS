@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "../../bin/redis_startup_helper"
   "../../bin/redis_startup_helper.pdb"
+  "CMakeFiles/redis_startup_helper.dir/link.d"
   "CMakeFiles/redis_startup_helper.dir/redis_metadata.cc.o"
   "CMakeFiles/redis_startup_helper.dir/redis_metadata.cc.o.d"
   "CMakeFiles/redis_startup_helper.dir/redis_startup_helper.cc.o"

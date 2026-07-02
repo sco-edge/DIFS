@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/inf-master.dir/link.d"
   "CMakeFiles/inf-master.dir/modelreg_client.cc.o"
   "CMakeFiles/inf-master.dir/modelreg_client.cc.o.d"
   "CMakeFiles/inf-master.dir/queryfe_client.cc.o"
