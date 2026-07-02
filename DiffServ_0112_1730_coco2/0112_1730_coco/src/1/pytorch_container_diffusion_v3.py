@@ -1,10 +1,14 @@
-import grpc
+from typing import Optional, Tuple
+from pathlib import Path
 from concurrent import futures
-import torch
-import io
 import os
 import sys
 import traceback
+import time
+import torch
+import grpc
+
+
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.abspath(
@@ -14,17 +18,16 @@ SRC_DIR = os.path.abspath(
 if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
 
-from pathlib import Path
+
 
 # 컴파일된 파일들을 루트에서 임포트
+# Import compiled files from the root directory
 import query_pb2
 import query_pb2_grpc
 import infaas_request_status_pb2
 
 ### Merge
 from diffusers import StableDiffusionPipeline
-import torch
-from pathlib import Path
 
 import diffusers
 import transformers
@@ -34,8 +37,6 @@ print("DIFFUSERS=", diffusers.__version__)
 print("TRANSFORMERS=", transformers.__version__)
 
 
-from typing import List, Optional, Tuple
-import time
 
 from diffusers import (
     EulerAncestralDiscreteScheduler, 
@@ -50,24 +51,20 @@ import secrets
 import numpy as np
 from torchmetrics.image.fid import FrechetInceptionDistance
 from PIL import Image
-import sys
 from scipy import linalg
 
 import argparse  # 추가
 import json      # 추가
 
-# ===============================================
-# 🌟 전역 상수 설정 (INFaaS 폴더 구조 반영) 🌟
-# ===============================================
-MODEL_DIRECTORY = '/tmp/model'
+# ========================================================================
+# 🌟 Global Constant Settings (Reflecting the INFaaS Folder Structure)  🌟
+# ========================================================================
+MODEL_DIR = Path("/tmp/model")
 OUTPUT_ROOT_DIR = '/tmp/diffusion_output' 
 MODEL_FILE_NAME = "sd-v1-4.safetensors"
 #MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"
-CKPT_FILE_PATH = Path(MODEL_DIRECTORY) / MODEL_FILE_NAME
+CKPT_FILE_PATH = Path(MODEL_DIR) / MODEL_FILE_NAME
 OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)
-
-# 모델 파이프라인의 타입 정의 (명시적인 타입 힌트를 위해)
-DiffusionPipeline = StableDiffusionPipeline
 
 # [추가] JSON 로드 및 매핑 유틸리티
 def load_json(file_path):
@@ -100,7 +97,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         """        
         print(f"[Info] Initializing ModelExecutor (Model ID: {model_id}, File: {model_filename})")
         self.model_id = model_id # 모델 ID 저장
-        self.model_directory = '/tmp/model'
+        self.model_directory = MODEL_DIR
         self.model_file_name = model_filename # 전달받은 파일명 사용
         self.ckpt_file_path = Path(self.model_directory) / self.model_file_name
         # 파라미터 저장
@@ -109,6 +106,9 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         self.thread_count = thread_count
         self.port = port     # 클래스 멤버 변수로 저장
         self.real_stats_path = npz_path
+
+        self.mu_real = None
+        self.sigma_real = None
 
         # 모델 로드
         self.pipe, self.device = self.load_model()
@@ -121,14 +121,24 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         #else:
         #    print("[오류] 모델 로드 실패로 테스트 추론을 건너뜁니다.")
         
-        real_stats_path = "/workspace/real_stats.npz"
-        if os.path.exists(real_stats_path):
+        DEFAULT_STATS = Path("/workspace/real_stats.npz")
+        real_stats_path = self.real_stats_path
+        if os.path.exists(self.real_stats_path):
             # load시 실사 이미지의 mu, sigma 값을 계산한다. 
             real_stats = np.load(real_stats_path)
             self.mu_real = real_stats['mu']
             self.sigma_real = real_stats['sigma']
             print(f"📊 The mu value of a real-world image ({self.mu_real})")
             print(f"📊 Calculating the sigma value of a real-world image ({self.sigma_real})")
+        elif os.path.exists(DEFAULT_STATS ):
+            self.real_stats_path = DEFAULT_STATS 
+            print(f"npz path not picked from command line, using the hard coded path: {DEFAULT_STATS }")
+            real_stats = np.load(DEFAULT_STATS )
+            self.mu_real = real_stats['mu']
+            self.sigma_real = real_stats['sigma']
+            print(f"📊 The mu value of a real-world image ({self.mu_real})")
+            print(f"📊 Calculating the sigma value of a real-world image ({self.sigma_real})")
+
 
     def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:
         """
@@ -156,9 +166,9 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             print("CHECKPOINT PATH =", self.ckpt_file_path)
             print("EXISTS =", os.path.exists(self.ckpt_file_path))
 
-            if os.path.exists("/tmp/model"):
+            if os.path.exists(MODEL_DIR):
                 print("CONTENTS OF /tmp/model:")
-                print(os.listdir("/tmp/model"))
+                print(os.listdir(MODEL_DIR))
             else:
                 print("/tmp/model DOES NOT EXIST")
 
@@ -189,7 +199,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
 
             # 2. 예열(Warm-up) 시간 측정
             # 여기서 model.safetensors 진행바가 다시 뜬다면 이 구간이 병목입니다.
-            print(f"[Timer] Step 2: Component Optimization (Warm-up) Begins...")
+            print("[Timer] Step 2: Component Optimization (Warm-up) Begins...")
             warmup_start = time.perf_counter()
 
             with torch.inference_mode():
@@ -211,10 +221,11 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             print(f"🚀 [Final] Server setup complete. Total time taken: {total_end - total_start:.2f}초")
             print("=" * 60)
 
-            print(f"[Info] Weight loading 100% complete! GPU ready")
+            print("[Info] Weight loading 100% complete! GPU ready")
             return pipe, device
         except Exception as e:
-            print(f"[Error] An exception occurred while loading the model: {e}")
+            print("[Error] An exception occurred while loading the model.")
+            print(e)
             traceback.print_exc()
             return None, device
     
@@ -245,8 +256,8 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                 cfg=request.CFG_Scale if request.CFG_Scale > 0 else 7.5,
                 batch_size=request.BatchSize if request.BatchSize > 0 else 1,
                 seed=request.Seed,
-                #sampler_type=getattr(request, 'SamplerType', 1) # proto에 SamplerType 필드가 있다고 가정
-                sampler_type=1 #하드코딩
+                #sampler_type=1 #하드코딩
+                sampler_type=self.sampler_id
                 #height_px=256, 
                 #width_px=256
             )
@@ -258,12 +269,12 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             # --- 시간 측정 종료 ---
 
             elapsed_time = end_time - start_time
-            print(f"------------------------------------------------------------")
-            print(f"[성능 로그] 총 추론 시간: {elapsed_time:.4f} 초 (CPU+GPU)")
-            print(f"------------------------------------------------------------")
+            print("------------------------------------------------------------")
+            print(f"[Performance Log] Total inference time: {elapsed_time:.4f} seconds (CPU+GPU)")
+            print("------------------------------------------------------------")
 
             # 2. 결과 로그 출력
-            print(f"[정보] 추론 및 파일 저장 완료!")
+            print("[정보] 추론 및 파일 저장 완료!")
             str_image_paths = []
             for path in saved_paths:
                 print(f" >> 저장된 위치: {path}")
@@ -282,10 +293,12 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             )
 
         except Exception as e:
-            print(f"[오류] 추론 중 오류 발생: {e}")
+            print("[Error] An error occurred during inference")
+            print(e)
+            traceback.print_exc()
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.INVALID,
-                msg=str(e)
+                msg="Inference failed"
             )
             return query_pb2.QueryOnlineResponse(status=status_msg)
 
@@ -298,7 +311,8 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                 status=infaas_request_status_pb2.UNAVAILABLE,
                 msg="Model not loaded"
             )
-            return query_pb2.QueryOnlineImageResponse(status=status_msg)
+            yield query_pb2.QueryOnlineImageResponse(status=status_msg)
+            return
 
         print(f"[인포] 요청 수신 - 프롬프트: {request.Prompt}")
         print(f"[인포] request.Steps: {request.Steps}")
@@ -348,10 +362,11 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             # --- [추가] FID 계산 로직 ---
             # 실사 이미지 통계 파일 경로
             # 1. 도커 내부의 절대 경로를 직접 지정 (가장 확실함)
-            real_stats_path = "/workspace/real_stats.npz"
+            
+            #real_stats_path = "/workspace/real_stats.npz"
             fid_score = None
 
-            if os.path.exists(real_stats_path):
+            if self.mu_real is not None:
                 #print(f"📊 FID 계산 시작 (기준: {real_stats_path})")
                 # 1. 실사 이미지 통계 로드
                 #real_stats = np.load(real_stats_path)
@@ -359,50 +374,54 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                 #sigma_real = real_stats['sigma']
 
                 # 2. 제공된 함수를 호출하여 FID 계산
-                fid_score = self.calculate_fid_from_stats(self.mu_real, self.sigma_real, mu_gen, sigma_gen)
+                fid_score = self.calculate_fid_from_stats(
+                    self.mu_real, 
+                    self.sigma_real,
+                    mu_gen, 
+                    sigma_gen)
                 print(f"🔥 최종 FID Score: {fid_score:.4f}")
             else:
-                print(f"⚠️ 경고: {real_stats_path} 파일을 찾을 수 없어 FID 계산을 건너뜁니다.")
+                print("Skipping FID because no reference statistics are available.")
 
             elapsed_time = end_time - start_time
-            print(f"------------------------------------------------------------")
-            print(f"[성능 로그] 총 추론 시간: {elapsed_time:.4f} 초 (CPU+GPU)")
+            print("------------------------------------------------------------")
+            print(f"[Performance Log] Total inference time: {elapsed_time:.4f} seconds (CPU+GPU)")
             if fid_score is not None:
                 print(f"[성능 로그] FID 점수: {fid_score:.4f}")
-            print(f"------------------------------------------------------------")
+            print("------------------------------------------------------------")
 
-            # 2. 결과 로그 출력
-            print(f"[정보] 추론 및 파일 저장 완료!")
-            str_image_paths = []
-            raw_images_bytes = []
-            for path in saved_paths:
-                print(f" >> 저장된 위치: {path}")
-                # Path 객체를 문자열로 변환하여 리스트에 추가
-                str_image_paths.append(str(path))
-                
-                # 파일을 바이너리 읽기 모드('rb')로 열어 바이트 데이터 추출
-                with open(path, "rb") as f:
-                    raw_images_bytes.append(f.read())
-            
+                        
             # 3. 성공 상태 메시지 구성
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.SUCCESS
             )
 
-            # 4. 수정된 proto 정의에 맞춰 image_paths 필드에 결과 담아 반환
-            return query_pb2.QueryOnlineImageResponse(
-                image_paths=str_image_paths,
-                image_data=raw_images_bytes,  # 수정된 필드
-                status=status_msg
-            )
+            for path in saved_paths:
+                print(f" >> 저장된 위치: {path}")
+
+                with open(path, "rb") as f:
+                    image_bytes = f.read()
+
+                yield query_pb2.QueryOnlineImageResponse(
+                    image_path=str(path),
+                    image_data=image_bytes,
+                    status=status_msg
+                )
+
+            return
 
         except Exception as e:
-            print(f"[오류] 추론 중 오류 발생: {e}")
+            print("[Error] An error occurred during inference")
+            print(e)
+            traceback.print_exc()
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.INVALID,
-                msg=str(e)
+                msg="Inference failed"
             )
-            return query_pb2.QueryOnlineImageResponse(status=status_msg)
+            yield query_pb2.QueryOnlineImageResponse(
+                status=status_msg
+            )
+            return
         
     def ExecuteInference(self, prompt: list, steps: int, cfg: float, batch_size: int, seed: int,
                          sampler_type: int = 1,  # 1: Euler a, 2: DPM++, 3: LMS, 4: DDIM 
@@ -437,6 +456,9 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             sampler_name = "Euler_a_Default"
         
         # 2. 난수 생성기 설정 (재현성 확보)
+        if seed == 0:
+                seed = torch.seed()
+
         generator = torch.Generator(self.device).manual_seed(seed)
         #prompt_list = [prompt] * batch_size
 
@@ -463,12 +485,10 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         
         generated_images = output.images
 
-        # 5. 출력 폴더 생성 및 이미지 저장 (generate_and_save_image 로직 적용)
+       
+        # 5. Create an output folder and save the image (apply the `generate_and_save_image` logic)
         output_path.mkdir(parents=True, exist_ok=True)
-        print(f"생성된 이미지를 '{output_path}' 폴더에 저장합니다.")
-
-        # 5. 이미지 저장 로직
-        output_path.mkdir(parents=True, exist_ok=True)
+        print(f"Saving generated images to Output Directory: ‘{output_path}’.")
         saved_files = []
         for i, image in enumerate(generated_images):
             # 파일명 형식: sd_output_[샘플러명]_[인덱스]_[시드]_[해상도].png
@@ -519,25 +539,39 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
        
         diff = mu1 - mu2
        
-        # 1. 행렬 곱셈
+        # 1. Matrix Multiplication
         cov_dot = sigma1.dot(sigma2)
        
-        # 2. 행렬 제곱근 계산
-        covmean = linalg.sqrtm(cov_dot)
+        # 2. Calculating the Square Root of a Matrix
+        covmean, _ = linalg.sqrtm(cov_dot, disp=False)
+
+        if not np.isfinite(covmean).all():
+            eps = 1e-6
+            covmean = linalg.sqrtm(
+                (sigma1 + eps*np.eye(sigma1.shape[0])) @
+                (sigma2 + eps*np.eye(sigma2.shape[0]))
+            )
        
-        # 3. 수치적 불안정성으로 인한 허수 제거
+        # 3. Elimination of Imaginary Numbers Due to Numerical Instability
         if np.iscomplexobj(covmean):
             covmean = covmean.real
 
-        # 4. FID 공식 적용: ||mu1 - mu2||^2 + Tr(sigma1 + sigma2 - 2*sqrt(sigma1*sigma2))
+        # 4. Official Application of FID: ||mu1 - mu2||^2 + Tr(sigma1 + sigma2 - 2*sqrt(sigma1*sigma2))
         fid = diff.dot(diff) + np.trace(sigma1 + sigma2 - 2 * covmean)
         return fid
 
     def run_startup_test(self):
-        """서버 시작 시 1회 테스트 추론을 실행하고 결과를 저장하는 함수"""
+        
+        # """서버 시작 시 1회 테스트 추론을 실행하고 결과를 저장하는 함수"""
+        """A function that runs a single test inference when the server starts and saves the results"""
+
         print("\n" + "="*60)
-        print("[테스트] 서버 기동 시 초기 추론 및 저장 테스트를 시작합니다...")
-        test_prompt = "A high quality photo of a cat"
+
+        # print("[테스트] 서버 기동 시 초기 추론 및 저장 테스트를 시작합니다...")
+        print("[Test] Starting the initial inference and storage test upon server startup...")
+
+        # test_prompt = "A high quality photo of a cat"
+        test_prompt = ["A high quality photo of a cat"]
         
         try:
             # ExecuteInference를 호출하여 실행 및 파일 저장
@@ -552,13 +586,15 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                 sampler_type=1 #하드코딩
             )
             
-            print(f"[테스트] 초기 추론 및 파일 저장 성공!")
+            print("[테스트] 초기 추론 및 파일 저장 성공!")
             for path in saved_paths:
                 print(f" >> 확인된 파일: {path}")
             print("="*60 + "\n")
             
         except Exception as e:
-            print(f"[테스트] 초기 추론 테스트 실패: {e}")
+            print("[Test] Initial inference test failed")
+            print(e)
+            traceback.print_exc()
 
     def Heartbeat(self, request, context):
         """
@@ -603,7 +639,7 @@ def serve():
         return
 
     print(f"[시스템] 모델 ID {args.model}({model_filename}) 로딩 시작...")
-    print(f"[시스템] Sampler ID {args.sampler}({model_filename}) 로딩 시작...") 
+    print(f"[시스템] Sampler ID {args.sampler}({sampler_name}) 로딩 시작...") 
 
     # 4. ModelExecutor 초기화 (모든 파라미터 전달)
     executor = ModelExecutor(
@@ -617,8 +653,10 @@ def serve():
     )
 
     # 모델 로드 성공 여부 확인 (예외 처리)
+    # Check if the model loaded successfully (exception handling)
     if executor.pipe is None:
-        print("[치명적 오류] 모델 로드에 실패하여 서버를 시작할 수 없습니다.")
+        #print("[치명적 오류] 모델 로드에 실패하여 서버를 시작할 수 없습니다.")
+        print("[Fatal Error] The server cannot start because the model failed to load.")
         return
 
     #server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -626,14 +664,15 @@ def serve():
     query_pb2_grpc.add_QueryServicer_to_server(executor, server)
 
     # args.port를 사용하여 포트 바인딩
-    server.add_insecure_port(f'[::]:{args.port}')
-    #port = "50051"   #"8080"
-    #actual_port = server.add_insecure_port(f'[::]:{port}')
-    #actual_port = server.add_insecure_port(f'0.0.0.0:{port}')
-    if args.port == 0:
-        print(f"[오류] 포트 {port} 바인딩에 실패했습니다! 이미 사용 중이거나 권한이 없습니다.")
-        return  
-    print(f"[서버] gRPC 서버 시작됨 (Port: {args.port})")
+    actual_port = server.add_insecure_port(f"[::]:{args.port}")
+
+    if actual_port == 0:
+        print("Failed to bind port")
+        return
+        
+    #print(f"[서버] gRPC 서버 시작됨 (Port: {args.port})")
+    print(f"[Server] gRPC server started (Port: {args.port})")
+
     server.start()
     server.wait_for_termination()
 

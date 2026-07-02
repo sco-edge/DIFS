@@ -2,5 +2,8 @@
 [CLIENT] Connecting to scheduler at localhost:50050
 ✅ Loaded 5 prompts
 [CLIENT] Sending request to scheduler...
-[CLIENT] gRPC Error: StatusCode.CANCELLED - CANCELLED
-[CLIENT] Time before failure: 4.58s
+[CLIENT] Server error: Inference failed
+
+[CLIENT] ===== SUMMARY =====
+Images received: 0
+Total time: 5.55s
