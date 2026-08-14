@@ -1,0 +1,7 @@
+model,scaling_mode,throughput_images_per_sec
+SD-2.1,horizontal,0.32099
+SD-3.5-Medium,horizontal,0.19503
+SD-2.1,hybrid,0.314205
+SD-3.5-Medium,hybrid,0.214832
+SD-2.1,vertical,0.388524
+SD-3.5-Medium,vertical,0.218698

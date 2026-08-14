@@ -1,0 +1,9 @@
+model,horizontal,hybrid,vertical
+SD-v1.4-dir,20.71,18.9,18.01
+SD-v1.4-safetensors,20.48,19.71,17.45
+SD-v1.5,20.53,20.74,20.05
+SD-2.1,20.9,19.85,19.9
+SDXL-Base,44.09,43.09,41.89
+SD-3.5-Medium,37.28,36.7,35.99
+SD-3.5-Large,54.09,54.48,54.52
+DreamShaper-8,19.67,18.87,20.46

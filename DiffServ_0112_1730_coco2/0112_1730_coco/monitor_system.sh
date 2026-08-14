@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Author: KB
-# Date: 2026. 04. 17. (금) 11:22:10 KST
+# Date: 2026. 04. 17. (Fri) 11:22:10 KST
 # Purpose: for monitoring the system resources being consumed when 'run_multiple_clients.sh' is run
 
 # 1. Configuration - Set your custom name or use default

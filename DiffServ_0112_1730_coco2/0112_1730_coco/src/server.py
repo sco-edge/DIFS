@@ -4,8 +4,11 @@
 # File: server.py 
 
 import asyncio
-import grpc
+import time
+import os
+import signal
 from concurrent import futures
+import grpc
 import traceback
 import threading
 
@@ -19,10 +22,7 @@ import infaas_request_status_pb2_grpc
 from scheduler import Scheduler
 from worker_pool import WorkerPool
 from autoscaler import AutoScaler
-import time
-import csv
-import os
-import threading
+from metrics import Metrics # for recording metrics (2026.07.02)
 
 ############################################################
 # 🔥 gRPC WRAPPER AROUND YOUR SCHEDULER
@@ -30,27 +30,12 @@ import threading
 
 class SchedulerService(query_pb2_grpc.QueryServicer):
 
-    def __init__(self, scheduler, worker_pool):
+    def __init__(self, scheduler, worker_pool, metrics):
         self.scheduler = scheduler
         self.worker_pool = worker_pool
+        self.metrics = metrics
 
-    # async def QueryOnlineImage(self, request, context):
-
-    #     # 🔥 Ask scheduler for next worker
-    #     worker_addr = self.worker_pool.get_next_worker()
-
-    #     print(f"[SCHEDULER] Routing request to {worker_addr}")
-
-    #     try:
-    #         async with grpc.aio.insecure_channel(worker_addr) as channel:
-
-    #             stub = query_pb2_grpc.QueryStub(channel)
-
-    #             async for response in stub.QueryOnlineImage(request):
-    #                 yield response
-
-    #     except Exception as e:
-    #         print(f"[SCHEDULER ERROR] {e}")
+    
 
     async def QueryOnlineImage(self, request, context):
     #def QueryOnlineImage(self, request, context):
@@ -58,145 +43,43 @@ class SchedulerService(query_pb2_grpc.QueryServicer):
         # 🔥 START tracking load
         start_time = time.perf_counter()
         self.scheduler.increment_active()
+        self.metrics.record_request()
 
         ############################################################
         # ENQUEUE REQUEST INTO SCHEDULER
         ############################################################
-
+       
         print("[SERVER DEBUG] Request received")
-        self.scheduler.enqueue(request)
 
-        print("[DEBUG-A] enqueue returned")
+        ############################################################
+        # Record request arrival for scheduler statistics.
+        # Do NOT enqueue protobuf requests.
+        ############################################################
+        with self.scheduler.lock:
+            self.scheduler.arrival_count += 1
+
+        print("[DEBUG-A] arrival counter updated")
 
         worker_addr = None
 
         print("[DEBUG] before worker selection")
 
-        try:
+        ############################################################
+        # Scheduler owns dispatching
+        ############################################################
 
-            ############################################################
-            # VERTICAL MODE → LOCAL EXECUTION
-            ############################################################
-            if config.SCALING_MODE == "vertical":
-                print("[DEBUG-B] entering vertical branch")
-                print("[SERVER] Vertical mode active")
-                print("[DEBUG-C] about to get worker")
-                worker_addr = self.worker_pool.get_next_worker()
-                print(f"[DEBUG-D] worker={worker_addr}")
-                print(
-                    f"[VERTICAL ROUTER] Using worker {worker_addr}"
-                )
+        async for response in self.scheduler.dispatch_request(request):
 
-            ############################################################
-            # HORIZONTAL/HYBRID MODE
-            ############################################################
-            if worker_addr is None:
-                print("[DEBUG-C] about to get worker")
-                worker_addr = self.worker_pool.get_next_worker() # this preserve horizontal scaling
-                print(f"[DEBUG-D] worker={worker_addr}")
-                print(f"[SCHEDULER] Routing request to {worker_addr}") # PNB (2026.04.10)
-            
-            ############################################################
-            # gRPC HEALTH CHECK
-            ############################################################
+            elapsed = time.perf_counter() - start_time
 
-            try:
-                print("[DEBUG] creating grpc channel")
+            self.metrics.record_latency(elapsed)
 
-                async with grpc.aio.insecure_channel(worker_addr) as health_channel:
+            self.metrics.record_service_time(elapsed)
 
-                    health_stub = query_pb2_grpc.QueryStub(health_channel)
+            self.metrics.record_success()
 
-                    heartbeat = await health_stub.Heartbeat(
-                        query_pb2.HeartbeatRequest()
-                    )
+            yield response
 
-                    if heartbeat.status.status != 1:
-
-                        print(f"[HEALTH CHECK] Worker unhealthy: {worker_addr}")
-                        return
-
-            except Exception as e:
-
-                print(f"[HEALTH CHECK FAILED] {worker_addr}: {e}")
-                return
-
-            # 🔥 RETRY LOGIC
-            # import asyncio
-
-            success = False
-
-            for attempt in range(3):
-
-                try:
-                    print(f"[RETRY] Attempt {attempt+1} → {worker_addr}")
-
-                    async with grpc.aio.insecure_channel(worker_addr) as channel:
-
-                        ## =======  1 CLIENT REQUEST -> 1 WORKER CALL ========
-
-                        # stub = query_pb2_grpc.QueryStub(channel)
-
-                        # async for response in stub.QueryOnlineImage(request): # for direct forwarding
-                        #     elapsed = time.perf_counter() - start_time # PNB (2026.04.10)
-                        #     print(f"[SERVER LATENCY] {worker_addr}: {elapsed:.3f}s") # PNB (2026.04.10)
-
-                        #     yield response
-
-
-                        # =======  MULTIPLE CLIENT REQUESTS -> batched -> 1 WORKER CALL ========
-                        stub = query_pb2_grpc.QueryStub(channel)
-                        
-                        print("[DEBUG] grpc stub created")
-
-                        async for response in stub.QueryOnlineImage(request):
-
-                            elapsed = time.perf_counter() - start_time
-
-                            print(f"[SERVER LATENCY] {worker_addr}: {elapsed:.3f}s")
-                            print(f"[INFERENCE SUCCESS] Worker={worker_addr}")
-
-                            throughput = 1 / elapsed
-
-                            print(f"[THROUGHPUT] {throughput:.2f} req/sec")
-
-                            ############################################################
-                            # METRICS LOGGING
-                            ############################################################
-
-                            with open("metrics/server_metrics.csv", "a", newline="") as f:
-
-                                writer = csv.writer(f)
-
-                                writer.writerow([
-                                    time.time(),
-                                    worker_addr,
-                                    elapsed,
-                                    self.scheduler.get_total_queue_length(),
-                                    getattr(self.scheduler, "arrival_rate", 0),
-                                    getattr(self.scheduler, "service_rate", 0),
-                                    len(self.worker_pool.workers)
-                                ])
-
-                            yield response
-
-                    success = True
-                    break
-
-                except Exception as e:
-                    print(f"[RETRY {attempt+1}] Failed:")
-                    traceback.print_exc()
-                    await asyncio.sleep(2)
-
-            if not success:
-                print(f"[SCHEDULER ERROR] Worker {worker_addr} failed after retries")
-
-        except Exception as e:
-            print(f"[SCHEDULER ERROR] {e}")
-
-        finally:
-            # 🔥 END tracking load
-            self.scheduler.decrement_active()
 
 
 ############################################################
@@ -207,30 +90,18 @@ async def serve():
 
     # 0. METRICS: creating csv file to store performance metrics (2026.05.15)
     os.makedirs("metrics", exist_ok=True)
-    
-    server_metrics_file = "metrics/server_metrics.csv"
 
-    if not os.path.exists(server_metrics_file):
+    # Global metrics object
+    metrics = Metrics()
+    print("[SERVER] Metrics subsystem initialized.")
 
-        with open(server_metrics_file, "w", newline="") as f:
-
-            writer = csv.writer(f)
-
-            writer.writerow([
-                "timestamp",
-                "worker",
-                "latency",
-                "queue_length",
-                "arrival_rate",
-                "service_rate",
-                "workers"
-            ])
-
+    worker_pool = WorkerPool(metrics)
 
     # 1. Initialize components (UNCHANGED)
-    scheduler = Scheduler()
+    scheduler = Scheduler(worker_pool, config, metrics)
+    
 
-    ## getting the server to consume requests; Vertical scaling does not need the queue-consumption thread
+    # getting the server to consume requests; Vertical scaling does not need the queue-consumption thread
     if config.SCALING_MODE != "vertical":
         
         threading.Thread(
@@ -238,9 +109,7 @@ async def serve():
             daemon=True
         ).start()
 
-        print("[SERVER] Scheduler thread started")
-
-    worker_pool = WorkerPool()
+        print("[SERVER] Scheduler thread started")    
 
 
     ############################################################
@@ -248,27 +117,64 @@ async def serve():
     ############################################################
 
     if config.SCALING_MODE == "vertical":
+        
+        ## REAL WORKER REGISTRATION
+        # ===========================
         print("[DEBUG-B] entering vertical branch")
-        print("[SERVER] Starting single worker for vertical mode")
-
+        print("[SERVER] Starting one Docker worker for vertical mode")
         await worker_pool.add_worker("balanced")
 
+    else:
+        # For horizontal/hybrid: register externally started workers
+        import socket
 
-    autoscaler = AutoScaler(
-        scheduler,
-        worker_pool,
-        config
-    )
+        # Collect ports: DIFS_EXTRA_WORKER_PORTS env var (comma-separated) + default 50060
+        extra_ports_str = os.environ.get("DIFS_EXTRA_WORKER_PORTS", "")
+        candidate_ports = [50060]
+        if extra_ports_str:
+            candidate_ports.extend(int(p.strip()) for p in extra_ports_str.split(",") if p.strip())
 
-    autoscaler.start()
+        for external_port in candidate_ports:
+            sock = socket.socket()
+            sock.settimeout(1)
+            if sock.connect_ex(("localhost", external_port)) == 0:
+                print(f"[SERVER] Found external worker on port {external_port}, registering it")
+                worker_pool.workers.append({
+                    "container_id": f"external-{external_port}",
+                    "port": external_port,
+                    "workload_type": "balanced",
+                    "model_id": 1,
+                    "sampler": 1,
+                    "threads": 4,
+                    "created_time": time.time()
+                })
+                worker_pool.next_port = max(worker_pool.next_port, external_port + 1)
+            sock.close()
 
-    print("[SERVER] Autoscaler started")
+        print(f"[SERVER] Registered {len(worker_pool.workers)} external worker(s)")
+
+    skip_autoscaler = os.environ.get("DIFS_NO_AUTOSCALER", "0") == "1"
+
+    if skip_autoscaler:
+        print("[SERVER] Autoscaler DISABLED (DIFS_NO_AUTOSCALER=1)")
+        autoscaler = None
+    else:
+        autoscaler = AutoScaler(
+            scheduler,
+            worker_pool,
+            config
+        )
+
+        autoscaler.metrics = metrics
+        autoscaler.start()
+
+        print("[SERVER] Autoscaler started")
 
     # 2. Create gRPC server
     server = grpc.aio.server()
 
     query_pb2_grpc.add_QueryServicer_to_server(
-        SchedulerService(scheduler, worker_pool),
+        SchedulerService(scheduler, worker_pool, metrics),
         server
     )
 
@@ -276,13 +182,38 @@ async def serve():
     server.add_insecure_port('[::]:50050')
 
     print("[SERVER] Scheduler gRPC running on port 50050")
+    print(f"[SERVER] INFaaS config: GPU_MAX_REPLICAS={getattr(config, 'GPU_MAX_REPLICAS', 1)} "
+          f"STRATEGY_THRESHOLD={getattr(config, 'STRATEGY_THRESHOLD', 1.5)} "
+          f"SCALE_DOWN_DELAY={getattr(config, 'SCALE_DOWN_DELAY', 20)}")
 
+    # Graceful shutdown
     await server.start()
 
-    # # 🔥 run scheduler loop in background if needed
-    # asyncio.create_task(run_scheduler_loop(scheduler))
+    try:
 
-    await server.wait_for_termination()
+        await server.wait_for_termination()
+
+    except asyncio.CancelledError:
+
+        pass
+
+    finally:
+
+        print("\n==============================")
+        print("Stopping gRPC server...")
+        print("==============================")
+
+        await server.stop(grace=2)
+
+        print("\n==============================")
+        print("Generating Final Metrics Report")
+        print("==============================")
+
+        metrics.generate_summary()
+        metrics.export_summary()
+        metrics.close()
+
+        print("Metrics saved successfully.")
 
 
 ############################################################
@@ -305,4 +236,8 @@ async def serve():
 ############################################################
 
 if __name__ == "__main__":
-    asyncio.run(serve())
+    try:
+        asyncio.run(serve())
+
+    except KeyboardInterrupt:
+        print("\n[SERVER] Graceful shutdown complete.")

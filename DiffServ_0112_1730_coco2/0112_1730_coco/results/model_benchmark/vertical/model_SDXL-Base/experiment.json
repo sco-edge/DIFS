@@ -1,0 +1,10 @@
+{
+    "scaling_mode": "vertical",
+    "model_id": 5,
+    "model_name": "SDXL-Base",
+    "model_filename": "stable-diffusion-xl-base-1.0",
+    "workload": 5,
+    "steps": 20,
+    "sampler": 1,
+    "seed": 42
+}

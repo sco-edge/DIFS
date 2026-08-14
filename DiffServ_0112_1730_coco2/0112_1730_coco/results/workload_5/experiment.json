@@ -1,0 +1,11 @@
+{
+    "workload": 5,
+    "sampler": 1,
+    "steps": 20,
+    "scaling_mode": "vertical",
+    "model": 1,
+    "threads": 4,
+    "seed": 42,
+    "scheduler_port": 50050,
+    "worker_port": 50060
+}

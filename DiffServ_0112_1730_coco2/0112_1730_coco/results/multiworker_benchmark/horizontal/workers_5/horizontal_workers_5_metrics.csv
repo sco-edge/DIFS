@@ -1,0 +1,2 @@
+num_requests,successful,total_images,wall_time_sec,throughput_img_per_sec,avg_latency_sec,p50_latency_sec,p95_latency_sec,p99_latency_sec,max_latency_sec,worker_count,model,scenario,phase,timestamp
+3,3,3,37.73214400978759,0.07950780637383897,25.623478510727484,25.734101749025285,36.53134684627876,37.49110196603462,37.73104074597359,5,SD-v1-4-safetensors,horizontal,workers_5,1785154869.220691

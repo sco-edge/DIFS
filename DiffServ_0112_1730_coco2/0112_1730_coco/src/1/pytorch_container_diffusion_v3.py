@@ -1,33 +1,49 @@
+# Purpose: Worker Server; for gRPC Worker process
+import os
+import sys
+
+ROOT_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__),"..")
+    )
+
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
+
+import traceback
+import time
 from typing import Optional, Tuple
 from pathlib import Path
 from concurrent import futures
-import os
-import sys
-import traceback
-import time
+import json
+import datetime
+import secrets
+import argparse
 import torch
 import grpc
+import numpy as np
+from PIL import Image
+from scipy import linalg
 
 
-
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SRC_DIR = os.path.abspath(
-    os.path.join(CURRENT_DIR, "..")
-)
-
-if SRC_DIR not in sys.path:
-    sys.path.insert(0, SRC_DIR)
-
-
-
-# 컴파일된 파일들을 루트에서 임포트
 # Import compiled files from the root directory
+from project_paths import * 
+import config
+
+
+#from experiment_models import MODELS
+#executor.preload_models(MODELS)
+
+from worker_metrics import WorkerMetrics
+from torchmetrics.image.fid import FrechetInceptionDistance
+
 import query_pb2
 import query_pb2_grpc
 import infaas_request_status_pb2
 
 ### Merge
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, StableDiffusionXLPipeline, StableDiffusion3Pipeline
+from transformers import CLIPTextModelWithProjection, T5EncoderModel
 
 import diffusers
 import transformers
@@ -45,33 +61,45 @@ from diffusers import (
     DDIMScheduler
 )
 
-import datetime
-import secrets
-
-import numpy as np
-from torchmetrics.image.fid import FrechetInceptionDistance
-from PIL import Image
-from scipy import linalg
-
-import argparse  # 추가
-import json      # 추가
+from project_paths import (
+    PROJECT_ROOT,
+    MODELS_JSON,
+    SAMPLERS_JSON,
+    REAL_STATS,
+    MODEL_CACHE,
+    DIFFUSION_OUTPUT,
+    OUTPUT_DIR,
+    METRICS_DIR
+)
 
 # ========================================================================
 # 🌟 Global Constant Settings (Reflecting the INFaaS Folder Structure)  🌟
 # ========================================================================
-MODEL_DIR = Path("/tmp/model")
-OUTPUT_ROOT_DIR = '/tmp/diffusion_output' 
+MODEL_DIR = MODEL_CACHE
+
+#OUTPUT_ROOT_DIR = '/tmp/diffusion_output' 
+OUTPUT_DIR = DIFFUSION_OUTPUT
+
 MODEL_FILE_NAME = "sd-v1-4.safetensors"
 #MODEL_FILE_NAME = "v1-5-pruned-emaonly.safetensors"
 CKPT_FILE_PATH = Path(MODEL_DIR) / MODEL_FILE_NAME
-OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)
+#OUTPUT_DIR = Path(OUTPUT_ROOT_DIR)
 
-# [추가] JSON 로드 및 매핑 유틸리티
+# [ADDED] JSON load and mapping utilities
 def load_json(file_path):
-    if not os.path.exists(file_path):
-        print(f"Error: {file_path} 파일이 존재하지 않습니다.")
+
+    file_path = Path(file_path)
+
+    print("=" * 60)
+    print("[JSON LOADER]")
+    print("Trying:", file_path)
+    print("=" * 60)
+
+    if not file_path.exists():
+        print(f"Error: {file_path} does not exist.")
         return None
-    with open(file_path, 'r', encoding='utf-8') as f:
+
+    with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def get_filename_by_id(data, target_id):
@@ -81,7 +109,7 @@ def get_filename_by_id(data, target_id):
     return None
 
 class ModelExecutor(query_pb2_grpc.QueryServicer):
-    #def __init__(self, model_id: int, model_filename: str): # 인자 추가
+    #def __init__(self, model_id: int, model_filename: str): # 인자 added
     def __init__(
         self, 
         model_id: int, 
@@ -89,42 +117,87 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         sampler_id: int, 
         sampler_name: str, 
         thread_count: int, 
-        port: int,           # 포트 번호 추가
+        port: int,           # added port number
         npz_path: str
     ):
         """
-        ModelExecutor 초기화 및 모델 로드
+        Initialize ModelExecutor and load the model
         """        
         print(f"[Info] Initializing ModelExecutor (Model ID: {model_id}, File: {model_filename})")
-        self.model_id = model_id # 모델 ID 저장
+        self.model_id = model_id # store the model ID
         self.model_directory = MODEL_DIR
-        self.model_file_name = model_filename # 전달받은 파일명 사용
+        self.model_file_name = model_filename # use the received filename
         self.ckpt_file_path = Path(self.model_directory) / self.model_file_name
-        # 파라미터 저장
+        # store the parameters
         self.sampler_id = sampler_id
         self.sampler_name = sampler_name
         self.thread_count = thread_count
-        self.port = port     # 클래스 멤버 변수로 저장
+        self.port = port     # store as a class member variable
+        self.local_queue_length = 0
+        ###########################################################
+        # Worker runtime state
+        ###########################################################
+        self.busy = False
+        self.active_requests = 0
+
+        ###########################################################
+        # Dynamic model switching
+        ###########################################################
+        import threading
+
+        self.model_lock = threading.Lock()
+
+        self.current_model_name = model_filename
+
+        self.model_switches = 0
+        self.last_switch_time_ms = 0.0
+
+        ###########################################################
+        # Metrics logger
+        ###########################################################
+        self.metrics = WorkerMetrics(output_dir=str(METRICS_DIR))
+        print("=" * 60)
+        print(f"[WORKER] Metrics directory: {self.metrics.output_dir}")
+        print("=" * 60)
+
         self.real_stats_path = npz_path
 
         self.mu_real = None
         self.sigma_real = None
 
-        # 모델 로드
-        self.pipe, self.device = self.load_model()
+        # load the model
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        #####################################################
+        # Multiple loaded pipelines
+        #####################################################
+
+        self.model_cache = {}
+        self.current_pipe = None
+        self._pipeline_class_name = None
         
-        if self.pipe is None:
-            print("[Error] Failed to load model")
+        #####################################################
+        #####################################################
+        self.current_pipe = self.load_model(self.model_file_name)
+
+        if self.current_pipe is None:
+            raise RuntimeError(
+                f"Failed to load model: {self.model_file_name}"
+            )
+
+        self.model_cache[self.model_file_name] = self.current_pipe
+        #####################################################
         # 2. 서버 시작 시 테스트 추론 1회 실행 (Warm-up)
         #if self.pipe:
         #    self.run_startup_test()
         #else:
-        #    print("[오류] 모델 로드 실패로 테스트 추론을 건너뜁니다.")
+        #    print("[ERROR] model load failed로 테스트 추론을 건너뜁니다.")
         
-        DEFAULT_STATS = Path("/workspace/real_stats.npz")
+        DEFAULT_STATS = REAL_STATS
+
         real_stats_path = self.real_stats_path
         if os.path.exists(self.real_stats_path):
-            # load시 실사 이미지의 mu, sigma 값을 계산한다. 
+            # compute the real-image mu and sigma values during load. 
             real_stats = np.load(real_stats_path)
             self.mu_real = real_stats['mu']
             self.sigma_real = real_stats['sigma']
@@ -140,17 +213,29 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             print(f"📊 Calculating the sigma value of a real-world image ({self.sigma_real})")
 
 
-    def load_model(self) -> Tuple[Optional[StableDiffusionPipeline], str]:
+    def load_model(self, model_filename=None) -> Tuple[Optional[StableDiffusionPipeline], str]:
         """
-        단일 파일(.safetensors)로부터 Stable Diffusion 모델을 로드
+        load a Stable Diffusion model from a single file (.safetensors)
         """
 
         total_start = time.perf_counter()
-        # 1. 파일 시스템 로드 측정
+        # 1. measure the file-system load
         print(f"[Timer] Step 1: Starting to load the weight file... ({self.ckpt_file_path})")
         load_start = time.perf_counter()
+
+        ############################################################
+        # GPU MEMORY BEFORE LOADING
+        ############################################################        
         
         if torch.cuda.is_available():
+            free, total = torch.cuda.mem_get_info()
+
+            print("=" * 60)
+            print("[GPU BEFORE LOAD]")
+            print(f"Free : {free / 1024**2:.2f} MB")
+            print(f"Total: {total / 1024**2:.2f} MB")
+            print("=" * 60)
+            
             device = "cuda"
             dtype = torch.float16
             print(f"cuda")
@@ -160,26 +245,138 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             print(f"cpu")
 
         try:
-            print(f"[Info] Attempting to load model: {self.ckpt_file_path}")
+            if model_filename is not None:
+
+                self.model_file_name = model_filename
+                ckpt_file_path = Path(self.model_directory) / model_filename
+            print(f"[MODEL] Loading {ckpt_file_path}")
 
             print("=" * 60)
-            print("CHECKPOINT PATH =", self.ckpt_file_path)
-            print("EXISTS =", os.path.exists(self.ckpt_file_path))
+            print("CHECKPOINT PATH =", ckpt_file_path)
+            print("EXISTS =", os.path.exists(ckpt_file_path))
 
             if os.path.exists(MODEL_DIR):
-                print("CONTENTS OF /tmp/model:")
+                print(f"CONTENTS OF {MODEL_DIR}:")
                 print(os.listdir(MODEL_DIR))
             else:
-                print("/tmp/model DOES NOT EXIST")
+                print(f"{MODEL_DIR} DOES NOT EXIST")
 
             print("=" * 60)
 
-            pipe = StableDiffusionPipeline.from_single_file(
-                str(self.ckpt_file_path),
-                torch_dtype=dtype,
-                load_safety_checker=False,
-                low_cpu_mem_usage=False,
-            )
+            pipeline_class_name = None
+
+            if ckpt_file_path.is_dir():
+    
+                print("[MODEL] Loading HuggingFace directory")
+
+                # Detect pipeline class from model_index.json
+                model_index_path = ckpt_file_path / "model_index.json"
+                if model_index_path.exists():
+                    with open(model_index_path) as f:
+                        model_index = json.load(f)
+                    pipeline_class_name = model_index.get("_class_name", None)
+                    print(f"[MODEL] Detected _class_name: {pipeline_class_name}")
+
+                # Fallback: detect SD 3.5 by file presence (camenduru mirror has no model_index.json)
+                if pipeline_class_name is None:
+                    if any(f.name.startswith("sd3") and f.suffix == ".safetensors"
+                           for f in ckpt_file_path.iterdir()):
+                        pipeline_class_name = "StableDiffusion3Pipeline"
+                        print("[MODEL] Detected SD 3.5 by file presence (no model_index.json)")
+
+                if pipeline_class_name == "StableDiffusionXLPipeline":
+                    print("[MODEL] Using StableDiffusionXLPipeline for SDXL model")
+                    pipe = StableDiffusionXLPipeline.from_pretrained(
+                        str(ckpt_file_path),
+                        torch_dtype=dtype,
+                        safety_checker=None,
+                        local_files_only=True,
+                        use_safetensors=True,
+                        variant=None,
+                    )
+                elif pipeline_class_name == "StableDiffusion3Pipeline":
+                    print("[MODEL] Using StableDiffusion3Pipeline for SD 3.5 model")
+                    sd3_safetensors = list(ckpt_file_path.glob("sd3*.safetensors"))
+                    if sd3_safetensors:
+                        print(f"[MODEL] Loading SD 3.5 from single file: {sd3_safetensors[0].name}")
+                        print("[MODEL] Pre-loading text encoders for SD 3.5...")
+                        te_t0 = time.perf_counter()
+                        te1 = CLIPTextModelWithProjection.from_pretrained(
+                            str(ckpt_file_path / "text_encoder"), torch_dtype=dtype, local_files_only=True, variant="fp16"
+                        )
+                        te2 = CLIPTextModelWithProjection.from_pretrained(
+                            str(ckpt_file_path / "text_encoder_2"), torch_dtype=dtype, local_files_only=True, variant="fp16"
+                        )
+                        te3 = T5EncoderModel.from_pretrained(
+                            str(ckpt_file_path / "text_encoder_3"), torch_dtype=dtype, local_files_only=True, variant="fp16"
+                        )
+                        print(f"[MODEL] Text encoders loaded in {time.perf_counter()-te_t0:.1f}s")
+                        pipe = StableDiffusion3Pipeline.from_single_file(
+                            str(sd3_safetensors[0]),
+                            torch_dtype=dtype,
+                            local_files_only=True,
+                            config=str(ckpt_file_path),
+                            text_encoder=te1,
+                            text_encoder_2=te2,
+                            text_encoder_3=te3,
+                        )
+                    else:
+                        pipe = StableDiffusion3Pipeline.from_pretrained(
+                            str(ckpt_file_path),
+                            torch_dtype=dtype,
+                            local_files_only=True,
+                            use_safetensors=True,
+                            variant=None,
+                        )
+                else:
+                    print("[MODEL] Using StableDiffusionPipeline for standard SD model")
+                    pipe = StableDiffusionPipeline.from_pretrained(
+                        str(ckpt_file_path),
+                        torch_dtype=dtype,
+                        safety_checker=None,
+                        local_files_only=True,
+                        use_safetensors=True,
+                        variant="fp16",
+                    )
+
+                if hasattr(pipe, 'enable_attention_slicing'):
+                    pipe.enable_attention_slicing()
+                    print("[MODEL] Attention slicing enabled")
+                if hasattr(pipe, 'enable_vae_slicing'):
+                    pipe.enable_vae_slicing()
+                    print("[MODEL] VAE slicing enabled")
+                if hasattr(pipe, 'enable_sequential_cpu_offload'):
+                    pipe.enable_sequential_cpu_offload()
+                    print("[MODEL] Sequential CPU offload enabled")
+                elif hasattr(pipe, 'enable_model_cpu_offload'):
+                    pipe.enable_model_cpu_offload()
+                    print("[MODEL] Model CPU offload enabled")
+                print("=" * 60)
+
+            else:
+
+                print("[MODEL] Loading single checkpoint")
+
+                pipe = StableDiffusionPipeline.from_single_file(
+                    str(ckpt_file_path),
+                    torch_dtype=torch.float16,
+                    load_safety_checker=False,
+                    low_cpu_mem_usage=True,
+                )
+
+                ############################################################
+                # Memory Optimizations
+                ############################################################
+
+                pipe.enable_attention_slicing()
+                pipe.enable_vae_slicing()
+                pipe.enable_sequential_cpu_offload()
+
+                print("=" * 60)
+                print("[MODEL] Attention slicing enabled")
+                print("[MODEL] VAE slicing enabled")
+                print("[MODEL] Sequential CPU offload enabled")
+                print("=" * 60)
 
             print("ROOT DIRECTORY")
             print(os.listdir("/"))
@@ -192,48 +389,144 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                     if file.endswith(".safetensors"):
                         print("FOUND SAFETENSOR:", os.path.join(root, file))
 
-            pipe.to(device)
+            # pipe.to(device)
             load_end = time.perf_counter()
             print(f" ✅ [Complete] File load time: {load_end - load_start:.2f}초")
             
 
-            # 2. 예열(Warm-up) 시간 측정
-            # 여기서 model.safetensors 진행바가 다시 뜬다면 이 구간이 병목입니다.
+            # 2. measure the warm-up time
+            # if the model.safetensors progress bar appears again here, this section is the bottleneck.
             print("[Timer] Step 2: Component Optimization (Warm-up) Begins...")
             warmup_start = time.perf_counter()
 
+            # Use 512x512 for SDXL/SD3.5, 64x64 for standard SD
+            if pipeline_class_name in ("StableDiffusionXLPipeline", "StableDiffusion3Pipeline"):
+                warmup_w, warmup_h = 512, 512
+            else:
+                warmup_w, warmup_h = 64, 64
+            print(f"[MODEL] Warmup resolution: {warmup_w}x{warmup_h}")
+
             with torch.inference_mode():
-                # 안전검사기 완전 무시 (NSFW 오류 방지)
-                pipe.safety_checker = None
+                # ignore the safety checker entirely (to avoid NSFW errors)
+                if hasattr(pipe, 'safety_checker'):
+                    pipe.safety_checker = None
                 pipe(
-                    prompt="a silent dog",
+                    prompt="dog",
                     num_inference_steps=1,
-                    width=128,
-                    height=128,
+                    width=warmup_w,
+                    height=warmup_h,
                     guidance_scale=1.0
                 )
             
+            if torch.cuda.is_available():
+                torch.cuda.synchronize()
+            
             warmup_end = time.perf_counter()
             print(f" ✅ [Completed] Warm-up execution time: {warmup_end - warmup_start:.2f}초")
+            ############################################################
+            # GPU MEMORY AFTER LOADING
+            ############################################################
+            if torch.cuda.is_available():
+                free, total = torch.cuda.mem_get_info()
+
+                print("=" * 60)
+                print("[GPU AFTER LOAD]")
+                print(f"Free : {free / 1024**2:.2f} MB")
+                print(f"Total: {total / 1024**2:.2f} MB")
+                print("=" * 60)
 
             total_end = time.perf_counter()
+
+            self.metrics.log_model_load(
+                model=self.model_file_name,
+                load_time=total_end - total_start
+            )
+
             print("=" * 60)
             print(f"🚀 [Final] Server setup complete. Total time taken: {total_end - total_start:.2f}초")
             print("=" * 60)
 
             print("[Info] Weight loading 100% complete! GPU ready")
-            return pipe, device
+
+            ############################################################
+            # Release any unused cached GPU memory
+            ############################################################
+            if torch.cuda.is_available():
+                try:
+                    torch.cuda.empty_cache()
+                except Exception as e:
+                    print(f"[WARN] CUDA empty_cache failed (non-fatal): {e}")
+
+            self._pipeline_class_name = pipeline_class_name
+            return pipe
         except Exception as e:
             print("[Error] An exception occurred while loading the model.")
             print(e)
             traceback.print_exc()
-            return None, device
+            return None
+
+    def replace_model(self, model_filename):
+    
+        start = time.perf_counter()
+        print(f"[MODEL SWITCH] {self.current_model_name} -> {model_filename}")
+
+        with self.model_lock:
+
+            if model_filename in self.model_cache:
+                self.current_pipe = self.model_cache[model_filename]
+
+            else:
+                self.current_pipe = self.load_model(model_filename)
+
+                if self.current_pipe is None:
+
+                    raise RuntimeError(
+                        f"Cannot load {model_filename}"
+                    )
+
+                self.model_cache[model_filename] = self.current_pipe
+
+            self.current_model_name = model_filename
+            self.model_file_name = model_filename
+
+            self.model_switches += 1
+
+        elapsed = (time.perf_counter() - start) * 1000
+
+        self.last_switch_time_ms = elapsed
+        print(f"[MODEL SWITCH] completed in {elapsed:.2f} ms")
+        return elapsed
+
+    def hot_switch_model(self,
+                        model_name):
+
+        start = time.perf_counter()
+
+        with self.model_lock:
+
+            if model_name not in self.model_cache:
+                self.current_pipe = self.load_model(model_name)
+                if self.current_pipe is None:
+                    raise RuntimeError(f"Cannot load {model_name}")
+                self.model_cache[model_name] = self.current_pipe
+            else:
+                self.current_pipe = self.model_cache[model_name]
+
+            self.current_model_name = model_name
+
+            self.model_switches += 1
+
+        elapsed = (time.perf_counter()-start)*1000
+
+        self.last_switch_time_ms = elapsed
+
+        return elapsed
     
     def QueryOnline(self, request, context):
         """
-        gRPC QueryOnline 요청 처리
+        Handle gRPC QueryOnline requests
         """
-        if self.pipe is None:
+        if self.current_pipe is None:
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.UNAVAILABLE,
                 msg="Model not loaded"
@@ -242,51 +535,72 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
 
         print(f"[Info] Request Received - Prompt: {request.Prompt}")
 
-        # 추론 실행
+        # run inference
         try:
-            # --- 시간 측정 시작 ---
-        # GPU 연산이 이전에 남아있을 수 있으므로 동기화 후 CPU 시간 기록
+            # --- start timing ---
+        # record the CPU time after synchronizing, since GPU work may still be pending
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
+            self.active_requests += 1
+            self.busy = self.active_requests > 0
             start_time = time.perf_counter()
 
-            saved_paths = self.ExecuteInference(
-                prompt=list(request.Prompt),
-                steps=request.Steps if request.Steps > 0 else 30,
-                cfg=request.CFG_Scale if request.CFG_Scale > 0 else 7.5,
-                batch_size=request.BatchSize if request.BatchSize > 0 else 1,
-                seed=request.Seed,
-                #sampler_type=1 #하드코딩
-                sampler_type=self.sampler_id
-                #height_px=256, 
-                #width_px=256
-            )
+            with self.model_lock: # protect inference
+                saved_paths = self.ExecuteInference(
+                    prompt=list(request.Prompt),
+                    steps=request.Steps if request.Steps > 0 else 30,
+                    cfg=request.CFG_Scale if request.CFG_Scale > 0 else 7.5,
+                    batch_size=request.BatchSize if request.BatchSize > 0 else 1,
+                    seed=request.Seed,
+                    #sampler_type=1 #hardcoded
+                    sampler_type=self.sampler_id
+                    #height_px=256, 
+                    #width_px=256
+                )
 
-            # GPU 연산이 완전히 끝날 때까지 대기 후 종료 시간 기록
+            # wait until the GPU work is fully finished, then record the end time
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
+
             end_time = time.perf_counter()
-            # --- 시간 측정 종료 ---
+            # --- stop timing ---
 
             elapsed_time = end_time - start_time
+
+            # QueryOnline() does not compute FID
+            fid_value = -1
+            self.metrics.log_inference(
+                worker_port=self.port,
+                model_id=self.model_id,
+                model_name=self.current_model_name,
+                sampler=self.sampler_name,
+                batch_size=request.BatchSize,
+                steps=request.Steps,
+                latency=elapsed_time,
+                fid=fid_value,
+                images_generated=len(saved_paths),
+                success=True
+            )
             print("------------------------------------------------------------")
             print(f"[Performance Log] Total inference time: {elapsed_time:.4f} seconds (CPU+GPU)")
             print("------------------------------------------------------------")
 
-            # 2. 결과 로그 출력
-            print("[정보] 추론 및 파일 저장 완료!")
+            # 2. print the result log
+            print("[INFO] inference and file saving complete!")
             str_image_paths = []
             for path in saved_paths:
-                print(f" >> 저장된 위치: {path}")
-                # Path 객체를 문자열로 변환하여 리스트에 추가
+                print(f" >> saved location: {path}")
+                # convert the Path object to a string and add it to the list
                 str_image_paths.append(str(path))
             
-            # 3. 성공 상태 메시지 구성
+            # 3. build the success status message
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.SUCCESS
             )
 
-            # 4. 수정된 proto 정의에 맞춰 image_paths 필드에 결과 담아 반환
+            # 4. return the results in the image_paths field per the modified proto definition
+            self.active_requests -= 1
+            self.busy = self.active_requests > 0
             return query_pb2.QueryOnlineResponse(
                 image_paths=str_image_paths,
                 status=status_msg
@@ -300,13 +614,24 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                 status=infaas_request_status_pb2.INVALID,
                 msg="Inference failed"
             )
+
+            self.busy = False
+            if self.active_requests > 0:
+                self.active_requests -= 1
+
             return query_pb2.QueryOnlineResponse(status=status_msg)
+        finally:
+            if self.active_requests > 0:
+                self.active_requests -= 1
+
+            self.busy = self.active_requests > 0
+
 
     def QueryOnlineImage(self, request, context):
         """
-        gRPC QueryOnline 요청 처리
+        Handle gRPC QueryOnline requests
         """
-        if self.pipe is None:
+        if self.current_pipe is None:
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.UNAVAILABLE,
                 msg="Model not loaded"
@@ -314,110 +639,163 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
             yield query_pb2.QueryOnlineImageResponse(status=status_msg)
             return
 
-        print(f"[인포] 요청 수신 - 프롬프트: {request.Prompt}")
-        print(f"[인포] request.Steps: {request.Steps}")
-        print(f"[인포] request.Sampler_Type: {request.Sampler_Type}")
+        print(f"[Info] Request Received - Prompt: {request.Prompt}")
 
-        # 추론 실행
+        print("[DEBUG-1] entered QueryOnlineImage")
+
+        print(f"[Info] request.Steps: {request.Steps}")
+        print(f"[Info] request.Sampler_Type: {request.Sampler_Type}")
+
+        # run inference
         try:
-            # --- 시간 측정 시작 ---
-            # GPU 연산이 이전에 남아있을 수 있으므로 동기화 후 CPU 시간 기록
+            # --- Start Time ---
+            # Since GPU computations may still be in progress, record CPU time after synchronization
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
+            
+            self.active_requests += 1
+            self.busy = self.active_requests > 0
+
             start_time = time.perf_counter()
 
-            # 디렉토리명 생성
+            # Creating a Directory Name
             now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            random_str = secrets.token_hex(3) # 6자리 랜덤 문자열
+            random_str = secrets.token_hex(3) # 6-character random string
             unique_name = f"{now}_{random_str}"           
             target_dir = OUTPUT_DIR / unique_name
+            print("[DEBUG-2] output dir created")
+
             print(target_dir)
 
-            saved_paths = self.ExecuteInference(
-                prompt=list(request.Prompt),
-                steps=request.Steps if request.Steps > 0 else 30,
-                cfg=request.CFG_Scale if request.CFG_Scale > 0 else 7.5,
-                batch_size=request.BatchSize if request.BatchSize > 0 else 1,
-                seed=request.Seed,
-                #sampler_type=getattr(request, 'SamplerType', 1) # proto에 SamplerType 필드가 있다고 가정
-                sampler_type=request.Sampler_Type, #하드코딩
-                #height_px=256, 
-                #width_px=256
-                output_path=target_dir
-            )
+            with self.model_lock:
+                saved_paths = self.ExecuteInference(
+                    prompt=list(request.Prompt),
+                    steps=request.Steps if request.Steps > 0 else 30,
+                    cfg=request.CFG_Scale if request.CFG_Scale > 0 else 7.5,
+                    batch_size=request.BatchSize if request.BatchSize > 0 else 1,
+                    seed=request.Seed,
+                    #sampler_type=getattr(request, 'SamplerType', 1) # assumes the proto has a SamplerType field
+                    sampler_type=request.Sampler_Type, #hardcoded
+                    #height_px=256, 
+                    #width_px=256
+                    output_path=target_dir
+                )
+                print("[DEBUG-3] ExecuteInference finished")
+                print(saved_paths)
 
-            # GPU 연산이 완전히 끝날 때까지 대기 후 종료 시간 기록
+            # wait until the GPU work is fully finished, then record the end time
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             end_time = time.perf_counter()
-            # --- 시간 측정 종료 ---
+            # --- stop timing ---
 
-            # --- npz파일 저장 ---
-            mu_gen, sigma_gen = self.get_statistics(target_dir, self.device)
-            # 2. 파일명 및 경로 설정 (target_dir 폴더 안에 gen_stats.npz로 명명) 
+            # --- save the npz file ---
+            image_dir = Path(saved_paths[0]).parent
+            mu_gen, sigma_gen = self.get_statistics(image_dir, self.device)
+            print("[DEBUG-4] statistics computed")
+
+            # 2. set the filename and path (named gen_stats.npz inside the target_dir folder) 
             out_file = os.path.join(target_dir, "gen_stats.npz")
             np.savez(out_file, mu=mu_gen, sigma=sigma_gen)
-            print(f"✅ 통계 저장 완료: {out_file}")
+            print(f"✅ statistics saved: {out_file}")
 
-            # --- [추가] FID 계산 로직 ---
-            # 실사 이미지 통계 파일 경로
-            # 1. 도커 내부의 절대 경로를 직접 지정 (가장 확실함)
+            # --- [ADDED] FID computation logic ---
+            # path to the real-image statistics file
+            # 1. specify the absolute path inside the container directly (most reliable)
             
-            #real_stats_path = "/workspace/real_stats.npz"
             fid_score = None
 
             if self.mu_real is not None:
-                #print(f"📊 FID 계산 시작 (기준: {real_stats_path})")
-                # 1. 실사 이미지 통계 로드
+                #print(f"📊 starting FID computation (reference: {real_stats_path})")
+                # 1. load the real-image statistics
                 #real_stats = np.load(real_stats_path)
                 #mu_real = real_stats['mu']
                 #sigma_real = real_stats['sigma']
 
-                # 2. 제공된 함수를 호출하여 FID 계산
+                # 2. compute FID by calling the provided function
                 fid_score = self.calculate_fid_from_stats(
                     self.mu_real, 
                     self.sigma_real,
                     mu_gen, 
                     sigma_gen)
-                print(f"🔥 최종 FID Score: {fid_score:.4f}")
+                print("[DEBUG-5] fid computed")
+
+                print(f"Final FID Score: {fid_score:.4f}")
+                if hasattr(self.metrics, "log_fid"):
+                    self.metrics.log_fid(fid_score)
             else:
                 print("Skipping FID because no reference statistics are available.")
 
             elapsed_time = end_time - start_time
+
+
+            # If FID could not be computed
+            fid_value = fid_score if fid_score is not None else -1
+
+            self.metrics.log_inference(
+                worker_port=self.port,
+                model_id=self.model_id,
+                model_name=self.current_model_name,
+                sampler=self.sampler_name,
+                batch_size=request.BatchSize,
+                steps=request.Steps,
+                latency=elapsed_time,
+                fid=fid_value,
+                images_generated=len(saved_paths),
+                success=True
+            )
             print("------------------------------------------------------------")
             print(f"[Performance Log] Total inference time: {elapsed_time:.4f} seconds (CPU+GPU)")
             if fid_score is not None:
-                print(f"[성능 로그] FID 점수: {fid_score:.4f}")
+                print(f"[PERFORMANCE LOG] FID score: {fid_score:.4f}")
             print("------------------------------------------------------------")
 
                         
-            # 3. 성공 상태 메시지 구성
+            # 3. build the success status message
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.SUCCESS
             )
 
+            print("[DEBUG-6] beginning image streaming")
             for path in saved_paths:
-                print(f" >> 저장된 위치: {path}")
+                print(f" >> saved location: {path}")
 
+                print(path)
                 with open(path, "rb") as f:
                     image_bytes = f.read()
 
+
+                print("[DEBUG-7] yielding response")
                 yield query_pb2.QueryOnlineImageResponse(
                     image_path=str(path),
                     image_data=image_bytes,
                     status=status_msg
                 )
 
+            self.active_requests -= 1
+            self.busy = self.active_requests > 0
+
             return
 
         except Exception as e:
-            print("[Error] An error occurred during inference")
-            print(e)
+    
+            print("="*80)
+            print("WORKER EXCEPTION")
+            print("="*80)
             traceback.print_exc()
+            print(repr(e))
+            print("="*80)
+
+            print("[Error] An error occurred during inference")
             status_msg = infaas_request_status_pb2.InfaasRequestStatus(
                 status=infaas_request_status_pb2.INVALID,
                 msg="Inference failed"
             )
+
+            self.busy = False
+            if self.active_requests > 0:
+                self.active_requests -= 1
+
             yield query_pb2.QueryOnlineImageResponse(
                 status=status_msg
             )
@@ -427,55 +805,59 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
                          sampler_type: int = 1,  # 1: Euler a, 2: DPM++, 3: LMS, 4: DDIM 
                          height_px: int = 384, width_px: int = 384, output_path: Path = OUTPUT_DIR):
         """
-        실제 Diffusion 추론 엔진 실행 및 이미지 저장
+        run the actual diffusion inference engine and save the images
         """
-        print(f"\n--- 이미지 추론 시작 (Sampler Type: {sampler_type} 및 저장 프로세스 시작) ---")
+        print(f"\n--- image inference started (Sampler Type: {sampler_type}) and saving process started ---")
         
-        # 1. 샘플러(Scheduler) 설정
-        if sampler_type == 1:
+        # 1. configure the sampler (scheduler)
+        # SD 3.5 uses FlowMatchEulerDiscreteScheduler — do not replace
+        if hasattr(self, '_pipeline_class_name') and self._pipeline_class_name == "StableDiffusion3Pipeline":
+            sampler_name = "FlowMatch_Euler"
+            print(f"[MODEL] SD 3.5 detected — using native FlowMatchEulerDiscreteScheduler")
+        elif sampler_type == 1:
             # Euler Ancestral (Euler a)
-            self.pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.pipe.scheduler.config)
+            self.current_pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.current_pipe.scheduler.config)
             sampler_name = "Euler_a"
         elif sampler_type == 2:
-            # DPM++ 2M Karras (매우 빠르고 고품질)
-            self.pipe.scheduler = DPMSolverMultistepScheduler.from_config(
-                self.pipe.scheduler.config, use_karras_sigmas=True
+            # DPM++ 2M Karras (very fast and high quality)
+            self.current_pipe.scheduler = DPMSolverMultistepScheduler.from_config(
+                self.current_pipe.scheduler.config, use_karras_sigmas=True
             )
             sampler_name = "DPM++_Karras"
         elif sampler_type == 3:
             # LMS (Linear Multi-Step)
-            self.pipe.scheduler = LMSDiscreteScheduler.from_config(self.pipe.scheduler.config)
+            self.current_pipe.scheduler = LMSDiscreteScheduler.from_config(self.current_pipe.scheduler.config)
             sampler_name = "LMS"
         elif sampler_type == 4:
             # DDIM
-            self.pipe.scheduler = DDIMScheduler.from_config(self.pipe.scheduler.config)
+            self.current_pipe.scheduler = DDIMScheduler.from_config(self.current_pipe.scheduler.config)
             sampler_name = "DDIM"
         else:
-            print(f"[경고] 알 수 없는 샘플러 타입({sampler_type}), 기본값(Euler a)을 사용합니다.")
-            self.pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.pipe.scheduler.config)
+            print(f"[WARNING] unknown sampler type ({sampler_type}); using the default (Euler a).")
+            self.current_pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.current_pipe.scheduler.config)
             sampler_name = "Euler_a_Default"
         
-        # 2. 난수 생성기 설정 (재현성 확보)
+        # 2. configure the random number generator (for reproducibility)
         if seed == 0:
                 seed = torch.seed()
 
         generator = torch.Generator(self.device).manual_seed(seed)
         #prompt_list = [prompt] * batch_size
 
-        # 3. 프롬프트 리스트 검증
-        # 입력된 프롬프트 개수가 batch_size보다 적을 경우를 대비한 처리
+        # 3. validate the prompt list
+        # handle the case where fewer prompts are provided than batch_size
         if len(prompt) < batch_size:
-            print(f"[경고] 입력된 프롬프트({len(prompt)})가 BatchSize({batch_size})보다 적습니다. 부족분은 마지막 프롬프트로 채웁니다.")
+            print(f"[WARNING] the number of prompts provided ({len(prompt)}) is less than the BatchSize ({batch_size}); the remainder is filled with the last prompt.")
             prompt = prompt + [prompt[-1]] * (batch_size - len(prompt))
         elif len(prompt) > batch_size:
-            print(f"[정보] BatchSize({batch_size})에 맞춰 입력된 프롬프트 중 앞부분만 사용합니다.")
+            print(f"[INFO] using only the first part of the provided prompts to match the BatchSize ({batch_size}).")
             prompt = prompt[:batch_size]
 
-        # 4. 이미지 생성
-        print(f"총 {batch_size}개의 이미지 생성 중... (Sampler: {sampler_name})")
-        print(f"총 {batch_size}개의 이미지 ({width_px}x{height_px})")
-        output = self.pipe(
-            prompt=prompt, # 리스트 형태의 프롬프트 전달
+        # 4. generate the images
+        print(f"generating {batch_size} images... (Sampler: {sampler_name})")
+        print(f"{batch_size} images total ({width_px}x{height_px})")
+        output = self.current_pipe(
+            prompt=prompt, # pass the prompt as a list
             num_inference_steps=steps,
             guidance_scale=cfg,
             height=height_px,
@@ -485,23 +867,35 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         
         generated_images = output.images
 
+        if torch.cuda.is_available():
+    
+            allocated = torch.cuda.memory_allocated() / (1024 ** 2)
+
+            reserved = torch.cuda.memory_reserved() / (1024 ** 2)
+
+            self.metrics.log_gpu_memory(
+                allocated_mb=allocated,
+                reserved_mb=reserved
+            )
+
        
         # 5. Create an output folder and save the image (apply the `generate_and_save_image` logic)
+        output_path = Path(output_path)
         output_path.mkdir(parents=True, exist_ok=True)
         print(f"Saving generated images to Output Directory: ‘{output_path}’.")
         saved_files = []
         for i, image in enumerate(generated_images):
-            # 파일명 형식: sd_output_[샘플러명]_[인덱스]_[시드]_[해상도].png
+            # filename format: sd_output_[sampler_name]_[index]_[seed]_[resolution].png
             filename = output_path / f"sd_{sampler_name}_b{i+1}_s{seed}_{width_px}x{height_px}.png"
             image.save(filename)
-            print(f"  -> 저장 완료: {filename}")
+            print(f"  -> saved: {filename}")
             saved_files.append(filename)
-            print(f" -> 저장 완료: {filename} (Prompt: {prompt[i][:20]}...) ")
+            print(f" -> saved: {filename} (Prompt: {prompt[i][:20]}...) ")
 
         print("-" * 50)
-        return saved_files # 저장된 파일 경로 리스트 반환
+        return saved_files # return the list of saved file paths
 
-    # --- 1. 통계량(mu, sigma) 추출 함수 ---
+    # --- 1. function to extract the statistics (mu, sigma) ---
     def get_statistics(self, image_dir, device):
         fid = FrechetInceptionDistance(feature=2048).to(device)
         
@@ -510,9 +904,9 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         files = sorted([f for f in os.listdir(image_dir) if f.lower().endswith(valid_extensions)])
         
         if not files:
-            raise ValueError(f"❌ 폴더에 이미지가 없습니다: {image_dir}")
+            raise ValueError(f"❌ no images in the folder: {image_dir}")
 
-        print(f"📦 {len(files)}개 이미지 로드 중...")
+        print(f"📦 loading {len(files)} images...")
         for filename in files:
             img = Image.open(os.path.join(image_dir, filename)).convert('RGB')
             img = img.resize((299, 299), Image.LANCZOS)
@@ -523,7 +917,7 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
         
         fid.update(imgs_tensor, real=True)
         
-        # 통계량 산출
+        # compute the statistics
         mu = (fid.real_features_sum / fid.real_features_num_samples).cpu().numpy()
         num_samples = fid.real_features_num_samples.item()
         features_cov_sum = fid.real_features_cov_sum.cpu().numpy()
@@ -562,33 +956,37 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
 
     def run_startup_test(self):
         
-        # """서버 시작 시 1회 테스트 추론을 실행하고 결과를 저장하는 함수"""
+        # """function that runs a one-time test inference at server startup and saves the result"""
         """A function that runs a single test inference when the server starts and saves the results"""
 
         print("\n" + "="*60)
 
-        # print("[테스트] 서버 기동 시 초기 추론 및 저장 테스트를 시작합니다...")
+        # print("[TEST] starting the initial inference and saving test at server startup...")
         print("[Test] Starting the initial inference and storage test upon server startup...")
 
         # test_prompt = "A high quality photo of a cat"
         test_prompt = ["A high quality photo of a cat"]
         
         try:
-            # ExecuteInference를 호출하여 실행 및 파일 저장
-            saved_paths = self.ExecuteInference(
-                prompt=test_prompt,
-                steps=20,     # 테스트용이므로 빠른 실행을 위해 steps 하향
-                cfg=7.5,
-                batch_size=1,
-                seed=42,
-                output_path=OUTPUT_DIR, #/ "test_run" # 테스트 전용 하위 폴더
-                #sampler_type=getattr(request, 'SamplerType', 1) # proto에 SamplerType 필드가 있다고 가정
-                sampler_type=1 #하드코딩
-            )
+            # call ExecuteInference to run and save the file
+            if self.current_pipe is None:
+                print("No model loaded.")
+                return
+            else:
+                saved_paths = self.ExecuteInference(
+                    prompt=test_prompt,
+                    steps=20,     # it is only for testing, so reduce steps for a faster run
+                    cfg=7.5,
+                    batch_size=1,
+                    seed=42,
+                    output_path=OUTPUT_DIR, #/ "test_run" # test-only subfolder
+                    #sampler_type=getattr(request, 'SamplerType', 1) # assumes the proto has a SamplerType field
+                    sampler_type=1 #hardcoded
+                )
             
-            print("[테스트] 초기 추론 및 파일 저장 성공!")
+            print("[TEST] initial inference and file saving successful!")
             for path in saved_paths:
-                print(f" >> 확인된 파일: {path}")
+                print(f" >> verified file: {path}")
             print("="*60 + "\n")
             
         except Exception as e:
@@ -598,64 +996,142 @@ class ModelExecutor(query_pb2_grpc.QueryServicer):
 
     def Heartbeat(self, request, context):
         """
-        서버 상태 확인을 위한 Heartbeat 구현
+        Implementing Heartbeat to Check Server Status
         """
-        status_code = infaas_request_status_pb2.SUCCESS if self.pipe else infaas_request_status_pb2.UNAVAILABLE
+        status_code = (infaas_request_status_pb2.SUCCESS if self.current_pipe is not None else infaas_request_status_pb2.UNAVAILABLE)
         status_msg = infaas_request_status_pb2.InfaasRequestStatus(status=status_code)
+        self.metrics.record_heartbeat()
         return query_pb2.HeartbeatResponse(status=status_msg)
+
+
+    def WorkerStatus(self, request, context):
     
+        gpu_mem, gpu_reserved, gpu_peak = self.metrics.gpu_memory()
+
+        return query_pb2.WorkerStatusResponse(
+            workload_type=str(self.sampler_name),
+            model_name=str(self.model_file_name),
+            busy=self.busy,
+            queue_length=self.local_queue_length,
+            gpu_memory_mb=gpu_mem,
+            average_latency_ms=self.metrics.average_latency() * 1000,
+            active_requests=self.active_requests,
+            worker_port=int(self.port),
+            throughput=self.metrics.current_throughput(),
+            gpu_reserved_mb=gpu_reserved,
+            gpu_peak_mb=gpu_peak,
+            last_fid=self.metrics.current_fid(),
+            total_images_generated=self.metrics.total_images_generated(),
+            model_switches=self.model_switches,
+            last_switch_time_ms=self.last_switch_time_ms
+        )
+
+    def LoadModel(self, request, context):
+        '''
+        Implementing LoadModel RPC
+        '''
+
+        # elapsed = self.replace_model(request.model_name)
+        if config.MODEL_SWITCH_MODE == "cold":
+
+            elapsed = self.replace_model(request.model_name)
+        else:
+            elapsed = self.hot_switch_model(request.model_name)
+
+        return query_pb2.LoadModelResponse(
+            success=True,
+            switch_time_ms=elapsed,
+            current_model=request.model_name
+        )
+
+    def load_pipeline(self, model_filename):
+    
+        if model_filename in self.model_cache:
+
+            return self.model_cache[model_filename]
+
+        print(f"[CACHE] Loading {model_filename}")
+        pipe = self.load_model(model_filename)
+
+        if pipe is not None:
+
+            self.model_cache[model_filename] = pipe
+
+        return pipe
+
+    def preload_models(self, model_list):
+    
+        for model in model_list:    
+            filename = model["filename"]
+            self.load_pipeline(filename)
+
+        first = model_list[0]["filename"]
+
+        self.current_pipe = self.model_cache[first]
+        self.current_model_name = first
+
+
 def serve():
 
-    # 1. 명령행 인자 파싱 (process_option.py 로직 통합)
+    # 1. parse command-line arguments (integrating the process_option.py logic)
     parser = argparse.ArgumentParser(description="Diffusion gRPC Server")
     parser.add_argument("-model", type=int, required=True, help="Model ID (from models.json)")
     parser.add_argument("-sampler", type=int, required=True, help="sampler ID (from samplers.json)")
     parser.add_argument("-thread", type=int, default=10, help="thread number")
     parser.add_argument("-port", type=str, default="50051", help="Port number")
     parser.add_argument("-npz", type=str, required=True, help=".npz file path")    
-    # 필요한 경우 sampler, npz 등 추가 인자 정의 가능
+    # additional arguments such as sampler or npz can be defined if needed
     args = parser.parse_args()
 
-    # 2. 모델 파일명 결정
-    models_data = load_json("models.json")
+    # 2. determine the model filename
+    models_data = load_json(str(MODELS_JSON))
     if models_data is None:
-        print("[치명적 오류] models.json 로드 실패")
+        print("[Fatal Error] models.json Failed to load")
         return
+
+    # 3. determine the sampler
+    samplers_data = load_json(str(SAMPLERS_JSON))
+    if samplers_data is None: # 샘플러 데이터 Failed to load 확인
+        print("[Fatal Error] samplers.json Failed to load")
+        return
+
+    ############################################################
+    # Verify project paths
+    ############################################################
+    print("=" * 70)
+    print("MODELS_JSON   :", MODELS_JSON)
+    print("SAMPLERS_JSON :", SAMPLERS_JSON)
+    print("=" * 70)
 
     model_filename = get_filename_by_id(models_data, args.model)
     if not model_filename:
-        print(f"[치명적 오류] ID {args.model}에 해당하는 모델 파일명이 없습니다.")
+        print(f"[Fatal Error] no model filename for ID {args.model}.")
         return
 
-    # 3. sampler 결정
-    samplers_data = load_json("samplers.json")
-    if samplers_data is None: # 샘플러 데이터 로드 실패 확인
-        print("[치명적 오류] samplers.json 로드 실패")
+    sampler_name = get_filename_by_id(samplers_data, args.sampler) # map the sampler name
+    if not sampler_name: # check whether the ID exists
+        print(f"[Fatal Error] no sampler name for ID {args.sampler}.")
         return
 
-    sampler_name = get_filename_by_id(samplers_data, args.sampler) # 샘플러 이름 매핑
-    if not sampler_name: # ID 존재 여부 확인
-        print(f"[치명적 오류] ID {args.sampler}에 해당하는 샘플러 이름이 없습니다.")
-        return
+    print(f"[SYSTEM] starting to load model ID {args.model}({model_filename})...")
+    print(f"[SYSTEM] Sampler ID {args.sampler}({sampler_name}) 로딩 시작...") 
 
-    print(f"[시스템] 모델 ID {args.model}({model_filename}) 로딩 시작...")
-    print(f"[시스템] Sampler ID {args.sampler}({sampler_name}) 로딩 시작...") 
-
-    # 4. ModelExecutor 초기화 (모든 파라미터 전달)
+    # 4. initialize ModelExecutor (passing all parameters)
     executor = ModelExecutor(
         model_id=args.model,
         model_filename=model_filename,
         sampler_id=args.sampler,
         sampler_name=sampler_name,
         thread_count=args.thread,
-        port=args.port,        # 포트 번호 전달
+        port=args.port, 
         npz_path=args.npz
-    )
+    ) # initializing model executors
 
-    # 모델 로드 성공 여부 확인 (예외 처리)
+
+    # check whether the model loaded successfully (exception handling)
     # Check if the model loaded successfully (exception handling)
-    if executor.pipe is None:
-        #print("[치명적 오류] 모델 로드에 실패하여 서버를 시작할 수 없습니다.")
+    if executor.current_pipe is None:
+        #print("[Fatal Error] The server cannot be started because the model failed to load.")
         print("[Fatal Error] The server cannot start because the model failed to load.")
         return
 
@@ -663,19 +1139,32 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=args.thread))
     query_pb2_grpc.add_QueryServicer_to_server(executor, server)
 
-    # args.port를 사용하여 포트 바인딩
+    # bind the port using args.port
     actual_port = server.add_insecure_port(f"[::]:{args.port}")
 
     if actual_port == 0:
         print("Failed to bind port")
         return
         
-    #print(f"[서버] gRPC 서버 시작됨 (Port: {args.port})")
+    
+
+    print("[DEBUG] before server.start()")
+    server.start()
+    #print(f"[SERVER] gRPC server started (Port: {args.port})")
     print(f"[Server] gRPC server started (Port: {args.port})")
 
-    server.start()
+    print("[DEBUG] entering wait_for_termination")
     server.wait_for_termination()
+    print("[DEBUG] returned from wait_for_termination")
 
-# 임시로 막는다.
+# temporarily disabled.
 if __name__ == "__main__":
-    serve()
+    
+    try: # Catch the KeyboardInterrupt inside the worker; Avoiding the long traceback
+        serve()
+
+    except KeyboardInterrupt:
+        print("\n[WORKER] Shutdown requested")
+
+    finally:
+        print("[WORKER] Exited cleanly")

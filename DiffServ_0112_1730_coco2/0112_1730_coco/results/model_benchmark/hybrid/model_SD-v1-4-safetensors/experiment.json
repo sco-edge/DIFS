@@ -1,0 +1,10 @@
+{
+    "scaling_mode": "hybrid",
+    "model_id": 1,
+    "model_name": "SD-v1-4-safetensors",
+    "model_filename": "sd-v1-4.safetensors",
+    "workload": 5,
+    "steps": 20,
+    "sampler": 1,
+    "seed": 42
+}

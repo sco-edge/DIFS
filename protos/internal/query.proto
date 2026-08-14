@@ -28,8 +28,8 @@ service Query {
 //   repeated string Prompt = 1; // Prompt
 //   int32  Steps = 2;  // timestep
 //   float  CFG_Scale = 3;  // 7.0 ~ 8.0
-//   int32  BatchSize = 4; // 동시생성갯수
-//   int64  Seed = 5;          // 이미지 고유번호
+//   int32  BatchSize = 4; // concurrent generation count
+//   int64  Seed = 5;          // unique image number
   
 //   repeated bytes raw_input = 6; // Serialized input in bytes.
 //   repeated string model = 7;    // The name of the model(s), support a pool of models.
@@ -42,7 +42,7 @@ service Query {
 // }
 
 // message QueryOnlineResponse {
-//   // 변경: 생성된 이미지 파일 경로들의 리스트를 반환
+//   // changed: return a list of generated image file paths
 //   repeated string image_paths = 1; 
 //   InfaasRequestStatus status = 2;
   
@@ -59,8 +59,8 @@ service Query {
 //   string Prompt = 1; // Prompt
 //   int32  Steps = 2;  // timestep
 //   float  CFG_Scale = 3;  // 7.0 ~ 8.0
-//   int32  BatchSize = 4; // 동시생성갯수
-//   int64  Seed = 5;          // 이미지 고유번호
+//   int32  BatchSize = 4; // concurrent generation count
+//   int64  Seed = 5;          // unique image number
   
 //   string input_url = 6;       // Provide the url of input bucket.
 //   repeated string model = 7;  // Support a pool of models.

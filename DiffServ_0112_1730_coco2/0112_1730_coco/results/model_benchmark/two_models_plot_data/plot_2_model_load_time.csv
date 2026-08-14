@@ -1,0 +1,7 @@
+model,scaling_mode,load_time_sec
+SD-2.1,horizontal,1.8
+SD-3.5-Medium,horizontal,6.1
+SD-2.1,hybrid,1.86
+SD-3.5-Medium,hybrid,5.92
+SD-2.1,vertical,4.59
+SD-3.5-Medium,vertical,6.1

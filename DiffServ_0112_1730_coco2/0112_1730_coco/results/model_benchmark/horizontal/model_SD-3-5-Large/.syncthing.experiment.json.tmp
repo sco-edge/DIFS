@@ -1,0 +1,10 @@
+{
+    "scaling_mode": "horizontal",
+    "model_id": 9,
+    "model_name": "SD-3-5-Large",
+    "model_filename": "stable-diffusion-3.5-large",
+    "workload": 5,
+    "steps": 20,
+    "sampler": 1,
+    "seed": 42
+}

@@ -1,0 +1,9 @@
+model,gpu_used_mb,gpu_peak_mb
+SD-v1.4-dir,18.25,104.0
+SD-v1.4-safetensors,18.25,104.0
+SD-v1.5,18.25,104.0
+SD-2.1,18.25,106.0
+SDXL-Base,18.25,194.0
+SD-3.5-Medium,450.25,1066.0
+SD-3.5-Large,190.25,806.0
+DreamShaper-8,18.25,104.0

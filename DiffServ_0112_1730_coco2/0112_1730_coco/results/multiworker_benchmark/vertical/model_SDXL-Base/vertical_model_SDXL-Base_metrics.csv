@@ -1,0 +1,2 @@
+num_requests,successful,total_images,wall_time_sec,throughput_img_per_sec,avg_latency_sec,p50_latency_sec,p95_latency_sec,p99_latency_sec,max_latency_sec,model,model_id,switch_time_sec,scenario,phase,timestamp
+3,3,3,88.57275353791192,0.03387046106358098,59.471508821627744,59.80005074804649,85.69459043536335,87.99632729645819,88.57176151173189,SDXL-Base,5,15.544072961434722,vertical,model_SDXL-Base,1785155297.0605166

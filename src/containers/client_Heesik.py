@@ -21,7 +21,7 @@ import os
 def run():
     # 1. 서버 채널 연결 (대용량 이미지 수신을 위해 메시지 크기 제한 확장 권장)
     options = [
-        ('grpc.max_receive_message_length', 100 * 1024 * 1024) # 100MB까지 허용
+        ('grpc.max_receive_message_length', 100 * 1024 * 1024) # allow up to 100MB
     ]
     #with grpc.insecure_channel('localhost:50051') as channel:
     with grpc.insecure_channel('192.168.128.8:50010') as channel:
@@ -31,75 +31,75 @@ def run():
         prompts = ["dog", "dog", "dog", "dog", "dog", "car", "car", "car", "car", "car"]
         #prompts = ["take a rest"]
 
-        # 2. QueryOnlineRequest 생성
-        # repeated 필드는 파이썬의 list를 그대로 대입하면 됩니다.
+        # 2. create the QueryOnlineRequest
+        # repeated fields accept a Python list directly.
 #        request = query_pb2.QueryOnlineImageRequest(
         request = query_pb2.QueryOnlineRequest(
-            Prompt=prompts,           # ["sentence1", "sentence2"] 형식
+            Prompt=prompts,           # in the form ["sentence1", "sentence2"]
             Steps=25,
             CFG_Scale=7.5,
-            BatchSize=len(prompts),   # 프롬프트 개수에 맞춰 BatchSize 설정
+            BatchSize=len(prompts),   # set the BatchSize to match the number of prompts
             Seed=42
             #model=["stable-diffusion-v1-5"],
             #submitter="user_test"
         )
-        print(f"[클라이언트] 요청 전송 (QueryOnlineImage): '{request.Prompt}'")
+        print(f"[CLIENT] Sending request (QueryOnlineImage): '{request.Prompt}'")
 
         try:
-            # --- 시간 측정 시작 ---
+            # --- start timing ---
             start_time = time.perf_counter()
 
-            # 3. RPC 호출 및 응답 수신 [cite: 5, 13, 14]
+            # 3. make the RPC call and receive the response [cite: 5, 13, 14]
             # response = stub.QueryOnlineImage(request)
             response = stub.QueryOnline(request)
 
-            # --- 시간 측정 종료 및 계산 ---
+            # --- stop timing and compute ---
             end_time = time.perf_counter()
             elapsed_time = end_time - start_time
 
-            # 4. 상태 확인 및 결과 출력
+            # 4. check the status and print the result
             if response.status.status == 1: # SUCCESS = 1 [cite: 2]
-                print(f"[클라이언트] 서버 응답 수신 성공")
-                print(f"[성능 로그] 총 쿼리 소요 시간: {elapsed_time:.4f} 초 (RTT)")
-                #print(f"- 생성된 이미지 개수: {len(response.image_paths)}개")
+                print(f"[CLIENT] Server response received successfully")
+                print(f"[PERFORMANCE LOG] Total query time: {elapsed_time:.4f} s (RTT)")
+                #print(f"- number of generated images: {len(response.image_paths)}")
 
-                # --- [추가 포인트] 수신된 바이너리 데이터를 파일로 저장 ---
+                # --- [EXTRA POINT] save the received binary data to a file ---
                 save_dir = "./client_received"
                 os.makedirs(save_dir, exist_ok=True)
 
 
 
-				# print(f"- 수신된 이미지 개수: {len(response.image_data)}개")
+				# print(f"- number of received images: {len(response.image_data)}")
 
                 # for i, img_bytes in enumerate(response.image_data):
-                #     # 파일명 결정 (서버 경로에서 파일명만 추출하거나 새로 명명)
+                #     # determine the filename (either extract it from the server path or assign a new name)
                 #     file_name = f"received_image_{i+1}_{int(time.time())}.png"
                 #     save_path = os.path.join(save_dir, file_name)
 
-                    # # 바이너리 쓰기 모드('wb')로 파일 저장
+                    # # save the file in binary write mode ('wb')
                     # with open(save_path, "wb") as f:
                         # f.write(img_bytes)
                         
-                    # print(f"  [{i+1}] 파일 저장 완료: {save_path}")                        
+                    # print(f"  [{i+1}] File saved: {save_path}")                        
                 
-                print(f"- 수신된 이미지 개수: {len(response.image_paths)}개")
+                print(f"- number of received images: {len(response.image_paths)}")
 
                 for i, img_path in enumerate(response.image_paths):
-                    print(f"  [{i+1}] 서버 이미지 경로: {img_path}")        
+                    print(f"  [{i+1}] Server image path: {img_path}")        
                         
                         
                         
 
 
             else:
-                print(f"[클라이언트] 서버 처리 실패: {response.status.msg}")
+                print(f"[CLIENT] Server processing failed: {response.status.msg}")
 
         except grpc.RpcError as e:
-            # RPC 오류 발생 시에도 시간 출력 (타임아웃 확인용)
+            # print the time even when an RPC error occurs (to check timeouts)
             end_time = time.perf_counter()
             elapsed_time = end_time - start_time
-            print(f"[클라이언트] gRPC 오류 발생: {e.code()} - {e.details()}")
-            print(f"[성능 로그] 오류 발생 시점까지의 시간: {elapsed_time:.4f} 초")
+            print(f"[CLIENT] A gRPC error occurred: {e.code()} - {e.details()}")
+            print(f"[PERFORMANCE LOG] Elapsed time until the error occurred: {elapsed_time:.4f} s")
 
 if __name__ == "__main__":
     run()

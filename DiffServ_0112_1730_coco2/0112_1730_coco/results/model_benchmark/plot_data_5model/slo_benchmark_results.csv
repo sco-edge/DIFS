@@ -1,0 +1,10 @@
+load_level,scaling_mode,requests_submitted,requests_completed,latency_slo_attainment_pct,accuracy_slo_attainment_pct,throughput_req_per_s,source
+low,horizontal,3516,3516,99.94,100.0,0.0326,simulated
+medium,horizontal,3546,3517,96.64,99.18,0.0651,simulated
+high,horizontal,3526,3041,71.19,86.25,0.0845,simulated
+low,vertical,3533,3533,99.86,100.0,0.0327,simulated
+medium,vertical,3540,3510,95.9,99.15,0.065,simulated
+high,vertical,3495,2935,67.41,83.98,0.0815,simulated
+low,hybrid,3595,3595,100.0,100.0,0.0333,simulated
+medium,hybrid,3557,3520,95.87,98.96,0.0652,simulated
+high,hybrid,3531,3068,70.89,86.89,0.0852,simulated

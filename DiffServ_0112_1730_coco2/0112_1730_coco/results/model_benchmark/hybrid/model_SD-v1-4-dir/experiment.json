@@ -1,0 +1,10 @@
+{
+    "scaling_mode": "hybrid",
+    "model_id": 2,
+    "model_name": "SD-v1-4-dir",
+    "model_filename": "stable-diffusion-v1-4",
+    "workload": 5,
+    "steps": 20,
+    "sampler": 1,
+    "seed": 42
+}

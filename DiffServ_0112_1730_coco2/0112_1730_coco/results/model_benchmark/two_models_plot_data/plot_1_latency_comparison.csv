@@ -1,0 +1,7 @@
+model,scaling_mode,latency_sec
+SD-2.1,horizontal,15.58
+SD-3.5-Medium,horizontal,25.64
+SD-2.1,hybrid,15.91
+SD-3.5-Medium,hybrid,23.27
+SD-2.1,vertical,12.87
+SD-3.5-Medium,vertical,22.86

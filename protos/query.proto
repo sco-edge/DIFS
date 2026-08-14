@@ -30,8 +30,8 @@ message QueryOnlineRequest {
   repeated string prompt = 1; // prompt
   int32  Steps = 2;  // timestep
   float  CFG_Scale = 3;  // 7.0 ~ 8.0
-  int32  BatchSize = 4; // 동시생성갯수
-  int64  Seed = 5;          // 이미지 고유번호
+  int32  BatchSize = 4; // concurrent generation count
+  int64  Seed = 5;          // unique image number
 
   // PNB: (2026.01.10)
   string task = 6;
@@ -44,7 +44,7 @@ message QuerySLO {
 }
 
 message QueryOnlineResponse {
-  // 변경: 생성된 이미지 파일 경로들의 리스트를 반환
+  // changed: return a list of generated image file paths
   repeated string image_paths = 1; 
   InfaasRequestStatus status = 2;
 
@@ -56,8 +56,8 @@ message QueryOfflineRequest {
   string prompt = 1; // prompt
   int32  Steps = 2;  // timestep
   float  CFG_Scale = 3;  // 7.0 ~ 8.0
-  int32  BatchSize = 4; // 동시생성갯수
-  int64  Seed = 5;          // 이미지 고유번호
+  int32  BatchSize = 4; // concurrent generation count
+  int64  Seed = 5;          // unique image number
 }
 
 message QueryOfflineResponse {

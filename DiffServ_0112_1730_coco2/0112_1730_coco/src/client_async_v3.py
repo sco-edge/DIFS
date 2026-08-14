@@ -1,5 +1,5 @@
 # Date: 2026.03.18
-# Purpose:
+# Purpose: External Client; this is what actually sends the requests
 # Adapted: from 'client_async_v2.py'
 
 import asyncio
@@ -15,10 +15,16 @@ import argparse
 import random
 import numpy as np
 import csv
+from project_paths import PROMPTS_FILE, CLIENT_DIR
 
 
-# --- 유틸리티 함수 ---
-def extract_coco_prompts(json_path, count=10):
+# --- utility functions ---
+def extract_coco_prompts(json_path, count=10, seed=None):
+
+    # Make prompt selection reproducible
+    if seed is not None:
+        random.seed(seed) # To make different runs of the same experiment use the same prompt rather than totally new ones between successive plots.
+
     with open(json_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -41,10 +47,16 @@ async def run():
     parser = argparse.ArgumentParser(description="gRPC Async Client (Autoscaler Mode)")
 
     # 🔥 KEEP same interface (Q1 etc.), but no longer used for routing
-    parser.add_argument("-query", type=str, required=True)
+    parser.add_argument("-prompt_count", type=int, required=True,help="Number of prompts per query") # i.e (for number of prompts per query)
 
     parser.add_argument("-steps", type=int, default=25)
     parser.add_argument("-sampler", type=int, default=1)
+    parser.add_argument("-seed", type=int, default=42, help="Random seed for prompt selection and image generation")
+
+    # 🔥 NEW: SLO accuracy level; maps to canonical step count server-side
+    parser.add_argument("-accuracy", type=str, default=None,
+                        choices=["high", "medium", "low"],
+                        help="SLO accuracy level: high=40 steps, medium=30 steps, low=20 steps")
 
     # 🔥 NEW: scheduler endpoint
     parser.add_argument("-host", type=str, default="localhost")
@@ -52,7 +64,7 @@ async def run():
 
     args = parser.parse_args()
 
-    print(f"[CLIENT] Steps: {args.steps}, Sampler: {args.sampler}")
+    print(f"[CLIENT] Steps: {args.steps}, Sampler: {args.sampler}, Accuracy: {args.accuracy}")
     print(f"[CLIENT] Connecting to scheduler at {args.host}:{args.port}")
 
     ############################################################
@@ -90,12 +102,11 @@ async def run():
         # LOAD PROMPTS
         ############################################################
 
-        json_file = 'annotations/captions_val2014.json'
-        # prompt_count = 10000
-        prompt_count = 5
+        json_file = str(PROMPTS_FILE)
+        prompt_count = args.prompt_count
 
         try:
-            prompts = extract_coco_prompts(json_file, prompt_count)
+            prompts = extract_coco_prompts(json_file, prompt_count, args.seed)
 
             print(f"✅ Loaded {len(prompts)} prompts")
 
@@ -107,14 +118,28 @@ async def run():
         # BUILD REQUEST
         ############################################################
 
+        # SLO accuracy level overrides the raw -steps value with the
+        # canonical step count for that level (low=20, medium=30, high=40)
+        accuracy_level = args.accuracy
+        steps = args.steps
+
+        if accuracy_level is not None:
+            try:
+                from slo import resolve_step_count
+                steps = resolve_step_count(accuracy_level)
+                print(f"[CLIENT] Accuracy '{accuracy_level}' -> {steps} steps")
+            except Exception as e:
+                print(f"[CLIENT] WARNING: could not resolve accuracy level '{accuracy_level}': {e}")
+
         request = query_pb2.QueryOnlineImageRequest(
             Prompt=prompts,
-            Steps=args.steps,
+            Steps=steps,
             Sampler_Type=args.sampler,
             CFG_Scale=7.5,
-            #BatchSize=len(prompts),
-            BatchSize=1,
-            Seed=42
+            #BatchSize=1,
+            BatchSize=len(prompts),
+            Seed=args.seed,
+            AccuracyLevel=accuracy_level or ""
         )
 
         print(f"[CLIENT] Sending request to scheduler...")
@@ -129,8 +154,8 @@ async def run():
             request_start_time = time.perf_counter()
             image_count = 0
 
-            save_dir = "./client_received"
-            os.makedirs(save_dir, exist_ok=True)
+            save_dir = CLIENT_DIR
+            save_dir.mkdir(parents=True, exist_ok=True)
 
             stream = stub.QueryOnlineImage(request)
 
@@ -150,7 +175,7 @@ async def run():
                         img_bytes = response.image_data
 
                         file_name = f"received_{image_count}_{int(time.time())}.png"
-                        save_path = os.path.join(save_dir, file_name)
+                        save_path = save_dir / file_name
 
                         with open(save_path, "wb") as f:
                             f.write(img_bytes)
@@ -207,6 +232,11 @@ async def run():
 ############################################################
 
 if __name__ == "__main__":
+    
+    # Example of command to start this file individually from the command line
+    #
+    # python client_async_v3.py -prompt_count 50 -steps 20 -sampler 1
+    
 
     try:
         asyncio.run(run())

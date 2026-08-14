@@ -1,0 +1,1 @@
+torch 2.5.1+cu124; cuda True; cuda_version 12.4

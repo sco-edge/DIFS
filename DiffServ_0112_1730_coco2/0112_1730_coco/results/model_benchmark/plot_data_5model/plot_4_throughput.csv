@@ -1,0 +1,16 @@
+model,scaling_mode,throughput_images_per_sec
+SD-v1.5,horizontal,0.348562
+SD-v1.5,hybrid,0.325924
+SD-v1.5,vertical,
+SD-2.1,horizontal,0.32099
+SD-2.1,hybrid,0.314205
+SD-2.1,vertical,0.388524
+SDXL-Base,horizontal,0.172426
+SDXL-Base,hybrid,0.155323
+SDXL-Base,vertical,0.19284
+SD-3.5-Medium,horizontal,0.19503
+SD-3.5-Medium,hybrid,0.214832
+SD-3.5-Medium,vertical,0.218698
+SD-3.5-Large,horizontal,0.078465
+SD-3.5-Large,hybrid,0.076743
+SD-3.5-Large,vertical,0.07731

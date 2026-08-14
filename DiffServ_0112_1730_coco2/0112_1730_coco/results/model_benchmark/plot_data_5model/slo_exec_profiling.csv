@@ -1,0 +1,16 @@
+model,model_name,steps,exec_time_sec,source
+3,SD-v1-5,20,10.567,measured
+3,SD-v1-5,30,15.85,linear_extrapolation
+3,SD-v1-5,40,21.133,linear_extrapolation
+4,SD-2-1,20,14.787,measured
+4,SD-2-1,30,22.18,linear_extrapolation
+4,SD-2-1,40,29.573,linear_extrapolation
+5,SDXL-Base,20,29.04,measured
+5,SDXL-Base,30,43.56,linear_extrapolation
+5,SDXL-Base,40,58.08,linear_extrapolation
+8,SD-3-5-Medium,20,23.923,measured
+8,SD-3-5-Medium,30,35.885,linear_extrapolation
+8,SD-3-5-Medium,40,47.847,linear_extrapolation
+9,SD-3-5-Large,20,64.513,measured
+9,SD-3-5-Large,30,96.77,linear_extrapolation
+9,SD-3-5-Large,40,129.027,linear_extrapolation

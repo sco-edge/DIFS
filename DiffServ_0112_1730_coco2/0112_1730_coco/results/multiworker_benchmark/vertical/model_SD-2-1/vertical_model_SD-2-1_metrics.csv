@@ -1,0 +1,2 @@
+num_requests,successful,total_images,wall_time_sec,throughput_img_per_sec,avg_latency_sec,p50_latency_sec,p95_latency_sec,p99_latency_sec,max_latency_sec,model,model_id,switch_time_sec,scenario,phase,timestamp
+3,3,3,40.4205948067829,0.07421959064037761,26.8516434491612,27.307777483947575,39.10829765219241,40.157232778258624,40.419466559775174,SD-2-1,4,2.2426032782532275,vertical,model_SD-2-1,1785155187.6831455

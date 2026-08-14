@@ -1,6 +1,6 @@
-# 생성될 파일들이 저장될 위치를 src로 지정하여 명령 실행
-# 1. 일반 Protobuf 메시지 클래스 생성 (--cpp_out)
-# 2. gRPC 서비스 인터페이스 클래스 생성 (--grpc_out)
+# run the command with src as the destination for the generated files
+# 1. generate the general Protobuf message classes (--cpp_out)
+# 2. generate the gRPC service interface classes (--grpc_out)
 
 protoc -I ./protos \
     --cpp_out=./src \
@@ -8,43 +8,43 @@ protoc -I ./protos \
     --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` \
     ./protos/query.proto ./protos/infaas_request_status.proto
 
-[client.cc 수정 빌드]  
-DiffServ/src$ client.cc 수정
+[Rebuild client.cc]  
+DiffServ/src$ modify client.cc
 DiffServ/build$ cmake ..
 DiffServ/build$ make -j$(nproc)
 
-// client.py 용
+// for client.py
 python -m grpc_tools.protoc \
     -I./protos \
     --python_out=./src \
     --grpc_python_out=./src \
     ./protos/query.proto ./protos/infaas_request_status.proto
 
-// pyenv 초기설정
+// pyenv initial setup
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
 
-설정 적용:
-source ~/.bashrc  # Bash 사용 시
-source ~/.zshrc   # Zsh 사용 시
+Apply the settings:
+source ~/.bashrc  # if using Bash
+source ~/.zshrc   # if using Zsh
 
-// 현재 디렉토리 버전 지정
+// specify the version for the current directory
 pyenv local 3.11.14
 
-// 가상환경 생성
+// create a virtual environment
 python -m venv venv_diffserve
 
-// 가상환경 활성화
+// activate the virtual environment
 source venv_diffserve/bin/activate
 
-[pyenv 설치]
-필요한 패키지 설치
+[Installing pyenv]
+install the required packages
 sudo apt update
 sudo apt install -y make build-essential libssl-dev zlib1g-dev \
   libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
   libncurses5-dev libncursesw5-dev xz-utils tk-dev \
   libffi-dev liblzma-dev python3-openssl git
 
-pyenv 설치
+install pyenv
 curl https://pyenv.run | bash

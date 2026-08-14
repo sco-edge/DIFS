@@ -1,0 +1,2 @@
+num_requests,successful,total_images,wall_time_sec,throughput_img_per_sec,avg_latency_sec,p50_latency_sec,p95_latency_sec,p99_latency_sec,max_latency_sec,model,model_id,switch_time_sec
+3,3,3,39.209570275153965,0.07651193264673492,26.110365743593622,25.598149717785418,37.84605148299597,38.934753862125795,39.206929456908256,SD-v1-4-safetensors,1,0.0

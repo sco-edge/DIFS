@@ -1,0 +1,16 @@
+model,scaling_mode,latency_sec
+SD-v1.5,horizontal,14.34
+SD-v1.5,hybrid,15.34
+SD-v1.5,vertical,2.02
+SD-2.1,horizontal,15.58
+SD-2.1,hybrid,15.91
+SD-2.1,vertical,12.87
+SDXL-Base,horizontal,29.0
+SDXL-Base,hybrid,32.19
+SDXL-Base,vertical,25.93
+SD-3.5-Medium,horizontal,25.64
+SD-3.5-Medium,hybrid,23.27
+SD-3.5-Medium,vertical,22.86
+SD-3.5-Large,horizontal,63.72
+SD-3.5-Large,hybrid,65.15
+SD-3.5-Large,vertical,64.67

@@ -2,8 +2,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <chrono> // 시간 측정 라이브러리 추가
-#include <iomanip> // 소수점 제어를 위해 필요
+#include <chrono> // added time measurement library
+#include <iomanip> // needed for decimal-place control
 
 #include <grpcpp/grpcpp.h>
 
@@ -27,45 +27,45 @@ public:
         QueryOnlineResponse response;
         ClientContext context;
 
-        // 1. 프롬프트 리스트 준비 (client.py 스타일)
+        // 1. prepare the prompt list (client.py style)
         std::vector<std::string> prompts = {
             "A rainbow on the moutain", 
             "A beautlful woman in the sunset"
         };
 
-        // 2. 요청 데이터 설정
-        // C++ gRPC에서 repeated 필드는 add_필드명()을 사용해 하나씩 추가합니다. 
+        // 2. set the request data
+        // in C++ gRPC, use add_fieldname() to add repeated fields one by one. 
         for (const auto& p : prompts) {
             request.add_prompt(p); 
         }
 
         request.set_steps(25);                                     // [cite: 6]
         request.set_cfg_scale(7.5f);                               // [cite: 6]
-        request.set_batchsize(static_cast<int32_t>(prompts.size())); // 리스트 크기에 맞춤 
+        request.set_batchsize(static_cast<int32_t>(prompts.size())); // match the list size 
         request.set_seed(42);                                      // 
 
-        std::cout << "[클라이언트] 요청 전송: " << prompts.size() << " 개의 프롬프트" << std::endl;
+        std::cout << "[CLIENT] sending request: " << prompts.size() << "  prompts" << std::endl;
         
-        // --- 시간 측정 시작 ---
+        // --- start timing ---
         auto start = std::chrono::high_resolution_clock::now();
 
-        // 3. QueryOnline RPC 호출 
+        // 3. make the QueryOnline RPC call 
         Status status = stub_->QueryOnline(&context, request, &response);
 
-        // --- 시간 측정 종료 ---
+        // --- stop timing ---
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = end - start;
-        // 소수점 4자리까지 출력하도록 설정
+        // configure output to show 4 decimal places
         std::cout << "------------------------------------------------------------" << std::endl;
-        std::cout << "[성능 로그] 총 추론 시간: " << std::fixed << std::setprecision(4)
-                << elapsed.count() << " 초 (CPU+GPU)" << std::endl;
+        std::cout << "[PERFORMANCE LOG] total inference time: " << std::fixed << std::setprecision(4)
+                << elapsed.count() << " s (CPU+GPU)" << std::endl;
         std::cout << "------------------------------------------------------------" << std::endl;
 
 
-        // 4. 응답 결과 처리 [cite: 13, 14]
+        // 4. process the response [cite: 13, 14]
         if (status.ok()) {
             if (response.status().status() == 1) { // 1: SUCCESS [cite: 2]
-                std::cout << "✅ 서버 응답 수신 성공" << std::endl;
+                std::cout << "✅ Server response received successfully" << std::endl;
                 
                 int path_count = response.image_paths_size();
                 std::cout << "- 생성된 이미지 개수: " << path_count << "개" << std::endl;

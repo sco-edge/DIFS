@@ -1,0 +1,10 @@
+{
+    "scaling_mode": "vertical",
+    "model_id": 4,
+    "model_name": "SD-2-1",
+    "model_filename": "stable-diffusion-2-1",
+    "workload": 5,
+    "steps": 20,
+    "sampler": 1,
+    "seed": 42
+}

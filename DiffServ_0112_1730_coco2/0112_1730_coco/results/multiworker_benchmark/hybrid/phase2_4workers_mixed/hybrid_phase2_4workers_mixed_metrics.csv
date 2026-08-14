@@ -1,0 +1,2 @@
+num_requests,successful,total_images,wall_time_sec,throughput_img_per_sec,avg_latency_sec,p50_latency_sec,p95_latency_sec,p99_latency_sec,max_latency_sec,worker_count,model_mix,switch_time_sec,scenario,phase,timestamp
+3,3,3,38.17094457289204,0.07859381090952929,26.198800656944513,27.120674131903797,37.06496612243354,37.948903188258406,38.169887454714626,4,1x SD-2-1 + 2x SDXL-Base + 1x SD-v1-4-safetensors,5.054207463283092,hybrid,phase2_4workers_mixed,1785155479.3066726

@@ -1,0 +1,6 @@
+model,avg_latency_sec,avg_load_time_sec,gpu_peak_mb,throughput_images_per_sec
+SD-v1.5,14.84,1.79,142.0,0.336863
+SD-2.1,14.79,2.75,142.0,0.338149
+SDXL-Base,29.04,4.12,192.0,0.172182
+SD-3.5-Medium,23.92,6.04,1072.0,0.20899
+SD-3.5-Large,64.52,7.6,812.0,0.077499

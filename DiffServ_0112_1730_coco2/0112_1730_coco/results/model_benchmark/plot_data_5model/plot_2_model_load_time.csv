@@ -1,0 +1,16 @@
+model,scaling_mode,load_time_sec
+SD-v1.5,horizontal,1.59
+SD-v1.5,hybrid,1.71
+SD-v1.5,vertical,2.06
+SD-2.1,horizontal,1.8
+SD-2.1,hybrid,1.86
+SD-2.1,vertical,4.59
+SDXL-Base,horizontal,3.89
+SDXL-Base,hybrid,4.33
+SDXL-Base,vertical,4.13
+SD-3.5-Medium,horizontal,6.1
+SD-3.5-Medium,hybrid,5.92
+SD-3.5-Medium,vertical,6.1
+SD-3.5-Large,horizontal,7.48
+SD-3.5-Large,hybrid,7.44
+SD-3.5-Large,vertical,7.89

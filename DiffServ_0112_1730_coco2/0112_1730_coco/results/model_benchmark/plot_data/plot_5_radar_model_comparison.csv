@@ -1,0 +1,9 @@
+model,avg_latency_sec,avg_load_time_sec,gpu_peak_mb,throughput_images_per_sec
+SD-v1.4-dir,19.21,2.31,104.0,0.260323
+SD-v1.4-safetensors,19.21,5.29,104.0,0.260259
+SD-v1.5,20.44,5.57,104.0,0.244627
+SD-2.1,20.22,2.43,106.0,0.24729
+SDXL-Base,43.02,5.43,194.0,0.116212
+SD-3.5-Medium,36.66,7.31,1066.0,0.136398
+SD-3.5-Large,54.36,7.15,806.0,0.091975
+DreamShaper-8,19.67,2.34,104.0,0.254216

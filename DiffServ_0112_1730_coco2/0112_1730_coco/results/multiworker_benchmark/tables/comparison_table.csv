@@ -1,0 +1,33 @@
+System,Scaling Mode,Model,Workers,Avg Latency (s),Throughput (img/s),Switch Time (s)
+DIFS_OC_v2,horizontal,DreamShaper-8,1,12.151,0.0823,-
+DIFS_OC_v2,horizontal,SD-2-1,1,13.031,0.0767,-
+DIFS_OC_v2,horizontal,SD-3-5-Large,1,53.391,0.0187,-
+DIFS_OC_v2,horizontal,SD-v1-4-dir,1,12.367,0.0809,-
+DIFS_OC_v2,horizontal,SD-v1-4-safetensors,1,12.322,0.0812,-
+DIFS_OC_v2,horizontal,SD-v1-5,1,12.727,0.0786,-
+DIFS_OC_v2,horizontal,SDXL-Base,1,26.293,0.0380,-
+DIFS_OC_v2,hybrid,DreamShaper-8,1,15.287,0.0654,-
+DIFS_OC_v2,hybrid,SD-2-1,1,15.913,0.0628,-
+DIFS_OC_v2,hybrid,SD-3-5-Large,1,63.678,0.0157,-
+DIFS_OC_v2,hybrid,SD-v1-4-dir,1,15.542,0.0643,-
+DIFS_OC_v2,hybrid,SD-v1-4-safetensors,1,15.680,0.0638,-
+DIFS_OC_v2,hybrid,SD-v1-5,1,15.341,0.0652,-
+DIFS_OC_v2,hybrid,SDXL-Base,1,32.191,0.0311,-
+DIFS_OC_v2,vertical,DreamShaper-8,1,15.254,0.0656,-
+DIFS_OC_v2,vertical,SD-2-1,1,12.869,0.0777,-
+DIFS_OC_v2,vertical,SD-3-5-Large,1,64.298,0.0156,-
+DIFS_OC_v2,vertical,SD-v1-4-dir,1,12.428,0.0805,-
+DIFS_OC_v2,vertical,SD-v1-4-safetensors,1,12.392,0.0807,-
+DIFS_OC_v2,vertical,SD-v1-5,1,12.844,0.0779,-
+DIFS_OC_v2,vertical,SDXL-Base,1,25.928,0.0386,-
+DIFS_OC_v2 (multi-worker),horizontal,SD-v1-4-safetensors,1,25.673,0.0802,-
+DIFS_OC_v2 (multi-worker),horizontal,SD-v1-4-safetensors,3,26.515,0.0766,-
+DIFS_OC_v2 (multi-worker),horizontal,SD-v1-4-safetensors,5,25.623,0.0795,-
+DIFS_OC_v2 (multi-worker),hybrid,2x SD-v1-4-safetensors,2,25.839,0.0795,-
+DIFS_OC_v2 (multi-worker),hybrid,1x SD-2-1 + 2x SDXL-Base ,4,26.199,0.0786,5.054
+DIFS_OC_v2 (multi-worker),vertical,SD-2-1,1,26.852,0.0742,2.243
+DIFS_OC_v2 (multi-worker),vertical,SD-v1-4-safetensors,1,26.110,0.0765,-
+DIFS_OC_v2 (multi-worker),vertical,SDXL-Base,1,59.472,0.0339,15.544
+INFaaS (paper),horizontal,SD-v1-4,1,12.1,0.0826,-
+INFaaS (paper),horizontal,SD-v1-4,3,12.1,0.2479,-
+INFaaS (paper),vertical,SD-v1-4,1,12.1,0.0826,N/A (replace)

@@ -1,0 +1,10 @@
+{
+    "scaling_mode": "hybrid",
+    "model_id": 8,
+    "model_name": "SD-3-5-Medium",
+    "model_filename": "stable-diffusion-3.5-medium",
+    "workload": 5,
+    "steps": 20,
+    "sampler": 1,
+    "seed": 42
+}

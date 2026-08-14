@@ -1,0 +1,76 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    ../../.stfolder/syncthing-folder-4e515d.txt
+	deleted:    models.json
+	modified:   protos/query.proto
+	modified:   requirements.txt
+	modified:   src/1/pytorch_container_diffusion_v3.py
+	modified:   src/__pycache__/config.cpython-310.pyc
+	modified:   src/__pycache__/config.cpython-314.pyc
+	modified:   src/__pycache__/config.cpython-39.pyc
+	modified:   src/__pycache__/infaas_request_status_pb2.cpython-314.pyc
+	modified:   src/__pycache__/query_pb2.cpython-314.pyc
+	modified:   src/__pycache__/query_pb2.cpython-39.pyc
+	modified:   src/__pycache__/query_pb2_grpc.cpython-314.pyc
+	modified:   src/autoscaler.py
+	modified:   src/config.py
+	modified:   src/metrics.py
+	modified:   src/model_registry.py
+	modified:   src/query_pb2.py
+	modified:   src/query_pb2_grpc.py
+	modified:   src/scheduler.py
+	modified:   src/server.py
+	modified:   src/worker_pool.py
+	modified:   ../../build/CMakeFiles/CMakeConfigureLog.yaml
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/compiler_depend.internal
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/compiler_depend.make
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.grpc.pb.cc.o
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.grpc.pb.cc.o.d
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.pb.cc.o
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.pb.cc.o.d
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/client
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/generated/query.grpc.pb.cc
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/generated/query.grpc.pb.h
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/generated/query.pb.cc
+	modified:   ../../build/DiffServ_0112_1730_coco2/0112_1730_coco/generated/query.pb.h
+	modified:   ../../error_and_recent_command_logs/error_snapshots_pnb.txt
+	modified:   ../../error_and_recent_command_logs/most_recent_commands.txt
+	modified:   ../../protos/python_protos/__pycache__/query_pb2.cpython-312.pyc
+	modified:   ../../protos/python_protos/infaas_request_status_pb2.py
+	modified:   ../../protos/python_protos/infaas_request_status_pb2_grpc.py
+	modified:   ../../protos/python_protos/query_pb2.py
+	modified:   ../../protos/python_protos/query_pb2_grpc.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../.stfolder/syncthing-folder-303e82.txt
+	before_cleanup_conda.txt
+	before_cleanup_pip.txt
+	environment.yml
+	environment_snapshot/
+	protos/__pycache__/
+	requirements-torch.txt
+	setup.sh
+	src/1/__pycache__/
+	src/1/bootstrap.py
+	src/__pycache__/experiment_models.cpython-310.pyc
+	src/__pycache__/experiment_models.cpython-314.pyc
+	src/__pycache__/experiment_models.cpython-39.pyc
+	src/__pycache__/project_paths.cpython-310.pyc
+	src/__pycache__/worker_metrics.cpython-310.pyc
+	src/__pycache__/worker_metrics.cpython-314.pyc
+	src/__pycache__/worker_metrics.cpython-39.pyc
+	src/env.sh
+	src/experiment_models.py
+	src/experiments/
+	src/metrics/
+	src/models.json
+	src/project_paths.py
+	src/scripts/
+	src/worker_metrics.py
+
+no changes added to commit (use "git add" and/or "git commit -a")

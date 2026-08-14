@@ -1,0 +1,582 @@
+\documentclass[11pt]{report}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage[margin=1in, headheight=14pt]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{caption}
+ \usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red!70!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=8pt,
+    showstringspaces=false,
+    tabsize=2,
+    morekeywords={conda, pip, python, docker, ln, mkdir, cp, cd, ls, pkill, pdflatex},
+}
+
+\title{\textbf{DIFS Developer Guide (Two Models)} \\[0.5em]
+\normalsize\textit{SD 2.1 vs SD 3.5 Medium: Reproducing and Extending}}
+\author{DIFS Research Team}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{DIFS Developer Guide (Two Models)}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%======================================================================
+\chapter{System Overview}
+%======================================================================
+
+DIFS (Differentiated-QoS Inference Serving) is a multi-model Stable Diffusion inference serving system with gRPC-based scheduling, autoscaling (horizontal/vertical/hybrid), and workload classification. This guide focuses on the two-model configuration comparing SD 2.1 and SD 3.5 Medium on an NVIDIA RTX 6000 Ada GPU (48\,GB VRAM) using sequential CPU offload.
+
+\section{Scaling Modes}
+
+\begin{itemize}
+    \item \textbf{Horizontal Scaling:} Independent workers are added or removed. Each worker runs its own process and serves requests on its own gRPC port.
+    \item \textbf{Vertical Scaling:} Parameters such as batch size and worker concurrency are tuned on existing workers.
+    \item \textbf{Hybrid Scaling:} Combines horizontal and vertical scaling simultaneously.
+\end{itemize}
+
+\section{Model Switching}
+
+\begin{itemize}
+    \item \textbf{Hot Switching:} The model pointer in memory is swapped to a pre-loaded model ($\sim$0.1\,s). Implemented via \texttt{hot\_switch\_model()}.
+    \item \textbf{Cold Switching:} The current model is unloaded and a new model is loaded from disk ($\sim$3--34\,s). Implemented via \texttt{cold\_switch\_model()}.
+\end{itemize}
+
+\section{Workload Classification}
+
+Workloads are classified into three tiers based on prompt analysis:
+\begin{itemize}
+    \item \textbf{Fast:} Simple prompts served by smaller models (SD 2.1).
+    \item \textbf{Balanced:} Moderate prompts served by mid-tier models.
+    \item \textbf{Quality:} Complex prompts requiring large models (SD 3.5 Medium).
+\end{itemize}
+
+\section{Scheduling Policy}
+
+\textbf{Scheduling policy.} The scheduler is neither pure FIFO nor pure EDF; the policy is scaling-mode dependent. In \texttt{vertical} mode requests are served strictly first-come, first-served (FIFO) from the single \texttt{request\_queue}. In \texttt{horizontal} and \texttt{hybrid} modes requests are classified into three strict-priority classes (\textit{interactive} $>$ \textit{balanced} $>$ \textit{batch}) and, within each class, dispatched earliest-deadline-first (EDF) by SLO deadline ($\texttt{deadline} = \texttt{arrival} + \texttt{latency\_slo}/1000$). Worker selection is a separate least-loaded policy: \texttt{get\_next\_worker()} scores each candidate as $\texttt{active\_requests} \times 1000 + \texttt{avg\_latency\_ms} + \texttt{gpu\_memory\_mb} \times 0.05$, plus $1000$ if the worker is busy and $5000$ on workload-class mismatch, and selects the minimum. In DIFS\_OC\_v2 the policy is identical; the INFaaS extension adds per-model replica tracking (\texttt{get\_replica\_count()}) and a unified \texttt{scale\_infaas()} autoscaler pass, but does not alter the scheduler's queueing or dispatch policy.
+
+\section{Scaling Decision Strategy}
+
+DIFS\_OC\_v2 employs a dual-threshold decision strategy:
+
+\subsection{$\rho$-Based Horizontal Scaling}
+The autoscaler monitors $\rho = \frac{\text{arrival rate}}{\text{service rate} \times \text{worker count}}$:
+\begin{itemize}
+  \item $\rho > 0.80$: Scale up (add a new worker)
+  \item $\rho < 0.30$: Scale down (remove idle worker after cooldown)
+\end{itemize}
+The hysteresis band ($0.30$--$0.80$) prevents oscillatory behaviour.
+
+\subsection{INFaaS Cost-Model (Strategies A vs B)}
+For vertical model-switching, the autoscaler compares two strategies:
+\begin{itemize}
+  \item \textbf{Strategy A}: Sum of per-variant costs --- $\sum_{m} (\text{load\_time}_m \times \text{count}_m + \text{load\_time}_m / \text{QPS}_m)$
+  \item \textbf{Strategy B}: Fastest variant cost --- $\min_{m} \text{load\_time}_m \times \text{total\_workers}$
+  \item \textbf{Decision}: If cost$_A > 1.5 \times$ cost$_B$, switch to the fastest variant; otherwise keep the current mix.
+\end{itemize}
+The $1.5\times$ threshold prevents unnecessary switching when the benefit is marginal.
+
+%======================================================================
+\chapter{Critical Modules and Architecture}
+%======================================================================
+
+\section{Module Dependency Diagram}
+
+\begin{center}
+\begin{tabular}{l c l}
+\toprule
+\textbf{Component} & \textbf{Port/Interface} & \textbf{Notes} \\
+\midrule
+Client (\texttt{client\_async\_v3.py}) & gRPC 50050 & Sends prompts \\
+$\downarrow$ & & \\
+Scheduler (\texttt{server.py} + \texttt{scheduler.py}) & gRPC 50050 & Dispatches requests \\
+$\downarrow$ & & \\
+Worker Pool (\texttt{worker\_pool.py}) & internal & Manages worker lifecycle \\
+$\downarrow$ & & \\
+Worker (\texttt{pytorch\_container\_diffusion\_v3.py}) & gRPC 50060+ & Runs GPU inference \\
+$\downarrow$ & & \\
+NVIDIA RTX 6000 Ada & CUDA & 48GB VRAM, sequential CPU offload \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Module Descriptions}
+
+\begin{longtable}{p{2.2cm} p{4.5cm} p{3.5cm} p{4.5cm}}
+\toprule
+\textbf{Module} & \textbf{File} & \textbf{Controls} & \textbf{Key Functions} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Module} & \textbf{File} & \textbf{Controls} & \textbf{Key Functions} \\
+\midrule
+\endhead
+Entry Point & \texttt{server.py} & All subsystems & \texttt{serve()} \\
+\midrule
+Scheduler & \texttt{scheduler.py} & Request dispatch & \texttt{dispatch\_request()} \\
+\midrule
+Worker Pool & \texttt{worker\_pool.py} & Worker lifecycle & \texttt{add\_worker()}, \texttt{remove\_worker()} \\
+\midrule
+Autoscaler & \texttt{autoscaler.py} & INFaaS cost-model ($\rho$ + Strategy A/B) & \texttt{scale\_infaas()}, \texttt{compute\_model\_cost()} \\
+\midrule
+Worker & \texttt{pytorch\_container\_diffusion\_v3.py} & GPU inference & \texttt{load\_model()}, \texttt{hot\_switch\_model()} \\
+\midrule
+Client & \texttt{client\_async\_v3.py} & Request sending & \texttt{connect()}, \texttt{send\_requests()} \\
+\midrule
+Metrics & \texttt{metrics.py} & CSV logging & \texttt{log\_latency()}, \texttt{log\_gpu\_memory()} \\
+\midrule
+Model Registry & \texttt{model\_registry.py} & Model mapping & \texttt{ALL\_MODELS} dict \\
+\midrule
+Config & \texttt{config.py} & Runtime settings & \texttt{SCALING\_MODE}, thresholds \\
+\midrule
+Project Paths & \texttt{project\_paths.py} & Filesystem paths & \texttt{PROJECT\_ROOT}, \texttt{MODEL\_CACHE} \\
+\bottomrule
+\end{longtable}
+
+%======================================================================
+\chapter{File-to-Module Control Map}
+%======================================================================
+
+\begin{longtable}{p{3.5cm} p{3cm} p{3.5cm} p{3.5cm}}
+\toprule
+\textbf{File} & \textbf{Module Controlled} & \textbf{What It Affects} & \textbf{When to Edit} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{File} & \textbf{Module Controlled} & \textbf{What It Affects} & \textbf{When to Edit} \\
+\midrule
+\endhead
+\texttt{src/config.py} & Runtime configuration & Scaling mode, SLA targets & Changing behavior \\
+\midrule
+\texttt{src/project\_paths.py} & All filesystem paths & Model cache, output dir & Changing file paths \\
+\midrule
+\texttt{src/server.py} & Entry point & Starts all services & Changing server port \\
+\midrule
+\texttt{src/scheduler.py} & Request scheduling & Queue management & Changing routing \\
+\midrule
+\texttt{src/worker\_pool.py} & Worker lifecycle & Worker creation/removal & Changing worker mgmt \\
+\midrule
+\texttt{src/autoscaler.py} & Autoscaling logic & Scale-up/down decisions & Tuning thresholds \\
+\midrule
+\texttt{src/1/pytorch\_container\_diffusion\_v3.py} & Worker inference & Model loading, inference & Changing inference \\
+\midrule
+\texttt{src/model\_registry.py} & Model registry & Model ID mapping & Adding new models \\
+\midrule
+\texttt{src/experiments/experiment\_config.py} & Experiment parameters & Ports, workloads, models & Changing benchmark config \\
+\midrule
+\texttt{src/plots/generate\_two\_model\_plots.py} & Two-model plots & Plot appearance, data & Changing plot aesthetics \\
+\bottomrule
+\end{longtable}
+
+%======================================================================
+\section{Run Parameters}
+
+\begin{table}[H]
+\centering
+\small
+\caption{DIFS\_OC\_v2 Run Parameters}
+\label{tab:run_params}
+\begin{tabular}{@{}lp{9cm}@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+\texttt{GPU} & NVIDIA RTX 6000 Ada (49 GB VRAM) \\
+\texttt{RAM} & 121 GB \\
+\texttt{CPU Offload} & Sequential \\
+\texttt{Models} & SD-v1-4 (dir + safetensors), SD-v1-5, SD-2-1, SDXL-Base, DreamShaper-8, SD-3.5-Medium \\
+\texttt{Scaling modes} & horizontal, vertical, hybrid \\
+\texttt{5-model SLO set (model IDs)} & 3, 4, 5, 8, 9 \\
+\texttt{SCALE\_UP\_THRESHOLD / SCALE\_DOWN\_THRESHOLD} & 5 / 1 \\
+\texttt{UTILIZATION\_SCALE\_UP / SCALE\_DOWN} & 0.80 / 0.30 \\
+\texttt{MIN\_WORKERS / MAX\_WORKERS} & 1 / 5 \\
+\texttt{AUTOSCALE\_INTERVAL / CHECK\_INTERVAL} & 5 s / 5 s \\
+\texttt{SLO\_LATENCY\_MULTIPLIER} & 2.5$\times$ exec time \\
+\texttt{Accuracy step map (high / med / low)} & 40 / 30 / 20 \\
+\texttt{DEFAULT\_ACCURACY\_LEVEL} & medium \\
+\texttt{SLO\_VIOLATION\_BUDGET} & 1\% \\
+\texttt{MIN\_WORKER\_AGE} & 60 s \\
+\texttt{MODEL\_SWITCH\_MODE} & hot \\
+\texttt{Benchmark workload / steps / sampler} & 5 prompts / 20 steps / sampler 1 (historical runs: 10 steps) \\
+\texttt{CFG\_SCALE / SEED} & 7.5 / 42 \\
+\texttt{SLO load levels (low / med / high)} & 2/60, 4/60, 6/60 req/s (Poisson) \\
+\texttt{SLO prompts per level} & 300 COCO captions \\
+\texttt{SLO arrival window (low / med / high)} & 9000 / 4500 / 3000 s \\
+\texttt{SLO worker pool (low / med / high)} & 5 / 5 / 5 \\
+\texttt{SLO client timeout multiplier} & 4$\times$ exec time \\
+\texttt{Ports (scheduler / worker)} & 50050 / 50060 \\
+\texttt{Worker launch} & direct (Python subprocess) \\
+\texttt{INFaaS GPU\_MAX\_REPLICAS / CPU\_MAX\_REPLICAS} & 1 / 2 \\
+\texttt{INFaaS MAX\_CONTAINERS\_PER\_MODEL} & 3 \\
+\texttt{INFaaS SCALE\_DOWN\_DELAY} & 20 idle cycles \\
+\texttt{INFaaS STRATEGY\_THRESHOLD} & 1.5 \\
+\texttt{INFaaS GPU\_MEMORY\_BUDGET\_MB} & 40000 \\
+\texttt{INFaaS MODEL\_LOAD\_COSTS} & 15--25 s per model \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\chapter{How to Reproduce the Codebase}
+%======================================================================
+
+\section{Environment Setup}
+
+\begin{lstlisting}[caption={Environment setup}]
+conda create -n DIFS_OC_v2 python=3.10
+conda activate DIFS_Gen_OC_v2
+pip install -r requirements.txt
+pip install -r requirements-torch.txt
+
+# Install protobuf compiler
+pip install grpcio-tools
+python -m grpc_tools.protoc -I protos \
+    --python_out=. --grpc_python_out=. \
+    protos/query.proto protos/infaas_request_status.proto
+\end{lstlisting}
+
+\section{Model Setup}
+
+\begin{lstlisting}[caption={Model download and symlinks}]
+# Download models (use ungated mirrors)
+# SD 2.1: sd2-community/stable-diffusion-2-1
+# SD 3.5 Medium: camenduru/stable-diffusion-3.5-medium
+
+# Create symlinks
+mkdir -p /tmp/model
+ln -sf /path/to/stable-diffusion-2-1 /tmp/model/
+ln -sf /path/to/stable-diffusion-3.5-medium /tmp/model/
+
+# Copy FID reference stats
+cp real_stats.npz /tmp/model/
+\end{lstlisting}
+
+%======================================================================
+\chapter{Generating Plots}
+%======================================================================
+
+\section{Two-Model Plot Generation}
+
+\begin{lstlisting}[caption={Generate two-model plots}]
+cd DiffServ_0112_1730_coco2/0112_1730_coco
+python src/plots/generate_two_model_plots.py
+
+# Output location
+ls results/model_benchmark/two_models_plots/
+ls results/model_benchmark/two_models_plot_data/
+\end{lstlisting}
+
+This generates 16 plots (8 bar + 5 line + 3 switching) filtered to SD-2.1 and SD-3.5-Medium only, without overwriting the all-model plots.
+
+\section{Plot Data Files}
+
+Filtered CSVs reside in \texttt{results/model\_benchmark/two\_models\_plot\_data/}. Bar chart CSVs use long format. Line plot CSVs use wide format.
+
+%======================================================================
+\chapter{Running Benchmarks}
+%======================================================================
+
+\section{Two-Model Benchmark}
+
+\begin{lstlisting}[caption={Two-model benchmark}]
+python src/experiments/run_model_benchmark.py \
+  --models 3 7 \
+  --modes horizontal vertical hybrid \
+  --workload 5 --steps 10
+\end{lstlisting}
+
+Model IDs: SD-2.1 = 3, SD-3.5-Medium = 7.
+
+\section{Benchmark Output Structure}
+
+\begin{lstlisting}[caption={Output directory layout}]
+results/model_benchmark/
+  horizontal/model_<name>/metrics/*.csv
+  vertical/model_<name>/metrics/*.csv
+  hybrid/model_<name>/metrics/*.csv
+  benchmark_summary.csv
+  plots/*.png              # all-model plots
+  two_models_plots/*.png   # two-model plots
+  plot_data/*.csv           # all-model CSVs
+  two_models_plot_data/*.csv # two-model CSVs
+\end{lstlisting}
+
+%======================================================================
+\chapter{Major Files to Edit}
+%======================================================================
+
+\section{Adding a New Model}
+
+\begin{enumerate}
+    \item Edit \texttt{src/model\_registry.py}: add entry to \texttt{ALL\_MODELS} dict.
+    \item Edit \texttt{src/models.json}: add ID-to-filename mapping.
+    \item Create symlink in \texttt{/tmp/model/}.
+    \item Add to \texttt{experiment\_config.py} \texttt{MODELS} list.
+    \item Re-run benchmark.
+\end{enumerate}
+
+\section{Changing Scaling Mode}
+
+\begin{enumerate}
+    \item Edit \texttt{src/config.py}: \texttt{SCALING\_MODE}.
+    \item Or pass \texttt{--modes} flag to benchmark runner.
+\end{enumerate}
+
+%======================================================================
+\chapter{Potholes and Pitfalls}
+%======================================================================
+
+\section{Coding Pitfalls}
+
+\begin{itemize}
+    \item \textbf{Proto stubs:} Regenerate after editing \texttt{query.proto}.
+    \item \textbf{Import paths:} Always run from project root.
+    \item \textbf{Port conflicts:} Port 50050 (scheduler) and 50060+ (workers) must be free.
+    \item \textbf{Model cache:} \texttt{/tmp} is cleared on reboot. Re-create symlinks.
+    \item \textbf{CUDA OOM:} Use \texttt{enable\_sequential\_cpu\_offload=True} for memory-intensive models.
+\end{itemize}
+
+\section{Inference Pitfalls}
+
+\begin{itemize}
+    \item \textbf{Model loading time:} SD 3.5 Medium takes $\sim$7--34\,s, SD 2.1 takes $\sim$3--6\,s.
+    \item \textbf{Sampler compatibility:} SD 3.5 uses FlowMatch Euler; SD 2.1 uses Euler Ancestral.
+    \item \textbf{CPU offload overhead:} Required for 48GB VRAM with large models.
+\end{itemize}
+
+\section{Testing Pitfalls}
+
+\begin{itemize}
+    \item \textbf{Benchmark isolation:} Start fresh for each run.
+    \item \textbf{Autoscaler interference:} Disable during benchmarking (\texttt{DIFS\_NO\_AUTOSCALER=1}).
+    \item \textbf{Process cleanup:}
+\begin{lstlisting}
+pkill -f pytorch_container_diffusion
+pkill -f server.py
+\end{lstlisting}
+\end{itemize}
+
+%======================================================================
+% Chapter 9: SLO Extension -- What Changed vs. the Original Codebase
+%======================================================================
+\chapter{SLO Extension: What Changed vs.\ the Original Codebase}
+
+This chapter documents every change made to the original DIFS\_OC\_v2 codebase to add the two-SLO (latency + accuracy) evaluation system. It is intended for (a) reviewers who need to see exactly which modules diverged from the original code, and (b) developers who want to re-implement the SLO pipeline from scratch. The changes mirror the DIFS\_OC\_v1 SLO extension module-for-module; the only behavioural difference is that the SLO feedback enters the autoscaler through the unified \texttt{scale\_infaas()} pass rather than through separate \texttt{scale()} paths.
+
+\section{Changed vs.\ Original Modules}
+
+The SLO extension modified the following existing modules. In every case the original behavior is preserved and the SLO logic is added alongside it; no original feature was removed.
+
+\begin{longtable}{p{4.2cm} p{5.3cm} p{5.3cm}}
+\toprule
+\textbf{Module} & \textbf{Original Behavior} & \textbf{SLO Change} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Module} & \textbf{Original Behavior} & \textbf{SLO Change} \\
+\midrule
+\endhead
+\texttt{protos/query.proto} & \texttt{QueryOnlineImageRequest} fields 1--6 (prompt, steps, sampler, etc.) & Field \texttt{string AccuracyLevel = 7;} added. Both \texttt{protos/query\_pb2.py} and \texttt{src/query\_pb2.py} regenerated with \texttt{grpc\_tools.protoc}. \\
+\texttt{src/config.py} & No SLO settings; \texttt{SLA\_TARGETS} only & Added \texttt{SLO\_LATENCY\_MULTIPLIER = 2.5}, \texttt{ACCURACY\_STEP\_RANGES}, \texttt{ACCURACY\_STEP\_MAP}, \texttt{DEFAULT\_ACCURACY\_LEVEL = "medium"}, \texttt{SLO\_VIOLATION\_BUDGET = 0.01}. \\
+\texttt{src/client\_async\_v3.py} & \texttt{-steps} only & Added \texttt{-accuracy \{high,medium,low\}} argument; maps level to step count and sets \texttt{request.accuracy\_level}. \\
+\texttt{src/scheduler.py} & Queues keyed by (model, accuracy), round-robin pick, no deadline & Added \texttt{slo\_stats} dict, \texttt{\_slo\_context()}, \texttt{\_record\_slo()}, \texttt{get\_slo\_stats()}, \texttt{get\_slo\_violation\_rate()}; sets \texttt{request.deadline = arrival + slo\_ms/1000} at enqueue; SLO eval in \texttt{dispatch\_request()} success path and \texttt{handle\_request()} batch loop. \\
+\texttt{src/worker\_pool.py} & \texttt{dequeue()} pops per queue in order & \texttt{dequeue()} now drains each priority queue and picks \texttt{min(candidates, key=\_deadline)} (EDF); \texttt{get\_batch()} sorts the batch by deadline. \\
+\texttt{src/autoscaler.py} & Scale decisions from utilization $\rho$ only, via unified \texttt{scale\_infaas()} & Added \texttt{slo\_breached} trigger inside \texttt{scale\_infaas()}: when the rolling violation rate exceeds \texttt{SLO\_VIOLATION\_BUDGET}, it forces scale-up even if $\rho \le 0.80$. \\
+\texttt{src/metrics.py} & \texttt{log\_latency}, \texttt{log\_gpu\_memory} etc. & Added \texttt{record\_slo()} appending rows to \texttt{metrics/slo\_metrics.csv}. \\
+\texttt{src/experiments/experiment\_config.py} & \texttt{LOAD\_LEVELS} for the classic load study & Added \texttt{SLO\_LOAD\_LEVELS = \{"low": 2/60, "medium": 4/60, "high": 6/60\}} (2/4/6\,req/min), \texttt{SLO\_PROMPT\_COUNT = 300}, per-level \texttt{SLO\_WINDOW\_SEC\_BY\_LEVEL} (window $=300/\lambda$), \texttt{SLO\_CLIENT\_TIMEOUT\_MULT = 4.0}. \\
+\bottomrule
+\end{longtable}
+
+\section{Modules Added}
+
+The following modules are new; they do not exist in the original codebase.
+
+\begin{longtable}{p{5.5cm} p{9.3cm}}
+\toprule
+\textbf{New File} & \textbf{Purpose} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{New File} & \textbf{Purpose} \\
+\midrule
+\endhead
+\texttt{src/slo.py} & Pure-python SLO library: \texttt{ACCURACY\_STEP\_MAP}, \texttt{resolve\_latency\_slo\_ms(model, steps)}, \texttt{resolve\_step\_count()}, \texttt{get\_accuracy\_level\_from\_steps()}, \texttt{load\_exec\_profiling\_data()}. \\
+\texttt{src/experiments/generate\_slo\_profiling.py} & Measures execution time per (model, steps) and writes \texttt{results/model\_benchmark/plot\_data\_5model/slo\_exec\_profiling.csv}. \\
+\texttt{src/experiments/generate\_slo\_benchmark\_results.py} & Discrete-event simulation: Poisson arrivals of 300 COCO prompts per load level (window $=300/\lambda$: 150/75/17\,min), 5 models $\times$ 3 accuracy levels, single serial worker, 12 rounds averaged. Writes \texttt{slo\_benchmark\_results.csv}. \\
+\texttt{src/experiments/run\_slo\_benchmark.py} & Optional live-GPU runner; merges measured \texttt{metrics/slo\_metrics.csv} rows with the simulated rows. \\
+\texttt{src/plots/generate\_slo\_plots.py} & Produces \texttt{slo\_latency\_attainment.png}, \texttt{slo\_accuracy\_attainment.png}, \texttt{slo\_throughput.png}. \\
+\texttt{results/model\_benchmark/plot\_data\_5model/slo\_exec\_profiling.csv} & Profiling data: measured 20-step exec times, linearly extrapolated 30/40-step times. \\
+\bottomrule
+\end{longtable}
+
+\section{How to Implement the SLO System From Scratch}
+
+If you are rebuilding the system from an unmodified DIFS codebase, follow these steps in order.
+
+\begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
+    \item \textbf{Add the proto field.} Append \texttt{string AccuracyLevel = 7;} to \texttt{QueryOnlineImageRequest} in \texttt{protos/query.proto}, then regenerate:
+\begin{lstlisting}[caption={Regenerate pb2 files}]
+python -m grpc_tools.protoc -I protos \
+  --python_out=protos --grpc_python_out=protos protos/query.proto
+python -m grpc_tools.protoc -I protos \
+  --python_out=src --grpc_python_out=src protos/query.proto
+\end{lstlisting}
+    \item \textbf{Add the SLO config block} to \texttt{src/config.py}: the 2.5$\times$ latency multiplier, the accuracy step ranges/map, the default level, and the violation budget (0.01).
+    \item \textbf{Write \texttt{src/slo.py}.} Implement \texttt{resolve\_latency\_slo\_ms()} as $2.5 \times \texttt{exec\_time(model, steps)}$ reading \texttt{slo\_exec\_profiling.csv}, \texttt{resolve\_step\_count()} to map a level to a step count, and \texttt{get\_accuracy\_level\_from\_steps()} to reverse-map a served step count back to a level (canonical 20/30/40 first, then range membership).
+    \item \textbf{Extend the client.} Add \texttt{-accuracy}, resolve it to steps via \texttt{slo.resolve\_step\_count()}, and set \texttt{accuracy\_level} on the request.
+    \item \textbf{Hook the scheduler.} In \texttt{enqueue()}, compute the latency SLO and set \texttt{request.deadline = arrival\_time + slo\_ms/1000}. In \texttt{dequeue()}, pick the earliest deadline across the per-class queues (EDF); in \texttt{get\_batch()}, sort by deadline. Add \texttt{\_slo\_context()} to wrap each dispatch, \texttt{\_record\_slo()} to compare end-to-end latency against the deadline, and \texttt{get\_slo\_violation\_rate()} for the rolling window.
+    \item \textbf{Record metrics.} Add \texttt{metrics.record\_slo()} and call it from the scheduler's \texttt{\_record\_slo()}.
+    \item \textbf{Add the autoscaler trigger.} Inside \texttt{scale\_infaas()}, check \texttt{get\_slo\_violation\_rate() > SLO\_VIOLATION\_BUDGET} and force scale-up when breached, in addition to the $\rho > 0.80$ rule.
+    \item \textbf{Profile execution times.} Run \texttt{generate\_slo\_profiling.py} to produce the per-(model, steps) exec-time CSV.
+    \item \textbf{Build the benchmark + plots.} Run \texttt{generate\_slo\_benchmark\_results.py} for the simulated results and \texttt{generate\_slo\_plots.py} for the three SLO graphs.
+\end{enumerate}
+
+\section{SLO Class Diagram}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{DIFS_OC_v2_slo_class.png}
+    \caption{SLO-aware classes and their new methods (extension over the original codebase)}
+    \label{fig:slo_class}
+\end{figure}
+
+\section{SLO Request Sequence}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{DIFS_OC_v2_slo_sequence.png}
+    \caption{SLO admission, EDF dispatch, evaluation and recording}
+    \label{fig:slo_sequence}
+\end{figure}
+
+\section{SLO Enforcement Flowchart}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{DIFS_OC_v2_slo_flowchart.png}
+    \caption{Per-request SLO enforcement and the autoscaler feedback path}
+    \label{fig:slo_flowchart}
+\end{figure}
+
+%======================================================================
+\chapter{Port Reference}
+%======================================================================
+
+\begin{longtable}{p{2cm} p{4.5cm} p{2cm} p{4.5cm}}
+\toprule
+\textbf{Port} & \textbf{Component} & \textbf{Protocol} & \textbf{Direction} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Port} & \textbf{Component} & \textbf{Protocol} & \textbf{Direction} \\
+\midrule
+\endhead
+50050 & Scheduler & gRPC & Client $\to$ Scheduler \\
+50060 & Worker (default) & gRPC & Scheduler $\to$ Worker \\
+50061+ & Additional workers & gRPC & Scheduler $\to$ Worker \\
+\bottomrule
+\end{longtable}
+
+%======================================================================
+\chapter{Quick Reference Card}
+%======================================================================
+
+\section{Start Everything}
+
+\begin{lstlisting}[caption={Manual startup}]
+# Terminal 1: Worker (SD 2.1)
+python src/1/pytorch_container_diffusion_v3.py \
+    -model 3 -sampler 1 -thread 10 -port 50060 \
+    -npz /tmp/model/real_stats.npz
+
+# Terminal 2: Server
+python src/server.py
+
+# Terminal 3: Client
+python src/client_async_v3.py \
+    -prompt_count 50 -steps 10 -sampler 1 -port 50050
+\end{lstlisting}
+
+\section{Run Two-Model Benchmark}
+
+\begin{lstlisting}[caption={Two-model benchmark}]
+PYTHONUNBUFFERED=1 python -m src.experiments.run_model_benchmark \
+  --models 3 7 \
+  --modes horizontal vertical hybrid \
+  --workload 5 --steps 10
+\end{lstlisting}
+
+\section{Generate Two-Model Plots}
+
+\begin{lstlisting}[caption={Plot generation}]
+python src/plots/generate_two_model_plots.py
+\end{lstlisting}
+
+% ============================================================
+% Glossary
+% ============================================================
+\newpage
+\appendix
+\chapter{Glossary of Terms}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{4.5cm} X}
+\toprule
+\textbf{Term} & \textbf{Definition} \\
+\midrule
+\texttt{--models 3 7} & Model IDs for the two-model benchmark. 3=SD-v1.5, 7=DreamShaper-8 (or 4=SD-2.1, 8=SD-3.5-Medium for the generational comparison). \\
+\texttt{--modes horizontal vertical hybrid} & Scaling modes tested for each model. \\
+\texttt{generate\_two\_model\_plots.py} & Script that filters the full benchmark data for two specific models and generates focused comparison plots. \\
+\texttt{two\_models\_plot\_data/} & Filtered CSV subset containing only the two selected models' data. \\
+\texttt{two\_models\_plots/} & Output directory for two-model-specific PNG plots. \\
+\texttt{SD-2.1} & Stable Diffusion 2.1. UNet-based, 865M params, up to 768$\times$768 resolution. \\
+\texttt{SD-3.5-Medium} & Stable Diffusion 3.5 Medium. MM-DiT transformer, 2.5B params, three text encoders. \\
+\texttt{worker\_metrics.csv} & Per-request metrics: inference time, GPU memory usage, FID score. \\
+\texttt{switch\_metrics.csv} & Model switching time recorded during LoadModel RPC calls. \\
+\texttt{benchmark\_summary.csv} & One row per run: model, mode, avg\_latency, switch\_time. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

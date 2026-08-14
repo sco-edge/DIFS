@@ -1,0 +1,669 @@
+\documentclass[11pt]{report}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage[margin=1in, headheight=14pt]{geometry}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{DIFS Benchmark Report (Two Models)}
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{red!70!black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  captionpos=b
+}
+
+\title{\Huge DIFS Two-Model Benchmark Report\\[0.3em]
+\normalsize SD 2.1 vs SD 3.5 Medium}
+\author{DIFS Research Team}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\chapter{Executive Summary}
+% ============================================================
+
+We benchmarked 2 Stable Diffusion models---SD 2.1 and SD 3.5 Medium---across 3 scaling modes on a single GPU (NVIDIA RTX 6000 Ada, 48\,GB VRAM). The system supports horizontal, vertical, and hybrid scaling modes. This report focuses exclusively on the generational comparison between these two models.
+
+\textbf{Key Findings:}
+\begin{itemize}[leftmargin=*]
+  \item SD 2.1 is 1.6$\times$ faster than SD 3.5 Medium (14.79\,s vs 23.92\,s average latency across modes).
+  \item SD 3.5 Medium uses 7.5$\times$ more GPU peak memory (1072\,MB vs 142\,MB).
+  \item SD 2.1 shows comparable latency across all three scaling modes (15.58\,s horizontal, 12.87\,s vertical, 15.91\,s hybrid), consistent with other v1.x-family models.
+  \item Model load times: SD-2.1 at 2.75\,s; SD-3.5-Medium at 6.04\,s (average across modes).
+  \item Scaling mode has negligible impact on single-worker inference latency for both models.
+  \item Both models run successfully using sequential CPU offload on the RTX 6000 Ada.
+\end{itemize}
+
+% ============================================================
+\chapter{System Architecture}
+% ============================================================
+
+The DIFS system is organized into seven architectural layers, each implemented as an independent Python module.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\caption{System Architecture Layers}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.8cm}>{\raggedright\arraybackslash}p{2.2cm}X X@{}}
+\toprule
+\textbf{Layer} & \textbf{Component} & \textbf{File} & \textbf{Description} \\
+\midrule
+Client          & gRPC client          & \path{client_async_v3.py}         & Sends prompts via gRPC \\
+Scheduler       & request dispatcher   & \path{server.py + scheduler.py}     & Receives/dispatches on port 50050 \\
+Worker Pool     & worker lifecycle mgr & \path{worker_pool.py}              & Manages worker lifecycle \\
+Worker          & GPU inference engine & \path{pytorch_container_diffusion_v3.py} & GPU inference on port 50060 \\
+Autoscaler      & dynamic scaling     & \path{autoscaler.py}                & Dynamic scaling \\
+Metrics         & observability        & \path{metrics.py}                   & Latency, throughput, GPU, FID \\
+Model Registry  & ID-to-path mapping  & \path{model_registry.py}           & ID-to-filename mapping \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_7_system_architecture.png}
+  \caption{DIFS OC v2 System Architecture \textemdash{} INFaaS Cost-Based Scaling}
+  \label{fig:architecture_orig}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{DIFS_OC_v2_architecture.png}
+  \caption{DIFS OC v2 System Architecture \textemdash{} INFaaS Cost-Based Scaling}
+  \label{fig:architecture}
+\end{figure}
+
+\section{Scaling Decision Strategy}
+
+DIFS\_OC\_v2 employs a dual-threshold decision strategy that separates container-level scaling from model-level switching.
+
+\subsection{$\rho$-Based Horizontal Scaling}
+
+The autoscaler monitors $\rho$, the worker utilization ratio: $\rho = \frac{\text{arrival rate}}{\text{service rate} \times \text{worker count}}$. Two thresholds govern container-level decisions:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Scale-up ($\rho > 0.80$):} System near saturation. Adds a new worker.
+  \item \textbf{Scale-down ($\rho < 0.30$):} System underutilized. Removes an idle worker after a cooldown.
+\end{itemize}
+
+The hysteresis band ($0.30$--$0.80$) prevents oscillatory behaviour.
+
+\subsection{INFaaS Cost-Model (Strategies A vs B)}
+
+For model-switching decisions, the autoscaler compares two strategies:
+
+\textbf{Strategy A (sum of per-variant costs):}
+\[
+\text{cost}_{\text{A}} = \sum_{m \in \mathcal{M}} \left( \text{load\_time}_m \times \text{worker\_count}_m + \text{load\_time}_m / \max(\text{QPS}_m, 0.01) \right)
+\]
+
+\textbf{Strategy B (fastest variant only):}
+\[
+\text{cost}_{\text{B}} = \min_{m \in \mathcal{M}} \text{load\_time}_m \times \text{total\_workers}
+\]
+
+If $\text{cost}_{\text{A}} > 1.5 \times \text{cost}_{\text{B}}$, the system switches to the fastest variant on the least-busy worker; otherwise it retains the current model mix. The $1.5\times$ threshold prevents unnecessary switching when the benefit is marginal.
+
+\section{Scaling Mode Descriptions}
+
+The three scaling modes control how the system manages the worker process lifecycle and request scheduling. Each mode is described below in terms of its programmatic function, benefits, drawbacks, utility, and significance during benchmarking and deployment.
+
+\subsection{Horizontal Mode}
+
+\textbf{Function.} Each inference request spawns a fresh Docker container running \texttt{pytorch\_container\_diffusion\_v3.py}. The autoscaler calls \texttt{worker\_pool.add\_worker()} which executes \texttt{docker run -d --gpus all -p <port>:50060 difs-diffusion-worker ...}. The new worker loads the model from scratch---deserializing safetensors weights from disk, constructing the pipeline, and running a 1-step warmup---then processes the request. DIFS\_OC\_v2 extends this with multi-worker support via \texttt{DIFS\_EXTRA\_WORKER\_PORTS} (comma-separated port list) and \texttt{run\_multiworker\_benchmark.py} that tests 1, 3, and 5 concurrent workers.
+
+\textbf{Benefits.} Complete process isolation between requests. The multi-worker infrastructure enables distributing requests across multiple containers, providing genuine (though single-GPU-time-sliced) horizontal capacity. Docker encapsulation constrains resource usage.
+
+\textbf{Drawbacks.} Highest cold-start latency of any mode. Every request pays the full cost of Docker creation, weight deserialization, and pipeline warmup. The INFaaS cost model's trigger conditions (Strategy A vs.\ B comparison) can delay container creation compared to simpler threshold-based approaches.
+
+\textbf{Utility.} Best suited for workloads where isolation is paramount or bursty workloads where the delayed scale-down prevents premature container removal.
+
+\textbf{Benchmark significance.} Horizontal establishes the cold-start load-time baseline. In this system, load times are compressed compared to the sibling project due to the INFaaS worker's efficient pipeline construction.
+
+\textbf{Deployment significance.} When the autoscaler is active, \texttt{scale\_infaas()} handles horizontal decisions alongside vertical model-switching in one pass, using collected per-model QPS data and \texttt{model\_worker\_counts} replica tracking. Scale-down is delayed by \texttt{SCALE\_DOWN\_DELAY} (20 consecutive idle cycles) to prevent thrashing.
+
+\subsection{Vertical Mode}
+
+\textbf{Function.} A single persistent Docker worker is reused for all requests. When switching models, the autoscaler calls \texttt{worker\_pool.switch\_model()} which sends a \texttt{LoadModel} gRPC. The worker's \texttt{hot\_switch\_model()} checks an in-memory cache (\texttt{self.model\_cache}). On a cache hit, it repoints \texttt{self.current\_pipe}---milliseconds. On a miss, it calls \texttt{self.load\_model()} which detects the pipeline class, deserializes weights, runs warmup, caches the pipeline, and swaps the pointer. The worker exposes \texttt{WorkerStatus()} gRPC reporting \texttt{last\_switch\_time\_ms} for real-time cost tracking by the INFaaS autoscaler.
+
+\textbf{Benefits.} Lowest load times. The in-memory cache makes repeated switches to the same model near-instantaneous. \texttt{WorkerStatus()} telemetry enables INFaaS cost decisions based on actual measured load costs rather than static estimates.
+
+\textbf{Drawbacks.} Memory state accumulates across switches. No process isolation. The INFaaS cost model's automated switching adds orchestration overhead absent in simpler approaches.
+
+\textbf{Utility.} Ideal for latency-sensitive multi-model serving. The per-model QPS tracking helps the INFaaS autoscaler optimize which variant to serve under changing workload popularity.
+
+\textbf{Benchmark significance.} Vertical establishes the best-case baseline. The gap between vertical and horizontal times represents the maximum benefit of process reuse.
+
+\textbf{Deployment significance.} The INFaaS cost model's \texttt{scale\_infaas()} handles vertical switching in the same pass as horizontal decisions. It compares Strategy A (current model mix) vs.\ B (fastest variant only) and triggers \texttt{\_trigger\_vertical\_switch()} when the cost benefit exceeds 1.5$\times$, selecting the least-busy worker via a score of \texttt{active\_requests $\times$ 1000 + average\_latency\_ms}.
+
+\subsection{Hybrid Mode}
+
+\textbf{Function.} The single unified method \texttt{scale\_infaas()} handles horizontal decisions, vertical model-switching, and batch-size tuning in one pass. The scheduler uses priority class queues (\textit{interactive}, \textit{balanced}, \textit{batch}) rather than the single FIFO used in pure vertical mode. Model switching follows the same hot-swap mechanism as vertical mode.
+
+\textbf{Benefits.} Combines vertical hot-swapping with horizontal capacity expansion in a single coordinated pass, preventing the two-phase conflicts possible in sequential approaches. The INFaaS cost model ensures switching decisions are economically rational.
+
+\textbf{Drawbacks.} Added complexity from evaluating all three axes every cycle. The cost comparison adds latency to the autoscaler loop.
+
+\textbf{Utility.} Best general-purpose choice for production deployments with unpredictable workload patterns. The unified pass handles both bursty load and frequent model switching without manual mode selection.
+
+\textbf{Benchmark significance.} Hybrid results are nearly indistinguishable from Vertical in this benchmark. The unified cost model's bookkeeping does not add measurable overhead at single-request granularity.
+
+\textbf{Deployment significance.} \texttt{scale\_infaas()} evaluates all three decision axes in a single pass, eliminating sequential two-phase issues. Per-model QPS tracking and empirically measured load costs ground both horizontal and vertical decisions in actual runtime telemetry. Delayed scale-down prevents premature container removal during brief load dips.
+
+% ============================================================
+\chapter{Key Components}
+% ============================================================
+
+\section{server.py}
+The main entry point. Initializes the gRPC server on port 50050, instantiates the \texttt{Scheduler}, \texttt{WorkerPool}, \texttt{AutoScaler}, and \texttt{Metrics} objects, and registers the \texttt{SchedulerService} gRPC servicer. Handles graceful shutdown on SIGINT/SIGTERM.
+
+\section{scheduler.py}
+The request scheduler. Maintains three priority queues (\textit{interactive}, \textit{balanced}, \textit{batch}) using the \texttt{WorkloadClassifier}. Tracks arrival/service counts and SLA violations.
+
+\textbf{Scheduling policy.} The scheduler is neither pure FIFO nor pure EDF; the policy is scaling-mode dependent. In \texttt{vertical} mode requests are served strictly first-come, first-served (FIFO) from the single \texttt{request\_queue}. In \texttt{horizontal} and \texttt{hybrid} modes requests are classified into three strict-priority classes (\textit{interactive} $>$ \textit{balanced} $>$ \textit{batch}) and, within each class, dispatched earliest-deadline-first (EDF) by SLO deadline ($\texttt{deadline} = \texttt{arrival} + \texttt{latency\_slo}/1000$). Worker selection is a separate least-loaded policy: \texttt{get\_next\_worker()} scores each candidate as $\texttt{active\_requests} \times 1000 + \texttt{avg\_latency\_ms} + \texttt{gpu\_memory\_mb} \times 0.05$, plus $1000$ if the worker is busy and $5000$ on workload-class mismatch, and selects the minimum. In DIFS\_OC\_v2 the policy is identical; the INFaaS extension adds per-model replica tracking (\texttt{get\_replica\_count()}) and a unified \texttt{scale\_infaas()} autoscaler pass, but does not alter the scheduler's queueing or dispatch policy.
+
+
+\section{worker\_pool.py}
+Manages the lifecycle of worker processes. Spawns workers on dynamically assigned ports starting from 50060.
+
+\section{autoscaler.py}
+Dynamic scaling component. Monitors load metrics and decides when to scale workers up or down.
+
+\section{pytorch\_container\_diffusion\_v3.py}
+The GPU inference worker. Loads a Stable Diffusion pipeline onto the GPU (or via CPU offload), receives prompts over gRPC, runs the diffusion forward pass, and returns the generated image.
+
+\section{model\_registry.py}
+Maps integer model IDs to human-readable names and filenames.
+
+% ============================================================
+\chapter{Benchmark Configuration}
+% ============================================================
+
+\begin{table}[H]
+\centering
+\small
+\caption{Benchmark Environment and Parameters (DIFS\_OC\_v2)}
+\label{tab:run_params}
+\begin{tabular}{@{}lp{9cm}@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+\texttt{GPU} & NVIDIA RTX 6000 Ada (49 GB VRAM) \\
+\texttt{RAM} & 121 GB \\
+\texttt{CPU Offload} & Sequential \\
+\texttt{Models} & SD-v1-4 (dir + safetensors), SD-v1-5, SD-2-1, SDXL-Base, DreamShaper-8, SD-3.5-Medium \\
+\texttt{Scaling modes} & horizontal, vertical, hybrid \\
+\texttt{5-model SLO set (model IDs)} & 3, 4, 5, 8, 9 \\
+\texttt{SCALE\_UP\_THRESHOLD / SCALE\_DOWN\_THRESHOLD} & 5 / 1 \\
+\texttt{UTILIZATION\_SCALE\_UP / SCALE\_DOWN} & 0.80 / 0.30 \\
+\texttt{MIN\_WORKERS / MAX\_WORKERS} & 1 / 5 \\
+\texttt{AUTOSCALE\_INTERVAL / CHECK\_INTERVAL} & 5 s / 5 s \\
+\texttt{SLO\_LATENCY\_MULTIPLIER} & 2.5$\times$ exec time \\
+\texttt{Accuracy step map (high / med / low)} & 40 / 30 / 20 \\
+\texttt{DEFAULT\_ACCURACY\_LEVEL} & medium \\
+\texttt{SLO\_VIOLATION\_BUDGET} & 1\% \\
+\texttt{MIN\_WORKER\_AGE} & 60 s \\
+\texttt{MODEL\_SWITCH\_MODE} & hot \\
+\texttt{Benchmark workload / steps / sampler} & 5 prompts / 20 steps / sampler 1 (historical runs: 10 steps) \\
+\texttt{CFG\_SCALE / SEED} & 7.5 / 42 \\
+\texttt{SLO load levels (low / med / high)} & 2/60, 4/60, 6/60 req/s (Poisson) \\
+\texttt{SLO prompts per level} & 300 COCO captions \\
+\texttt{SLO arrival window (low / med / high)} & 9000 / 4500 / 3000 s \\
+\texttt{SLO worker pool (low / med / high)} & 5 / 5 / 5 \\
+\texttt{SLO client timeout multiplier} & 4$\times$ exec time \\
+\texttt{Ports (scheduler / worker)} & 50050 / 50060 \\
+\texttt{Worker launch} & direct (Python subprocess) \\
+\texttt{INFaaS GPU\_MAX\_REPLICAS / CPU\_MAX\_REPLICAS} & 1 / 2 \\
+\texttt{INFaaS MAX\_CONTAINERS\_PER\_MODEL} & 3 \\
+\texttt{INFaaS SCALE\_DOWN\_DELAY} & 20 idle cycles \\
+\texttt{INFaaS STRATEGY\_THRESHOLD} & 1.5 \\
+\texttt{INFaaS GPU\_MEMORY\_BUDGET\_MB} & 40000 \\
+\texttt{INFaaS MODEL\_LOAD\_COSTS} & 15--25 s per model \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\chapter{Benchmark Results}
+% ============================================================
+
+\section{Results Table}
+
+\begin{table}[H]
+\centering
+\caption{Latency (s), Load Time (s), and GPU Peak Memory (MB) by Model and Scaling Mode}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Model} & \textbf{Horiz} & \textbf{Vert} & \textbf{Hybrid} & \textbf{Avg} & \textbf{Load} & \textbf{GPU Peak} \\
+ & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(s)} & \textbf{(MB)} \\
+\midrule
+SD-2.1       & 15.58 & 12.87 & 15.91 & 14.79 &  2.75 & 142.00 \\
+SD-3.5-Medium & 25.64 & 22.86 & 23.27 & 23.92 &  6.04 & 1072.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Note:} Both models show consistent latency across all three scaling modes, confirming that scaling mode does not affect single-worker inference performance.
+
+\section{Bar Charts}
+
+The bar charts display the two-model benchmark data across all three scaling modes. Figure~\ref{fig:latency_bar} (latency) shows SD~3.5~Medium averaging 23.92\,s---1.6$\times$ slower than SD~2.1's 14.79\,s---with negligible within-mode variation for both models. Figure~\ref{fig:load_time_bar} (load time) reveals that scaling mode minimally affects weight-transfer overhead: SD~2.1 loads in 2.75\,s, while SD~3.5~Medium loads in 6.04\,s (averaged across modes). Figure~\ref{fig:gpu_memory_bar} confirms the 7.5$\times$ memory gap (142\,MB vs 1072\,MB), which is mode-independent. Figures~\ref{fig:throughput_bar} and~\ref{fig:throughput_min_bar} (throughput) are the mathematical inverse of latency. Figure~\ref{fig:radar} plots both models on four normalized metrics simultaneously. Figure~\ref{fig:heatmap} (heatmap) summarises the scaling-mode invariance of inference latency---columns are uniform per model row---while the load-time nuance is visible in the load-time and switching-time figures.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_1_latency_comparison.png}
+  \caption{Inference Latency by Model and Scaling Mode}
+  \label{fig:latency_bar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_2_model_load_time.png}
+  \caption{Model Load Time by Model and Scaling Mode}
+  \label{fig:load_time_bar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_3_gpu_memory.png}
+  \caption{GPU Peak Memory by Model}
+  \label{fig:gpu_memory_bar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_4_throughput.png}
+  \caption{Throughput (images/sec) by Model}
+  \label{fig:throughput_bar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_4b_throughput_per_minute.png}
+  \caption{Throughput (images/min) by Model and Scaling Mode}
+  \label{fig:throughput_min_bar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_5_model_comparison_radar.png}
+  \caption{Radar Chart -- Multi-Metric Model Comparison}
+  \label{fig:radar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/plot_6_scaling_mode_impact.png}
+  \caption{Scaling Mode Impact Heatmap}
+  \label{fig:heatmap}
+\end{figure}
+
+\section{Line Plots}
+
+The line plots connect the two models on a continuous x-axis for each metric. The latency line (Figure~\ref{fig:line_latency}) rises from SD~2.1 (14.79\,s) to SD~3.5~Medium (23.92\,s), visualising the 1.6$\times$ architecture-driven slowdown. The load-time line (Figure~\ref{fig:line_load}) confirms tight clustering across modes. GPU memory (Figure~\ref{fig:line_gpu}) rises 7.5$\times$ (142\,MB $\to$ 1072\,MB). Throughput (Figure~\ref{fig:line_throughput}) follows the inverse of latency. The combined grid (Figure~\ref{fig:line_all}) overlays all four metrics for cross-correlation.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/line_latency_comparison.png}
+  \caption{Line Plot -- Latency Across Models}
+  \label{fig:line_latency}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/line_model_load_time.png}
+  \caption{Line Plot -- Model Load Time Across Models}
+  \label{fig:line_load}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/line_gpu_memory.png}
+  \caption{Line Plot -- GPU Memory Across Models}
+  \label{fig:line_gpu}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/line_throughput.png}
+  \caption{Line Plot -- Throughput Across Models}
+  \label{fig:line_throughput}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/line_all_metrics.png}
+  \caption{Line Plot -- All Metrics Combined}
+  \label{fig:line_all}
+\end{figure}
+
+\section{Model Switching Time}
+
+The switching-time bar chart (Figure~\ref{fig:switch_bar}) groups load times by scaling mode. SD~2.1 loads in 1.8--4.6\,s across modes. SD~3.5~Medium loads in 5.9--6.1\,s---tightly clustered across all three modes, with no extreme cold-start outlier. The line chart (Figure~\ref{fig:switch_line}) tracks the same data per mode.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/switching_time_bar.png}
+  \caption{Model Switching Time (Bar)}
+  \label{fig:switch_bar}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{../two_models_plots/switching_time_line.png}
+  \caption{Model Switching Time (Line)}
+  \label{fig:switch_line}
+\end{figure}
+
+\subsection{Note on Load/Switch Measurement Equivalence}
+
+The model-load-time plot (Figure~\ref{fig:load_time_bar}) and the switching-time plot (Figure~\ref{fig:switch_bar}) are numerically identical because both are generated from the same raw measurement---the \texttt{load\_time} field recorded during each inference request. In this single-worker benchmark, every request triggers a full model load from disk into GPU memory; there is no pre-warmed worker pool from which a pre-loaded model can be served. Consequently, the time to ``load'' a model for its first use equals the time to ``switch'' to it on any subsequent request. The two plots are presented separately to frame the same cost under different conceptual lenses: load time as a per-model infrastructure cost, and switching time as the per-request overhead the autoscaler encounters when transitioning between models during a workload.
+
+\section{Pairwise Model Switching Time}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{../two_models_plots/pairwise_switching_heatmap.png}
+  \caption{Pairwise Model Switching Time Heatmap (seconds). From Model (row) $\rightarrow$ To Model (column).}
+  \label{fig:pairwise_heatmap}
+\end{figure}
+
+\noindent\textbf{Key observations:}
+\begin{itemize}[leftmargin=*]
+  \item Switching \emph{into} SD 3.5 Medium costs $\sim$6.0\,s on average (5.9--6.1\,s across all modes).
+  \item Switching \emph{into} SD 2.1 costs $\sim$2.8\,s on average (1.8--4.6\,s across modes).
+  \item SD 2.1 is 2.2$\times$ faster to load than SD 3.5 Medium due to its smaller weight file.
+\end{itemize}
+
+% ============================================================
+\chapter{Analytic Discussion}
+% ============================================================
+
+\section{Architecture Comparison}
+
+SD 2.1 uses a UNet-based architecture with 860M parameters, while SD 3.5 Medium uses a MM-DiT (Multimodal Diffusion Transformer) architecture with three text encoders (CLIP-L, CLIP-G, T5-XXL). This architectural difference is the primary driver of the performance gap.
+
+\subsection{Latency Gap}
+SD 3.5 Medium averages 23.92\,s latency vs SD 2.1's 14.79\,s---a 1.6$\times$ slowdown. SD 3.5 Medium's MM-DiT transformer, while more architecturally advanced, incurs higher computational cost per step than SD 2.1's UNet. The gap is driven by:
+\begin{itemize}[leftmargin=*]
+  \item Three text encoders (CLIP-L, CLIP-G, T5-XXL) adding sequential CPU-offload overhead
+  \item Larger transformer weights in the MM-DiT block requiring more GPU memory transfers
+  \item Higher VAE decoder channel count extending the decode phase
+\end{itemize}
+
+\subsection{Memory Trade-off}
+SD 3.5 Medium consumes 1072\,MB GPU peak memory vs SD 2.1's 142\,MB. The 7.5$\times$ memory increase is due to:
+\begin{itemize}[leftmargin=*]
+  \item Three text encoders (CLIP-L: 246\,MB, CLIP-G: 1.4\,GB, T5-XXL: 9.8\,GB)
+  \item Larger transformer weights in the MM-DiT block
+  \item VAE decoder with higher channel count
+\end{itemize}
+
+\section{Scaling Mode Analysis}
+
+\subsection{SD 2.1 Scaling Mode Behavior}
+SD 2.1 shows negligible latency difference across all three modes: horizontal (15.58\,s), vertical (12.87\,s), and hybrid (15.91\,s). The vertical mode is fastest by $\sim$2.7\,s, which may reflect slight CPU-offload scheduling variation rather than a structural advantage.
+
+\subsection{SD 3.5 Medium Scaling Mode Behavior}
+SD 3.5 Medium shows consistent latency across all three modes: horizontal 25.64\,s, vertical 22.86\,s, hybrid 23.27\,s. The variation of 2.78\,s (12.1\%) between the fastest and slowest mode is primarily due to measurement noise and CPU-offload scheduling variation; inference time itself remains consistent.
+
+\subsection{Load Time Differences}
+SD 2.1 loads in 2.75\,s (averaged across modes), reflecting its small weight footprint. SD 3.5 Medium loads in 6.04\,s---2.2$\times$ longer than SD 2.1---consistent with its larger MM-DiT transformer and three text encoders. The load time for both models is tightly clustered across modes, with no extreme cold-start outlier.
+
+\section{Why Scaling Mode Doesn't Affect Single-Worker Latency}
+
+The scaling mode controls \emph{worker management}---how workers are created, destroyed, and routed. Once a model is loaded into VRAM and inference begins, the forward pass executes identically regardless of mode. The latency is dominated by the model's forward pass through the transformer/UNet and VAE, which takes $\sim$23--26\,s for SD 3.5 Medium and $\sim$13--16\,s for SD 2.1. The only differences between scaling modes appear in the model load/switch time (2.75\,s for SD 2.1, 6.04\,s for SD 3.5 Medium), which occurs \emph{before} the timed inference window.
+
+\textbf{Why the two claims are consistent: a phase decomposition.}
+A request's wall-clock duration is the sum of two separable phases, $T_{\mathrm{job}} = T_{\mathrm{load/switch}} + T_{\mathrm{inference}}$. $T_{\mathrm{inference}}$ is the GPU-bound forward pass (denoising UNet/transformer plus VAE decoding) measured inside the timed window; $T_{\mathrm{load/switch}}$ is the worker-provisioning cost paid \emph{before} that window opens---deserializing weights from disk and constructing the diffusion pipeline. The scaling mode controls only the second term: Horizontal pays a full cold start, Vertical pays an in-memory hot-swap of an already-cached pipeline, and Hybrid sequences both. Once a pipeline is resident in VRAM, the forward pass is the same arithmetic regardless of mode, so $T_{\mathrm{inference}}$ is statistically identical across modes---this is the ``orthogonal to single-worker latency'' result. But $T_{\mathrm{load/switch}}$ is genuinely mode-dependent, and $T_{\mathrm{job}}$ inherits that dependence: for SD~2.1, the 2.75\,s load against $\sim$13--16\,s of inference is roughly 15--17\% of total job time; for SD~3.5~Medium, the 6.04\,s load against $\sim$23--26\,s of inference is roughly 19--21\%. The two claims are therefore not in tension: one characterises the compute stage (mode-independent), the other the provisioning stage that precedes it (mode-dependent).
+
+\section{Scaling Mode Naming Convention and Architecture Comparison}
+
+\subsection{Naming Convention}
+
+Unlike the sibling project \textit{DIFS\_OC\_v1}, which uses the \textbf{P-} prefix (P-Horizontal, P-Vertical, P-Hybrid) to denote \textbf{pseudo-scaling} on a single GPU, this report drops the prefix entirely. The scaling modes are labelled simply as Horizontal, Vertical, and Hybrid. The ``P-'' prefix in \textit{DIFS\_OC\_v1} explicitly distinguishes single-GPU operation from true distributed infrastructure; \textit{DIFS\_OC\_v2} omits it because the scaling modes are treated as the implementation itself rather than a simulation of multi-node behaviour.
+
+Although both projects run on the same single-GPU hardware, \textit{DIFS\_OC\_v2} implements a more sophisticated INFaaS-style cost-model autoscaler in Python, treats model hot-switching as an automated vertical-scaling primitive, and tracks per-model replica counts with delayed scale-down---justifying the production-style naming.
+
+\subsection{Architecture Comparison}
+
+Table~\ref{tab:scaling_arch} summarises the key architectural and implementational distinctions between the two projects for each scaling mode.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{4pt}%
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.7cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Aspect} & \textbf{DIFS\_OC\_v1 (P-H/P-V/P-Hyb)} & \textbf{DIFS\_OC\_v2 (Horizontal/Vertical/Hybrid)} \\
+\hline
+\textbf{Scaling decision} & Threshold-based: $\rho > 0.80$ scale-up, $\rho < 0.30$ scale-down & INFaaS cost-model: Strategy A (sum of model load costs) vs B (fastest variant only), configurable threshold (default 1.5$\times$) \\
+\addlinespace
+\textbf{Controller} & Three separate methods: \path{scale()} (horizontal), \path{scale_vertical()} (batch), hybrid calls both sequentially & Single unified method \path{scale_infaas()} handling horizontal + vertical + model-switch in one pass \\
+\addlinespace
+\textbf{Vertical scaling} & Batch size only: queue $>10 \rightarrow$ batch=8, $>5 \rightarrow$ batch=4, else batch=1 & Batch size + automated model hot-switching: selects least-busy worker via gRPC \path{LoadModel} RPC, tracks per-model load cost from actual measurements \\
+\addlinespace
+\textbf{Horizontal scaling} & Simple Docker add/remove worker, no per-model tracking & Delayed scale-down (configurable idle cycles), per-model QPS collection, \path{model_worker_counts} replica tracking \\
+\addlinespace
+\textbf{Model switching} & Manual / hardcoded per benchmark run & Automated: INFaaS cost comparison triggers switches; \path{_trigger_vertical_switch()} selects worker with lowest score \\
+\addlinespace
+\textbf{Config params} & Basic: \path{SCALING_MODE}, \path{AUTOSCALE_INTERVAL}, \path{MIN/MAX_WORKERS} & Extended with INFaaS params: \path{GPU_MAX_REPLICAS=1}, \path{CPU_MAX_REPLICAS=2}, \path{MAX_CONTAINERS_PER_MODEL=3}, \path{STRATEGY_THRESHOLD=1.5}, \path{GPU_MEMORY_BUDGET_MB=40000}, \path{MODEL_LOAD_COSTS} dict \\
+\addlinespace
+\textbf{Multi-worker infra} & Single external worker only & Registers multiple workers via \path{DIFS_EXTRA_WORKER_PORTS} env var; \path{process_manager.py} has \path{start_worker_at_port()}/\path{stop_worker_at_port()} \\
+\addlinespace
+\textbf{Plot labels} & \path{_pseudo_label()} converts ``horizontal'' $\rightarrow$ ``P-Horizontal'', etc. & Uses raw mode names directly (no \path{_pseudo_label()}) \\
+\addlinespace
+\textbf{Autoscaler backend} & Pure Python decision loop; C++ limited to gRPC stubs (\path{client.cc}, \path{heartbeat_client.cc}) & Same Python-only architecture; INFaaS cost model (\path{compute_model_cost()}, \path{compute_fastest_model_cost()}) is pure Python; no C++ autoscaler component \\
+\hline
+\end{tabularx}
+\caption{Architectural distinctions between DIFS\_OC\_v1 (pseudo-scaling, ``P-'' prefix) and DIFS\_OC\_v2 (production-style, no prefix).}
+\label{tab:scaling_arch}
+\end{table}
+
+\subsection{Code-Level Implementation Comparison}
+
+Table~\ref{tab:code_impl} provides a detailed code-level comparison of the seven key features that distinguish DIFS\_OC\_v2's near-production scaling from DIFS\_OC\_v1's pseudo-scaling. Each row identifies the specific source files, functions, and patterns used by each system to implement (or omit) the feature.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{3pt}%
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Feature} & \textbf{DIFS\_OC\_v1 (Pseudo-Scaling)} & \textbf{DIFS\_OC\_v2 (Near-Production)} \\
+\hline
+\textbf{1. Multi-worker parallelism} & \path{server.py:127-144} -- single external worker on port~50060; no \path{DIFS_EXTRA_WORKER_PORTS} support; \path{worker_pool.py:30-31} sequential port assignment from \path{base_port=50060}; limited to one concurrent container & \path{server.py:131-154} -- discovers multiple workers from \path{DIFS_EXTRA_WORKER_PORTS} env var (comma-separated ports); \path{process_manager.py:370-476} provides \path{start_worker_at_port()}, \path{stop_worker_at_port()}, \path{start_server_multi()}; \path{worker_pool.py:485-522} tracks per-model replicas via \path{get_replica_count()}, \path{get_workers_for_model()} \\
+\addlinespace
+\textbf{2. INFaaS cost-model autoscaler} & \path{autoscaler.py:244-384} -- \path{scale()} uses hard thresholds ($\rho > 0.80$ scale-up, $\rho < 0.30$ scale-down); \path{scale_vertical()}: queue depth $\rightarrow$ batch size only; no cost comparison; decisions purely threshold-driven & \path{autoscaler.py:327-486} -- \path{scale_infaas()} with Strategy~A vs B: \path{compute_model_cost()} (line~280) models cost as $\text{load\_time} \times \text{count} + \text{load\_time} / \max(\text{qps}, 0.01)$; \path{compute_fastest_model_cost()} (line~293) evaluates single-model alternative; \path{_trigger_vertical_switch()} (line~488) selects least-busy worker \\
+\addlinespace
+\textbf{3. Autoscaler implementation} & \path{autoscaler.py} -- pure Python decision loop; C++ files are only gRPC stubs (\path{client.cc}, \path{heartbeat_client.cc}); No \path{autoscaler.cc} or \path{autoscaler.h} exists & Same Python-only architecture; INFaaS Strategy~A/B logic implemented entirely in Python (\path{compute_model_cost()}, \path{compute_fastest_model_cost()}); no C++ autoscaler component in either system \\
+\addlinespace
+\textbf{4. Delayed scale-down} & \path{autoscaler.py:371-383} -- immediate scale-down when $\rho < 0.30$ and \path{idle_workers > 0}; no idle-cycle counter; only protection is \path{MIN_WORKER_AGE} (60\,s) worker age check in \path{compute_scale_down_score()} (line~521) & \path{autoscaler.py:457-472} -- \path{scale_down_consecutive} counter increments each idle cycle; scale-down only fires when counter $\ge$ \path{SCALE_DOWN_DELAY} (default 20 cycles); resets to 0 on scale-up or any activity; \path{config.py:53} makes delay configurable \\
+\addlinespace
+\textbf{5. Per-model QPS tracking} & Not tracked; \path{scale()} uses aggregate \path{arrival_rate} and \path{service_rate} only; worker gRPC reports \path{model_name}, \path{throughput}, \path{last_switch_time_ms} but autoscaler never reads them & \path{autoscaler.py:252-278} -- \path{collect_per_model_qps()} polls each worker's \path{throughput} field via gRPC \path{WorkerStatus}; stores in \path{self.per_model_qps} dict; \path{autoscaler.py:372-378} updates per-model \path{load_cost} from \path{last_switch_time_ms}; logged per-model metrics drive cost-model decisions \\
+\addlinespace
+\textbf{6. Unified \path{scale_infaas()} pass} & Does not exist; \path{autoscaler.py:589-597} dispatches via \path{if/elif} on \path{SCALING_MODE}: ``vertical'' $\rightarrow$ \path{scale_vertical()}, ``horizontal'' $\rightarrow$ \path{scale()}, ``hybrid'' $\rightarrow$ both sequentially & \path{autoscaler.py:327-486} -- single \path{scale_infaas()} combining queue prediction, worker status polling, per-model metric collection, Strategy~A/B cost comparison, horizontal scale-up/down with delayed scale-down, and vertical batch-size tuning; main loop (line~640) calls only \path{self.scale_infaas()} \\
+\addlinespace
+\textbf{7. Worker metrics feedback} & Worker (\path{pytorch_container_diffusion_v3.py:1007-1026}) reports \path{model_name}, \path{throughput}, \path{last_switch_time_ms} via gRPC \path{WorkerStatusResponse}, but these fields are ignored by the threshold autoscaler & Same worker gRPC response consumed by \path{collect_per_model_qps()} (line~269) and load-cost update (line~377); per-model metrics flow into \path{compute_model_cost()} to inform vertical-switch targets. The worker itself is identical -- the difference is in the autoscaler's consumption of its metrics \\
+\hline
+\end{tabularx}
+\caption{Code-level implementation comparison of the seven features that differentiate near-production scaling (DIFS\_OC\_v2) from pseudo-scaling (DIFS\_OC\_v1). Each entry identifies the source file, line numbers, and key functions.}
+\label{tab:code_impl}
+\end{table}
+
+\subsection{Equivalence Boundaries}
+
+Despite the architectural differences in Table~\ref{tab:scaling_arch}, the scaling mode mechanics---worker lifecycle (Docker spawn vs.\ process reuse), queuing strategy (priority class queues vs.\ single FIFO), and hot-swap mechanism---are identical for equivalent modes across the two projects. The Horizontal worker behaviour in DIFS\_OC\_v2 is programmatically the same as P-Horizontal in DIFS\_OC\_v1; the same holds for Vertical and Hybrid. Nevertheless, the modes produce different benchmark numbers and would behave differently in deployment for three reasons:
+
+\begin{enumerate}[leftmargin=*]
+
+\item \textbf{Autoscaler logic (deployment only).} During benchmarking, both projects set \texttt{DIFS\_NO\_AUTOSCALER=1} to isolate per-model measurements, so the autoscaler is inactive. In a live deployment, however, the autoscaler determines \emph{when} to add/remove workers or trigger a model switch. DIFS\_OC\_v1 uses a simple threshold-based policy ($\rho > 0.80$ scale up, $\rho < 0.30$ scale down, queue-depth batch tuning), while DIFS\_OC\_v2 uses an INFaaS-style cost model that compares the cost of the current model mix against the cost of using only the fastest-loading variant, with a configurable 1.5$\times$ threshold. Consequently, the same workload would trigger scale events at different times---or not at all---depending on which autoscaler is active. The mode mechanics ({\itshape what} happens when a scale event fires) remain the same, but the triggering logic ({\itshape whether} it fires) differs.
+
+\item \textbf{Multi-worker infrastructure.} DIFS\_OC\_v2 supports registering multiple workers via the \texttt{DIFS\_EXTRA\_WORKER\_PORTS} environment variable and provides \texttt{start\_worker\_at\_port()}/\texttt{stop\_worker\_at\_port()} in the process manager. Its \texttt{run\_multiworker\_benchmark.py} tests scenarios with 1, 3, and 5 concurrent workers. DIFS\_OC\_v1 uses a single external worker with no dynamic port allocation. In a multi-worker deployment, the horizontal mode behaviour would therefore diverge: OC\_v2 can distribute requests across several containers, while OC\_v1 is limited to one.
+
+\item \textbf{Environmental factors.} The benchmark results for the same mode differ between the two projects (e.g.\ SD-v1.4-dir load time: 1.63\,s in DIFS\_OC\_v2 Horizontal vs.\ 1.83\,s in DIFS\_OC\_v1 P-Horizontal). These differences arise from \texttt{diffusers} library version mismatches, differing system package states, GPU contention patterns at run time, and filesystem caching effects---not from mode implementation differences. The mode mechanics are identical, but the results are measured in environments that are similar, not identical.
+
+\end{enumerate}
+
+% ============================================================
+\chapter{Plot Data Files}
+% ============================================================
+
+Every plot was generated from filtered CSV data files containing only SD-2.1 and SD-3.5-Medium results.
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{2.6cm}@{}}
+\caption{Plot Data File Manifest (Two Models)} \label{tab:manifest} \\
+\toprule
+\textbf{Plot File} & \textbf{Data CSV} & \textbf{Script} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Plot File} & \textbf{Data CSV} & \textbf{Script} \\
+\midrule
+\endhead
+\path{plot_1_latency_comparison.png} & \path{plot_1_latency_comparison.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{plot_2_model_load_time.png} & \path{plot_2_model_load_time.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{plot_3_gpu_memory.png} & \path{plot_3_gpu_memory.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{plot_4_throughput.png} & \path{plot_4_throughput.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{plot_4b_throughput_per_minute.png} & \path{plot_4_throughput.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{plot_5_model_comparison_radar.png} & \path{plot_5_radar_model_comparison.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{plot_6_scaling_mode_impact.png} & \path{plot_6_scaling_mode_heatmap.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{plot_7_system_architecture.png} & (copied from all-model plots) & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{line_latency_comparison.png} & \path{line_1_latency_comparison.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{line_model_load_time.png} & \path{line_2_model_load_time.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{line_gpu_memory.png} & \path{line_3_gpu_memory.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{line_throughput.png} & \path{line_4_throughput.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{line_all_metrics.png} & (uses line\_1 through line\_4) & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{switching_time_bar.png} & \path{switching_time_bar.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{switching_time_line.png} & \path{switching_time_line.csv} & \path{generate_two_model_plots.py} \\
+\addlinespace
+\path{pairwise_switching_heatmap.png} & (derived from \path{switching_time_bar.csv}) & \path{generate_two_model_plots.py} \\
+\bottomrule
+\end{longtable}
+
+All filtered CSVs reside in \texttt{results/model\_benchmark/two\_models\_plot\_data/}.
+
+% ============================================================
+\chapter{Replication Guide}
+% ============================================================
+
+\section{Full Benchmark Command}
+\begin{lstlisting}[caption={Run two-model benchmark}]
+cd 0112_1730_coco
+
+python src/experiments/run_model_benchmark.py \
+  --models 3,7 \
+  --modes horizontal,vertical,hybrid \
+  --prompts 5 \
+  --steps 10 \
+  --seed 42 \
+  --output results/model_benchmark
+\end{lstlisting}
+
+\section{Plot Generation Commands}
+\begin{lstlisting}[caption={Generate two-model plots}]
+python src/plots/generate_two_model_plots.py
+\end{lstlisting}
+
+\section{Viewing Results}
+\begin{lstlisting}[caption={View results}]
+ls results/model_benchmark/two_models_plots/
+ls results/model_benchmark/two_models_plot_data/
+\end{lstlisting}
+
+% ============================================================
+\chapter{Conclusion}
+% ============================================================
+
+This report presented a focused benchmark comparing SD 2.1 and SD 3.5 Medium across 3 scaling modes on an NVIDIA RTX 6000 Ada GPU. SD 2.1 achieves 1.6$\times$ lower latency than SD 3.5 Medium (14.79\,s vs 23.92\,s) while consuming 7.5$\times$ less GPU memory (142\,MB vs 1072\,MB). SD 3.5 Medium's MM-DiT transformer trades substantially higher memory for slightly higher latency. Both models run successfully using sequential CPU offload, confirming the feasibility of serving diverse Stable Diffusion model generations on a single GPU.
+
+\textbf{Future Work:}
+\begin{itemize}[leftmargin=*]
+  \item Benchmark with higher step counts (20, 50) to confirm the relative latency ratio holds.
+  \item Measure image quality (FID, CLIP score) to determine if SD 3.5 Medium also produces better images.
+  \item Test multi-GPU configurations to assess scaling potential.
+\end{itemize}
+
+% ============================================================
+% Glossary
+% ============================================================
+\newpage
+\appendix
+\chapter{Glossary of Terms}
+
+The following list defines all technical terms used in the tables and figures throughout this report.
+
+\begin{description}[style=nextline]
+  \item[\textbf{CPU Offloading}] Temporarily moving model weights to CPU RAM to fit larger models in GPU memory. Adds latency but enables models that exceed VRAM.
+  \item[\textbf{Cold-Switch}] Stop worker container, start new one with a different model. Fully general but slower.
+  \item[\textbf{FID}] Frechet Inception Distance. Measures image quality vs.\ real COCO images. Lower = better.
+  \item[\textbf{GPU Memory (MB)}] Peak VRAM usage during inference (weights + activations).
+  \item[\textbf{Hot-Switch}] In-memory model weight transfer on a running worker. Faster than restarting the container.
+  \item[\textbf{Latency (s)}] Time from request submission to image delivery. Lower is better.
+  \item[\textbf{MM-DiT}] Multi-Modal Diffusion Transformer. SD 3.5's architecture replacing the UNet with a transformer that jointly processes text and image latents.
+  \item[\textbf{Model Load Time}] Time to deserialize weights from disk and allocate GPU memory.
+  \item[\textbf{P50 / P95 / P99 Latency}] Median, 95th percentile, and 99th percentile request latencies.
+  \item[\textbf{SD-2.1}] Stable Diffusion 2.1 (865M params). UNet-based architecture, 768$\times$768 max resolution.
+  \item[\textbf{SD-3.5-Medium}] Stable Diffusion 3.5 Medium (2.5B params). MM-DiT transformer architecture with three text encoders (CLIP$\times$2 + T5-XXL).
+  \item[\textbf{Sampler}] Diffusion noise scheduler (Euler-a = Ancestral Euler, the default).
+  \item[\textbf{Scaling Mode}] \emph{Horizontal}: add/remove workers. \emph{Vertical}: switch model on a worker. \emph{Hybrid}: both.
+  \item[\textbf{Steps}] Denoising iterations. More steps = better quality but linearly higher latency. Default: 10 (two-model report).
+  \item[\textbf{T5-XXL Encoder}] Google's T5 text encoder (4.7B params) used by SD 3.5 for richer text understanding. Requires CPU offloading on single GPUs.
+  \item[\textbf{Throughput (img/s)}] Images generated per second ($1 / \text{avg latency}$). Higher is better.
+  \item[\textbf{Wall Time}] Total elapsed clock time for the entire benchmark run.
+  \item[\textbf{Worker}] Docker container/subprocess running the diffusion pipeline on a GPU port.
+  \item[\textbf{Workload}] Number of requests per benchmark run. Each generates one image.
+\end{description}
+
+\end{document}
