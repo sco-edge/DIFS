@@ -1,0 +1,12 @@
+$ python src/client_async_v3.py -prompt_count 20 -host localhost -port 50050 -steps 20 -sampler 1 > terminal_2_results.txt 2>&1
+
+
+[CLIENT] Steps: 20, Sampler: 1
+[CLIENT] Connecting to scheduler at localhost:50050
+✅ Loaded 20 prompts
+[CLIENT] Sending request to scheduler...
+[CLIENT] Server error: Inference failed
+
+[CLIENT] ===== SUMMARY =====
+Images received: 0
+Total time: 46.64s

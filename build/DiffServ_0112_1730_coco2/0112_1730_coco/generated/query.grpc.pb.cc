@@ -27,6 +27,8 @@ static const char* Query_method_names[] = {
   "/infaas.internal.Query/QueryOnlineImage",
   "/infaas.internal.Query/QueryOffline",
   "/infaas.internal.Query/Heartbeat",
+  "/infaas.internal.Query/WorkerStatus",
+  "/infaas.internal.Query/LoadModel",
 };
 
 std::unique_ptr< Query::Stub> Query::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -40,6 +42,8 @@ Query::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, con
   , rpcmethod_QueryOnlineImage_(Query_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
   , rpcmethod_QueryOffline_(Query_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_Heartbeat_(Query_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_WorkerStatus_(Query_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_LoadModel_(Query_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Query::Stub::QueryOnline(::grpc::ClientContext* context, const ::infaas::internal::QueryOnlineRequest& request, ::infaas::internal::QueryOnlineResponse* response) {
@@ -127,6 +131,52 @@ void Query::Stub::async::Heartbeat(::grpc::ClientContext* context, const ::infaa
   return result;
 }
 
+::grpc::Status Query::Stub::WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::infaas::internal::WorkerStatusResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_WorkerStatus_, context, request, response);
+}
+
+void Query::Stub::async::WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_WorkerStatus_, context, request, response, std::move(f));
+}
+
+void Query::Stub::async::WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_WorkerStatus_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>* Query::Stub::PrepareAsyncWorkerStatusRaw(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::infaas::internal::WorkerStatusResponse, ::infaas::internal::WorkerStatusRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_WorkerStatus_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>* Query::Stub::AsyncWorkerStatusRaw(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncWorkerStatusRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status Query::Stub::LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::infaas::internal::LoadModelResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_LoadModel_, context, request, response);
+}
+
+void Query::Stub::async::LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_LoadModel_, context, request, response, std::move(f));
+}
+
+void Query::Stub::async::LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_LoadModel_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>* Query::Stub::PrepareAsyncLoadModelRaw(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::infaas::internal::LoadModelResponse, ::infaas::internal::LoadModelRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_LoadModel_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>* Query::Stub::AsyncLoadModelRaw(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncLoadModelRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 Query::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Query_method_names[0],
@@ -168,6 +218,26 @@ Query::Service::Service() {
              ::infaas::internal::HeartbeatResponse* resp) {
                return service->Heartbeat(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      Query_method_names[4],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< Query::Service, ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](Query::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::infaas::internal::WorkerStatusRequest* req,
+             ::infaas::internal::WorkerStatusResponse* resp) {
+               return service->WorkerStatus(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      Query_method_names[5],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< Query::Service, ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](Query::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::infaas::internal::LoadModelRequest* req,
+             ::infaas::internal::LoadModelResponse* resp) {
+               return service->LoadModel(ctx, req, resp);
+             }, this)));
 }
 
 Query::Service::~Service() {
@@ -195,6 +265,20 @@ Query::Service::~Service() {
 }
 
 ::grpc::Status Query::Service::Heartbeat(::grpc::ServerContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Query::Service::WorkerStatus(::grpc::ServerContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Query::Service::LoadModel(::grpc::ServerContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response) {
   (void) context;
   (void) request;
   (void) response;

@@ -1,0 +1,2 @@
+timestamp,worker_id,worker_port,model_id,sampler,batch_size,steps,latency_sec,gpu_memory_MB,gpu_reserved_MB,gpu_peak_MB,fid,images_generated,success,request_id
+1784617221.1322498,a41b0ff8,50060,4,DPM++_Karras,20,20,18.424312339164317,238.66,3470.0,3140.42,330.91659324622896,20,True,

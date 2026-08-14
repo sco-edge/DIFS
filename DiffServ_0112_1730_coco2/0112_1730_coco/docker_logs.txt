@@ -1,0 +1,138 @@
+$ docker logs 7ccb7674694a 
+
+TORCH= 2.5.1+cu124
+DIFFUSERS= 0.24.0
+TRANSFORMERS= 4.35.2
+============================================================
+[JSON LOADER]
+Trying: /workspace/src/models.json
+============================================================
+============================================================
+[JSON LOADER]
+Trying: /workspace/samplers.json
+============================================================
+======================================================================
+MODELS_JSON   : /workspace/src/models.json
+SAMPLERS_JSON : /workspace/samplers.json
+======================================================================
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+============================================================
+[GPU BEFORE LOAD]
+Free : 33580.25 MB
+Total: 48507.94 MB
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['diffusion_output', 'tmpocbmg1b1']
+ ✅ [Complete] File load time: 5.47초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+
+$ docker logs a64f96f2dfe0
+TORCH= 2.5.1+cu124
+DIFFUSERS= 0.24.0
+TRANSFORMERS= 4.35.2
+============================================================
+[JSON LOADER]
+Trying: /workspace/src/models.json
+============================================================
+============================================================
+[JSON LOADER]
+Trying: /workspace/samplers.json
+============================================================
+======================================================================
+MODELS_JSON   : /workspace/src/models.json
+SAMPLERS_JSON : /workspace/samplers.json
+======================================================================
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+============================================================
+[GPU BEFORE LOAD]
+Free : 37551.56 MB
+Total: 48507.94 MB
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['tmp4har308x', 'diffusion_output']
+ ✅ [Complete] File load time: 2.32초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+ ✅ [Completed] Warm-up execution time: 1.62초
+============================================================
+[GPU AFTER LOAD]
+Free : 35683.56 MB
+Total: 48507.94 MB
+============================================================
+============================================================
+🚀 [Final] Server setup complete. Total time taken: 3.94초
+============================================================
+[Info] Weight loading 100% complete! GPU ready
+npz path not picked from command line, using the hard coded path: /workspace/real_stats.npz
+📊 The mu value of a real-world image ([0.47221427 0.24937508 0.36007017 ... 0.13225297 0.3696733  0.08423958])
+📊 Calculating the sigma value of a real-world image ([[ 0.01443284 -0.0092687  -0.01496326 ...  0.01543761  0.04348524
+  -0.00668914]
+ [-0.0092687   0.00595232  0.00960934 ... -0.00991396 -0.02792602
+   0.00429573]
+ [-0.01496326  0.00960934  0.01551317 ... -0.01600495 -0.04508336
+   0.00693497]
+ ...
+ [ 0.01543761 -0.00991396 -0.01600495 ...  0.01651232  0.04651253
+  -0.00715482]
+ [ 0.04348524 -0.02792602 -0.04508336 ...  0.04651253  0.13101828
+  -0.02015396]
+ [-0.00668914  0.00429573  0.00693497 ... -0.00715482 -0.02015396
+   0.00310019]])
+[DEBUG] before server.start()
+[Server] gRPC server started (Port: 50060)
+[DEBUG] entering wait_for_termination
+[Info] Request Received - Prompt: ['A small kitchen with some quirky art decorations.', 'A dog wearing a bandanna and sitting on the trunk of a car.', 'A small kitchen contains a refrigerator and small counter. ', 'A small refrigerator in a small kitchen with a window.', 'a blue and yellow train a building and some cars', 'Wooden bench sitting in the grass  under a tree.', 'a pole with street lights, signs and wires attached to it ', 'A man walks past a closed store front.', 'A pizza sitting on top of a wooden cutting board.', 'A white bowl sitting on top of a table.', 'A group of men on a field playing baseball.', 'A woman prepares to serve the ball during a tennis match.', 'A man is riding the waves on a surfboard.', 'the jet getting ready for take off on the landing', 'A large submarine sandwich sitting on two plastic containers of ham.', 'three brown white black  horses and a an arrow sign', 'A motorcycle police officer leads a parade on a sunny day.', 'A street scene with motorcycles parked along the side of the road with people dining outside.', "She is explaining how she made the cat's treat.", 'The older woman is admiring the peacock walk.']
+[DEBUG-1] entered QueryOnlineImage
+[Info] request.Steps: 20
+[Info] request.Sampler_Type: 1
+[DEBUG-2] output dir created
+/tmp/diffusion_output/20260721_152301_46ffc3
+
+--- 이미지 추론 시작 (Sampler Type: 1 및 저장 프로세스 시작) ---
+총 20개의 이미지 생성 중... (Sampler: Euler_a)
+총 20개의 이미지 (384x384)

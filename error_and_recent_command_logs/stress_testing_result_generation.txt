@@ -1,0 +1,965 @@
+#############
+# TERMINAL 1
+#############
+
+$ python src/server.py                                                                                                          [652/1791]
+[SERVER] Metrics subsystem initialized.
+[SCHEDULER] Scheduler started
+[SERVER] Scheduler thread started
+[AUTOSCALER] Requesting worker_pool to add worker
+[SERVER] Autoscaler started
+[WORKER_POOL] Launching workload type: balanced
+[WORKER_POOL] Model=4, Sampler=2
+============================================================
+HOST PORT = 50060
+CONTAINER PORT = 50060
+============================================================
+Execution Started In Directory: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+
+================ DOCKER COMMAND ================
+00: docker
+01: run
+02: -d
+03: --gpus
+04: all
+05: -v
+06: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco:/workspace
+07: -w
+08: /workspace
+09: -p
+10: 50060:50060
+11: -v
+12: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+13: -e
+14: DIFS_MODEL_DIR=/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+15: -v
+16: /tmp/diffusion_output:/tmp/diffusion_output
+17: difs-diffusion-worker
+18: python
+19: src/1/pytorch_container_diffusion_v3.py
+20: -model
+21: 4
+[SERVER] Scheduler gRPC running on port 50050
+22: -sampler
+23: 2
+24: -thread
+25: 10
+26: -port
+27: 50060
+28: -npz
+29: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/real_stats.npz
+===============================================
+
+50060/tcp -> 0.0.0.0:50060
+50060/tcp -> [::]:50060
+
+[WORKER_POOL] Container ID: dd7ed930ba783b25cb291bf0ca2927df759dbfee62810eb83ffa437d2fab1e73
+[WORKER_POOL] Waiting for worker on port 50060...
+
+[WORKER_POOL DEBUG] Docker container logs:
+
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at query.proto. Please update the gencode to avoid compatibility violations in the next run
+time release.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at infaas_request_status.proto. Please update the gencode to avoid compatibility violations
+ in the next runtime release.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(
+TORCH= 2.5.1+cu124
+DIFFUSERS= 0.24.0
+TRANSFORMERS= 4.35.2
+============================================================
+config.json: 4.52kB [00:00, 29.3MB/s]
+[JSON LOADER]
+Trying: /workspace/src/models.json
+============================================================
+============================================================
+[JSON LOADER]
+Trying: /workspace/samplers.json
+============================================================
+======================================================================
+MODELS_JSON   : /workspace/src/models.json
+SAMPLERS_JSON : /workspace/samplers.json
+======================================================================
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+============================================================
+[GPU BEFORE LOAD]
+Free : 31454.75 MB
+Total: 48507.94 MB
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+============================================================
+[MODEL] Loading single checkpoint
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.84MB/s]
+vocab.json: 961kB [00:00, 73.2MB/s]
+merges.txt: 525kB [00:00, 66.0MB/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.26MB/s]
+
+[WORKER_POOL DEBUG END]
+
+============================================================
+[WORKER_POOL HEALTHCHECK FAILED]:
+ <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:27:17.509638861+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+Traceback (most recent call last):
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__
+    raise _create_rpc_error(
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:27:17.509638861+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>
+============================================================
+[WORKER_POOL] Waiting for worker localhost:50060...
+============================================================
+[WORKER_POOL HEALTHCHECK FAILED]:
+ <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T21:27:19.517081837+09:00"}"
+>Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+
+Traceback (most recent call last):
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__
+    raise _create_rpc_error(
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T21:27:19.517081837+09:00"}"
+>
+============================================================
+[WORKER_POOL] Waiting for worker localhost:50060...
+[WORKER_POOL] Worker READY: localhost:50060
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+[WORKER_POOL] Worker READY: localhost:50060
+[WORKER_POOL] Started container dd7ed930 on port 50060
+[AUTOSCALER] Worker successfully added
+[AUTOSCALER] Initial workers launched. Waiting for stabilization...
+[AUTOSCALER] Monitoring 1 workers
+[AUTOSCALER] Current=0, Predicted=0.0
+Exception <_InactiveRpcError of RPC that terminated with:
+        status = StatusCode.UNKNOWN
+        details = "Exception calling application: 'WorkerMetrics' object has no attribute 'current_throughput'"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"Exception calling application: \'WorkerMetrics\' object has no attribute \'current_throughput\'", grpc_status:2, created_time:"2026-07-20T21:27:36.547501792+09:00"}"
+>
+[AUTOSCALER WARNING] Worker 50060 did not respond.
+[AUTOSCALER] Queue=0, Predicted=0.0, SLA=0, Workers=1, Busy=0, Idle=1
+[AUTOSCALER] Workers=1 | λ=0.0000 | μ=0.0000 | ρ=inf
+[SCHEDULER] increment_active -> 1
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[SCHEDULER] increment_active -> 2
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[RETRY] Attempt 1 → localhost:50060                                                                                                                                                                                                                                             [444/1791]
+[DEBUG] grpc stub created
+[SCHEDULER] increment_active -> 3
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[SCHEDULER] increment_active -> 4
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[SCHEDULER] increment_active -> 5
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[SCHEDULER] increment_active -> 6
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[SCHEDULER] increment_active -> 7
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+...
+...
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[AUTOSCALER] Monitoring 1 workers
+[AUTOSCALER] Current=8, Predicted=0.0
+Exception <_InactiveRpcError of RPC that terminated with:
+        status = StatusCode.UNKNOWN
+        details = "Exception calling application: 'WorkerMetrics' object has no attribute 'current_throughput'"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"Exception calling application: \'WorkerMetrics\' object has no attribute \'current_throughput\'", grpc_status:2, created_time:"2026-07-20T21:27:41.558589185+09:00"}"
+>
+[AUTOSCALER WARNING] Worker 50060 did not respond.
+[AUTOSCALER] Queue=8, Predicted=0.0, SLA=0, Workers=1, Busy=0, Idle=1
+[AUTOSCALER] Workers=1 | λ=0.2727 | μ=0.0000 | ρ=inf
+[SCHEDULER] increment_active -> 9
+...
+...
+[DEBUG-C] about to get worker
+Exception <_InactiveRpcError of RPC that terminated with:
+        status = StatusCode.DEADLINE_EXCEEDED
+        details = "Deadline Exceeded"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:27:48.567428232+09:00", grpc_status:4, grpc_message:"Deadline Exceeded"}"
+>
+[AUTOSCALER WARNING] Worker 50060 did not respond.
+[AUTOSCALER] Queue=13, Predicted=32.5, SLA=0, Workers=1, Busy=0, Idle=1
+[AUTOSCALER] Workers=1 | λ=0.3852 | μ=0.0000 | ρ=inf
+[AUTOSCALER] SCALE UP (ρ=inf) Launching balanced worker
+[AUTOSCALER] Requesting worker_pool to add worker
+[WORKER_POOL] Launching workload type: balanced
+[WORKER_POOL] Model=4, Sampler=2
+============================================================
+HOST PORT = 50061
+CONTAINER PORT = 50060
+============================================================
+Execution Started In Directory: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+
+================ DOCKER COMMAND ================
+00: docker
+01: run
+02: -d
+03: --gpus
+...
+...
+04: all
+05: -v
+06: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco:/workspace
+07: -w
+08: /workspace
+09: -p
+10: 50061:50060
+11: -v
+12: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+13: -e
+14: DIFS_MODEL_DIR=/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+15: -v
+16: /tmp/diffusion_output:/tmp/diffusion_output
+17: difs-diffusion-worker
+18: python
+19: src/1/pytorch_container_diffusion_v3.py
+20: -model
+21: 4
+22: -sampler
+23: 2
+24: -thread
+25: 10
+26: -port
+27: 50061
+28: -npz
+29: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/real_stats.npz
+===============================================
+
+50060/tcp -> 0.0.0.0:50061
+50060/tcp -> [::]:50061
+
+[WORKER_POOL] Container ID: 3a9a6e18f3172ad659a5b5f76789d0941cb746f9de51646d10133f1eae51bf9e
+[WORKER_POOL] Waiting for worker on port 50061...
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[SCHEDULER] increment_active -> 15
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[SCHEDULER] increment_active -> 16
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+...
+...
+
+[WORKER_POOL DEBUG] Docker container logs:
+
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at query.proto. Please update the gencode to avoid compatibility violations in the next run
+time release.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at infaas_request_status.proto. Please update the gencode to avoid compatibility violations
+ in the next runtime release.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(
+
+[WORKER_POOL DEBUG END]
+
+============================================================
+[WORKER_POOL HEALTHCHECK FAILED]:
+ <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:27:53.884897478+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"}"
+>
+Traceback (most recent call last):
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__
+    raise _create_rpc_error(
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:27:53.884897478+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"}"
+>
+============================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+...
+...
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[SCHEDULER] decrement_active -> 21
+[SCHEDULER] decrement_active -> 20
+[SCHEDULER] decrement_active -> 19
+[SCHEDULER] decrement_active -> 18
+[SCHEDULER] decrement_active -> 17
+[SCHEDULER] decrement_active -> 16
+[SCHEDULER] decrement_active -> 15
+[SCHEDULER] decrement_active -> 14
+[SCHEDULER] decrement_active -> 13
+[SCHEDULER] decrement_active -> 12
+[SCHEDULER] decrement_active -> 11
+[SCHEDULER] decrement_active -> 10
+[SCHEDULER] decrement_active -> 9
+[SCHEDULER] decrement_active -> 8
+[SCHEDULER] decrement_active -> 7
+[SCHEDULER] decrement_active -> 6
+[SCHEDULER] decrement_active -> 5
+[SCHEDULER] decrement_active -> 4
+[SCHEDULER] decrement_active -> 3
+[SCHEDULER] decrement_active -> 2
+[SCHEDULER] decrement_active -> 1
+[SCHEDULER] decrement_active -> 0
+============================================================
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+[WORKER_POOL HEALTHCHECK FAILED]:
+ <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: Socket closed"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:28:05.909823502+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: Socket closed"}"
+>
+Traceback (most recent call last):
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__
+    raise _create_rpc_error(
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: Socket closed"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:28:05.909823502+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: Socket closed"}"
+>
+============================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+^C
+==============================
+Stopping gRPC server...
+==============================
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 636, in run_until_complete
+    self.run_forever()
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 603, in run_forever
+    self._run_once()
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/selectors.py", line 469, in select
+    fd_event_list = self._selector.poll(timeout, max_ev)
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+
+
+
+
+
+#############
+# TERMINAL 2
+#############
+$ python src/stress_test.py --host localhost --port 50050 --requests 100 --interval 0.10                                        [420/1600]
+[CLIENT 31] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.888054983+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 32] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"CANCELLED", grpc_status:1, created_time:"2026-07-20T21:05:13.888182373+09:00"}"
+>
+[CLIENT 33] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.888440117+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 34] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"CANCELLED", grpc_status:1, created_time:"2026-07-20T21:05:13.888496422+09:00"}"
+>
+[CLIENT 35] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.888542387+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 36] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.888587769+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 37] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.888628798+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 38] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.888676618+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 39] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.888748679+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 40] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T21:05:13.88879873+09:00", grpc_status:1, grpc_message:"CANCELLED"}"
+>
+[CLIENT 41] ERROR: <AioRpcError of RPC that terminated with:
+        status = StatusCode.CANCELLED
+        details = "CANCELLED"
+...
+...
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"CANCELLED", grpc_status:1, created_time:"2026-07-20T21:05:19.90340318+09:00"}"
+>
+[CLIENT 22] finished
+[CLIENT 23] finished
+[CLIENT 1] finished
+[CLIENT 20] finished
+[CLIENT 21] finished
+[CLIENT 5] finished
+[CLIENT 6] ERROR: <AioRpcError of RPC that terminated with:
+
+
+
+
+
+#######################
+#OTHER TESTS
+#######################
+$ grep -nR "current_throughput" -n src
+src/1/pytorch_container_diffusion_v3.py:920:            throughput=self.metrics.current_throughput(),
+
+
+$ grep -nR "WorkerMetrics" -n src
+src/1/pytorch_container_diffusion_v3.py:37:from worker_metrics import WorkerMetrics
+src/1/pytorch_container_diffusion_v3.py:158:        self.metrics = WorkerMetrics(output_dir=str(METRICS_DIR))
+src/worker_metrics.py:16:class WorkerMetrics:
+grep: src/__pycache__/worker_metrics.cpython-311.pyc: binary file matches
+grep: src/__pycache__/worker_metrics.cpython-39.pyc: binary file matches
+grep: src/__pycache__/worker_metrics.cpython-38.pyc: binary file matches
+grep: src/__pycache__/worker_metrics.cpython-310.pyc: binary file matches
+grep: src/__pycache__/worker_metrics.cpython-314.pyc: binary file matches
+
+
+$ grep -nR "Heartbeat" -n src
+src/query.grpc.pb.cc:29:  "/infaas.internal.Query/Heartbeat",
+src/query.grpc.pb.cc:42:  , rpcmethod_Heartbeat_(Query_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+src/query.grpc.pb.cc:107:::grpc::Status Query::Stub::Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::infaas::internal::HeartbeatResponse* response) {
+src/query.grpc.pb.cc:108:  return ::grpc::internal::BlockingUnaryCall< ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_Heartbeat_, context, request, response);
+src/query.grpc.pb.cc:111:void Query::Stub::async::Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, std::function<void(::grpc::Status)> f) {
+src/query.grpc.pb.cc:112:  ::grpc::internal::CallbackUnaryCall< ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Heartbeat_, context, request, response, std::move(f));
+src/query.grpc.pb.cc:115:void Query::Stub::async::Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+src/query.grpc.pb.cc:116:  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_Heartbeat_, context, request, response, reactor);
+src/query.grpc.pb.cc:119:::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>* Query::Stub::PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
+src/query.grpc.pb.cc:120:  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::infaas::internal::HeartbeatResponse, ::infaas::internal::HeartbeatRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_Heartbeat_, context, request);
+src/query.grpc.pb.cc:123:::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>* Query::Stub::AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
+src/query.grpc.pb.cc:125:    this->PrepareAsyncHeartbeatRaw(context, request, cq);
+src/query.grpc.pb.cc:164:      new ::grpc::internal::RpcMethodHandler< Query::Service, ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+src/query.grpc.pb.cc:167:             const ::infaas::internal::HeartbeatRequest* req,
+src/query.grpc.pb.cc:168:             ::infaas::internal::HeartbeatResponse* resp) {
+src/query.grpc.pb.cc:169:               return service->Heartbeat(ctx, req, resp);
+src/query.grpc.pb.cc:197:::grpc::Status Query::Service::Heartbeat(::grpc::ServerContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response) {
+src/pytorch_container_diffusion_async_v2.py:730:    def Heartbeat(self, request, context):
+src/pytorch_container_diffusion_async_v2.py:732:        서버 상태 확인을 위한 Heartbeat 구현
+src/pytorch_container_diffusion_async_v2.py:736:        return query_pb2.HeartbeatResponse(status=status_msg)
+src/query_pb2.py:28:DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bquery.proto\x12\x0finfaas.internal\x1a\x1binfaas_request_status.proto\"g\n\x12QueryOnlineRequest\x12\x0e\n\x06Prompt\x18\x01 \x03(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\"G\n\x08QuerySLO\x12\x15\n\rLatencyInUSec\x18\x01 \x01(\x03\x12\x13\n\x0bMinAccuracy\x18\x02 \x01(\x02\x12\x0f\n\x07MaxCost\x18\x03 \x01(\x02\"`\n\x13QueryOnlineResponse\x12\x13\n\x0bimage_paths\x18\x01 \x03(\t\x12\x34\n\x06status\x18\x02 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"\x82\x01\n\x17QueryOnlineImageRequest\x12\x0e\n\x06Prompt\x18\x01 \x03(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\x12\x14\n\x0cSampler_Type\x18\x06 \x01(\x05\"x\n\x18QueryOnlineImageResponse\x12\x12\n\nimage_path\x18\x01 \x01(\t\x12\x12\n\nimage_data\x18\x02 \x01(\x0c\x12\x34\n\x06status\x18\x03 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"h\n\x13QueryOfflineRequest\x12\x0e\n\x06Prompt\x18\x01 \x01(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\"L\n\x14QueryOfflineResponse\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"H\n\x10HeartbeatRequest\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"I\n\x11HeartbeatResponse\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"\x15\n\x13WorkerStatusRequest\"\xef\x02\n\x14WorkerStatusResponse\x12\x15\n\rworkload_type\x18\x01 \x01(\t\x12\x12\n\nmodel_name\x18\x02 \x01(\t\x12\x0c\n\x04\x62usy\x18\x03 \x01(\x08\x12\x14\n\x0cqueue_length\x18\x04 \x01(\x05\x12\x15\n\rgpu_memory_mb\x18\x05 \x01(\x02\x12\x1a\n\x12\x61verage_latency_ms\x18\x06 \x01(\x02\x12\x17\n\x0f\x61\x63tive_requests\x18\x07 \x01(\x05\x12\x13\n\x0bworker_port\x18\x08 \x01(\x05\x12\x12\n\nthroughput\x18\t \x01(\x02\x12\x17\n\x0fgpu_reserved_mb\x18\n \x01(\x02\x12\x13\n\x0bgpu_peak_mb\x18\x0b \x01(\x02\x12\x10\n\x08last_fid\x18\x0c \x01(\x02\x12\x1e\n\x16total_images_generated\x18\r \x01(\x05\x12\x16\n\x0emodel_switches\x18\x0e \x01(\x05\x12\x1b\n\x13last_switch_time_ms\x18\x0f \x01(\x02\"$\n\x10LoadModelRequest\x12\x10\n\x08model_id\x18\x01 \x01(\x05\"S\n\x11LoadModelResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x16\n\x0eswitch_time_ms\x18\x02 \x01(\x02\x12\x15\n\rcurrent_model\x18\x03 \x01(\t2\xba\x04\n\x05Query\x12Z\n\x0bQueryOnline\x12#.infaas.internal.QueryOnlineRequest\x1a$.infaas.internal.QueryOnlineResponse\"\x00\x12k\n\x10QueryOnlineImage\x12(.infaas.internal.QueryOnlineImageRequest\x1a).infaas.internal.QueryOnlineImageResponse\"\x00\x30\x01\x12]\n\x0cQueryOffline\x12$.infaas.internal.QueryOfflineRequest\x1a%.infaas.internal.QueryOfflineResponse\"\x00\x12T\n\tHeartbeat\x12!.infaas.internal.HeartbeatRequest\x1a\".infaas.internal.HeartbeatResponse\"\x00\x12]\n\x0cWorkerStatus\x12$.infaas.internal.WorkerStatusRequest\x1a%.infaas.internal.WorkerStatusResponse\"\x00\x12T\n\tLoadModel\x12!.infaas.internal.LoadModelRequest\x1a\".infaas.internal.LoadModelResponse\"\x00\x62\x06proto3')
+src/heartbeat_client.cc:15:using infaas::internal::HeartbeatRequest;
+src/heartbeat_client.cc:16:using infaas::internal::HeartbeatResponse;
+src/heartbeat_client.cc:25:        HeartbeatRequest request;
+src/heartbeat_client.cc:26:        HeartbeatResponse response;
+src/heartbeat_client.cc:29:        std::cout << "[클라이언트] 서버 상태(Heartbeat) 확인 중..." << std::endl;
+src/heartbeat_client.cc:31:        // 3. Heartbeat RPC 호출 [cite: 5]
+src/heartbeat_client.cc:32:        Status status = stub_->Heartbeat(&context, request, &response);
+src/query.pb.h:59:class HeartbeatRequest;
+src/query.pb.h:60:struct HeartbeatRequestDefaultTypeInternal;
+src/query.pb.h:61:extern HeartbeatRequestDefaultTypeInternal _HeartbeatRequest_default_instance_;
+src/query.pb.h:62:class HeartbeatResponse;
+src/query.pb.h:63:struct HeartbeatResponseDefaultTypeInternal;
+src/query.pb.h:64:extern HeartbeatResponseDefaultTypeInternal _HeartbeatResponse_default_instance_;
+src/query.pb.h:89:template<> ::infaas::internal::HeartbeatRequest* Arena::CreateMaybeMessage<::infaas::internal::HeartbeatRequest>(Arena*);
+src/query.pb.h:90:template<> ::infaas::internal::HeartbeatResponse* Arena::CreateMaybeMessage<::infaas::internal::HeartbeatResponse>(Arena*);
+src/query.pb.h:1411:class HeartbeatRequest final :
+src/query.pb.h:1412:    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.HeartbeatRequest) */ {
+src/query.pb.h:1414:  inline HeartbeatRequest() : HeartbeatRequest(nullptr) {}
+src/query.pb.h:1415:  ~HeartbeatRequest() override;
+src/query.pb.h:1416:  explicit constexpr HeartbeatRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+src/query.pb.h:1418:  HeartbeatRequest(const HeartbeatRequest& from);
+src/query.pb.h:1419:  HeartbeatRequest(HeartbeatRequest&& from) noexcept
+src/query.pb.h:1420:    : HeartbeatRequest() {
+src/query.pb.h:1424:  inline HeartbeatRequest& operator=(const HeartbeatRequest& from) {
+src/query.pb.h:1428:  inline HeartbeatRequest& operator=(HeartbeatRequest&& from) noexcept {
+src/query.pb.h:1451:  static const HeartbeatRequest& default_instance() {
+src/query.pb.h:1454:  static inline const HeartbeatRequest* internal_default_instance() {
+src/query.pb.h:1455:    return reinterpret_cast<const HeartbeatRequest*>(
+src/query.pb.h:1456:               &_HeartbeatRequest_default_instance_);
+src/query.pb.h:1461:  friend void swap(HeartbeatRequest& a, HeartbeatRequest& b) {
+src/query.pb.h:1464:  inline void Swap(HeartbeatRequest* other) {
+src/query.pb.h:1477:  void UnsafeArenaSwap(HeartbeatRequest* other) {
+src/query.pb.h:1485:  HeartbeatRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+src/query.pb.h:1486:    return CreateMaybeMessage<HeartbeatRequest>(arena);
+src/query.pb.h:1489:  void CopyFrom(const HeartbeatRequest& from);
+src/query.pb.h:1491:  void MergeFrom(const HeartbeatRequest& from);
+src/query.pb.h:1508:  void InternalSwap(HeartbeatRequest* other);
+src/query.pb.h:1513:    return "infaas.internal.HeartbeatRequest";
+src/query.pb.h:1516:  explicit HeartbeatRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+src/query.pb.h:1553:  // @@protoc_insertion_point(class_scope:infaas.internal.HeartbeatRequest)
+src/query.pb.h:1566:class HeartbeatResponse final :
+src/query.pb.h:1567:    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.HeartbeatResponse) */ {
+src/query.pb.h:1569:  inline HeartbeatResponse() : HeartbeatResponse(nullptr) {}
+src/query.pb.h:1570:  ~HeartbeatResponse() override;
+src/query.pb.h:1571:  explicit constexpr HeartbeatResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+src/query.pb.h:1573:  HeartbeatResponse(const HeartbeatResponse& from);
+src/query.pb.h:1574:  HeartbeatResponse(HeartbeatResponse&& from) noexcept
+src/query.pb.h:1575:    : HeartbeatResponse() {
+src/query.pb.h:1579:  inline HeartbeatResponse& operator=(const HeartbeatResponse& from) {
+src/query.pb.h:1583:  inline HeartbeatResponse& operator=(HeartbeatResponse&& from) noexcept {
+src/query.pb.h:1606:  static const HeartbeatResponse& default_instance() {
+src/query.pb.h:1609:  static inline const HeartbeatResponse* internal_default_instance() {
+src/query.pb.h:1610:    return reinterpret_cast<const HeartbeatResponse*>(
+src/query.pb.h:1611:               &_HeartbeatResponse_default_instance_);
+src/query.pb.h:1616:  friend void swap(HeartbeatResponse& a, HeartbeatResponse& b) {
+src/query.pb.h:1619:  inline void Swap(HeartbeatResponse* other) {
+src/query.pb.h:1632:  void UnsafeArenaSwap(HeartbeatResponse* other) {
+src/query.pb.h:1640:  HeartbeatResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+src/query.pb.h:1641:    return CreateMaybeMessage<HeartbeatResponse>(arena);
+src/query.pb.h:1644:  void CopyFrom(const HeartbeatResponse& from);
+src/query.pb.h:1646:  void MergeFrom(const HeartbeatResponse& from);
+src/query.pb.h:1663:  void InternalSwap(HeartbeatResponse* other);
+src/query.pb.h:1668:    return "infaas.internal.HeartbeatResponse";
+src/query.pb.h:1671:  explicit HeartbeatResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+src/query.pb.h:1708:  // @@protoc_insertion_point(class_scope:infaas.internal.HeartbeatResponse)
+src/query.pb.h:2712:// HeartbeatRequest
+src/query.pb.h:2715:inline bool HeartbeatRequest::_internal_has_status() const {
+src/query.pb.h:2718:inline bool HeartbeatRequest::has_status() const {
+src/query.pb.h:2721:inline const ::infaas::internal::InfaasRequestStatus& HeartbeatRequest::_internal_status() const {
+src/query.pb.h:2726:inline const ::infaas::internal::InfaasRequestStatus& HeartbeatRequest::status() const {
+src/query.pb.h:2727:  // @@protoc_insertion_point(field_get:infaas.internal.HeartbeatRequest.status)
+src/query.pb.h:2730:inline void HeartbeatRequest::unsafe_arena_set_allocated_status(
+src/query.pb.h:2741:  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:infaas.internal.HeartbeatRequest.status)
+src/query.pb.h:2743:inline ::infaas::internal::InfaasRequestStatus* HeartbeatRequest::release_status() {
+src/query.pb.h:2758:inline ::infaas::internal::InfaasRequestStatus* HeartbeatRequest::unsafe_arena_release_status() {
+src/query.pb.h:2759:  // @@protoc_insertion_point(field_release:infaas.internal.HeartbeatRequest.status)
+src/query.pb.h:2765:inline ::infaas::internal::InfaasRequestStatus* HeartbeatRequest::_internal_mutable_status() {
+src/query.pb.h:2773:inline ::infaas::internal::InfaasRequestStatus* HeartbeatRequest::mutable_status() {
+src/query.pb.h:2775:  // @@protoc_insertion_point(field_mutable:infaas.internal.HeartbeatRequest.status)
+src/query.pb.h:2778:inline void HeartbeatRequest::set_allocated_status(::infaas::internal::InfaasRequestStatus* status) {
+src/query.pb.h:2797:  // @@protoc_insertion_point(field_set_allocated:infaas.internal.HeartbeatRequest.status)
+src/query.pb.h:2802:// HeartbeatResponse
+src/query.pb.h:2805:inline bool HeartbeatResponse::_internal_has_status() const {
+src/query.pb.h:2808:inline bool HeartbeatResponse::has_status() const {
+src/query.pb.h:2811:inline const ::infaas::internal::InfaasRequestStatus& HeartbeatResponse::_internal_status() const {
+src/query.pb.h:2816:inline const ::infaas::internal::InfaasRequestStatus& HeartbeatResponse::status() const {
+src/query.pb.h:2817:  // @@protoc_insertion_point(field_get:infaas.internal.HeartbeatResponse.status)
+src/query.pb.h:2820:inline void HeartbeatResponse::unsafe_arena_set_allocated_status(
+src/query.pb.h:2831:  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:infaas.internal.HeartbeatResponse.status)
+src/query.pb.h:2833:inline ::infaas::internal::InfaasRequestStatus* HeartbeatResponse::release_status() {
+src/query.pb.h:2848:inline ::infaas::internal::InfaasRequestStatus* HeartbeatResponse::unsafe_arena_release_status() {
+src/query.pb.h:2849:  // @@protoc_insertion_point(field_release:infaas.internal.HeartbeatResponse.status)
+src/query.pb.h:2855:inline ::infaas::internal::InfaasRequestStatus* HeartbeatResponse::_internal_mutable_status() {
+src/query.pb.h:2863:inline ::infaas::internal::InfaasRequestStatus* HeartbeatResponse::mutable_status() {
+src/query.pb.h:2865:  // @@protoc_insertion_point(field_mutable:infaas.internal.HeartbeatResponse.status)
+src/query.pb.h:2868:inline void HeartbeatResponse::set_allocated_status(::infaas::internal::InfaasRequestStatus* status) {
+src/query.pb.h:2887:  // @@protoc_insertion_point(field_set_allocated:infaas.internal.HeartbeatResponse.status)
+src/1/pytorch_container_diffusion.py:385:    def Heartbeat(self, request, context):
+src/1/pytorch_container_diffusion.py:387:        서버 상태 확인을 위한 Heartbeat 구현
+src/1/pytorch_container_diffusion.py:391:        return query_pb2.HeartbeatResponse(status=status_msg)
+src/1/pytorch_container_diffusion_v3.py:894:    def Heartbeat(self, request, context):
+src/1/pytorch_container_diffusion_v3.py:896:        Implementing Heartbeat to Check Server Status
+src/1/pytorch_container_diffusion_v3.py:901:        return query_pb2.HeartbeatResponse(status=status_msg)
+src/1/pytorch_container_diffusion_v2.py:481:    def Heartbeat(self, request, context):
+src/1/pytorch_container_diffusion_v2.py:483:        서버 상태 확인을 위한 Heartbeat 구현
+src/1/pytorch_container_diffusion_v2.py:487:        return query_pb2.HeartbeatResponse(status=status_msg)
+src/1/pytorch_container_diffusion_async.py:548:    def Heartbeat(self, request, context):
+src/1/pytorch_container_diffusion_async.py:550:        서버 상태 확인을 위한 Heartbeat 구현
+src/1/pytorch_container_diffusion_async.py:554:        return query_pb2.HeartbeatResponse(status=status_msg)
+grep: src/__pycache__/query_pb2_grpc.cpython-311.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-39.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-314.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-310.pyc: binary file matches
+grep: src/__pycache__/query_pb2_grpc.cpython-314.pyc: binary file matches
+grep: src/__pycache__/query_pb2_grpc.cpython-310.pyc: binary file matches
+grep: src/__pycache__/query_pb2_grpc.cpython-39.pyc: binary file matches
+grep: src/__pycache__/worker_pool.cpython-39.pyc: binary file matches
+grep: src/__pycache__/worker_pool.cpython-314.sync-conflict-20260522-100157-AYWBFPQ.pyc: binary file matches
+grep: src/__pycache__/worker_pool.cpython-311.pyc: binary file matches
+grep: src/__pycache__/query_pb2_grpc.cpython-38.pyc: binary file matches
+grep: src/__pycache__/worker_pool.cpython-310.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-38.pyc: binary file matches
+grep: src/__pycache__/server.cpython-314.pyc: binary file matches
+grep: src/__pycache__/worker_pool.cpython-314.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-311.pyc: binary file matches
+src/query_pb2_grpc.py:53:        self.Heartbeat = channel.unary_unary(
+src/query_pb2_grpc.py:54:                '/infaas.internal.Query/Heartbeat',
+src/query_pb2_grpc.py:55:                request_serializer=query__pb2.HeartbeatRequest.SerializeToString,
+src/query_pb2_grpc.py:56:                response_deserializer=query__pb2.HeartbeatResponse.FromString,
+src/query_pb2_grpc.py:95:    def Heartbeat(self, request, context):
+src/query_pb2_grpc.py:96:        """Heartbeat
+src/query_pb2_grpc.py:135:            'Heartbeat': grpc.unary_unary_rpc_method_handler(
+src/query_pb2_grpc.py:136:                    servicer.Heartbeat,
+src/query_pb2_grpc.py:137:                    request_deserializer=query__pb2.HeartbeatRequest.FromString,
+src/query_pb2_grpc.py:138:                    response_serializer=query__pb2.HeartbeatResponse.SerializeToString,
+src/query_pb2_grpc.py:244:    def Heartbeat(request,
+src/query_pb2_grpc.py:257:            '/infaas.internal.Query/Heartbeat',
+src/query_pb2_grpc.py:258:            query__pb2.HeartbeatRequest.SerializeToString,
+src/query_pb2_grpc.py:259:            query__pb2.HeartbeatResponse.FromString,
+src/server.py:99:                    heartbeat = await health_stub.Heartbeat(
+src/server.py:100:                        query_pb2.HeartbeatRequest()
+src/worker_pool.py:54:                    response = await stub.Heartbeat(
+src/worker_pool.py:55:                        query_pb2.HeartbeatRequest()
+src/client_h.py:11:        # 2. HeartbeatRequest 객체 생성
+src/client_h.py:12:        # HeartbeatRequest는 status 필드를 가집니다.
+src/client_h.py:13:        request = query_pb2.HeartbeatRequest()
+src/client_h.py:15:        print("[Client] Checking server status (Heartbeat)")
+src/client_h.py:18:            # 3. Heartbeat RPC Call 
+src/client_h.py:19:            response = stub.Heartbeat(request)
+src/query.grpc.pb.h:71:    // Heartbeat
+src/query.grpc.pb.h:72:    virtual ::grpc::Status Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::infaas::internal::HeartbeatResponse* response) = 0;
+src/query.grpc.pb.h:73:    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>> AsyncHeartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
+src/query.grpc.pb.h:74:      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>>(AsyncHeartbeatRaw(context, request, cq));
+src/query.grpc.pb.h:76:    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>> PrepareAsyncHeartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
+src/query.grpc.pb.h:77:      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>>(PrepareAsyncHeartbeatRaw(context, request, cq));
+src/query.grpc.pb.h:90:      // Heartbeat
+src/query.grpc.pb.h:91:      virtual void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, std::function<void(::grpc::Status)>) = 0;
+src/query.grpc.pb.h:92:      virtual void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+src/query.grpc.pb.h:105:    virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>* AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) = 0;
+src/query.grpc.pb.h:106:    virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>* PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) = 0;
+src/query.grpc.pb.h:134:    ::grpc::Status Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::infaas::internal::HeartbeatResponse* response) override;
+src/query.grpc.pb.h:135:    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>> AsyncHeartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
+src/query.grpc.pb.h:136:      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>>(AsyncHeartbeatRaw(context, request, cq));
+src/query.grpc.pb.h:138:    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>> PrepareAsyncHeartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
+src/query.grpc.pb.h:139:      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>>(PrepareAsyncHeartbeatRaw(context, request, cq));
+src/query.grpc.pb.h:149:      void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, std::function<void(::grpc::Status)>) override;
+src/query.grpc.pb.h:150:      void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+src/query.grpc.pb.h:169:    ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>* AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) override;
+src/query.grpc.pb.h:170:    ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>* PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) override;
+src/query.grpc.pb.h:174:    const ::grpc::internal::RpcMethod rpcmethod_Heartbeat_;
+src/query.grpc.pb.h:188:    // Heartbeat
+src/query.grpc.pb.h:189:    virtual ::grpc::Status Heartbeat(::grpc::ServerContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response);
+src/query.grpc.pb.h:252:  class WithAsyncMethod_Heartbeat : public BaseClass {
+src/query.grpc.pb.h:256:    WithAsyncMethod_Heartbeat() {
+src/query.grpc.pb.h:259:    ~WithAsyncMethod_Heartbeat() override {
+src/query.grpc.pb.h:263:    ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/) override {
+src/query.grpc.pb.h:267:    void RequestHeartbeat(::grpc::ServerContext* context, ::infaas::internal::HeartbeatRequest* request, ::grpc::ServerAsyncResponseWriter< ::infaas::internal::HeartbeatResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+src/query.grpc.pb.h:271:  typedef WithAsyncMethod_QueryOnline<WithAsyncMethod_QueryOnlineImage<WithAsyncMethod_QueryOffline<WithAsyncMethod_Heartbeat<Service > > > > AsyncService;
+src/query.grpc.pb.h:349:  class WithCallbackMethod_Heartbeat : public BaseClass {
+src/query.grpc.pb.h:353:    WithCallbackMethod_Heartbeat() {
+src/query.grpc.pb.h:355:          new ::grpc::internal::CallbackUnaryHandler< ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse>(
+src/query.grpc.pb.h:357:                   ::grpc::CallbackServerContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response) { return this->Heartbeat(context, request, response); }));}
+src/query.grpc.pb.h:358:    void SetMessageAllocatorFor_Heartbeat(
+src/query.grpc.pb.h:359:        ::grpc::MessageAllocator< ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse>* allocator) {
+src/query.grpc.pb.h:361:      static_cast<::grpc::internal::CallbackUnaryHandler< ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse>*>(handler)
+src/query.grpc.pb.h:364:    ~WithCallbackMethod_Heartbeat() override {
+src/query.grpc.pb.h:368:    ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/) override {
+src/query.grpc.pb.h:372:    virtual ::grpc::ServerUnaryReactor* Heartbeat(
+src/query.grpc.pb.h:373:      ::grpc::CallbackServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/)  { return nullptr; }
+src/query.grpc.pb.h:375:  typedef WithCallbackMethod_QueryOnline<WithCallbackMethod_QueryOnlineImage<WithCallbackMethod_QueryOffline<WithCallbackMethod_Heartbeat<Service > > > > CallbackService;
+src/query.grpc.pb.h:429:  class WithGenericMethod_Heartbeat : public BaseClass {
+src/query.grpc.pb.h:433:    WithGenericMethod_Heartbeat() {
+src/query.grpc.pb.h:436:    ~WithGenericMethod_Heartbeat() override {
+src/query.grpc.pb.h:440:    ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/) override {
+src/query.grpc.pb.h:506:  class WithRawMethod_Heartbeat : public BaseClass {
+src/query.grpc.pb.h:510:    WithRawMethod_Heartbeat() {
+src/query.grpc.pb.h:513:    ~WithRawMethod_Heartbeat() override {
+src/query.grpc.pb.h:517:    ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/) override {
+src/query.grpc.pb.h:521:    void RequestHeartbeat(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+src/query.grpc.pb.h:592:  class WithRawCallbackMethod_Heartbeat : public BaseClass {
+src/query.grpc.pb.h:596:    WithRawCallbackMethod_Heartbeat() {
+src/query.grpc.pb.h:600:                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->Heartbeat(context, request, response); }));
+src/query.grpc.pb.h:602:    ~WithRawCallbackMethod_Heartbeat() override {
+src/query.grpc.pb.h:606:    ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/) override {
+src/query.grpc.pb.h:610:    virtual ::grpc::ServerUnaryReactor* Heartbeat(
+src/query.grpc.pb.h:668:  class WithStreamedUnaryMethod_Heartbeat : public BaseClass {
+src/query.grpc.pb.h:672:    WithStreamedUnaryMethod_Heartbeat() {
+src/query.grpc.pb.h:675:          ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse>(
+src/query.grpc.pb.h:678:                     ::infaas::internal::HeartbeatRequest, ::infaas::internal::HeartbeatResponse>* streamer) {
+src/query.grpc.pb.h:679:                       return this->StreamedHeartbeat(context,
+src/query.grpc.pb.h:683:    ~WithStreamedUnaryMethod_Heartbeat() override {
+src/query.grpc.pb.h:687:    ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/) override {
+src/query.grpc.pb.h:692:    virtual ::grpc::Status StreamedHeartbeat(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::infaas::internal::HeartbeatRequest,::infaas::internal::HeartbeatResponse>* server_unary_streamer) = 0;
+src/query.grpc.pb.h:694:  typedef WithStreamedUnaryMethod_QueryOnline<WithStreamedUnaryMethod_QueryOffline<WithStreamedUnaryMethod_Heartbeat<Service > > > StreamedUnaryService;
+src/query.grpc.pb.h:723:  typedef WithStreamedUnaryMethod_QueryOnline<WithSplitStreamingMethod_QueryOnlineImage<WithStreamedUnaryMethod_QueryOffline<WithStreamedUnaryMethod_Heartbeat<Service > > > > StreamedService;
+src/query.pb.cc:123:constexpr HeartbeatRequest::HeartbeatRequest(
+src/query.pb.cc:126:struct HeartbeatRequestDefaultTypeInternal {
+src/query.pb.cc:127:  constexpr HeartbeatRequestDefaultTypeInternal()
+src/query.pb.cc:129:  ~HeartbeatRequestDefaultTypeInternal() {}
+src/query.pb.cc:131:    HeartbeatRequest _instance;
+src/query.pb.cc:134:PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT HeartbeatRequestDefaultTypeInternal _HeartbeatRequest_default_instance_;
+src/query.pb.cc:135:constexpr HeartbeatResponse::HeartbeatResponse(
+src/query.pb.cc:138:struct HeartbeatResponseDefaultTypeInternal {
+src/query.pb.cc:139:  constexpr HeartbeatResponseDefaultTypeInternal()
+src/query.pb.cc:141:  ~HeartbeatResponseDefaultTypeInternal() {}
+src/query.pb.cc:143:    HeartbeatResponse _instance;
+src/query.pb.cc:146:PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT HeartbeatResponseDefaultTypeInternal _HeartbeatResponse_default_instance_;
+src/query.pb.cc:222:  PROTOBUF_FIELD_OFFSET(::infaas::internal::HeartbeatRequest, _internal_metadata_),
+src/query.pb.cc:227:  PROTOBUF_FIELD_OFFSET(::infaas::internal::HeartbeatRequest, status_),
+src/query.pb.cc:229:  PROTOBUF_FIELD_OFFSET(::infaas::internal::HeartbeatResponse, _internal_metadata_),
+src/query.pb.cc:234:  PROTOBUF_FIELD_OFFSET(::infaas::internal::HeartbeatResponse, status_),
+src/query.pb.cc:244:  { 67, -1, -1, sizeof(::infaas::internal::HeartbeatRequest)},
+src/query.pb.cc:245:  { 74, -1, -1, sizeof(::infaas::internal::HeartbeatResponse)},
+src/query.pb.cc:256:  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_HeartbeatRequest_default_instance_),
+src/query.pb.cc:257:  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_HeartbeatResponse_default_instance_),
+src/query.pb.cc:280:  "sRequestStatus\"H\n\020HeartbeatRequest\0224\n\006st"
+src/query.pb.cc:282:  "stStatus\"I\n\021HeartbeatResponse\0224\n\006status\030"
+src/query.pb.cc:292:  "at\022!.infaas.internal.HeartbeatRequest\032\"."
+src/query.pb.cc:293:  "infaas.internal.HeartbeatResponse\"\000b\006pro"
+src/query.pb.cc:2264:class HeartbeatRequest::_Internal {
+src/query.pb.cc:2266:  static const ::infaas::internal::InfaasRequestStatus& status(const HeartbeatRequest* msg);
+src/query.pb.cc:2270:HeartbeatRequest::_Internal::status(const HeartbeatRequest* msg) {
+src/query.pb.cc:2273:void HeartbeatRequest::clear_status() {
+src/query.pb.cc:2279:HeartbeatRequest::HeartbeatRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+src/query.pb.cc:2286:  // @@protoc_insertion_point(arena_constructor:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2288:HeartbeatRequest::HeartbeatRequest(const HeartbeatRequest& from)
+src/query.pb.cc:2296:  // @@protoc_insertion_point(copy_constructor:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2299:inline void HeartbeatRequest::SharedCtor() {
+src/query.pb.cc:2303:HeartbeatRequest::~HeartbeatRequest() {
+src/query.pb.cc:2304:  // @@protoc_insertion_point(destructor:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2310:inline void HeartbeatRequest::SharedDtor() {
+src/query.pb.cc:2315:void HeartbeatRequest::ArenaDtor(void* object) {
+src/query.pb.cc:2316:  HeartbeatRequest* _this = reinterpret_cast< HeartbeatRequest* >(object);
+src/query.pb.cc:2319:void HeartbeatRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+src/query.pb.cc:2321:void HeartbeatRequest::SetCachedSize(int size) const {
+src/query.pb.cc:2325:void HeartbeatRequest::Clear() {
+src/query.pb.cc:2326:// @@protoc_insertion_point(message_clear_start:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2338:const char* HeartbeatRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+src/query.pb.cc:2375:uint8_t* HeartbeatRequest::_InternalSerialize(
+src/query.pb.cc:2377:  // @@protoc_insertion_point(serialize_to_array_start:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2393:  // @@protoc_insertion_point(serialize_to_array_end:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2397:size_t HeartbeatRequest::ByteSizeLong() const {
+src/query.pb.cc:2398:// @@protoc_insertion_point(message_byte_size_start:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2415:const ::PROTOBUF_NAMESPACE_ID::Message::ClassData HeartbeatRequest::_class_data_ = {
+src/query.pb.cc:2417:    HeartbeatRequest::MergeImpl
+src/query.pb.cc:2419:const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*HeartbeatRequest::GetClassData() const { return &_class_data_; }
+src/query.pb.cc:2421:void HeartbeatRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+src/query.pb.cc:2423:  static_cast<HeartbeatRequest *>(to)->MergeFrom(
+src/query.pb.cc:2424:      static_cast<const HeartbeatRequest &>(from));
+src/query.pb.cc:2428:void HeartbeatRequest::MergeFrom(const HeartbeatRequest& from) {
+src/query.pb.cc:2429:// @@protoc_insertion_point(class_specific_merge_from_start:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2440:void HeartbeatRequest::CopyFrom(const HeartbeatRequest& from) {
+src/query.pb.cc:2441:// @@protoc_insertion_point(class_specific_copy_from_start:infaas.internal.HeartbeatRequest)
+src/query.pb.cc:2447:bool HeartbeatRequest::IsInitialized() const {
+src/query.pb.cc:2451:void HeartbeatRequest::InternalSwap(HeartbeatRequest* other) {
+src/query.pb.cc:2457:::PROTOBUF_NAMESPACE_ID::Metadata HeartbeatRequest::GetMetadata() const {
+src/query.pb.cc:2465:class HeartbeatResponse::_Internal {
+src/query.pb.cc:2467:  static const ::infaas::internal::InfaasRequestStatus& status(const HeartbeatResponse* msg);
+src/query.pb.cc:2471:HeartbeatResponse::_Internal::status(const HeartbeatResponse* msg) {
+src/query.pb.cc:2474:void HeartbeatResponse::clear_status() {
+src/query.pb.cc:2480:HeartbeatResponse::HeartbeatResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+src/query.pb.cc:2487:  // @@protoc_insertion_point(arena_constructor:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2489:HeartbeatResponse::HeartbeatResponse(const HeartbeatResponse& from)
+src/query.pb.cc:2497:  // @@protoc_insertion_point(copy_constructor:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2500:inline void HeartbeatResponse::SharedCtor() {
+src/query.pb.cc:2504:HeartbeatResponse::~HeartbeatResponse() {
+src/query.pb.cc:2505:  // @@protoc_insertion_point(destructor:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2511:inline void HeartbeatResponse::SharedDtor() {
+src/query.pb.cc:2516:void HeartbeatResponse::ArenaDtor(void* object) {
+src/query.pb.cc:2517:  HeartbeatResponse* _this = reinterpret_cast< HeartbeatResponse* >(object);
+src/query.pb.cc:2520:void HeartbeatResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+src/query.pb.cc:2522:void HeartbeatResponse::SetCachedSize(int size) const {
+src/query.pb.cc:2526:void HeartbeatResponse::Clear() {
+src/query.pb.cc:2527:// @@protoc_insertion_point(message_clear_start:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2539:const char* HeartbeatResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+src/query.pb.cc:2576:uint8_t* HeartbeatResponse::_InternalSerialize(
+src/query.pb.cc:2578:  // @@protoc_insertion_point(serialize_to_array_start:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2594:  // @@protoc_insertion_point(serialize_to_array_end:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2598:size_t HeartbeatResponse::ByteSizeLong() const {
+src/query.pb.cc:2599:// @@protoc_insertion_point(message_byte_size_start:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2616:const ::PROTOBUF_NAMESPACE_ID::Message::ClassData HeartbeatResponse::_class_data_ = {
+src/query.pb.cc:2618:    HeartbeatResponse::MergeImpl
+src/query.pb.cc:2620:const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*HeartbeatResponse::GetClassData() const { return &_class_data_; }
+src/query.pb.cc:2622:void HeartbeatResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+src/query.pb.cc:2624:  static_cast<HeartbeatResponse *>(to)->MergeFrom(
+src/query.pb.cc:2625:      static_cast<const HeartbeatResponse &>(from));
+src/query.pb.cc:2629:void HeartbeatResponse::MergeFrom(const HeartbeatResponse& from) {
+src/query.pb.cc:2630:// @@protoc_insertion_point(class_specific_merge_from_start:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2641:void HeartbeatResponse::CopyFrom(const HeartbeatResponse& from) {
+src/query.pb.cc:2642:// @@protoc_insertion_point(class_specific_copy_from_start:infaas.internal.HeartbeatResponse)
+src/query.pb.cc:2648:bool HeartbeatResponse::IsInitialized() const {
+src/query.pb.cc:2652:void HeartbeatResponse::InternalSwap(HeartbeatResponse* other) {
+src/query.pb.cc:2658:::PROTOBUF_NAMESPACE_ID::Metadata HeartbeatResponse::GetMetadata() const {
+src/query.pb.cc:2689:template<> PROTOBUF_NOINLINE ::infaas::internal::HeartbeatRequest* Arena::CreateMaybeMessage< ::infaas::internal::HeartbeatRequest >(Arena* arena) {
+src/query.pb.cc:2690:  return Arena::CreateMessageInternal< ::infaas::internal::HeartbeatRequest >(arena);
+src/query.pb.cc:2692:template<> PROTOBUF_NOINLINE ::infaas::internal::HeartbeatResponse* Arena::CreateMaybeMessage< ::infaas::internal::HeartbeatResponse >(Arena* arena) {
+src/query.pb.cc:2693:  return Arena::CreateMessageInternal< ::infaas::internal::HeartbeatResponse >(arena);
+
+
+
+$ grep -nR "WorkerStatus" -n src
+src/experiments/validate_switching.py:113:    status = stub.WorkerStatus(
+src/experiments/validate_switching.py:114:        query_pb2.WorkerStatusRequest()
+src/query_pb2.py:28:DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bquery.proto\x12\x0finfaas.internal\x1a\x1binfaas_request_status.proto\"g\n\x12QueryOnlineRequest\x12\x0e\n\x06Prompt\x18\x01 \x03(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\"G\n\x08QuerySLO\x12\x15\n\rLatencyInUSec\x18\x01 \x01(\x03\x12\x13\n\x0bMinAccuracy\x18\x02 \x01(\x02\x12\x0f\n\x07MaxCost\x18\x03 \x01(\x02\"`\n\x13QueryOnlineResponse\x12\x13\n\x0bimage_paths\x18\x01 \x03(\t\x12\x34\n\x06status\x18\x02 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"\x82\x01\n\x17QueryOnlineImageRequest\x12\x0e\n\x06Prompt\x18\x01 \x03(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\x12\x14\n\x0cSampler_Type\x18\x06 \x01(\x05\"x\n\x18QueryOnlineImageResponse\x12\x12\n\nimage_path\x18\x01 \x01(\t\x12\x12\n\nimage_data\x18\x02 \x01(\x0c\x12\x34\n\x06status\x18\x03 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"h\n\x13QueryOfflineRequest\x12\x0e\n\x06Prompt\x18\x01 \x01(\t\x12\r\n\x05Steps\x18\x02 \x01(\x05\x12\x11\n\tCFG_Scale\x18\x03 \x01(\x02\x12\x11\n\tBatchSize\x18\x04 \x01(\x05\x12\x0c\n\x04Seed\x18\x05 \x01(\x03\"L\n\x14QueryOfflineResponse\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"H\n\x10HeartbeatRequest\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"I\n\x11HeartbeatResponse\x12\x34\n\x06status\x18\x01 \x01(\x0b\x32$.infaas.internal.InfaasRequestStatus\"\x15\n\x13WorkerStatusRequest\"\xef\x02\n\x14WorkerStatusResponse\x12\x15\n\rworkload_type\x18\x01 \x01(\t\x12\x12\n\nmodel_name\x18\x02 \x01(\t\x12\x0c\n\x04\x62usy\x18\x03 \x01(\x08\x12\x14\n\x0cqueue_length\x18\x04 \x01(\x05\x12\x15\n\rgpu_memory_mb\x18\x05 \x01(\x02\x12\x1a\n\x12\x61verage_latency_ms\x18\x06 \x01(\x02\x12\x17\n\x0f\x61\x63tive_requests\x18\x07 \x01(\x05\x12\x13\n\x0bworker_port\x18\x08 \x01(\x05\x12\x12\n\nthroughput\x18\t \x01(\x02\x12\x17\n\x0fgpu_reserved_mb\x18\n \x01(\x02\x12\x13\n\x0bgpu_peak_mb\x18\x0b \x01(\x02\x12\x10\n\x08last_fid\x18\x0c \x01(\x02\x12\x1e\n\x16total_images_generated\x18\r \x01(\x05\x12\x16\n\x0emodel_switches\x18\x0e \x01(\x05\x12\x1b\n\x13last_switch_time_ms\x18\x0f \x01(\x02\"$\n\x10LoadModelRequest\x12\x10\n\x08model_id\x18\x01 \x01(\x05\"S\n\x11LoadModelResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x16\n\x0eswitch_time_ms\x18\x02 \x01(\x02\x12\x15\n\rcurrent_model\x18\x03 \x01(\t2\xba\x04\n\x05Query\x12Z\n\x0bQueryOnline\x12#.infaas.internal.QueryOnlineRequest\x1a$.infaas.internal.QueryOnlineResponse\"\x00\x12k\n\x10QueryOnlineImage\x12(.infaas.internal.QueryOnlineImageRequest\x1a).infaas.internal.QueryOnlineImageResponse\"\x00\x30\x01\x12]\n\x0cQueryOffline\x12$.infaas.internal.QueryOfflineRequest\x1a%.infaas.internal.QueryOfflineResponse\"\x00\x12T\n\tHeartbeat\x12!.infaas.internal.HeartbeatRequest\x1a\".infaas.internal.HeartbeatResponse\"\x00\x12]\n\x0cWorkerStatus\x12$.infaas.internal.WorkerStatusRequest\x1a%.infaas.internal.WorkerStatusResponse\"\x00\x12T\n\tLoadModel\x12!.infaas.internal.LoadModelRequest\x1a\".infaas.internal.LoadModelResponse\"\x00\x62\x06proto3')
+src/1/pytorch_container_diffusion_v3.py:904:    def WorkerStatus(self, request, context):
+src/1/pytorch_container_diffusion_v3.py:911:        return query_pb2.WorkerStatusResponse(
+src/scheduler.py:90:                    status = await stub.WorkerStatus(
+src/scheduler.py:91:                        query_pb2.WorkerStatusRequest()
+src/scheduler.py:143:                status = await stub.WorkerStatus(
+src/scheduler.py:144:                    query_pb2.WorkerStatusRequest()
+grep: src/__pycache__/query_pb2_grpc.cpython-311.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-39.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-314.pyc: binary file matches
+grep: src/__pycache__/scheduler.cpython-310.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-310.pyc: binary file matches
+grep: src/__pycache__/query_pb2_grpc.cpython-314.pyc: binary file matches
+grep: src/__pycache__/query_pb2_grpc.cpython-310.pyc: binary file matches
+grep: src/__pycache__/query_pb2_grpc.cpython-38.pyc: binary file matches
+grep: src/__pycache__/worker_pool.cpython-310.pyc: binary file matches
+grep: src/__pycache__/autoscaler.cpython-310.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-38.pyc: binary file matches
+grep: src/__pycache__/query_pb2.cpython-311.pyc: binary file matches
+src/query_pb2_grpc.py:58:        self.WorkerStatus = channel.unary_unary(
+src/query_pb2_grpc.py:59:                '/infaas.internal.Query/WorkerStatus',
+src/query_pb2_grpc.py:60:                request_serializer=query__pb2.WorkerStatusRequest.SerializeToString,
+src/query_pb2_grpc.py:61:                response_deserializer=query__pb2.WorkerStatusResponse.FromString,
+src/query_pb2_grpc.py:102:    def WorkerStatus(self, request, context):
+src/query_pb2_grpc.py:140:            'WorkerStatus': grpc.unary_unary_rpc_method_handler(
+src/query_pb2_grpc.py:141:                    servicer.WorkerStatus,
+src/query_pb2_grpc.py:142:                    request_deserializer=query__pb2.WorkerStatusRequest.FromString,
+src/query_pb2_grpc.py:143:                    response_serializer=query__pb2.WorkerStatusResponse.SerializeToString,
+src/query_pb2_grpc.py:271:    def WorkerStatus(request,
+src/query_pb2_grpc.py:284:            '/infaas.internal.Query/WorkerStatus',
+src/query_pb2_grpc.py:285:            query__pb2.WorkerStatusRequest.SerializeToString,
+src/query_pb2_grpc.py:286:            query__pb2.WorkerStatusResponse.FromString,
+src/autoscaler.py:227:                response = stub.WorkerStatus(
+src/autoscaler.py:228:                    query_pb2.WorkerStatusRequest(),
+src/worker_pool.py:325:                response = stub.WorkerStatus(query_pb2.WorkerStatusRequest(), timeout=2)

@@ -76,6 +76,23 @@ class Query final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>> PrepareAsyncHeartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>>(PrepareAsyncHeartbeatRaw(context, request, cq));
     }
+    // Worker runtime status
+    virtual ::grpc::Status WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::infaas::internal::WorkerStatusResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::WorkerStatusResponse>> AsyncWorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::WorkerStatusResponse>>(AsyncWorkerStatusRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::WorkerStatusResponse>> PrepareAsyncWorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::WorkerStatusResponse>>(PrepareAsyncWorkerStatusRaw(context, request, cq));
+    }
+    // rpc ClusterStatus(ClusterStatusRequest) returns (ClusterStatusResponse) {}
+    //
+    virtual ::grpc::Status LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::infaas::internal::LoadModelResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::LoadModelResponse>> AsyncLoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::LoadModelResponse>>(AsyncLoadModelRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::LoadModelResponse>> PrepareAsyncLoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::LoadModelResponse>>(PrepareAsyncLoadModelRaw(context, request, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
@@ -90,6 +107,13 @@ class Query final {
       // Heartbeat
       virtual void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, std::function<void(::grpc::Status)>) = 0;
       virtual void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      // Worker runtime status
+      virtual void WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      // rpc ClusterStatus(ClusterStatusRequest) returns (ClusterStatusResponse) {}
+      //
+      virtual void LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -104,6 +128,10 @@ class Query final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::QueryOfflineResponse>* PrepareAsyncQueryOfflineRaw(::grpc::ClientContext* context, const ::infaas::internal::QueryOfflineRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>* AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::HeartbeatResponse>* PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::WorkerStatusResponse>* AsyncWorkerStatusRaw(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::WorkerStatusResponse>* PrepareAsyncWorkerStatusRaw(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::LoadModelResponse>* AsyncLoadModelRaw(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::infaas::internal::LoadModelResponse>* PrepareAsyncLoadModelRaw(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -138,6 +166,20 @@ class Query final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>> PrepareAsyncHeartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>>(PrepareAsyncHeartbeatRaw(context, request, cq));
     }
+    ::grpc::Status WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::infaas::internal::WorkerStatusResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>> AsyncWorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>>(AsyncWorkerStatusRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>> PrepareAsyncWorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>>(PrepareAsyncWorkerStatusRaw(context, request, cq));
+    }
+    ::grpc::Status LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::infaas::internal::LoadModelResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>> AsyncLoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>>(AsyncLoadModelRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>> PrepareAsyncLoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>>(PrepareAsyncLoadModelRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
@@ -148,6 +190,10 @@ class Query final {
       void QueryOffline(::grpc::ClientContext* context, const ::infaas::internal::QueryOfflineRequest* request, ::infaas::internal::QueryOfflineResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
       void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, std::function<void(::grpc::Status)>) override;
       void Heartbeat(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response, std::function<void(::grpc::Status)>) override;
+      void WorkerStatus(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response, std::function<void(::grpc::Status)>) override;
+      void LoadModel(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -168,10 +214,16 @@ class Query final {
     ::grpc::ClientAsyncResponseReader< ::infaas::internal::QueryOfflineResponse>* PrepareAsyncQueryOfflineRaw(::grpc::ClientContext* context, const ::infaas::internal::QueryOfflineRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>* AsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::infaas::internal::HeartbeatResponse>* PrepareAsyncHeartbeatRaw(::grpc::ClientContext* context, const ::infaas::internal::HeartbeatRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>* AsyncWorkerStatusRaw(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::infaas::internal::WorkerStatusResponse>* PrepareAsyncWorkerStatusRaw(::grpc::ClientContext* context, const ::infaas::internal::WorkerStatusRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>* AsyncLoadModelRaw(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::infaas::internal::LoadModelResponse>* PrepareAsyncLoadModelRaw(::grpc::ClientContext* context, const ::infaas::internal::LoadModelRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_QueryOnline_;
     const ::grpc::internal::RpcMethod rpcmethod_QueryOnlineImage_;
     const ::grpc::internal::RpcMethod rpcmethod_QueryOffline_;
     const ::grpc::internal::RpcMethod rpcmethod_Heartbeat_;
+    const ::grpc::internal::RpcMethod rpcmethod_WorkerStatus_;
+    const ::grpc::internal::RpcMethod rpcmethod_LoadModel_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -187,6 +239,11 @@ class Query final {
     virtual ::grpc::Status QueryOffline(::grpc::ServerContext* context, const ::infaas::internal::QueryOfflineRequest* request, ::infaas::internal::QueryOfflineResponse* response);
     // Heartbeat
     virtual ::grpc::Status Heartbeat(::grpc::ServerContext* context, const ::infaas::internal::HeartbeatRequest* request, ::infaas::internal::HeartbeatResponse* response);
+    // Worker runtime status
+    virtual ::grpc::Status WorkerStatus(::grpc::ServerContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response);
+    // rpc ClusterStatus(ClusterStatusRequest) returns (ClusterStatusResponse) {}
+    //
+    virtual ::grpc::Status LoadModel(::grpc::ServerContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_QueryOnline : public BaseClass {
@@ -268,7 +325,47 @@ class Query final {
       ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_QueryOnline<WithAsyncMethod_QueryOnlineImage<WithAsyncMethod_QueryOffline<WithAsyncMethod_Heartbeat<Service > > > > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_WorkerStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_WorkerStatus() {
+      ::grpc::Service::MarkMethodAsync(4);
+    }
+    ~WithAsyncMethod_WorkerStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status WorkerStatus(::grpc::ServerContext* /*context*/, const ::infaas::internal::WorkerStatusRequest* /*request*/, ::infaas::internal::WorkerStatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestWorkerStatus(::grpc::ServerContext* context, ::infaas::internal::WorkerStatusRequest* request, ::grpc::ServerAsyncResponseWriter< ::infaas::internal::WorkerStatusResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_LoadModel : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_LoadModel() {
+      ::grpc::Service::MarkMethodAsync(5);
+    }
+    ~WithAsyncMethod_LoadModel() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status LoadModel(::grpc::ServerContext* /*context*/, const ::infaas::internal::LoadModelRequest* /*request*/, ::infaas::internal::LoadModelResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestLoadModel(::grpc::ServerContext* context, ::infaas::internal::LoadModelRequest* request, ::grpc::ServerAsyncResponseWriter< ::infaas::internal::LoadModelResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_QueryOnline<WithAsyncMethod_QueryOnlineImage<WithAsyncMethod_QueryOffline<WithAsyncMethod_Heartbeat<WithAsyncMethod_WorkerStatus<WithAsyncMethod_LoadModel<Service > > > > > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_QueryOnline : public BaseClass {
    private:
@@ -372,7 +469,61 @@ class Query final {
     virtual ::grpc::ServerUnaryReactor* Heartbeat(
       ::grpc::CallbackServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_QueryOnline<WithCallbackMethod_QueryOnlineImage<WithCallbackMethod_QueryOffline<WithCallbackMethod_Heartbeat<Service > > > > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_WorkerStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_WorkerStatus() {
+      ::grpc::Service::MarkMethodCallback(4,
+          new ::grpc::internal::CallbackUnaryHandler< ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::infaas::internal::WorkerStatusRequest* request, ::infaas::internal::WorkerStatusResponse* response) { return this->WorkerStatus(context, request, response); }));}
+    void SetMessageAllocatorFor_WorkerStatus(
+        ::grpc::MessageAllocator< ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_WorkerStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status WorkerStatus(::grpc::ServerContext* /*context*/, const ::infaas::internal::WorkerStatusRequest* /*request*/, ::infaas::internal::WorkerStatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* WorkerStatus(
+      ::grpc::CallbackServerContext* /*context*/, const ::infaas::internal::WorkerStatusRequest* /*request*/, ::infaas::internal::WorkerStatusResponse* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithCallbackMethod_LoadModel : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_LoadModel() {
+      ::grpc::Service::MarkMethodCallback(5,
+          new ::grpc::internal::CallbackUnaryHandler< ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::infaas::internal::LoadModelRequest* request, ::infaas::internal::LoadModelResponse* response) { return this->LoadModel(context, request, response); }));}
+    void SetMessageAllocatorFor_LoadModel(
+        ::grpc::MessageAllocator< ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(5);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_LoadModel() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status LoadModel(::grpc::ServerContext* /*context*/, const ::infaas::internal::LoadModelRequest* /*request*/, ::infaas::internal::LoadModelResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* LoadModel(
+      ::grpc::CallbackServerContext* /*context*/, const ::infaas::internal::LoadModelRequest* /*request*/, ::infaas::internal::LoadModelResponse* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_QueryOnline<WithCallbackMethod_QueryOnlineImage<WithCallbackMethod_QueryOffline<WithCallbackMethod_Heartbeat<WithCallbackMethod_WorkerStatus<WithCallbackMethod_LoadModel<Service > > > > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_QueryOnline : public BaseClass {
@@ -438,6 +589,40 @@ class Query final {
     }
     // disable synchronous version of this method
     ::grpc::Status Heartbeat(::grpc::ServerContext* /*context*/, const ::infaas::internal::HeartbeatRequest* /*request*/, ::infaas::internal::HeartbeatResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_WorkerStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_WorkerStatus() {
+      ::grpc::Service::MarkMethodGeneric(4);
+    }
+    ~WithGenericMethod_WorkerStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status WorkerStatus(::grpc::ServerContext* /*context*/, const ::infaas::internal::WorkerStatusRequest* /*request*/, ::infaas::internal::WorkerStatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_LoadModel : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_LoadModel() {
+      ::grpc::Service::MarkMethodGeneric(5);
+    }
+    ~WithGenericMethod_LoadModel() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status LoadModel(::grpc::ServerContext* /*context*/, const ::infaas::internal::LoadModelRequest* /*request*/, ::infaas::internal::LoadModelResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -520,6 +705,46 @@ class Query final {
     }
     void RequestHeartbeat(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_WorkerStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_WorkerStatus() {
+      ::grpc::Service::MarkMethodRaw(4);
+    }
+    ~WithRawMethod_WorkerStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status WorkerStatus(::grpc::ServerContext* /*context*/, const ::infaas::internal::WorkerStatusRequest* /*request*/, ::infaas::internal::WorkerStatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestWorkerStatus(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_LoadModel : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_LoadModel() {
+      ::grpc::Service::MarkMethodRaw(5);
+    }
+    ~WithRawMethod_LoadModel() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status LoadModel(::grpc::ServerContext* /*context*/, const ::infaas::internal::LoadModelRequest* /*request*/, ::infaas::internal::LoadModelResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestLoadModel(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -611,6 +836,50 @@ class Query final {
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
+  class WithRawCallbackMethod_WorkerStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_WorkerStatus() {
+      ::grpc::Service::MarkMethodRawCallback(4,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->WorkerStatus(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_WorkerStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status WorkerStatus(::grpc::ServerContext* /*context*/, const ::infaas::internal::WorkerStatusRequest* /*request*/, ::infaas::internal::WorkerStatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* WorkerStatus(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_LoadModel : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_LoadModel() {
+      ::grpc::Service::MarkMethodRawCallback(5,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->LoadModel(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_LoadModel() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status LoadModel(::grpc::ServerContext* /*context*/, const ::infaas::internal::LoadModelRequest* /*request*/, ::infaas::internal::LoadModelResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* LoadModel(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
   class WithStreamedUnaryMethod_QueryOnline : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -691,7 +960,61 @@ class Query final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedHeartbeat(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::infaas::internal::HeartbeatRequest,::infaas::internal::HeartbeatResponse>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_QueryOnline<WithStreamedUnaryMethod_QueryOffline<WithStreamedUnaryMethod_Heartbeat<Service > > > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_WorkerStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_WorkerStatus() {
+      ::grpc::Service::MarkMethodStreamed(4,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::infaas::internal::WorkerStatusRequest, ::infaas::internal::WorkerStatusResponse>* streamer) {
+                       return this->StreamedWorkerStatus(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_WorkerStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status WorkerStatus(::grpc::ServerContext* /*context*/, const ::infaas::internal::WorkerStatusRequest* /*request*/, ::infaas::internal::WorkerStatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedWorkerStatus(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::infaas::internal::WorkerStatusRequest,::infaas::internal::WorkerStatusResponse>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_LoadModel : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_LoadModel() {
+      ::grpc::Service::MarkMethodStreamed(5,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::infaas::internal::LoadModelRequest, ::infaas::internal::LoadModelResponse>* streamer) {
+                       return this->StreamedLoadModel(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_LoadModel() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status LoadModel(::grpc::ServerContext* /*context*/, const ::infaas::internal::LoadModelRequest* /*request*/, ::infaas::internal::LoadModelResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedLoadModel(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::infaas::internal::LoadModelRequest,::infaas::internal::LoadModelResponse>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_QueryOnline<WithStreamedUnaryMethod_QueryOffline<WithStreamedUnaryMethod_Heartbeat<WithStreamedUnaryMethod_WorkerStatus<WithStreamedUnaryMethod_LoadModel<Service > > > > > StreamedUnaryService;
   template <class BaseClass>
   class WithSplitStreamingMethod_QueryOnlineImage : public BaseClass {
    private:
@@ -720,7 +1043,7 @@ class Query final {
     virtual ::grpc::Status StreamedQueryOnlineImage(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::infaas::internal::QueryOnlineImageRequest,::infaas::internal::QueryOnlineImageResponse>* server_split_streamer) = 0;
   };
   typedef WithSplitStreamingMethod_QueryOnlineImage<Service > SplitStreamedService;
-  typedef WithStreamedUnaryMethod_QueryOnline<WithSplitStreamingMethod_QueryOnlineImage<WithStreamedUnaryMethod_QueryOffline<WithStreamedUnaryMethod_Heartbeat<Service > > > > StreamedService;
+  typedef WithStreamedUnaryMethod_QueryOnline<WithSplitStreamingMethod_QueryOnlineImage<WithStreamedUnaryMethod_QueryOffline<WithStreamedUnaryMethod_Heartbeat<WithStreamedUnaryMethod_WorkerStatus<WithStreamedUnaryMethod_LoadModel<Service > > > > > > StreamedService;
 };
 
 }  // namespace internal

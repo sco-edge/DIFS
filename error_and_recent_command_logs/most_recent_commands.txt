@@ -138,17 +138,102 @@ docker system df
 
 Then cleanup:
 
-docker system prune -a
+$ docker system prune -a
 
 ===============================
 ---BUILDING DOCKER IMAGE-------
 ===============================
 
-docker build -f src/Dockerfile.diffusion -t difs-diffusion-worker . 
+$ docker build -f src/Dockerfile.diffusion -t difs-diffusion-worker . 
+
+Or
+
+$ docker build --no-cache -f src/Dockerfile.diffusion -t difs-diffusion-worker .
 
 - The Docker.diffusion file is used to specify the template docker image as well
 as the requirements file to do he build. It is my custom file instead of using the
 standard file "DockerFile"
+
+===================================================
+---CONFIGURING DOCKER FOR NVIDIA GPU SUPPORT-------
+===================================================
+
+$ docker run --rm --gpus all nvidia/cuda:12.4.1-runtime-ubuntu22.04 nvidia-smi
+
+
+===================================================
+---ENTERING INTO THE DOCKER SESSION TO WORK-------
+===================================================
+$ docker run --rm -it difs-diffusion-worker bash
+
+OR if the models are found elsewhere, load them whiles entering into docker
+
+$ docker run --rm -it -v /tmp/model:/tmp/model difs-diffusion-worker bash 
+
+===================================================
+---ENTERING INTO AND TESTING IN DOCKER SESSION-----
+===================================================
+* BEFORE RUNNING
+----------------
+$ docker rm -f $(docker ps -aq) # clean before every run on docker to show that I am always running the latest code
+
+* AFTER
+---------
+docker run --rm -it \
+-v $PWD:/workspace \
+-v $DIFS_MODEL_DIR:$DIFS_MODEL_DIR \
+-w /workspace \
+difs-diffusion-worker \
+python src/1/pytorch_container_diffusion_v3.py \
+-model 4 \
+-sampler 2 \
+-thread 10 \
+-port 50060 \
+-npz $DIFS_MODEL_DIR/real_stats.npz
+
+# SENDING ENVIRONMENT VARIABLES AS WELL WHEN TESTING
+#---------------------------------------------------
+* BEFORE RUNNING
+----------------
+$ docker rm -f $(docker ps -aq) # clean before every run on docker to show that I am always running the latest code
+
+* AFTER
+---------
+$ docker run --rm \
+-e DIFS_MODEL_DIR=$DIFS_MODEL_DIR \                         
+-v $PWD:/workspace \
+-v $DIFS_MODEL_DIR:$DIFS_MODEL_DIR \
+-w /workspace \                                             
+difs-diffusion-worker \                                                                                                                      
+python -c "import sys; sys.path.append('/workspace/src'); from project_paths import MODEL_CACHE; print(MODEL_CACHE)"
+
+$ docker run --rm \
+-e DIFS_MODEL_DIR=$DIFS_MODEL_DIR \
+-v $PWD:/workspace \
+-v $DIFS_MODEL_DIR:$DIFS_MODEL_DIR \
+-w /workspace \
+difs-diffusion-worker \
+python src/1/pytorch_container_diffusion_v3.py \
+-model 4 \
+-sampler 2 \
+-thread 10 \
+-port 50060 \
+-npz $DIFS_MODEL_DIR/real_stats.npz
+
+$ docker run --rm \
+    --gpus all \  
+    -e DIFS_MODEL_DIR=$DIFS_MODEL_DIR \
+    -e PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \   
+    -v $PWD:/workspace \
+    -v $DIFS_MODEL_DIR:$DIFS_MODEL_DIR \                                                                                                     
+    -w /workspace \                                         
+    difs-diffusion-worker \                                                                                                                  
+    python src/1/pytorch_container_diffusion_v3.py \
+        -model 4 \                                                                                                                           
+        -sampler 2 \                                                                                                                                                                                                                                                                      
+        -thread 10 \                                        
+        -port 50060 \            
+        -npz $DIFS_MODEL_DIR/real_stats.npz
 
 
 
@@ -156,13 +241,13 @@ standard file "DockerFile"
 ---REGENERATING AFTER DELETION OF FILES GENERATED FROM THOSE IN PROTOS-------
 =============================================================================
 - DELETION
-rm src/query_pb2.py
-rm src/query_pb2_grpc.py
+cd DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
 
-rm src/infaas_request_status_pb2.py
-rm src/infaas_request_status_pb2_grpc.py
+rm src/query_pb2.py src/query_pb2_grpc.py src/infaas_request_status_pb2.py src/infaas_request_status_pb2_grpc.py
 
 - REGENERATION
+cd DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+
 python -m grpc_tools.protoc \
   -I=protos \
   --python_out=src \
@@ -186,3 +271,975 @@ Model file mount	✅ Working
 HF downloads	✅ Working
 Stable Diffusion initialization	❌ Failing
 gRPC worker startup	❌ Never reached
+
+
+
+
+=======================================================================================
+---LOCKING THE ENVIRONMENT SETUP TO KNOW WHAT SETUP TO USE TO REPRODUCE IT LATER-------
+=======================================================================================
+pip freeze > environment_snapshot/requirements.lock.txt
+conda env export --no-builds > environment_snapshot/environment.lock.yml
+conda list > environment_snapshot/conda_list.txt
+pip list > environment_snapshot/pip_list.txt
+nvidia-smi >environment_snapshot/gpu_info.txt
+git rev-parse HEAD > environment_snapshot/git_commit.txt
+git status > environment_snapshot/git_status.txt
+
+
+
+python -c "import grpc_tools; print('grpcio-tools OK')"
+pip show grpcio
+pip show grpcio-tools
+pip show protobuf
+
+
+python - <<'EOF'
+import query_pb2
+import query_pb2_grpc
+import infaas_request_status_pb2
+import infaas_request_status_pb2_grpc
+print("✓ protobuf imports successful")
+EOF
+
+
+====================================================
+---VALIDATION AND RESULT GENERATIONS COMMANDS-------
+====================================================
+
+############################
+# MANUAL INDIVIDUAL TESTING
+############################
+
+# TERMINAL 1 (worker):
+$ python src/1/bootstrap.py -model 1 -sampler 1 -thread 4 -port 50060 -npz real_stats.npz
+
+# TERMINAL 2 (server: for scheduler): 
+$ python src/server.py
+
+# TERMINAL 3 (client):
+$ python src/client_async_v3.py -prompt_count 5 -host localhost -port 50050 -steps 20 -sampler 1
+
+# Killing the processes started by the three
+
+
+############################
+# OTHER TESTS
+############################
+
+$ docker run --rm -e DIFS_MODEL_DIR=$DIFS_MODEL_DIR -v $PWD:/workspace -v $DIFS_MODEL_DIR:$DIFS_MODEL_DIR -w /workspace difs-diff[12/1676]
+ker python src/1/pytorch_container_diffusion_v3.py -model 4 -sampler 2 -thread 10 -port 50060 -npz $DIFS_MODEL_DIR/real_stats.npz                                                                                                                                                         /opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.                                                                         _torch_pytree._register_pytree_node(                                                                                                       
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at query.proto. Please update the gencode to avoid compatibility violations in the next run
+time release.                           
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at infaas_request_status.proto. Please update the gencode to avoid compatibility violations
+ in the next runtime release.
+  warnings.warn(                   
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(                    
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(
+TORCH= 2.5.1+cu124
+DIFFUSERS= 0.24.0
+TRANSFORMERS= 4.35.2
+============================================================
+[JSON LOADER]
+Trying: /workspace/src/models.json
+============================================================
+============================================================
+[JSON LOADER]
+Trying: /workspace/samplers.json
+============================================================
+====================================================================== 
+MODELS_JSON   : /workspace/src/models.json
+SAMPLERS_JSON : /workspace/samplers.json
+====================================================================== 
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+cpu
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+config.json: 4.52kB [00:00, 26.3MB/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.78MB/s]
+vocab.json: 961kB [00:00, 58.0MB/s]
+merges.txt: 525kB [00:00, 105MB/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.85MB/s]
+tokenizer.json: 2.22MB [00:00, 225MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results i
+n services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more
+ information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['diffusion_output', 'tmpb6eu6ygr']
+ ✅ [Complete] File load time: 2.15초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+100%|██████████| 1/1 [00:00<00:00,  5.20it/s]
+^C ✅ [Completed] Warm-up execution time: 0.41초
+============================================================
+🚀 [Final] Server setup complete. Total time taken: 2.56초
+============================================================
+[Info] Weight loading 100% complete! GPU ready
+npz path not picked from command line, using the hard coded path: /workspace/real_stats.npz
+📊 The mu value of a real-world image ([0.47221427 0.24937508 0.36007017 ... 0.13225297 0.3696733  0.08423958])
+📊 Calculating the sigma value of a real-world image ([[ 0.01443284 -0.0092687  -0.01496326 ...  0.01543761  0.04348524
+  -0.00668914]
+ [-0.0092687   0.00595232  0.00960934 ... -0.00991396 -0.02792602
+   0.00429573]
+ [-0.01496326  0.00960934  0.01551317 ... -0.01600495 -0.04508336
+   0.00693497]
+ ...
+ [ 0.01543761 -0.00991396 -0.01600495 ...  0.01651232  0.04651253
+  -0.00715482]
+ [ 0.04348524 -0.02792602 -0.04508336 ...  0.04651253  0.13101828
+  -0.02015396]
+ [-0.00668914  0.00429573  0.00693497 ... -0.00715482 -0.02015396
+   0.00310019]])
+[Server] gRPC server started (Port: 50060)
+
+[WORKER] Shutdown requested
+
+
+
+$ docker ps
+CONTAINER ID   IMAGE                   COMMAND                  CREATED          STATUS          PORTS     NAMES
+5a60a8885c9b   difs-diffusion-worker   "python src/1/pytorc…"   22 seconds ago   Up 21 seconds             heuristic_chebyshev
+
+
+$ docker logs 5a60a8885c9b                                                                                                                /opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.                                                                         _torch_pytree._register_pytree_node(                                                                                                       
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at query.proto. Please update the gencode to avoid compatibility violations in the next run
+time release.                           
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at infaas_request_status.proto. Please update the gencode to avoid compatibility violations
+ in the next runtime release.
+  warnings.warn(                   
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(                    
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(                                                                                                                                                                                                                                                    
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(
+TORCH= 2.5.1+cu124
+DIFFUSERS= 0.24.0
+TRANSFORMERS= 4.35.2
+============================================================
+[JSON LOADER]
+Trying: /workspace/src/models.json
+============================================================
+============================================================
+[JSON LOADER]
+Trying: /workspace/samplers.json
+============================================================
+====================================================================== 
+MODELS_JSON   : /workspace/src/models.json
+SAMPLERS_JSON : /workspace/samplers.json
+====================================================================== 
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+config.json: 4.52kB [00:00, 26.1MB/s]
+cpu
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 5.00MB/s]
+vocab.json: 961kB [00:00, 95.0MB/s]
+merges.txt: 525kB [00:00, 102MB/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 2.41MB/s]
+tokenizer.json: 2.22MB [00:00, 168MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results i
+n services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more
+ information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['diffusion_output', 'tmpk_n7m25x']
+ ✅ [Complete] File load time: 1.93초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+100%|██████████| 1/1 [00:00<00:00,  5.10it/s]
+
+
+"$ ss -ltnp | grep 50060" returns empty
+
+docker run --rm --gpus all difs-diffusion-worker python -c "import torch; print(torch.cuda.is_available()); print(torch.cuda.device_count())"
+
+
+############################
+# AUTOMATED TESTING
+############################
+
+# TERMINAL 1:
+
+$ python src/server.py                                                                                                          [437/1882]
+[SERVER] Metrics subsystem initialized.                                                                                                                                                                                                                                                   
+[DEBUG-B] entering vertical branch                                    
+[SERVER] Starting one Docker worker for vertical mode                                                                                                                                                                                                                                     
+[WORKER_POOL] Launching workload type: balanced                                                                                              
+[WORKER_POOL] Model=4, Sampler=2                                                                                                                                                                                                                                                          
+============================================================                                                                                                                                                                                                                              
+HOST PORT = 50060                                                     
+CONTAINER PORT = 50060                                                                                                                       
+============================================================                                                                                                                                                                                                                              
+Execution Started In Directory: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco                                                                                                                                 
+                                                                                                                                                                                                                                                                                          
+================ DOCKER COMMAND ================                                                                                                                                                                                                                                          
+00: docker                                                                                                                                                                                                                                                                                
+01: run                                                                                                                                                                                                                                                                                   
+02: -d                                                                
+03: --gpus                                                            
+04: all                                                                                                                                                                                                                                                                                   
+05: -v                                                                                                                                       
+06: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco:/workspace                                                                                                                                                  
+07: -w                                                                
+08: /workspace                                                                                                                                                                                                                                                                            
+09: -p                                                                                                                                       
+10: 50060:50060                                                       
+11: -v                                                                
+12: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+13: -e                                                                
+14: DIFS_MODEL_DIR=/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+15: -v                                                                
+16: /tmp/diffusion_output:/tmp/diffusion_output
+17: difs-diffusion-worker                                             
+18: python                                                            
+19: src/1/pytorch_container_diffusion_v3.py
+20: -model                                                            
+21: 4                                                                 
+22: -sampler                                                          
+23: 2                                                                 
+24: -thread                                                           
+25: 10                                                                
+26: -port                                                             
+27: 50060                                                             
+28: -npz                                                              
+29: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/real_stats.npz
+===============================================
+
+50060/tcp -> 0.0.0.0:50060                                            
+50060/tcp -> [::]:50060                                               
+
+[WORKER_POOL] Container ID: 1df8f8d0d79eb09673f3cabc00b2cbabd38ad18d3e7d3de1271efaa1a59b902c
+[WORKER_POOL] Waiting for worker on port 50060...
+
+[WORKER_POOL DEBUG] Docker container logs:
+
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(                                
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at query.proto. Please update the gencode to avoid compatibility violations in the next run
+time release.                                                                                                                                
+  warnings.warn(                                                                                                                                                                                                                                                                          
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at infaas_request_status.proto. Please update the gencode to avoid compatibility violations
+ in the next runtime release.                                         
+  warnings.warn(                                                                                                                             
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.                                                                       
+  _torch_pytree._register_pytree_node(                                                                                                                                                                                                                                                    
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.                                                                       
+  _torch_pytree._register_pytree_node(                                                                                                                                                                                                                                                    
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.                                                                           
+  torch.utils._pytree._register_pytree_node(                                                                                                                                                                                                                                              
+                                                                      
+[WORKER_POOL DEBUG END]                                               
+                                                                                                                                                                                                                                                                                          
+============================================================                                                                                 
+[WORKER_POOL HEALTHCHECK FAILED]:                                                                                                                                                                                                                                                         
+ <AioRpcError of RPC that terminated with:                            
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:02.464703748+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>                                                                     
+Traceback (most recent call last):                                                                                                                                                                                                                                                        
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(                                                                                                         
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__
+    raise _create_rpc_error(                                          
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with: 
+        status = StatusCode.UNAVAILABLE                               
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:02.464703748+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>                                                                     
+============================================================          
+[WORKER_POOL] Waiting for worker localhost:50060...                   
+============================================================          
+[WORKER_POOL HEALTHCHECK FAILED]:                                     
+ <AioRpcError of RPC that terminated with:                            
+        status = StatusCode.UNAVAILABLE                               
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T17:07:04.471792209+09:00"}"
+>                                                                     
+Traceback (most recent call last):                                    
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(                                  
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__
+    raise _create_rpc_error(                                                                                                                 
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T17:07:04.471792209+09:00"}"
+>
+============================================================          
+[WORKER_POOL] Waiting for worker localhost:50060...                                                                                                                                                                                                                                       
+============================================================                                                                                 
+[WORKER_POOL HEALTHCHECK FAILED]:                                                                                                                                                                                                                                                         
+ <AioRpcError of RPC that terminated with:                                                                                                                                                                                                                                                
+        status = StatusCode.UNAVAILABLE                               
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:06.477996631+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"                 
+>                                                                                                                                                                                                                                                                                         
+Traceback (most recent call last):                                                                                                                                                                                                                                                        
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready                                                                                                
+    response = await stub.Heartbeat(                                                                                                                                                                                                                                                      
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__                                                                                                                                                                         
+    raise _create_rpc_error(                                          
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with: 
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:06.477996631+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"                 
+>                                                                     
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL] Waiting for worker localhost:50060...                                                                                          
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL HEALTHCHECK FAILED]:                                     
+ <AioRpcError of RPC that terminated with:                                                                                                                                                                                                                                                
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:08.483306193+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>                                                                     
+Traceback (most recent call last):                                    
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(                                                                                                         
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__                                                                                                                                                                         
+    raise _create_rpc_error(                                          
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with: 
+        status = StatusCode.UNAVAILABLE                               
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:08.483306193+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>                                                                     
+============================================================          
+[WORKER_POOL] Waiting for worker localhost:50060...                                                                                          
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL HEALTHCHECK FAILED]:                                     
+ <AioRpcError of RPC that terminated with:                            
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:10.488973462+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"
+>                                                                                                                                            
+Traceback (most recent call last):                                    
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(                                                                                                         
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__                                                                                                                                                                         
+    raise _create_rpc_error( 
+    grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with: 
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:10.488973462+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"                 
+>                                                                                                                                                                                                                                                                                         
+============================================================          
+[WORKER_POOL] Waiting for worker localhost:50060...                                                                                          
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL HEALTHCHECK FAILED]:                                                                                                                                                                                                                                                         
+ <AioRpcError of RPC that terminated with:                                                                                                                                                                                                                                                
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"                                                                                                                                                   
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T17:07:12.495153165+09:00"}"                 
+>                                                                     
+Traceback (most recent call last):                                    
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready                                                                                                
+    response = await stub.Heartbeat(                                                                                                         
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__                                                                                                                                                                         
+    raise _create_rpc_error(                                          
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with:                                                                                                                                                                                                                     
+        status = StatusCode.UNAVAILABLE                                                                                                      
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"                                                                                                                                                   
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T17:07:12.495153165+09:00"}"
+>                                                                                                                                                                                                                                                                                         
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL] Waiting for worker localhost:50060...                                                                                          
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL HEALTHCHECK FAILED]:                                     
+ <AioRpcError of RPC that terminated with:                            
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T17:07:14.501115567+09:00"}"                 
+>                                                                     
+Traceback (most recent call last):                                    
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready
+    response = await stub.Heartbeat(                                                                                                         
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__                                                                                                                                                                         
+    raise _create_rpc_error(                                          
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with: 
+        status = StatusCode.UNAVAILABLE                                                                                                      
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"                                                                                                                                                   
+        debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-20T17:07:14.501115567+09:00"}"
+>                                                                     
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL] Waiting for worker localhost:50060...                                                                                          
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL HEALTHCHECK FAILED]:                                                                                                            
+ <AioRpcError of RPC that terminated with:                            
+        status = StatusCode.UNAVAILABLE                                                                                                                                                                                                                                                   
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"      
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:16.507073172+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"                 
+>
+Traceback (most recent call last):                                    
+  File "/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/src/worker_pool.py", line 54, in wait_until_worker_ready                                                                                                
+    response = await stub.Heartbeat(                                                                                                         
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/site-packages/grpc/aio/_call.py", line 327, in __await__                                                                                                                                                                         
+    raise _create_rpc_error(                                                                                                                                                                                                                                                              
+grpc.aio._call.AioRpcError: <AioRpcError of RPC that terminated with: 
+        status = StatusCode.UNAVAILABLE                                                                                                      
+        details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"                                                                                                                                                   
+        debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-20T17:07:16.507073172+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50060: recvmsg:Connection reset by peer"}"                 
+>                                                                                                                                                                                                                                                                                         
+============================================================                                                                                                                                                                                                                              
+[WORKER_POOL] Waiting for worker localhost:50060...                                                                                                                                                                                                                                       
+[WORKER_POOL] Worker READY: localhost:50060                                                                                                                                                                                                                                               
+[WORKER_POOL] Worker READY: localhost:50060                           
+[WORKER_POOL] Started container 1df8f8d0 on port 50060                
+[AUTOSCALER] Vertical mode selected — skipping worker container startup                                                                                                                                                                                                                   
+[SERVER] Autoscaler started                                                                                                                  
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[SERVER] Scheduler gRPC running on port 50050                         
+[QUEUE DEBUG] Active=0 Queue=0                                                                                                                                                                                                                                                            
+============================================================                                                                                 
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 0                                                                                                                                                                                                                                                                         
+queue total   : 0                                                                                                                                                                                                                                                                         
+arrival rate  : 0.0000                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                                                                                       
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                         
+[VERTICAL] Batch size → 1                                             
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=0 Queue=0                                                                                                               
+============================================================                                                                                                                                                                                                                              
+[QUEUE DEBUG]                                                         
+active reqs   : 0                                                     
+queue total   : 0                                                                                                                                                                                                                                                                         
+arrival rate  : 0.0000                                                                                                                       
+service rate  : 0.0000                                                                                                                                                                                                                                                                    
+============================================================          
+[VERTICAL AUTOSCALER] Queue=0, λ=0.00, μ=0.00                         
+[VERTICAL] Batch size → 1                                                                                                                    
+[SCHEDULER] increment_active -> 1                                                                                                                                                                                                                                                         
+[SERVER DEBUG] Request received                                                                                                                                                                                                                                                           
+[DEBUG-A] arrival counter updated                                     
+[DEBUG] before worker selection                                                                                                                                                                                                                                                           
+[DEBUG-B] entering vertical branch                                                                                                           
+[WORKER_POOL] Selected balanced worker 50060                                                                                                                                                                                                                                              
+[VERTICAL ROUTER] Using worker localhost:50060                                                                                               
+[DEBUG] creating grpc channel                                         
+[RETRY] Attempt 1 → localhost:50060                                                                                                                                                                                                                                                       
+[DEBUG] grpc stub created                                                                                                                    
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                                                                                                                                                                            
+[DIFS_WORK0:Coding- 1:Terminal
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                               [177/1882]
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                                                                                                                                                                            
+============================================================          
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                                                                                            
+queue total   : 1                                                                                                                                                                                                                                                                         
+arrival rate  : 0.0318                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                
+============================================================                                                                                 
+[VERTICAL AUTOSCALER] Queue=1, λ=0.03, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                                                                                                                                                                            
+============================================================                                                                                                                                                                                                                              
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                     
+queue total   : 1                                                     
+arrival rate  : 0.0274                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                                                                                       
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=1, λ=0.03, μ=0.00                         
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[AUTOSCALER] Monitoring 1 workers                                                                                                            
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                                                                                                                                                                            
+============================================================                                                                                                                                                                                                                              
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                                                                                                                                                                                                                                         
+queue total   : 1                                                                                                                            
+arrival rate  : 0.0241                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                
+============================================================          
+[VERTICAL AUTOSCALER] Queue=1, λ=0.02, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                    
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                        
+============================================================          
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                                                                                            
+queue total   : 1                                                                                                                                                                                                                                                                         
+arrival rate  : 0.0215                                                
+service rate  : 0.0000                                                
+============================================================                                                                                 
+[VERTICAL AUTOSCALER] Queue=1, λ=0.02, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[AUTOSCALER] Monitoring 1 workers                                     
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                                                                                                                                                                            
+============================================================                                                                                 
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                                                                                            
+queue total   : 1                                                     
+arrival rate  : 0.0194                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                                                                                       
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=1, λ=0.02, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                             
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                               
+============================================================                                                                                                                                                                                                                              
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                     
+queue total   : 1                                                                                                                            
+arrival rate  : 0.0177                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                                                                                                                                                                                                                                    
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=1, λ=0.02, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                        
+============================================================          
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                                                                                            
+queue total   : 1                                                                                                                                                                                                                                                                         
+arrival rate  : 0.0163                                                
+service rate  : 0.0000                                                                                                                                                                                                                                                                    
+============================================================                                                                                 
+[VERTICAL AUTOSCALER] Queue=1, λ=0.02, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                                                                                                                                                                            
+============================================================                                                                                 
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                     
+queue total   : 1                                                     
+arrival rate  : 0.0150                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                                                                                       
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=1, λ=0.02, μ=0.00                         
+[VERTICAL] Batch size → 1                                             
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                               
+============================================================                                                                                                                                                                                                                              
+[QUEUE DEBUG]                                                         
+active reqs   : 1                                                     
+queue total   : 1                                                                                                                            
+arrival rate  : 0.0140                                                                                                                                                                                                                                                                    
+service rate  : 0.0000                                                                                                                                                                                                                                                                    
+============================================================          
+[VERTICAL AUTOSCALER] Queue=1, λ=0.01, μ=0.00                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                    
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=1 Queue=1                                                                                                               
+============================================================          
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 1                                                                                                                            
+queue total   : 1                                                                                                                                                                                                                                                                         
+arrival rate  : 0.0131
+service rate  : 0.0000                                                
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=1, λ=0.01, μ=0.00                                                                                                
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.247s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                 
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                   
+[THROUGHPUT] 0.01 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.251s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.03 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.251s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                 
+[INFERENCE SUCCESS] Worker=localhost:50060                            
+[THROUGHPUT] 0.04 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.252s                                                                                                    
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                            
+[THROUGHPUT] 0.05 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.253s                                                                                                    
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.07 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.254s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                                                                                        
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.08 req/sec                                             
+[SERVER LATENCY] localhost:50060: 49.255s                             
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                   
+[THROUGHPUT] 0.09 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.256s                             
+[QUEUE DELAY] 0.0000s                                                 
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.10 req/sec                                                                                                                    
+[SERVER LATENCY] localhost:50060: 49.256s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                 
+[INFERENCE SUCCESS] Worker=localhost:50060                            
+[THROUGHPUT] 0.12 req/sec                                                                                                                    
+[SERVER LATENCY] localhost:50060: 49.257s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                            
+[THROUGHPUT] 0.13 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.257s                                                                                                    
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                   
+[THROUGHPUT] 0.14 req/sec                                             
+[SERVER LATENCY] localhost:50060: 49.258s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                                                                                        
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.16 req/sec
+[SERVER LATENCY] localhost:50060: 49.259s                             
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                   
+[THROUGHPUT] 0.17 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.259s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                 
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                   
+[THROUGHPUT] 0.18 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.260s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.20 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.261s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                 
+[INFERENCE SUCCESS] Worker=localhost:50060                            
+[THROUGHPUT] 0.21 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.261s                                                                                                    
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                            
+[THROUGHPUT] 0.22 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.262s                                                                                                    
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.23 req/sec                                                                                                                                                                                                                                                                 
+[SERVER LATENCY] localhost:50060: 49.262s                                                                                                                                                                                                                                                 
+[QUEUE DELAY] 0.0000s                                                                                                                        
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                                                                                                                                                                
+[THROUGHPUT] 0.25 req/sec                                             
+[SERVER LATENCY] localhost:50060: 49.263s                             
+[QUEUE DELAY] 0.0000s                                                                                                                                                                                                                                                                     
+[INFERENCE SUCCESS] Worker=localhost:50060                                                                                                   
+[THROUGHPUT] 0.26 req/sec                                                                                                                                                                                                                                                                 
+[SCHEDULER] decrement_active -> 0                                     
+[AUTOSCALER] Monitoring 1 workers                                     
+[QUEUE DEBUG] Active=0 Queue=0                                                                                                                                                                                                                                                            
+============================================================                                                                                 
+[QUEUE DEBUG]                                                                                                                                                                                                                                                                             
+active reqs   : 0                                                     
+queue total   : 0                                                     
+arrival rate  : 0.0123                                                                                                                       
+service rate  : 0.2454                                                                                                                                                                                                                                                                    
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=0, λ=0.01, μ=0.25                         
+[VERTICAL] Batch size → 1                                                                                                                                                                                                                                                                 
+[AUTOSCALER] Monitoring 1 workers                                                                                                            
+[QUEUE DEBUG] Active=0 Queue=0                                                                                                                                                                                                                                                            
+============================================================                                                                                 
+[QUEUE DEBUG]                                                         
+active reqs   : 0                                                                                                                                                                                                                                                                         
+queue total   : 0                                                                                                                            
+arrival rate  : 0.0116                                                                                                                                                                                                                                                                    
+service rate  : 0.2312
+============================================================                                                                                                                                                                                                                              
+[VERTICAL AUTOSCALER] Queue=0, λ=0.01, μ=0.23                         
+[VERTICAL] Batch size → 1                                             
+[AUTOSCALER] Monitoring 1 workers                                                                                                                                                                                                                                                         
+[QUEUE DEBUG] Active=0 Queue=0                                                                                                               
+============================================================                                                                                                                                                                                                                              
+[QUEUE DEBUG]                                                         
+active reqs   : 0                                                     
+queue total   : 0                                                                                                                            
+arrival rate  : 0.0109                                                                                                                                                                                                                                                                    
+service rate  : 0.2186                                                                                                                                                                                                                                                                    
+============================================================          
+[VERTICAL AUTOSCALER] Queue=0, λ=0.01, μ=0.22                                                                                                                                                                                                                                             
+[VERTICAL] Batch size → 1                                                                                                                    
+^C                                                                                                                                                                                                                                                                                        
+==============================                                                                                                               
+Stopping gRPC server...                                               
+============================== 
+
+# TERMINAL 2:
+
+
+
+
+
+$ python src/client_async_v3.py -prompt_count 20 -host localhost -port 50050 -steps 20 -sampler 1                                       
+[CLIENT] Steps: 20, Sampler: 1                                        
+[CLIENT] Connecting to scheduler at localhost:50050                                                                                                                                                                                                                                       
+✅ Loaded 20 prompts                                                                                                                                                                                                                                                                      
+[CLIENT] Sending request to scheduler...                        
+[LATENCY] Image 1: 49.251s                                            
+[1] Saved (49.25s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_1_1784534893.png
+[LATENCY] Image 2: 49.254s                                            
+[2] Saved (49.25s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_2_1784534893.png
+[LATENCY] Image 3: 49.255s                                            
+[3] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_3_1784534893.png
+[LATENCY] Image 4: 49.256s                                            
+[4] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_4_1784534893.png
+[LATENCY] Image 5: 49.256s                                            
+[5] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_5_1784534893.png
+[LATENCY] Image 6: 49.257s                                            
+[6] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_6_1784534893.png
+[LATENCY] Image 7: 49.258s                                            
+[7] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_7_1784534893.png
+[LATENCY] Image 8: 49.259s                                            
+[8] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_8_1784534893.png
+[LATENCY] Image 9: 49.259s                                            
+[9] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_9_1784534893.png
+[LATENCY] Image 10: 49.260s                                           
+[10] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_10_1784534893.png
+[LATENCY] Image 11: 49.261s                                           
+[11] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_11_1784534893.png
+[LATENCY] Image 12: 49.262s                                           
+[12] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_12_1784534893.png
+[LATENCY] Image 13: 49.262s                                           
+[13] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_13_1784534893.png
+[LATENCY] Image 14: 49.263s                                           
+[14] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_14_1784534893.png
+[LATENCY] Image 15: 49.264s                                           
+[15] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_15_1784534893.png
+[LATENCY] Image 16: 49.264s                                           
+[16] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_16_1784534893.png
+[LATENCY] Image 17: 49.264s                                           
+[17] Saved (49.26s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_17_1784534893.png
+[LATENCY] Image 18: 49.265s                                           
+[18] Saved (49.27s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_18_1784534893.png
+[LATENCY] Image 19: 49.266s                                           
+[19] Saved (49.27s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_19_1784534893.png                                                                                                 
+[LATENCY] Image 20: 49.267s
+[LATENCY] Image 20: 49.267s                                           
+[20] Saved (49.27s): /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco/client_received/received_20_1784534893.png                                                                                                 
+                                                                      
+[CLIENT] ===== SUMMARY =====                                          
+Images received: 20                                                   
+Total time: 49.27s                                                    
+Avg latency/image: 2.46s                                              
+Avg latency: 49.260s                                                  
+P95 latency: 49.266s                                                                                                                                                                                                                                                                      
+P99 latency: 49.266s                                                                                                                                                                                                                                                                      
+Throughput: 0.41 images/sec                                           
+                                                                                                                                        
+
+The updated is
+$ cat metrics/scheduler_metrics.csv                                                                                                       
+timestamp,queue_length,arrival_rate,service_rate
+...
+...                
+606334,0,0.002381885027657973,0.01190942502331561                                                                                                                                                                                                                             
+1784527889.5671186,0,0.002353816055977896,0.01176908016100432         
+1784527894.5736244,0,0.0023264008574858117,0.011632004171297113                                                                                                                                                                                                                           
+1784527899.5799494,0,0.002299617759186848,0.011498088720285333        
+1784527904.5856724,0,0.002273447677822655,0.011367238235078056                                                                                                                                                                                                                            
+1784527909.5922098,0,0.002247862308992594,0.011239311358234215        
+1784527914.597875,0,0.002222850627531682,0.011114252990403204                                                                                                                                                                                                                             
+1784527919.6041758,0,0.0021983864241654667,0.010991931988318143       
+1784527924.6063623,0,0.00217447416826432,0.010872370790592039                                                                                                                                                                                                                             
+1784527929.6128263,0,0.0021510570310222703,0.010755285066857448       
+1784527934.6192768,0,0.002128138653261676,0.010640693174526096                                                                                                                                                                                                                            
+1784527939.6259081,0,0.002105702813770577,0.010528513963138463        
+1784527944.6316533,0,0.002083739017784778,0.01041869498022727                                                                                                                                                                                                                             
+1784527949.638092,0,0.0020622255611924723,0.010311127704568322        
+1784527954.6437094,0,0.002041155306603139,0.010205776398916564                                                                                                                                                                                                                            
+1784527959.6500921,0,0.0020205081326897037,0.01010254056124859        
+1784527964.6566057,0,0.002000273968073734,0.010001369749744788                                                                                                                                                                                                                            
+1784527969.662986,0,0.0019804415597035143,0.009902207700330692        
+1784527974.6692946,0,0.001960998827748064,0.009804994051640276                                                                                                                                                                                                                            
+1784527979.6750531,0,0.0019419362198128548,0.009709681004658336       
+1784527984.681432,0,0.0019232383858643505,0.009616191827906292                                                                                                                                                                                                                            
+1784527989.6878374,0,0.0019048972738538944,0.009524486287081774       
+1784527994.6943138,0,0.0018869020349811681,0.009434510094263633                                                                                                                                                                                                                           
+1784527999.7000427,0,0.0018692463750760143,0.009346231779578855       
+1784528004.706424,0,0.0018519158468853934,0.009259579164924293                                                                                                                                                                                                                            
+1784528009.713603,0,0.0018349009641486517,0.009174504780607141        
+1784528014.7191937,0,0.0018182012985677265,0.009091006429784434                                                                                                                                                                                                                           
+1784528019.7255242,0,0.0018018003714075663,0.009009001791245941
+1784528024.7311752,0,0.001785694849793896,0.008928474191950973                                                                                                                                                                                                                            
+1784528029.7375813,0,0.0017698723575163768,0.0088493617128985         
+1784528034.7432353,0,0.0017543301030678682,0.008771650445630746       
+1784528039.7496998,0,0.0017390559821463822,0.008695279838626606       
+1784528044.7546995,0,0.001724049900673849,0.008620249432502945        
+1784528049.756424,0,0.0017093101367716182,0.008546550603749394        
+1784528054.7620373,0,0.001694809093045904,0.008474045413867402        
+1784528059.7676454,0,0.0016805520617433414,0.00840276023801444                                                                                                                                                                                                                            
+1784528064.7732565,0,0.0016665328576979004,0.00833266422558359                                                                                                                                                                                                                            
+1784528069.77891,0,0.0016527455440285084,0.008263727658273172         
+1784528074.785366,0,0.0016391822734874934,0.008195911316188563                                                                                                                                                                                                                            
+1784528079.7910397,0,0.0016258419044065675,0.008129209455859047                                                                                                                                                                                                                           
+1784528084.7966256,0,0.0016127171294514837,0.008063585588348628 
+1784528089.8030238,0,0.0015998005070542332,0.007999002477302225       
+1784528094.8046854,0,0.001587101078519993,0.007935505323536702                                                                                                                                                                                                                            
+1784528099.8110945,0,0.0015745898674079768,0.007872949283839165       
+1784528104.8167367,0,0.001562276275386923,0.007811381321653171                                                                                                                                                                                                                            
+1784528109.822371,0,0.0015501537891128216,0.007750768885408107        
+1784528114.8263164,0,0.0015382219682050656,0.0076911097874331116                                                                                                                                                                                                                          
+1784528119.8327844,0,0.0015264665233905923,0.007632332586398309       
+1784528124.8383877,0,0.001514891454759181,0.00757445721634559                                                                                                                                                                                                                             
+1784528129.844036,0,0.0015034904623540766,0.007517452257876255        
+1784528134.8503966,0,0.0014922582177875098,0.0074612910358456755                                                                                                                                                                                                                          
+1784528139.856916,0,0.0014811922002556186,0.007405960943739981        
+1784528144.8633351,0,0.00147028930710646,0.007351446481415141                                                                                                                                                                                                                             
+1784528149.8689601,0,0.0014595474576281986,0.007297737237351189       
+1784528154.874284,0,0.001448962059112695,0.007244810248010496                                                                                                                                                                                                                             
+1784528159.8797061,0,0.0014385288317576954,0.007192644143987224       
+1784528164.8870513,0,0.0014282409566535477,0.007141204737065112                                                                                                                                                                                                                           
+1784528169.8926914,0,0.0014181025945624686,0.007090512922468694       
+1784528174.896901,0,0.0014081098826763212,0.007040549406290656                                                                                                                                                                                                                            
+1784528179.9025664,0,0.0013982542590033863,0.006991271288024895       
+1784528184.908272,0,0.0013885356037163991,0.006942677981807721                                                                                                                                                                                                                            
+1784528189.914014,0,0.0013789510041747493,0.006894754980071857        
+1784528194.9192867,0,0.001369498680063359,0.006847493364543964                                                                                                                                                                                                                            
+1784528199.925519,0,0.0013601732491256434,0.006800866230190019        
+1784528204.9311655,0,0.0013509751174523548,0.006754875545922923                                                                                                                                                                                                                           
+1784528209.9362178,0,0.0013419016044578739,0.006709507962184526       
+1784528214.9410622,0,0.0013329494272303214,0.006664747129797439                                                                                                                                                                                                                           
+1784528219.94636,0,0.0013241151865994376,0.006620575920456744         
+1784528224.9517353,0,0.0013153971551983692,0.006576985757428066                                                                                                                                                                                                                           
+1784528229.958188,0,0.001306791360056107,0.00653395676363719          
+1784528234.9647613,0,0.0012982971994297261,0.006491485938877112                                                                                                                                                                                                                           
+1784528239.970223,0,0.0012899145192641975,0.006449572588386992        
+1784528244.9765885,0,0.0012816380177131622,0.006408190061152033                                                                                                                                                                                                                           
+1784528249.9788556,0,0.0012734736608478472,0.006367368269440574       
+1784528254.9853253,0,0.0012654059417439405,0.006327029666725192                                                                                                                                                                                                                           
+1784528259.9915943,0,0.001257440088849973,0.006287200417861485        
+1784528264.9980557,0,0.0012495736250788842,0.006247868088166927                                                                                                                                                                                                                           
+1784528270.0036254,0,0.0012418063383335023,0.006209031656739695       
+1784528275.0101342,0,0.0012341335995287596,0.006170667944989668                                                                                                                                                                                                                           
+1784528280.0150354,0,0.0012265574489619816,0.0061327872394296
+1784528285.0200226,0,0.0012190736733176076,0.00609536835772995                                                                                                                                                                                                                            
+1784528290.0246923,0,0.0012116811744277006,0.006058405838884769       
+1784528295.030106,0,0.001204376671303267,0.006021883323662326         
+1784528300.0325654,0,0.0011971639448100132,0.00598581968987988        
+1784528305.0382128,0,0.0011900325843906263,0.005950162884812398       
+1784528310.0438774,0,0.0011829856497975594,0.005914928212285628       
+1784528315.0511076,0,0.0011760195198473866,0.0058800975646144315      
+1784528320.0567284,0,0.001169137154792992,0.005845685741375961                                                                                                                                                                                                                            
+1784528325.0622163,0,0.0011623350190915263,0.005811675080962731                                                                                                                                                                                                                           
+1784528330.0653832,0,0.0011556147373301103,0.005778073650035127       
+1784528335.0710337,0,0.0011489684065360615,0.0057448420012059945                                                                                                                                                                                                                          
+1784528340.0723855,0,0.0011424036964802567,0.005712018460620308                                                                                                                                                                                                                           
+1784528345.0780575,0,0.0011359080166088958,0.0056795400568960645
+1784528350.0836782,0,0.001129485846662602,0.0056474292044178375       
+1784528355.0859976,0,0.0011231400483614061,0.0056157002072205996                                                                                                                                                                                                                          
+1784528360.0914154,0,0.001116861256577242,0.005584306275451251        
+1784528365.0969949,0,0.0011106521522083572,0.005553260731631706                                                                                                                                                                                                                           
+1784528370.0979462,0,0.0011045173108309209,0.0055225865236142235      
+1784528375.1034052,0,0.0010984444017959635,0.0054922220003496836                                                                                                                                                                                                                          
+1784528380.1089869,0,0.0010924378286308026,0.005462189114700654       
+1784528385.114601,0,0.001086496509492309,0.0054324825179095995                                                                                                                                                                                                                            
+1784528390.120237,0,0.0010806194482985642,0.0054030972164358735       
+1784528395.1259139,0,0.0010748055938683621,0.0053740279252741585                                                                                                                                                                                                                          
+1784528400.1323094,0,0.0010690531074565343,0.005345265507309595       
+1784528405.1379817,0,0.0010633627154506588,0.0053168135435546085                                                                                                                                                                                                                          
+1784528410.1435955,0,0.0010577326319415234,0.005288663126364829       
+1784528415.148994,0,0.0010521620491909097,0.005260810240675747                                                                                                                                                                                                                            
+1784528420.154545,0,0.0010466497442407248,0.005233248692473631        
+1784528425.1591306,0,0.0010411958905579709,0.005205979438574174                                                                                                                                                                                                                           
+1784528430.1636326,0,0.0010357986731890244,0.005178993363387179       
+1784528435.1691203,0,0.0010304561177712926,0.0051522805686034755                                                                                                                                                                                                                          
+1784528440.1754692,0,0.0010251674640117789,0.0051258372987604125      
+1784528445.1820283,0,0.0010199325999280424,0.005099662973598333                                                                                                                                                                                                                           
+1784528450.1839948,0,0.0010147556675337086,0.005073778297159964       
+1784528455.1896336,0,0.0010096272513590544,0.0050481362312769845                                                                                                                                                                                                                          
+1784528460.1961153,0,0.0010045495532379756,0.005022747756566161       
+1784528465.201672,0,0.0009995236402081027,0.004997618176030408                                                                                                                                                                                                                            
+1784528470.2080753,0,0.0009945469085084323,0.004972734520138746       
+1784528475.2134902,0,0.0009896204336802155,0.004948102161396231                                                                                                                                                                                                                           
+1784528480.218925,0,0.000984742558722286,0.004923712770491554         
+1784528485.2226784,0,0.0009799141197383973,0.0048995705769429646                                                                                                                                                                                                                          
+1784528490.2255354,0,0.0009751336531364288,0.00487566824187772        
+1784528495.2311342,0,0.0009703970189868815,0.004851985074728353                                                                                                                                                                                                                           
+1784528500.2360854,0,0.000965706759706185,0.004828533794083992        
+1784528505.241279,0,0.0009610614599443379,0.004805307274397225                                                                                                                                                                                                                            
+1784528510.24176,0,0.0009564648749693492,0.0047823243672128505        
+1784528515.2471366,0,0.0009519076577001709,0.0047595382755385865                                                                                                                                                                                                                          
+1784528520.249379,0,0.0009473964920620934,0.004736982434631066        
+1784528552.0057218,0,0.0,0.0                                                                                                                                                                                                                                                              
+1784528557.0113027,0,0.069775341514645,0.0                            
+1784528562.0160365,0,0.05171575608405211,0.0                                                                                                                                                                                                                                              
+1784528567.0210555,0,0.04108211860351176,0.0 
+1784528572.026029,0,0.034075649592296205,0.0                                                                                                                                                                                                                                              
+1784528577.03132,0,0.029110596912071202,0.0                           
+1784528582.0365012,0,0.02540848216991466,0.0                          
+1784528587.0371332,0,0.022544079807095142,0.0                         
+1784528589.7666435,0,0.02123724024374352,0.021237239168427208         
+1784528589.7681105,0,0.02123657840714685,0.04247315487884497          
+1784528589.7689764,0,0.021236187453682748,0.06370856074823365         
+1784528589.7697008,0,0.021235860487430556,0.08494343979936898                                                                                                                                                                                                                             
+1784528589.7703354,0,0.021235574064235346,0.10617786817088148                                                                                                                                                                                                                             
+1784528592.0405416,0,0.020258930749116128,0.10129464591735945         
+1784528597.0461795,0,0.018393653991504187,0.09196826350445537                                                                                                                                                                                                                             
+1784528602.0516095,0,0.01684294207812794,0.0842147100524612                                                                                                                                                                                                                               
+1784528607.0571108,0,0.015533371750643695,0.0776668544386953    
+1784528612.0627031,0,0.014412729246553898,0.07206364152780739         
+1784528617.0652363,0,0.013443453929287577,0.06721726663023993                                                                                                                                                                                                                             
+1784528622.0702353,0,0.012595942653826695,0.06297970986470723         
+1784534838.5201192,0,0.0,0.0                                                                                                                                                                                                                                                              
+1784534843.525479,0,0.0,0.0                                           
+1784534848.5311253,1,0.03181400873012036,0.0                                                                                                                                                                                                                                              
+1784534853.5358293,1,0.027444334847366934,0.0                         
+1784534858.5412812,1,0.024129610130121083,0.0                                                                                                                                                                                                                                             
+1784534863.5469563,1,0.021529201896621143,0.0                         
+1784534868.55232,1,0.019434854721483385,0.0                                                                                                                                                                                                                                               
+1784534873.5583236,1,0.01771166742004066,0.0                          
+1784534878.5660322,1,0.016268715497060604,0.0                                                                                                                                                                                                                                             
+1784534883.5711448,1,0.015043752393120209,0.0                         
+1784534888.5769863,1,0.013990208491132186,0.0                                                                                                                                                                                                                                             
+1784534893.5828793,1,0.013074592742005382,0.0                         
+1784534893.897384,1,0.013020995395179646,0.01302099495052674                                                                                                                                                                                                                              
+1784534893.9007447,1,0.013020425334668274,0.02604085010346421         
+1784534893.9014673,1,0.013020302622363682,0.03906090738206675                                                                                                                                                                                                                             
+1784534893.9023836,1,0.013020147295184397,0.05208058853405396         
+1784534893.9030225,1,0.013020038936159129,0.06510019387245455                                                                                                                                                                                                                             
+1784534893.903887,1,0.013019892425984746,0.07811935358592101          
+1784534893.9050663,1,0.013019692449970647,0.09113784601817725                                                                                                                                                                                                                             
+1784534893.9055774,1,0.013019605679751077,0.1041568451146937          
+1784534893.906086,1,0.013019519516895487,0.11717567492461045                                                                                                                                                                                                                              
+1784534893.9066749,1,0.01301941969550095,0.1301941961467453           
+1784534893.9073648,1,0.013019302740721248,0.14321232925885907                                                                                                                                                                                                                             
+1784534893.9085872,1,0.013019095670446021,0.15622914562068038         
+1784534893.9089968,1,0.013019026163555459,0.16924733855020105                                                                                                                                                                                                                             
+1784534893.909475,1,0.013018945180881857,0.18226523026937122          
+1784534893.910283,1,0.013018808272345823,0.1952821222667637                                                                                                                                                                                                                               
+1784534893.9107594,1,0.013018727494427463,0.20829963732466902         
+1784534893.911285,1,0.013018638676242566,0.22131685062670237                                                                                                                                                                                                                              
+1784534893.911798,1,0.01301855147558217,0.23433392365111605           
+1784534893.9124658,1,0.013018438253854245,0.24735032452002498                                                                                                                                                                                                                             
+1784534893.9131887,1,0.013018315861846002,0.26036631400441146         
+1784534898.58883,0,0.012271390529113487,0.24542779191284395                                                                                                                                                                                                                               
+1784534903.594605,0,0.01156120853205626,0.23122415279538533
+
+
+$ python src/plots/generate_plots.py                                                                                               
+
+Plots written to: plots

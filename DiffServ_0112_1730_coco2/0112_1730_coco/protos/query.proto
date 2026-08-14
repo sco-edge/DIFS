@@ -22,7 +22,15 @@ service Query {
 
   // Heartbeat
   rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {}
+
+  // Worker runtime status
+  rpc WorkerStatus(WorkerStatusRequest) returns (WorkerStatusResponse) {}
+
+  // rpc ClusterStatus(ClusterStatusRequest) returns (ClusterStatusResponse) {}
+
+  rpc LoadModel(LoadModelRequest) returns (LoadModelResponse) {}
 }
+
 
 message QueryOnlineRequest {
   repeated string Prompt = 1; // Prompt
@@ -84,4 +92,54 @@ message HeartbeatRequest {
 
 message HeartbeatResponse {
   InfaasRequestStatus status = 1;
+}
+
+message WorkerStatusRequest {
+}
+
+message WorkerStatusResponse {
+
+  string workload_type = 1;
+  string model_name = 2;
+  bool busy = 3;
+  int32 queue_length = 4;
+  float gpu_memory_mb = 5;
+  float average_latency_ms = 6;
+  int32 active_requests = 7;
+  int32 worker_port = 8;
+  float throughput = 9;
+  float gpu_reserved_mb = 10;
+  float gpu_peak_mb = 11;
+  float last_fid = 12;
+  int32 total_images_generated = 13;
+  int32 model_switches = 14;
+  float last_switch_time_ms = 15;
+}
+
+/*
+message ClusterStatusRequest {
+}
+
+message ClusterStatusResponse {
+    int32 worker_count = 1;
+    int32 queue_length = 2;
+    float predicted_queue = 3;
+    float arrival_rate = 4;
+    float service_rate = 5;
+    int32 active_requests = 6;
+    int32 interactive_sla = 7;
+    int32 balanced_sla = 8;
+    int32 batch_sla = 9;
+    int32 total_sla = 10;
+}
+*/
+
+message LoadModelRequest{
+    int32 model_id=1;
+}
+
+message LoadModelResponse{
+    bool success = 1;
+    float switch_time_ms = 2;
+    string current_model = 3;
 }

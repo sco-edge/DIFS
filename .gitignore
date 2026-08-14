@@ -23,3 +23,4 @@ config/*.yaml
 credentials/
 .secrets/
 .env.*
+DiffServ_0112_1730_coco2/0112_1730_coco/NOTES.md

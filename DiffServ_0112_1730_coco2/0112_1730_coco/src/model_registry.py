@@ -27,8 +27,8 @@ MODEL_CONFIGS = {
     # HIGH QUALITY MODEL
     # -----------------------------------------
     "quality": {
-        "model_id": 7,
-        "sampler": 2,
-        "threads": 20,
+        "model_id": 4,
+        "sampler": 4,
+        "threads": 16,
     }
 }

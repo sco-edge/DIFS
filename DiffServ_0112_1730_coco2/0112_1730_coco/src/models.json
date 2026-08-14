@@ -1,0 +1,30 @@
+[
+  {
+      "id": 1,
+      "filename": "sd-v1-4.safetensors"
+  },
+  {
+      "id": 2,
+      "filename": "stable-diffusion-v1-4"
+  },
+  {
+      "id": 3,
+      "filename": "stable-diffusion-v1-5"
+  },
+  {
+      "id": 4,
+      "filename": "sd-v1-4.safetensors"
+  },
+  {
+      "id": 5,
+      "filename": "stable-diffusion-xl-base-1.0"
+  },
+  {
+      "id": 6,
+      "filename": "stable-diffusion-xl-refiner-1.0"
+  },
+  {
+      "id": 7,
+      "filename": "dreamshaper-8"
+  }
+]

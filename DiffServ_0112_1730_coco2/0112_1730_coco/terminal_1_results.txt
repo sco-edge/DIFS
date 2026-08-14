@@ -1,0 +1,919 @@
+$ python src/server.py > terminal_1_results.txt 2>&1  
+
+[SERVER] Metrics subsystem initialized.
+[SCHEDULER] Scheduler started
+[SERVER] Scheduler thread started
+[AUTOSCALER] Requesting worker_pool to add worker
+[SERVER] Autoscaler started
+[WORKER_POOL] Launching workload type: balanced
+[WORKER_POOL] Model=4, Sampler=2
+============================================================
+HOST PORT = 50060
+CONTAINER PORT = 50060
+============================================================
+Execution Started In Directory: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+
+================ DOCKER COMMAND ================
+00: docker
+01: run
+02: -d
+03: --gpus
+04: all
+05: -v
+06: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco:/workspace
+07: -w
+08: /workspace
+09: -p
+10: 50060:50060
+11: -v
+12: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+13: -e
+14: DIFS_MODEL_DIR=/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+15: -v
+16: /tmp/diffusion_output:/tmp/diffusion_output
+17: difs-diffusion-worker
+18: python
+19: src/1/pytorch_container_diffusion_v3.py
+20: -model
+21: 4
+22: -sampler
+23: 2
+24: -thread
+25: 10
+26: -port
+27: 50060
+28: -npz
+29: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/real_stats.npz
+===============================================
+
+[SERVER] Scheduler gRPC running on port 50050
+============================================================
+[DOCKER STDERR]
+
+============================================================
+============================================================
+[DOCKER STDOUT]
+a64f96f2dfe0f9655658a3a96f0d5df967609e7ab9efbf5d0301e93d02d331b3
+
+============================================================
+50060/tcp -> 0.0.0.0:50060
+50060/tcp -> [::]:50060
+
+[WORKER_POOL] Container ID: a64f96f2dfe0f9655658a3a96f0d5df967609e7ab9efbf5d0301e93d02d331b3
+[WORKER_POOL] Waiting for worker on port 50060...
+
+============================================
+[WORKER_POOL] Waiting for worker startup...
+============================================
+
+------ Docker Logs (2 sec) ------
+
+----------------------------------------
+
+------ Docker Logs (4 sec) ------
+[JSON LOADER]
+Trying: /workspace/samplers.json
+============================================================
+======================================================================
+MODELS_JSON   : /workspace/src/models.json
+SAMPLERS_JSON : /workspace/samplers.json
+======================================================================
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+============================================================
+[GPU BEFORE LOAD]
+Free : 37551.56 MB
+Total: 48507.94 MB
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+----------------------------------------
+
+------ Docker Logs (6 sec) ------
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['tmp4har308x', 'diffusion_output']
+ ✅ [Complete] File load time: 2.32초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 59.0MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 122MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.54MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 2.22MB [00:00, 190MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+----------------------------------------
+
+------ Docker Logs (8 sec) ------
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['tmp4har308x', 'diffusion_output']
+ ✅ [Complete] File load time: 2.32초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 59.0MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 122MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.54MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 2.22MB [00:00, 190MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+
+----------------------------------------
+
+------ Docker Logs (10 sec) ------
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['tmp4har308x', 'diffusion_output']
+ ✅ [Complete] File load time: 2.32초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 59.0MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 122MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.54MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 2.22MB [00:00, 190MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+
+----------------------------------------
+
+------ Docker Logs (12 sec) ------
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['tmp4har308x', 'diffusion_output']
+ ✅ [Complete] File load time: 2.32초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 59.0MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 122MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.54MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 2.22MB [00:00, 190MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+
+----------------------------------------
+
+------ Docker Logs (14 sec) ------
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['tmp4har308x', 'diffusion_output']
+ ✅ [Complete] File load time: 2.32초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 59.0MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 122MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.54MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 2.22MB [00:00, 190MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+
+...
+...
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 59.0MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 122MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.54MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 2.22MB [00:00, 190MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+
+----------------------------------------
+
+------ Docker Logs (30 sec) ------
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['tmp4har308x', 'diffusion_output']
+ ✅ [Complete] File load time: 2.32초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.2MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 3.40MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 59.0MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 122MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.54MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 2.22MB [00:00, 190MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.68it/s]
+
+----------------------------------------
+[WORKER_POOL] Worker READY: localhost:50060
+[WORKER_POOL] Worker READY: localhost:50060
+[WORKER_POOL] Started container a64f96f2 on port 50060
+[AUTOSCALER] Worker successfully added
+[AUTOSCALER] Initial workers launched. Waiting for stabilization...
+[SCHEDULER] increment_active -> 1
+[SERVER DEBUG] Request received
+[DEBUG-A] arrival counter updated
+[DEBUG] before worker selection
+[DEBUG-C] about to get worker
+[WORKER_POOL] Selected balanced worker 50060
+[DEBUG-D] worker=localhost:50060
+[SCHEDULER] Routing request to localhost:50060
+[DEBUG] creating grpc channel
+[RETRY] Attempt 1 → localhost:50060
+[DEBUG] grpc stub created
+[AUTOSCALER] Monitoring 1 workers
+[AUTOSCALER] Current=1, Predicted=0.0
+[AUTOSCALER] Worker 50060 | Busy=True | Active=1 | Latency=0.00 ms | GPU=1957.54 MB
+[AUTOSCALER] Queue=1, Predicted=0.0, SLA=0, Workers=1, Busy=1, Idle=0
+[AUTOSCALER] Workers=1 | λ=0.0219 | μ=0.0000 | ρ=inf
+[AUTOSCALER] Monitoring 1 workers
+[AUTOSCALER] Current=1, Predicted=0.0
+[AUTOSCALER] Worker 50060 | Busy=True | Active=1 | Latency=0.00 ms | GPU=2352.62 MB
+[AUTOSCALER] Queue=1, Predicted=0.0, SLA=0, Workers=1, Busy=1, Idle=0
+[AUTOSCALER] Workers=1 | λ=0.0198 | μ=0.0000 | ρ=inf
+[AUTOSCALER] Monitoring 1 workers
+[AUTOSCALER] Current=1, Predicted=1.0
+[AUTOSCALER] Worker 50060 | Busy=True | Active=1 | Latency=0.00 ms | GPU=16.25 MB
+[AUTOSCALER] Queue=1, Predicted=1.0, SLA=0, Workers=1, Busy=1, Idle=0
+[AUTOSCALER] Workers=1 | λ=0.0180 | μ=0.0000 | ρ=inf
+[AUTOSCALER] SCALE UP (ρ=inf) Launching balanced worker
+[AUTOSCALER] Requesting worker_pool to add worker
+[WORKER_POOL] Launching workload type: balanced
+[WORKER_POOL] Model=4, Sampler=2
+============================================================
+HOST PORT = 50061
+CONTAINER PORT = 50060
+============================================================
+Execution Started In Directory: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco
+
+================ DOCKER COMMAND ================
+00: docker
+01: run
+02: -d
+03: --gpus
+04: all
+05: -v
+06: /mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS/DiffServ_0112_1730_coco2/0112_1730_coco:/workspace
+07: -w
+08: /workspace
+09: -p
+10: 50061:50060
+11: -v
+12: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+13: -e
+14: DIFS_MODEL_DIR=/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models
+15: -v
+16: /tmp/diffusion_output:/tmp/diffusion_output
+17: difs-diffusion-worker
+18: python
+19: src/1/pytorch_container_diffusion_v3.py
+20: -model
+21: 4
+22: -sampler
+23: 2
+24: -thread
+25: 10
+26: -port
+27: 50061
+28: -npz
+29: /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/real_stats.npz
+===============================================
+
+============================================================
+[DOCKER STDERR]
+
+============================================================
+============================================================
+[DOCKER STDOUT]
+7ccb7674694aa85477f43fb8acf28130b4a87b86a3da1179c40cd5a24d10c485
+
+============================================================
+50060/tcp -> 0.0.0.0:50061
+50060/tcp -> [::]:50061
+
+[WORKER_POOL] Container ID: 7ccb7674694aa85477f43fb8acf28130b4a87b86a3da1179c40cd5a24d10c485
+[WORKER_POOL] Waiting for worker on port 50061...
+
+============================================
+[WORKER_POOL] Waiting for worker startup...
+============================================
+
+------ Docker Logs (2 sec) ------
+
+----------------------------------------
+
+------ Docker Logs (4 sec) ------
+
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at query.proto. Please update the gencode to avoid compatibility violations in the next runtime release.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/google/protobuf/runtime_version.py:98: UserWarning: Protobuf gencode version 5.29.3 is exactly one major version older than the runtime version 6.31.1 at infaas_request_status.proto. Please update the gencode to avoid compatibility violations in the next runtime release.
+  warnings.warn(
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/opt/conda/lib/python3.11/site-packages/diffusers/utils/outputs.py:63: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  torch.utils._pytree._register_pytree_node(
+
+----------------------------------------
+
+------ Docker Logs (6 sec) ------
+============================================================
+======================================================================
+MODELS_JSON   : /workspace/src/models.json
+SAMPLERS_JSON : /workspace/samplers.json
+======================================================================
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+============================================================
+[GPU BEFORE LOAD]
+Free : 33580.25 MB
+Total: 48507.94 MB
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.6MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 4.57MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 67.5MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 44.4MB/s]
+
+----------------------------------------
+
+------ Docker Logs (8 sec) ------
+[시스템] 모델 ID 4(sd-v1-4.safetensors) 로딩 시작...
+[시스템] Sampler ID 2(DPM++_Karras) 로딩 시작...
+[Info] Initializing ModelExecutor (Model ID: 4, File: sd-v1-4.safetensors)
+============================================================
+[WORKER] Metrics directory: /workspace/metrics
+============================================================
+[Timer] Step 1: Starting to load the weight file... (/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors)
+============================================================
+[GPU BEFORE LOAD]
+Free : 33580.25 MB
+Total: 48507.94 MB
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+
+
+config.json: 0.00B [00:00, ?B/s]
+config.json: 4.52kB [00:00, 23.6MB/s]
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 4.57MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 67.5MB/s]
+
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 44.4MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.65MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 1.85MB [00:00, 4.81MB/s]
+tokenizer.json: 2.22MB [00:00, 5.67MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+----------------------------------------
+...
+...
+------ Docker Logs (26 sec) ------
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['diffusion_output', 'tmpocbmg1b1']
+ ✅ [Complete] File load time: 5.47초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 4.57MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 67.5MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 44.4MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.65MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 1.85MB [00:00, 4.81MB/s]
+tokenizer.json: 2.22MB [00:00, 5.67MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.39it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.39it/s]
+
+----------------------------------------
+
+------ Docker Logs (28 sec) ------
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['diffusion_output', 'tmpocbmg1b1']
+ ✅ [Complete] File load time: 5.47초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 4.57MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 67.5MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 44.4MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.65MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 1.85MB [00:00, 4.81MB/s]
+tokenizer.json: 2.22MB [00:00, 5.67MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.39it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.39it/s]
+
+----------------------------------------
+
+------ Docker Logs (30 sec) ------
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+Exception in callback PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()
+handle: <Handle PollerCompletionQueue._handle_events(<_UnixSelecto...e debug=False>)()>
+Traceback (most recent call last):
+  File "/home/kwadwo/miniforge3/envs/DIFS/lib/python3.10/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "src/python/grpcio/grpc/_cython/_cygrpc/aio/completion_queue.pyx.pxi", line 147, in grpc._cython.cygrpc.PollerCompletionQueue._handle_events
+BlockingIOError: [Errno 11] Resource temporarily unavailable
+============================================================
+cuda
+[MODEL] Loading /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+============================================================
+CHECKPOINT PATH = /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models/sd-v1-4.safetensors
+EXISTS = True
+CONTENTS OF /mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models:
+['dreamshaper-8', 'stable-diffusion-v1-4', 'stable-diffusion-2-1', 'stable-diffusion-xl-refiner-1.0', 'sd-v1-4.safetensors', 'stable-diffusion-v1-5', 'stable-diffusion-xl-base-1.0']
+============================================================
+[MODEL] Loading single checkpoint
+============================================================
+[MODEL] Attention slicing enabled
+[MODEL] VAE slicing enabled
+[MODEL] CPU offload enabled
+============================================================
+ROOT DIRECTORY
+['var', 'opt', 'run', 'lib', 'sbin', 'libx32', 'root', 'sys', 'media', 'etc', 'mnt', 'lib32', 'usr', 'lib64', 'srv', 'tmp', 'dev', 'home', 'proc', 'bin', 'boot', '.dockerenv', 'workspace']
+TMP DIRECTORY
+['diffusion_output', 'tmpocbmg1b1']
+ ✅ [Complete] File load time: 5.47초
+[Timer] Step 2: Component Optimization (Warm-up) Begins...
+
+
+tokenizer_config.json:   0%|          | 0.00/905 [00:00<?, ?B/s]
+tokenizer_config.json: 100%|██████████| 905/905 [00:00<00:00, 4.57MB/s]
+
+vocab.json: 0.00B [00:00, ?B/s]
+vocab.json: 961kB [00:00, 67.5MB/s]
+
+merges.txt: 0.00B [00:00, ?B/s]
+merges.txt: 525kB [00:00, 44.4MB/s]
+
+special_tokens_map.json:   0%|          | 0.00/389 [00:00<?, ?B/s]
+special_tokens_map.json: 100%|██████████| 389/389 [00:00<00:00, 1.65MB/s]
+
+tokenizer.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 1.85MB [00:00, 4.81MB/s]
+tokenizer.json: 2.22MB [00:00, 5.67MB/s]
+You have disabled the safety checker for <class 'diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline'> by passing `safety_checker=None`. Ensure that you abide to the conditions of the Stable Diffusion license and do not expose unfiltered results in services or applications open to the public. Both the diffusers team and Hugging Face strongly recommend to keep the safety filter enabled in all public facing circumstances, disabling it only for use-cases that involve analyzing network behavior or auditing its results. For more information, please have a look at https://github.com/huggingface/diffusers/pull/254 .
+/opt/conda/lib/python3.11/site-packages/diffusers/pipelines/pipeline_utils.py:761: FutureWarning: `torch_dtype` is deprecated and will be removed in version 0.25.0. 
+  deprecate("torch_dtype", "0.25.0", "")
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.39it/s]
+100%|██████████| 1/1 [00:00<00:00,  1.39it/s]
+
+----------------------------------------
+======================================================================
+[WORKER_POOL HEALTHCHECK FAILED]
+Worker : localhost:50061
+Elapsed: 0.0 sec
+AioRpcError
+<AioRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-22T00:23:43.594384621+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"}"
+>
+======================================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+======================================================================
+[WORKER_POOL HEALTHCHECK FAILED]
+Worker : localhost:50061
+Elapsed: 2.0 sec
+AioRpcError
+<AioRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: Socket closed"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: Socket closed", grpc_status:14, created_time:"2026-07-22T00:23:45.599866572+09:00"}"
+>
+======================================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+======================================================================
+[WORKER_POOL HEALTHCHECK FAILED]
+Worker : localhost:50061
+Elapsed: 4.0 sec
+AioRpcError
+<AioRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"
+	debug_error_string = "UNKNOWN:Error received from peer  {grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer", grpc_status:14, created_time:"2026-07-22T00:23:47.603757236+09:00"}"
+>
+======================================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+[SERVER LATENCY] localhost:50060: 46.635s
+[QUEUE DELAY] 0.0000s
+[INFERENCE SUCCESS] Worker=localhost:50060
+[THROUGHPUT] 0.01 req/sec
+[SCHEDULER] decrement_active -> 0
+======================================================================
+[WORKER_POOL HEALTHCHECK FAILED]
+Worker : localhost:50061
+Elapsed: 6.0 sec
+AioRpcError
+<AioRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-22T00:23:49.608626558+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"}"
+>
+======================================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+======================================================================
+[WORKER_POOL HEALTHCHECK FAILED]
+Worker : localhost:50061
+Elapsed: 8.0 sec
+AioRpcError
+<AioRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-22T00:23:51.614921878+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"}"
+>
+======================================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+======================================================================
+[WORKER_POOL HEALTHCHECK FAILED]
+Worker : localhost:50061
+Elapsed: 10.0 sec
+AioRpcError
+<AioRpcError of RPC that terminated with:
+	status = StatusCode.UNAVAILABLE
+	details = "failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"
+	debug_error_string = "UNKNOWN:Error received from peer  {created_time:"2026-07-22T00:23:53.618388698+09:00", grpc_status:14, grpc_message:"failed to connect to all addresses; last error: UNAVAILABLE: ipv4:127.0.0.1:50061: recvmsg:Connection reset by peer"}"
+>
+======================================================================
+[WORKER_POOL] Waiting for worker localhost:50061...
+
+==============================
+Stopping gRPC server...
+==============================
+
+[SERVER] Graceful shutdown complete.

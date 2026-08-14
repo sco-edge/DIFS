@@ -1,0 +1,1 @@
+timestamp,workers,busy_workers,idle_workers,queue_length,predicted_queue,arrival_rate,service_rate,mode

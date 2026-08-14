@@ -574,6 +574,7 @@ DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.gr
  /usr/local/include/google/protobuf/extension_set.h
  /usr/local/include/google/protobuf/generated_enum_reflection.h
  /usr/local/include/google/protobuf/generated_enum_util.h
+ /usr/local/include/google/protobuf/generated_message_bases.h
  /usr/local/include/google/protobuf/generated_message_reflection.h
  /usr/local/include/google/protobuf/generated_message_table_driven.h
  /usr/local/include/google/protobuf/generated_message_util.h
@@ -582,6 +583,7 @@ DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.gr
  /usr/local/include/google/protobuf/inlined_string_field.h
  /usr/local/include/google/protobuf/io/coded_stream.h
  /usr/local/include/google/protobuf/io/zero_copy_stream.h
+ /usr/local/include/google/protobuf/io/zero_copy_stream_impl.h
  /usr/local/include/google/protobuf/io/zero_copy_stream_impl_lite.h
  /usr/local/include/google/protobuf/map.h
  /usr/local/include/google/protobuf/map_entry_lite.h
@@ -1001,6 +1003,7 @@ DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.pb
  /usr/local/include/google/protobuf/extension_set.h
  /usr/local/include/google/protobuf/generated_enum_reflection.h
  /usr/local/include/google/protobuf/generated_enum_util.h
+ /usr/local/include/google/protobuf/generated_message_bases.h
  /usr/local/include/google/protobuf/generated_message_reflection.h
  /usr/local/include/google/protobuf/generated_message_table_driven.h
  /usr/local/include/google/protobuf/generated_message_util.h
@@ -1009,6 +1012,7 @@ DiffServ_0112_1730_coco2/0112_1730_coco/CMakeFiles/client.dir/generated/query.pb
  /usr/local/include/google/protobuf/inlined_string_field.h
  /usr/local/include/google/protobuf/io/coded_stream.h
  /usr/local/include/google/protobuf/io/zero_copy_stream.h
+ /usr/local/include/google/protobuf/io/zero_copy_stream_impl.h
  /usr/local/include/google/protobuf/io/zero_copy_stream_impl_lite.h
  /usr/local/include/google/protobuf/map.h
  /usr/local/include/google/protobuf/map_entry_lite.h

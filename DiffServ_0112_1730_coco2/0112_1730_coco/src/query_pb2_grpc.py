@@ -5,7 +5,7 @@ import warnings
 
 import query_pb2 as query__pb2
 
-GRPC_GENERATED_VERSION = '1.74.0'
+GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -55,6 +55,16 @@ class QueryStub(object):
                 request_serializer=query__pb2.HeartbeatRequest.SerializeToString,
                 response_deserializer=query__pb2.HeartbeatResponse.FromString,
                 _registered_method=True)
+        self.WorkerStatus = channel.unary_unary(
+                '/infaas.internal.Query/WorkerStatus',
+                request_serializer=query__pb2.WorkerStatusRequest.SerializeToString,
+                response_deserializer=query__pb2.WorkerStatusResponse.FromString,
+                _registered_method=True)
+        self.LoadModel = channel.unary_unary(
+                '/infaas.internal.Query/LoadModel',
+                request_serializer=query__pb2.LoadModelRequest.SerializeToString,
+                response_deserializer=query__pb2.LoadModelResponse.FromString,
+                _registered_method=True)
 
 
 class QueryServicer(object):
@@ -89,6 +99,21 @@ class QueryServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def WorkerStatus(self, request, context):
+        """Worker runtime status
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def LoadModel(self, request, context):
+        """rpc ClusterStatus(ClusterStatusRequest) returns (ClusterStatusResponse) {}
+
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_QueryServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -111,6 +136,16 @@ def add_QueryServicer_to_server(servicer, server):
                     servicer.Heartbeat,
                     request_deserializer=query__pb2.HeartbeatRequest.FromString,
                     response_serializer=query__pb2.HeartbeatResponse.SerializeToString,
+            ),
+            'WorkerStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.WorkerStatus,
+                    request_deserializer=query__pb2.WorkerStatusRequest.FromString,
+                    response_serializer=query__pb2.WorkerStatusResponse.SerializeToString,
+            ),
+            'LoadModel': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoadModel,
+                    request_deserializer=query__pb2.LoadModelRequest.FromString,
+                    response_serializer=query__pb2.LoadModelResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -222,6 +257,60 @@ class Query(object):
             '/infaas.internal.Query/Heartbeat',
             query__pb2.HeartbeatRequest.SerializeToString,
             query__pb2.HeartbeatResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def WorkerStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/infaas.internal.Query/WorkerStatus',
+            query__pb2.WorkerStatusRequest.SerializeToString,
+            query__pb2.WorkerStatusResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def LoadModel(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/infaas.internal.Query/LoadModel',
+            query__pb2.LoadModelRequest.SerializeToString,
+            query__pb2.LoadModelResponse.FromString,
             options,
             channel_credentials,
             insecure,

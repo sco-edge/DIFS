@@ -1,0 +1,7 @@
+Torch: 2.5.1+cu124
+Torchvision: 0.20.1+cu124
+Torchaudio: 2.5.1+cu124
+
+CUDA available: True
+CUDA version: 12.4
+GPU: NVIDIA RTX 6000 Ada Generation

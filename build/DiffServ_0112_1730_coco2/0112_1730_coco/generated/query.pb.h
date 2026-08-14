@@ -23,6 +23,7 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
+#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_table_driven.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
@@ -47,7 +48,7 @@ struct TableStruct_query_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[9]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[13]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -62,6 +63,12 @@ extern HeartbeatRequestDefaultTypeInternal _HeartbeatRequest_default_instance_;
 class HeartbeatResponse;
 struct HeartbeatResponseDefaultTypeInternal;
 extern HeartbeatResponseDefaultTypeInternal _HeartbeatResponse_default_instance_;
+class LoadModelRequest;
+struct LoadModelRequestDefaultTypeInternal;
+extern LoadModelRequestDefaultTypeInternal _LoadModelRequest_default_instance_;
+class LoadModelResponse;
+struct LoadModelResponseDefaultTypeInternal;
+extern LoadModelResponseDefaultTypeInternal _LoadModelResponse_default_instance_;
 class QueryOfflineRequest;
 struct QueryOfflineRequestDefaultTypeInternal;
 extern QueryOfflineRequestDefaultTypeInternal _QueryOfflineRequest_default_instance_;
@@ -83,11 +90,19 @@ extern QueryOnlineResponseDefaultTypeInternal _QueryOnlineResponse_default_insta
 class QuerySLO;
 struct QuerySLODefaultTypeInternal;
 extern QuerySLODefaultTypeInternal _QuerySLO_default_instance_;
+class WorkerStatusRequest;
+struct WorkerStatusRequestDefaultTypeInternal;
+extern WorkerStatusRequestDefaultTypeInternal _WorkerStatusRequest_default_instance_;
+class WorkerStatusResponse;
+struct WorkerStatusResponseDefaultTypeInternal;
+extern WorkerStatusResponseDefaultTypeInternal _WorkerStatusResponse_default_instance_;
 }  // namespace internal
 }  // namespace infaas
 PROTOBUF_NAMESPACE_OPEN
 template<> ::infaas::internal::HeartbeatRequest* Arena::CreateMaybeMessage<::infaas::internal::HeartbeatRequest>(Arena*);
 template<> ::infaas::internal::HeartbeatResponse* Arena::CreateMaybeMessage<::infaas::internal::HeartbeatResponse>(Arena*);
+template<> ::infaas::internal::LoadModelRequest* Arena::CreateMaybeMessage<::infaas::internal::LoadModelRequest>(Arena*);
+template<> ::infaas::internal::LoadModelResponse* Arena::CreateMaybeMessage<::infaas::internal::LoadModelResponse>(Arena*);
 template<> ::infaas::internal::QueryOfflineRequest* Arena::CreateMaybeMessage<::infaas::internal::QueryOfflineRequest>(Arena*);
 template<> ::infaas::internal::QueryOfflineResponse* Arena::CreateMaybeMessage<::infaas::internal::QueryOfflineResponse>(Arena*);
 template<> ::infaas::internal::QueryOnlineImageRequest* Arena::CreateMaybeMessage<::infaas::internal::QueryOnlineImageRequest>(Arena*);
@@ -95,6 +110,8 @@ template<> ::infaas::internal::QueryOnlineImageResponse* Arena::CreateMaybeMessa
 template<> ::infaas::internal::QueryOnlineRequest* Arena::CreateMaybeMessage<::infaas::internal::QueryOnlineRequest>(Arena*);
 template<> ::infaas::internal::QueryOnlineResponse* Arena::CreateMaybeMessage<::infaas::internal::QueryOnlineResponse>(Arena*);
 template<> ::infaas::internal::QuerySLO* Arena::CreateMaybeMessage<::infaas::internal::QuerySLO>(Arena*);
+template<> ::infaas::internal::WorkerStatusRequest* Arena::CreateMaybeMessage<::infaas::internal::WorkerStatusRequest>(Arena*);
+template<> ::infaas::internal::WorkerStatusResponse* Arena::CreateMaybeMessage<::infaas::internal::WorkerStatusResponse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace infaas {
 namespace internal {
@@ -1716,6 +1733,753 @@ class HeartbeatResponse final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_query_2eproto;
 };
+// -------------------------------------------------------------------
+
+class WorkerStatusRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:infaas.internal.WorkerStatusRequest) */ {
+ public:
+  inline WorkerStatusRequest() : WorkerStatusRequest(nullptr) {}
+  explicit constexpr WorkerStatusRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  WorkerStatusRequest(const WorkerStatusRequest& from);
+  WorkerStatusRequest(WorkerStatusRequest&& from) noexcept
+    : WorkerStatusRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline WorkerStatusRequest& operator=(const WorkerStatusRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline WorkerStatusRequest& operator=(WorkerStatusRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const WorkerStatusRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const WorkerStatusRequest* internal_default_instance() {
+    return reinterpret_cast<const WorkerStatusRequest*>(
+               &_WorkerStatusRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(WorkerStatusRequest& a, WorkerStatusRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(WorkerStatusRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(WorkerStatusRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  WorkerStatusRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<WorkerStatusRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const WorkerStatusRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const WorkerStatusRequest& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "infaas.internal.WorkerStatusRequest";
+  }
+  protected:
+  explicit WorkerStatusRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:infaas.internal.WorkerStatusRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_query_2eproto;
+};
+// -------------------------------------------------------------------
+
+class WorkerStatusResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.WorkerStatusResponse) */ {
+ public:
+  inline WorkerStatusResponse() : WorkerStatusResponse(nullptr) {}
+  ~WorkerStatusResponse() override;
+  explicit constexpr WorkerStatusResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  WorkerStatusResponse(const WorkerStatusResponse& from);
+  WorkerStatusResponse(WorkerStatusResponse&& from) noexcept
+    : WorkerStatusResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline WorkerStatusResponse& operator=(const WorkerStatusResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline WorkerStatusResponse& operator=(WorkerStatusResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const WorkerStatusResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const WorkerStatusResponse* internal_default_instance() {
+    return reinterpret_cast<const WorkerStatusResponse*>(
+               &_WorkerStatusResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(WorkerStatusResponse& a, WorkerStatusResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(WorkerStatusResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(WorkerStatusResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  WorkerStatusResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<WorkerStatusResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const WorkerStatusResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const WorkerStatusResponse& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(WorkerStatusResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "infaas.internal.WorkerStatusResponse";
+  }
+  protected:
+  explicit WorkerStatusResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kWorkloadTypeFieldNumber = 1,
+    kModelNameFieldNumber = 2,
+    kBusyFieldNumber = 3,
+    kQueueLengthFieldNumber = 4,
+    kGpuMemoryMbFieldNumber = 5,
+    kAverageLatencyMsFieldNumber = 6,
+    kActiveRequestsFieldNumber = 7,
+    kWorkerPortFieldNumber = 8,
+    kThroughputFieldNumber = 9,
+    kGpuReservedMbFieldNumber = 10,
+    kGpuPeakMbFieldNumber = 11,
+    kLastFidFieldNumber = 12,
+    kTotalImagesGeneratedFieldNumber = 13,
+    kModelSwitchesFieldNumber = 14,
+    kLastSwitchTimeMsFieldNumber = 15,
+  };
+  // string workload_type = 1;
+  void clear_workload_type();
+  const std::string& workload_type() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_workload_type(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_workload_type();
+  PROTOBUF_NODISCARD std::string* release_workload_type();
+  void set_allocated_workload_type(std::string* workload_type);
+  private:
+  const std::string& _internal_workload_type() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_workload_type(const std::string& value);
+  std::string* _internal_mutable_workload_type();
+  public:
+
+  // string model_name = 2;
+  void clear_model_name();
+  const std::string& model_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_model_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_model_name();
+  PROTOBUF_NODISCARD std::string* release_model_name();
+  void set_allocated_model_name(std::string* model_name);
+  private:
+  const std::string& _internal_model_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_model_name(const std::string& value);
+  std::string* _internal_mutable_model_name();
+  public:
+
+  // bool busy = 3;
+  void clear_busy();
+  bool busy() const;
+  void set_busy(bool value);
+  private:
+  bool _internal_busy() const;
+  void _internal_set_busy(bool value);
+  public:
+
+  // int32 queue_length = 4;
+  void clear_queue_length();
+  int32_t queue_length() const;
+  void set_queue_length(int32_t value);
+  private:
+  int32_t _internal_queue_length() const;
+  void _internal_set_queue_length(int32_t value);
+  public:
+
+  // float gpu_memory_mb = 5;
+  void clear_gpu_memory_mb();
+  float gpu_memory_mb() const;
+  void set_gpu_memory_mb(float value);
+  private:
+  float _internal_gpu_memory_mb() const;
+  void _internal_set_gpu_memory_mb(float value);
+  public:
+
+  // float average_latency_ms = 6;
+  void clear_average_latency_ms();
+  float average_latency_ms() const;
+  void set_average_latency_ms(float value);
+  private:
+  float _internal_average_latency_ms() const;
+  void _internal_set_average_latency_ms(float value);
+  public:
+
+  // int32 active_requests = 7;
+  void clear_active_requests();
+  int32_t active_requests() const;
+  void set_active_requests(int32_t value);
+  private:
+  int32_t _internal_active_requests() const;
+  void _internal_set_active_requests(int32_t value);
+  public:
+
+  // int32 worker_port = 8;
+  void clear_worker_port();
+  int32_t worker_port() const;
+  void set_worker_port(int32_t value);
+  private:
+  int32_t _internal_worker_port() const;
+  void _internal_set_worker_port(int32_t value);
+  public:
+
+  // float throughput = 9;
+  void clear_throughput();
+  float throughput() const;
+  void set_throughput(float value);
+  private:
+  float _internal_throughput() const;
+  void _internal_set_throughput(float value);
+  public:
+
+  // float gpu_reserved_mb = 10;
+  void clear_gpu_reserved_mb();
+  float gpu_reserved_mb() const;
+  void set_gpu_reserved_mb(float value);
+  private:
+  float _internal_gpu_reserved_mb() const;
+  void _internal_set_gpu_reserved_mb(float value);
+  public:
+
+  // float gpu_peak_mb = 11;
+  void clear_gpu_peak_mb();
+  float gpu_peak_mb() const;
+  void set_gpu_peak_mb(float value);
+  private:
+  float _internal_gpu_peak_mb() const;
+  void _internal_set_gpu_peak_mb(float value);
+  public:
+
+  // float last_fid = 12;
+  void clear_last_fid();
+  float last_fid() const;
+  void set_last_fid(float value);
+  private:
+  float _internal_last_fid() const;
+  void _internal_set_last_fid(float value);
+  public:
+
+  // int32 total_images_generated = 13;
+  void clear_total_images_generated();
+  int32_t total_images_generated() const;
+  void set_total_images_generated(int32_t value);
+  private:
+  int32_t _internal_total_images_generated() const;
+  void _internal_set_total_images_generated(int32_t value);
+  public:
+
+  // int32 model_switches = 14;
+  void clear_model_switches();
+  int32_t model_switches() const;
+  void set_model_switches(int32_t value);
+  private:
+  int32_t _internal_model_switches() const;
+  void _internal_set_model_switches(int32_t value);
+  public:
+
+  // float last_switch_time_ms = 15;
+  void clear_last_switch_time_ms();
+  float last_switch_time_ms() const;
+  void set_last_switch_time_ms(float value);
+  private:
+  float _internal_last_switch_time_ms() const;
+  void _internal_set_last_switch_time_ms(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:infaas.internal.WorkerStatusResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr workload_type_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr model_name_;
+  bool busy_;
+  int32_t queue_length_;
+  float gpu_memory_mb_;
+  float average_latency_ms_;
+  int32_t active_requests_;
+  int32_t worker_port_;
+  float throughput_;
+  float gpu_reserved_mb_;
+  float gpu_peak_mb_;
+  float last_fid_;
+  int32_t total_images_generated_;
+  int32_t model_switches_;
+  float last_switch_time_ms_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_query_2eproto;
+};
+// -------------------------------------------------------------------
+
+class LoadModelRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.LoadModelRequest) */ {
+ public:
+  inline LoadModelRequest() : LoadModelRequest(nullptr) {}
+  ~LoadModelRequest() override;
+  explicit constexpr LoadModelRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  LoadModelRequest(const LoadModelRequest& from);
+  LoadModelRequest(LoadModelRequest&& from) noexcept
+    : LoadModelRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline LoadModelRequest& operator=(const LoadModelRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline LoadModelRequest& operator=(LoadModelRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const LoadModelRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const LoadModelRequest* internal_default_instance() {
+    return reinterpret_cast<const LoadModelRequest*>(
+               &_LoadModelRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(LoadModelRequest& a, LoadModelRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(LoadModelRequest* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(LoadModelRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  LoadModelRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<LoadModelRequest>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const LoadModelRequest& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const LoadModelRequest& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(LoadModelRequest* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "infaas.internal.LoadModelRequest";
+  }
+  protected:
+  explicit LoadModelRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kModelIdFieldNumber = 1,
+  };
+  // int32 model_id = 1;
+  void clear_model_id();
+  int32_t model_id() const;
+  void set_model_id(int32_t value);
+  private:
+  int32_t _internal_model_id() const;
+  void _internal_set_model_id(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:infaas.internal.LoadModelRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  int32_t model_id_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_query_2eproto;
+};
+// -------------------------------------------------------------------
+
+class LoadModelResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:infaas.internal.LoadModelResponse) */ {
+ public:
+  inline LoadModelResponse() : LoadModelResponse(nullptr) {}
+  ~LoadModelResponse() override;
+  explicit constexpr LoadModelResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  LoadModelResponse(const LoadModelResponse& from);
+  LoadModelResponse(LoadModelResponse&& from) noexcept
+    : LoadModelResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline LoadModelResponse& operator=(const LoadModelResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline LoadModelResponse& operator=(LoadModelResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const LoadModelResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const LoadModelResponse* internal_default_instance() {
+    return reinterpret_cast<const LoadModelResponse*>(
+               &_LoadModelResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(LoadModelResponse& a, LoadModelResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(LoadModelResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(LoadModelResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  LoadModelResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<LoadModelResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const LoadModelResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const LoadModelResponse& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(LoadModelResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "infaas.internal.LoadModelResponse";
+  }
+  protected:
+  explicit LoadModelResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCurrentModelFieldNumber = 3,
+    kSuccessFieldNumber = 1,
+    kSwitchTimeMsFieldNumber = 2,
+  };
+  // string current_model = 3;
+  void clear_current_model();
+  const std::string& current_model() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_current_model(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_current_model();
+  PROTOBUF_NODISCARD std::string* release_current_model();
+  void set_allocated_current_model(std::string* current_model);
+  private:
+  const std::string& _internal_current_model() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_current_model(const std::string& value);
+  std::string* _internal_mutable_current_model();
+  public:
+
+  // bool success = 1;
+  void clear_success();
+  bool success() const;
+  void set_success(bool value);
+  private:
+  bool _internal_success() const;
+  void _internal_set_success(bool value);
+  public:
+
+  // float switch_time_ms = 2;
+  void clear_switch_time_ms();
+  float switch_time_ms() const;
+  void set_switch_time_ms(float value);
+  private:
+  float _internal_switch_time_ms() const;
+  void _internal_set_switch_time_ms(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:infaas.internal.LoadModelResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr current_model_;
+  bool success_;
+  float switch_time_ms_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_query_2eproto;
+};
 // ===================================================================
 
 
@@ -2887,9 +3651,506 @@ inline void HeartbeatResponse::set_allocated_status(::infaas::internal::InfaasRe
   // @@protoc_insertion_point(field_set_allocated:infaas.internal.HeartbeatResponse.status)
 }
 
+// -------------------------------------------------------------------
+
+// WorkerStatusRequest
+
+// -------------------------------------------------------------------
+
+// WorkerStatusResponse
+
+// string workload_type = 1;
+inline void WorkerStatusResponse::clear_workload_type() {
+  workload_type_.ClearToEmpty();
+}
+inline const std::string& WorkerStatusResponse::workload_type() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.workload_type)
+  return _internal_workload_type();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void WorkerStatusResponse::set_workload_type(ArgT0&& arg0, ArgT... args) {
+ 
+ workload_type_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.workload_type)
+}
+inline std::string* WorkerStatusResponse::mutable_workload_type() {
+  std::string* _s = _internal_mutable_workload_type();
+  // @@protoc_insertion_point(field_mutable:infaas.internal.WorkerStatusResponse.workload_type)
+  return _s;
+}
+inline const std::string& WorkerStatusResponse::_internal_workload_type() const {
+  return workload_type_.Get();
+}
+inline void WorkerStatusResponse::_internal_set_workload_type(const std::string& value) {
+  
+  workload_type_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* WorkerStatusResponse::_internal_mutable_workload_type() {
+  
+  return workload_type_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* WorkerStatusResponse::release_workload_type() {
+  // @@protoc_insertion_point(field_release:infaas.internal.WorkerStatusResponse.workload_type)
+  return workload_type_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void WorkerStatusResponse::set_allocated_workload_type(std::string* workload_type) {
+  if (workload_type != nullptr) {
+    
+  } else {
+    
+  }
+  workload_type_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), workload_type,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (workload_type_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    workload_type_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:infaas.internal.WorkerStatusResponse.workload_type)
+}
+
+// string model_name = 2;
+inline void WorkerStatusResponse::clear_model_name() {
+  model_name_.ClearToEmpty();
+}
+inline const std::string& WorkerStatusResponse::model_name() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.model_name)
+  return _internal_model_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void WorkerStatusResponse::set_model_name(ArgT0&& arg0, ArgT... args) {
+ 
+ model_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.model_name)
+}
+inline std::string* WorkerStatusResponse::mutable_model_name() {
+  std::string* _s = _internal_mutable_model_name();
+  // @@protoc_insertion_point(field_mutable:infaas.internal.WorkerStatusResponse.model_name)
+  return _s;
+}
+inline const std::string& WorkerStatusResponse::_internal_model_name() const {
+  return model_name_.Get();
+}
+inline void WorkerStatusResponse::_internal_set_model_name(const std::string& value) {
+  
+  model_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* WorkerStatusResponse::_internal_mutable_model_name() {
+  
+  return model_name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* WorkerStatusResponse::release_model_name() {
+  // @@protoc_insertion_point(field_release:infaas.internal.WorkerStatusResponse.model_name)
+  return model_name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void WorkerStatusResponse::set_allocated_model_name(std::string* model_name) {
+  if (model_name != nullptr) {
+    
+  } else {
+    
+  }
+  model_name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), model_name,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (model_name_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    model_name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:infaas.internal.WorkerStatusResponse.model_name)
+}
+
+// bool busy = 3;
+inline void WorkerStatusResponse::clear_busy() {
+  busy_ = false;
+}
+inline bool WorkerStatusResponse::_internal_busy() const {
+  return busy_;
+}
+inline bool WorkerStatusResponse::busy() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.busy)
+  return _internal_busy();
+}
+inline void WorkerStatusResponse::_internal_set_busy(bool value) {
+  
+  busy_ = value;
+}
+inline void WorkerStatusResponse::set_busy(bool value) {
+  _internal_set_busy(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.busy)
+}
+
+// int32 queue_length = 4;
+inline void WorkerStatusResponse::clear_queue_length() {
+  queue_length_ = 0;
+}
+inline int32_t WorkerStatusResponse::_internal_queue_length() const {
+  return queue_length_;
+}
+inline int32_t WorkerStatusResponse::queue_length() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.queue_length)
+  return _internal_queue_length();
+}
+inline void WorkerStatusResponse::_internal_set_queue_length(int32_t value) {
+  
+  queue_length_ = value;
+}
+inline void WorkerStatusResponse::set_queue_length(int32_t value) {
+  _internal_set_queue_length(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.queue_length)
+}
+
+// float gpu_memory_mb = 5;
+inline void WorkerStatusResponse::clear_gpu_memory_mb() {
+  gpu_memory_mb_ = 0;
+}
+inline float WorkerStatusResponse::_internal_gpu_memory_mb() const {
+  return gpu_memory_mb_;
+}
+inline float WorkerStatusResponse::gpu_memory_mb() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.gpu_memory_mb)
+  return _internal_gpu_memory_mb();
+}
+inline void WorkerStatusResponse::_internal_set_gpu_memory_mb(float value) {
+  
+  gpu_memory_mb_ = value;
+}
+inline void WorkerStatusResponse::set_gpu_memory_mb(float value) {
+  _internal_set_gpu_memory_mb(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.gpu_memory_mb)
+}
+
+// float average_latency_ms = 6;
+inline void WorkerStatusResponse::clear_average_latency_ms() {
+  average_latency_ms_ = 0;
+}
+inline float WorkerStatusResponse::_internal_average_latency_ms() const {
+  return average_latency_ms_;
+}
+inline float WorkerStatusResponse::average_latency_ms() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.average_latency_ms)
+  return _internal_average_latency_ms();
+}
+inline void WorkerStatusResponse::_internal_set_average_latency_ms(float value) {
+  
+  average_latency_ms_ = value;
+}
+inline void WorkerStatusResponse::set_average_latency_ms(float value) {
+  _internal_set_average_latency_ms(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.average_latency_ms)
+}
+
+// int32 active_requests = 7;
+inline void WorkerStatusResponse::clear_active_requests() {
+  active_requests_ = 0;
+}
+inline int32_t WorkerStatusResponse::_internal_active_requests() const {
+  return active_requests_;
+}
+inline int32_t WorkerStatusResponse::active_requests() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.active_requests)
+  return _internal_active_requests();
+}
+inline void WorkerStatusResponse::_internal_set_active_requests(int32_t value) {
+  
+  active_requests_ = value;
+}
+inline void WorkerStatusResponse::set_active_requests(int32_t value) {
+  _internal_set_active_requests(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.active_requests)
+}
+
+// int32 worker_port = 8;
+inline void WorkerStatusResponse::clear_worker_port() {
+  worker_port_ = 0;
+}
+inline int32_t WorkerStatusResponse::_internal_worker_port() const {
+  return worker_port_;
+}
+inline int32_t WorkerStatusResponse::worker_port() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.worker_port)
+  return _internal_worker_port();
+}
+inline void WorkerStatusResponse::_internal_set_worker_port(int32_t value) {
+  
+  worker_port_ = value;
+}
+inline void WorkerStatusResponse::set_worker_port(int32_t value) {
+  _internal_set_worker_port(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.worker_port)
+}
+
+// float throughput = 9;
+inline void WorkerStatusResponse::clear_throughput() {
+  throughput_ = 0;
+}
+inline float WorkerStatusResponse::_internal_throughput() const {
+  return throughput_;
+}
+inline float WorkerStatusResponse::throughput() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.throughput)
+  return _internal_throughput();
+}
+inline void WorkerStatusResponse::_internal_set_throughput(float value) {
+  
+  throughput_ = value;
+}
+inline void WorkerStatusResponse::set_throughput(float value) {
+  _internal_set_throughput(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.throughput)
+}
+
+// float gpu_reserved_mb = 10;
+inline void WorkerStatusResponse::clear_gpu_reserved_mb() {
+  gpu_reserved_mb_ = 0;
+}
+inline float WorkerStatusResponse::_internal_gpu_reserved_mb() const {
+  return gpu_reserved_mb_;
+}
+inline float WorkerStatusResponse::gpu_reserved_mb() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.gpu_reserved_mb)
+  return _internal_gpu_reserved_mb();
+}
+inline void WorkerStatusResponse::_internal_set_gpu_reserved_mb(float value) {
+  
+  gpu_reserved_mb_ = value;
+}
+inline void WorkerStatusResponse::set_gpu_reserved_mb(float value) {
+  _internal_set_gpu_reserved_mb(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.gpu_reserved_mb)
+}
+
+// float gpu_peak_mb = 11;
+inline void WorkerStatusResponse::clear_gpu_peak_mb() {
+  gpu_peak_mb_ = 0;
+}
+inline float WorkerStatusResponse::_internal_gpu_peak_mb() const {
+  return gpu_peak_mb_;
+}
+inline float WorkerStatusResponse::gpu_peak_mb() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.gpu_peak_mb)
+  return _internal_gpu_peak_mb();
+}
+inline void WorkerStatusResponse::_internal_set_gpu_peak_mb(float value) {
+  
+  gpu_peak_mb_ = value;
+}
+inline void WorkerStatusResponse::set_gpu_peak_mb(float value) {
+  _internal_set_gpu_peak_mb(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.gpu_peak_mb)
+}
+
+// float last_fid = 12;
+inline void WorkerStatusResponse::clear_last_fid() {
+  last_fid_ = 0;
+}
+inline float WorkerStatusResponse::_internal_last_fid() const {
+  return last_fid_;
+}
+inline float WorkerStatusResponse::last_fid() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.last_fid)
+  return _internal_last_fid();
+}
+inline void WorkerStatusResponse::_internal_set_last_fid(float value) {
+  
+  last_fid_ = value;
+}
+inline void WorkerStatusResponse::set_last_fid(float value) {
+  _internal_set_last_fid(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.last_fid)
+}
+
+// int32 total_images_generated = 13;
+inline void WorkerStatusResponse::clear_total_images_generated() {
+  total_images_generated_ = 0;
+}
+inline int32_t WorkerStatusResponse::_internal_total_images_generated() const {
+  return total_images_generated_;
+}
+inline int32_t WorkerStatusResponse::total_images_generated() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.total_images_generated)
+  return _internal_total_images_generated();
+}
+inline void WorkerStatusResponse::_internal_set_total_images_generated(int32_t value) {
+  
+  total_images_generated_ = value;
+}
+inline void WorkerStatusResponse::set_total_images_generated(int32_t value) {
+  _internal_set_total_images_generated(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.total_images_generated)
+}
+
+// int32 model_switches = 14;
+inline void WorkerStatusResponse::clear_model_switches() {
+  model_switches_ = 0;
+}
+inline int32_t WorkerStatusResponse::_internal_model_switches() const {
+  return model_switches_;
+}
+inline int32_t WorkerStatusResponse::model_switches() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.model_switches)
+  return _internal_model_switches();
+}
+inline void WorkerStatusResponse::_internal_set_model_switches(int32_t value) {
+  
+  model_switches_ = value;
+}
+inline void WorkerStatusResponse::set_model_switches(int32_t value) {
+  _internal_set_model_switches(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.model_switches)
+}
+
+// float last_switch_time_ms = 15;
+inline void WorkerStatusResponse::clear_last_switch_time_ms() {
+  last_switch_time_ms_ = 0;
+}
+inline float WorkerStatusResponse::_internal_last_switch_time_ms() const {
+  return last_switch_time_ms_;
+}
+inline float WorkerStatusResponse::last_switch_time_ms() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.WorkerStatusResponse.last_switch_time_ms)
+  return _internal_last_switch_time_ms();
+}
+inline void WorkerStatusResponse::_internal_set_last_switch_time_ms(float value) {
+  
+  last_switch_time_ms_ = value;
+}
+inline void WorkerStatusResponse::set_last_switch_time_ms(float value) {
+  _internal_set_last_switch_time_ms(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.WorkerStatusResponse.last_switch_time_ms)
+}
+
+// -------------------------------------------------------------------
+
+// LoadModelRequest
+
+// int32 model_id = 1;
+inline void LoadModelRequest::clear_model_id() {
+  model_id_ = 0;
+}
+inline int32_t LoadModelRequest::_internal_model_id() const {
+  return model_id_;
+}
+inline int32_t LoadModelRequest::model_id() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.LoadModelRequest.model_id)
+  return _internal_model_id();
+}
+inline void LoadModelRequest::_internal_set_model_id(int32_t value) {
+  
+  model_id_ = value;
+}
+inline void LoadModelRequest::set_model_id(int32_t value) {
+  _internal_set_model_id(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.LoadModelRequest.model_id)
+}
+
+// -------------------------------------------------------------------
+
+// LoadModelResponse
+
+// bool success = 1;
+inline void LoadModelResponse::clear_success() {
+  success_ = false;
+}
+inline bool LoadModelResponse::_internal_success() const {
+  return success_;
+}
+inline bool LoadModelResponse::success() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.LoadModelResponse.success)
+  return _internal_success();
+}
+inline void LoadModelResponse::_internal_set_success(bool value) {
+  
+  success_ = value;
+}
+inline void LoadModelResponse::set_success(bool value) {
+  _internal_set_success(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.LoadModelResponse.success)
+}
+
+// float switch_time_ms = 2;
+inline void LoadModelResponse::clear_switch_time_ms() {
+  switch_time_ms_ = 0;
+}
+inline float LoadModelResponse::_internal_switch_time_ms() const {
+  return switch_time_ms_;
+}
+inline float LoadModelResponse::switch_time_ms() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.LoadModelResponse.switch_time_ms)
+  return _internal_switch_time_ms();
+}
+inline void LoadModelResponse::_internal_set_switch_time_ms(float value) {
+  
+  switch_time_ms_ = value;
+}
+inline void LoadModelResponse::set_switch_time_ms(float value) {
+  _internal_set_switch_time_ms(value);
+  // @@protoc_insertion_point(field_set:infaas.internal.LoadModelResponse.switch_time_ms)
+}
+
+// string current_model = 3;
+inline void LoadModelResponse::clear_current_model() {
+  current_model_.ClearToEmpty();
+}
+inline const std::string& LoadModelResponse::current_model() const {
+  // @@protoc_insertion_point(field_get:infaas.internal.LoadModelResponse.current_model)
+  return _internal_current_model();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void LoadModelResponse::set_current_model(ArgT0&& arg0, ArgT... args) {
+ 
+ current_model_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:infaas.internal.LoadModelResponse.current_model)
+}
+inline std::string* LoadModelResponse::mutable_current_model() {
+  std::string* _s = _internal_mutable_current_model();
+  // @@protoc_insertion_point(field_mutable:infaas.internal.LoadModelResponse.current_model)
+  return _s;
+}
+inline const std::string& LoadModelResponse::_internal_current_model() const {
+  return current_model_.Get();
+}
+inline void LoadModelResponse::_internal_set_current_model(const std::string& value) {
+  
+  current_model_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* LoadModelResponse::_internal_mutable_current_model() {
+  
+  return current_model_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* LoadModelResponse::release_current_model() {
+  // @@protoc_insertion_point(field_release:infaas.internal.LoadModelResponse.current_model)
+  return current_model_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void LoadModelResponse::set_allocated_current_model(std::string* current_model) {
+  if (current_model != nullptr) {
+    
+  } else {
+    
+  }
+  current_model_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), current_model,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (current_model_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    current_model_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:infaas.internal.LoadModelResponse.current_model)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

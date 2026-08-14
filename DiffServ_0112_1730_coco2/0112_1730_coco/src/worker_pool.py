@@ -12,17 +12,28 @@ import asyncio
 import grpc
 import query_pb2
 import query_pb2_grpc
+import traceback
 
 from model_registry import MODEL_CONFIGS
+from project_paths import MODEL_CACHE
+from worker_pool_metrics import WorkerPoolMetrics
 
 
 class WorkerPool:
 
-    def __init__(self):
+    def __init__(self, metrics=None):
 
+        self.metrics = metrics
+
+        self.pool_metrics = WorkerPoolMetrics() # WorkerPool metrics
         self.workers = []
         self.base_port = 50060
         self.next_port = self.base_port
+
+        ############################################################
+        # Prevent concurrent worker creation
+        ############################################################
+        self.worker_lock = asyncio.Lock()
 
 
     ############################################################
@@ -52,7 +63,14 @@ class WorkerPool:
                         return True
 
             except Exception as e:
-                print(f"[WORKER_POOL HEALTHCHECK] {e}")
+    
+                print("=" * 70)
+                print("[WORKER_POOL HEALTHCHECK FAILED]")
+                print("Worker :", addr)
+                print("Elapsed:", round(time.time() - start, 1), "sec")
+                print(type(e).__name__)
+                print(e)
+                print("=" * 70)
 
             print(f"[WORKER_POOL] Waiting for worker {addr}...")
             await asyncio.sleep(2)
@@ -63,182 +81,436 @@ class WorkerPool:
     def size(self):
         return len(self.workers)
 
-    async def add_worker(self, workload_type="balanced"):
-        # -----------------------------------------
-        # Dynamic model selection
-        # -----------------------------------------
-        config = MODEL_CONFIGS[workload_type]
+    async def add_worker(self, workload_type="balanced", model_id=1, sample_id=1, thread_count=10):
+        async with self.worker_lock:
+            startup_begin = time.perf_counter()
+            # -----------------------------------------
+            # Dynamic model selection
+            # -----------------------------------------
+            config = MODEL_CONFIGS[workload_type]
 
-        model_id = str(config["model_id"])
-        sampler = str(config["sampler"])
-        threads = str(config["threads"])
+            model_id = str(config["model_id"])
+            sampler = str(config["sampler"])
+            threads = str(config["threads"])
 
-
-        print(f"[WORKER_POOL] Launching workload type: {workload_type}")
-        print(f"[WORKER_POOL] Model={model_id}, Sampler={sampler}")
-        
-
-        #port = self.base_port + len(self.workers)# new port generated for new worker being added
-        
-        port = self.next_port
-        self.next_port += 1
-
-        # worker = InferenceWorker()
-        #  worker.start()
-        print(f"Execution Started In Directory: {os.getcwd()}")
-
-        cmd = [
-            "docker", "run", "-d",
-            "--gpus", "all",
-
-            #-------------------------------------
-            # Docker directory
-            #-------------------------------------
-            "-v", f"{os.getcwd()}:/workspace", # -v mounts my project in container
-            "-w", "/workspace", # -w sets working directory
-
-            #-------------------------------------
-            # Port mapping
-            #-------------------------------------
-            # "-p", f"{port}:{port}",
-            "-p", f"{port}:50060",
-
-            #-------------------------------------
-            # Volume mounts
-            #-------------------------------------
-            "-v", "/tmp/model:/tmp/model",
-            "-v", "/tmp/diffusion_output:/tmp/diffusion_output",
-
-            #-------------------------------------
-            # Image name
-            #-------------------------------------
-
-            # Use an EXISTING base image
-            "difs-diffusion-worker",
-
-            #"pytorch-diffusion-server",
-            "python", "src/1/pytorch_container_diffusion_v3.py",
-
-            #-------------------------------------
-            # Arguments passed to python server
-            #-------------------------------------
-            # "-model", "4",
-            # #"-model", "/tmp/model/sd-v1-4.saftetensors", # explicitly pass full model path
-            # "-sampler", "2",
-            # "-thread", "10",
-            "-model", model_id,
-            "-sampler", sampler,
-            "-thread", threads,
+            print(f"[WORKER_POOL] Launching workload type: {workload_type}")
+            print(f"[WORKER_POOL] Model={model_id}, Sampler={sampler}")
             
-            "-port", "50060",
-            "-npz", "/tmp/model/real_stats.npz"
-        ]
 
-        # Handle Docker failure gracefully
-        try:
-            # container_id = subprocess.check_output(cmd).decode().strip()
+            #port = self.base_port + len(self.workers)# new port generated for new worker being added
+            
+            port = self.next_port
+            print("="*60)
+            print("HOST PORT =", port)
+            print("CONTAINER PORT = 50060")
+            print("="*60)
+            self.next_port += 1
 
-            # Adding debugging visibility (2026.04.23)
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            # worker = InferenceWorker()
+            #  worker.start()
+            print(f"Execution Started In Directory: {os.getcwd()}")
 
-            if result.returncode != 0:
-                print("[WORKER ERROR]")
+            MODEL_ROOT = os.environ.get(
+                "DIFS_MODEL_DIR",
+                "/tmp/model"
+            )
+
+            cmd = [
+                "docker", "run", "-d",
+                "--gpus", "all",
+
+                #-------------------------------------
+                # Docker directory
+                #-------------------------------------
+                "-v", f"{os.getcwd()}:/workspace", # -v mounts my project in container
+                "-w", "/workspace", # -w sets working directory
+
+                #-------------------------------------
+                # Port mapping
+                #-------------------------------------
+                # "-p", f"{port}:{port}",
+                "-p", f"{port}:50060",
+
+                #-------------------------------------
+                # Volume mounts
+                #-------------------------------------
+                #"-v", f"{MODEL_CACHE}:{MODEL_CACHE}",
+                "-v", f"{str(MODEL_CACHE)}:{str(MODEL_CACHE)}",
+                "-e", f"DIFS_MODEL_DIR={MODEL_CACHE}",
+                #"-e", f"DIFS_MODEL_DIR={MODEL_DIR}",
+                "-v", "/tmp/diffusion_output:/tmp/diffusion_output",
+
+                #-------------------------------------
+                # Image name
+                #-------------------------------------
+
+                # Use an EXISTING base image
+                "difs-diffusion-worker",
+
+                #"pytorch-diffusion-server",
+                "python", "src/1/pytorch_container_diffusion_v3.py",
+
+                #-------------------------------------
+                # Arguments passed to python server
+                #-------------------------------------
+                # "-model", "4",
+                # #"-model", "/tmp/model/sd-v1-4.saftetensors", # explicitly pass full model path
+                # "-sampler", "2",
+                # "-thread", "10",
+                "-model", model_id,
+                "-sampler", sampler,
+                "-thread", threads,
+                
+                #"-port", "50060",
+                "-port", str(port),
+                #"-npz", f"{MODEL_CACHE}/real_stats.npz"
+                "-npz", f"{str(MODEL_CACHE)}/real_stats.npz"
+            ]
+            
+            print("\n================ DOCKER COMMAND ================")
+            for i, item in enumerate(cmd):
+                print(f"{i:02d}: {item}")
+            print("===============================================\n")
+            # Handle Docker failure gracefully
+            try:                
+                # Adding debugging visibility (2026.04.23)
+                result = subprocess.run(cmd, capture_output=True, text=True)
+
+                print("=" * 60)
+                print("[DOCKER STDERR]")
                 print(result.stderr)
+                print("=" * 60)
+
+                print("=" * 60)
+                print("[DOCKER STDOUT]")
                 print(result.stdout)
+                print("=" * 60)
+
+                if result.returncode != 0:
+                    print("[WORKER ERROR]")
+                    print(result.stderr)
+                    print(result.stdout)
+                    return
+
+                container_id = result.stdout.strip()
+                print(subprocess.check_output(
+                    ["docker","port",container_id],
+                    text=True
+                ))
+                print(f"[WORKER_POOL] Container ID: {container_id}")
+
+            except subprocess.CalledProcessError as e:
+                print(f"[WORKER_POOL ERROR] Failed to start container: {e}")
+                subprocess.call(["docker", "logs", container_id])
                 return
 
-            container_id = result.stdout.strip()
-            print(f"[WORKER_POOL] Container ID: {container_id}")
+            print(f"[WORKER_POOL] Waiting for worker on port {port}...")
 
-        except subprocess.CalledProcessError as e:
-            print(f"[WORKER_POOL ERROR] Failed to start container: {e}")
-            subprocess.call(["docker", "logs", container_id])
-            return
+            # ---------------------------------------------------
+            # DEBUG: show worker logs during startup
+            # ---------------------------------------------------
+            print("\n============================================")
+            print("[WORKER_POOL] Waiting for worker startup...")
+            print("============================================")
 
-        print(f"[WORKER_POOL] Waiting for worker on port {port}...")
+            for i in range(15):
 
-        # ---------------------------------------------------
-        # DEBUG: show worker logs during startup
-        # ---------------------------------------------------
-        time.sleep(5)
+                time.sleep(2)
 
-        print("\n[WORKER_POOL DEBUG] Docker container logs:\n")
+                print(f"\n------ Docker Logs ({2*(i+1)} sec) ------")
 
-        subprocess.call([
-            "docker",
-            "logs",
-            container_id
-        ])
+                result = subprocess.run(
+                    [
+                        "docker",
+                        "logs",
+                        "--tail",
+                        "30",
+                        container_id
+                    ],
+                    capture_output=True,
+                    text=True
+                )
 
-        print("\n[WORKER_POOL DEBUG END]\n")
+                print(result.stdout)
 
-        #time.sleep(8)   # 🔥 increase to 8–10 seconds
+                if result.stderr:
+                    print(result.stderr)
 
-        # PNB Instead of using sleep to wait, run only if worker is healthy or passes health check test # (2026.06.15)
-        worker_addr = f"localhost:{port}"
-
-        # ready = asyncio.run(
-        #     self.wait_until_worker_ready(worker_addr)
-        # )
-        
-
-        ready = await  self.wait_until_worker_ready(worker_addr)
-        
-
-        #loop.close()
+                print("----------------------------------------")
 
 
-        if not ready:
-            print("[WORKER_POOL ERROR] Worker failed startup")
+            # PNB Instead of using sleep to wait, run only if worker is healthy or passes health check test # (2026.06.15)
+            worker_addr = f"localhost:{port}"   
+
+            ready = await self.wait_until_worker_ready(worker_addr)
             
-            # To prevent dead containers from accumulating
-            subprocess.call(["docker", "logs", container_id])
-            subprocess.call(["docker", "rm","-f", container_id])
+            startup_time = time.perf_counter() - startup_begin
 
-            return
+            if not ready:
+                if self.metrics:
+                    self.metrics.log_worker_startup(
+                        startup_time,
+                        False
+                    )
+                print("[WORKER_POOL ERROR] Worker failed startup")
+                subprocess.call(["docker", "logs", container_id])
+                subprocess.call(["docker", "rm", "-f", container_id])
+                return
 
-        print(f"[WORKER_POOL] Worker READY: {worker_addr}")
-        
-        #self.workers.append((container_id, port))
-        self.workers.append({
-            "container_id": container_id,
-            "port": port,
-            "workload_type": workload_type,
-            "model_id": model_id
-        })
-        
+            print(f"[WORKER_POOL] Worker READY: {worker_addr}")
 
-        print(f"[WORKER_POOL] Started container {container_id[:8]} on port {port}")
+            self.workers.append({
+                "container_id": container_id,
+                "port": port,
+                "workload_type": workload_type,
+                "model_id": model_id,
+                "sampler": sampler,
+                "threads": threads,
+                "created_time": time.time()
+            })
 
-    def remove_worker(self):
+            ############################################################
+            # Log worker creation
+            ############################################################
 
-        if not self.workers:
-            return
+            self.pool_metrics.worker_created(
+                worker_port=port,
+                worker_id=container_id[:8]
+            )
 
-        worker = self.workers.pop()
+            print(f"[WORKER_POOL] Started container {container_id[:8]} on port {port}")
 
-        container_id = worker["container_id"]
-        port = worker["port"]
+            startup_time = time.perf_counter() - startup_begin
 
-        subprocess.call(["docker", "stop", container_id])
+            if self.metrics:
 
-        print(f"[WORKER_POOL] Stopped container {container_id[:8]} on port {port}")
+                self.metrics.log_worker_startup(
+                    startup_time,
+                    True
+                )
+
+                self.metrics.record_worker_count(
+                    len(self.workers)
+                )
+
+                self.metrics.log_model_load(
+                    model=model_id,
+                    load_time=startup_time
+                )          
+
+    async def remove_worker(self, worker=None):
+
+        async with self.worker_lock:    
+            if worker is None:
+                if not self.workers:
+                    return
+                worker = self.workers.pop()
+            else:
+                if worker in self.workers:
+                    self.workers.remove(worker)
+
+            container_id = worker["container_id"]
+            port = worker["port"]
+
+            subprocess.call([
+                "docker",
+                "stop",
+                container_id
+            ])
+
+            subprocess.call([
+                "docker",
+                "rm",
+                "-f",
+                container_id
+            ])
+
+            self.pool_metrics.worker_removed(  # Worker removal metric
+                worker_port=port,
+                worker_id=container_id[:8]
+            )
+
+            if self.metrics:
+                self.metrics.record_worker_count(len(self.workers))
+
+            print(f"[WORKER_POOL] Removed worker {container_id[:8]} port={port}")
+
+
+    def select_worker(self):
+    
+        if len(self.workers) == 0:
+            return None
+        return self.workers[0]
 
     def get_worker_ports(self):
 
         #return [port for _, port in self.workers]
         return [w["port"] for w in self.workers]
 
-    def get_next_worker(self):
+    def get_workers(self):
+        """
+        Return worker metadata for autoscaler.
+        """
+        return self.workers
+
+    def get_worker_age(self, worker):
+        """
+        Return worker age in seconds.
+        """
+        return time.time() - worker["created_time"]
+
+    def get_worker_runtime(self, worker):
+        """
+        Query runtime statistics from a worker.
+        """
+
+        try:
+            with grpc.insecure_channel(f"localhost:{worker['port']}") as channel:
+                stub = query_pb2_grpc.QueryStub(channel)
+                response = stub.WorkerStatus(
+                    query_pb2.WorkerStatusRequest(),
+                    timeout=2
+                )
+
+                ############################################################
+                # Log runtime
+                ############################################################
+
+                self.pool_metrics.worker_runtime(
+                    worker_port=worker["port"],
+                    worker_id=worker["container_id"][:8],
+                    model_name=response.model_name,
+                    busy=response.busy,
+                    active_requests=response.active_requests,
+                    gpu_memory=response.gpu_memory_mb,
+                    throughput=response.throughput,
+                    latency=response.average_latency_ms,
+                    uptime=time.time() - worker["created_time"]
+                )
+
+                return response
+
+        except Exception:
+
+            return None
+
+    def get_next_worker(self, workload_type="balanced"):
     
         if not self.workers:
-            raise RuntimeError("No workers available!")
+            print("====================================")
+            print("Registered workers:")
+            for w in self.workers:
+                print(w)
+            print("====================================")
+
+            print("[WORKER_POOL] No workers running.")
+            return None
+        
+        candidate_workers = [worker for worker in self.workers if worker["workload_type"] == workload_type ]  # build a list of candidate workers
+
+        if len(candidate_workers) == 0: # auto-create missing workers
+    
+            print(f"[WORKER_POOL] No existing" f"{workload_type} worker.")
+            asyncio.run(self.add_worker(workload_type))
+            candidate_workers = [worker for worker in self.workers if worker["workload_type"] == workload_type ]
+
+            if len(candidate_workers) == 0:
+                raise RuntimeError(f"Unable to create worker for workload '{workload_type}'")
 
         if not hasattr(self, "idx"):
             self.idx = 0
 
-        worker = self.workers[self.idx % len(self.workers)]
+        best_worker = None
+        best_score = float("inf")
+
+        for worker in candidate_workers:
+            status = self.get_worker_runtime(worker)
+
+            if status is None:
+
+                score = 0
+
+            else:
+
+                score = (
+                    status.active_requests * 1000
+                    + status.average_latency_ms
+                    + status.gpu_memory_mb * 0.05
+                )
+
+                if status.busy:
+                    score += 1000
+            
+            # given active requests greater weight to dorminate scheduling, 
+            # making latency secondary and only using GPU memory for fine
+            # tuning
+
+            ############################################################
+            # Runtime Scheduling Score
+            ############################################################
+
+            score = 0
+
+            ############################################################
+            # Active Requests (highest priority)
+            ############################################################
+
+            score += status.active_requests * 1000
+
+            ############################################################
+            # Current latency
+            ############################################################
+
+            score += status.average_latency_ms
+
+            ############################################################
+            # GPU memory pressure
+            ############################################################
+
+            score += status.gpu_memory_mb * 0.05
+
+            ############################################################
+            # Workload affinity
+            ############################################################
+
+            if worker["workload_type"] != workload_type:
+                score += 5000
+
+            ############################################################
+            # Busy worker penalty
+            ############################################################
+
+            if status.busy:
+                score += 1000
+
+            if score < best_score:
+                best_score = score
+                best_worker = worker
+
+        if best_worker is None:
+            # Fallback
+            best_worker = candidate_workers[self.idx % len(candidate_workers)]
+
+        print("[WORKER_POOL] Selected", best_worker["workload_type"], "worker", best_worker["port"],)
+
         self.idx += 1
 
-        #return f"localhost:{worker[1]}"
-        return f"localhost:{worker['port']}"
+        return f"localhost:{best_worker['port']}"
+
+    async def switch_model(self, worker_addr, model_id):
+
+        start = time.perf_counter()
+
+        # self.remove_worker(worker)
+        # self.add_worker(workload_type="balanced", model_id=model_id)
+        async with grpc.aio.insecure_channel(worker_addr) as channel:
+            
+            stub = query_pb2_grpc.QueryStub(channel)
+
+            await stub.LoadModel(
+                query_pb2.LoadModelRequest(
+                    model_id=model_id
+                )
+            )
+        end = time.perf_counter()
+        return end-start

@@ -1,0 +1,1 @@
+timestamp,event,mode,queue_length,workers_before,workers_after,arrival_rate,service_rate,utilization,scale_latency

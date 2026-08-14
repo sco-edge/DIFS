@@ -144,9 +144,72 @@ struct HeartbeatResponseDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT HeartbeatResponseDefaultTypeInternal _HeartbeatResponse_default_instance_;
+constexpr WorkerStatusRequest::WorkerStatusRequest(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized){}
+struct WorkerStatusRequestDefaultTypeInternal {
+  constexpr WorkerStatusRequestDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~WorkerStatusRequestDefaultTypeInternal() {}
+  union {
+    WorkerStatusRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT WorkerStatusRequestDefaultTypeInternal _WorkerStatusRequest_default_instance_;
+constexpr WorkerStatusResponse::WorkerStatusResponse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : workload_type_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , model_name_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , busy_(false)
+  , queue_length_(0)
+  , gpu_memory_mb_(0)
+  , average_latency_ms_(0)
+  , active_requests_(0)
+  , worker_port_(0)
+  , throughput_(0)
+  , gpu_reserved_mb_(0)
+  , gpu_peak_mb_(0)
+  , last_fid_(0)
+  , total_images_generated_(0)
+  , model_switches_(0)
+  , last_switch_time_ms_(0){}
+struct WorkerStatusResponseDefaultTypeInternal {
+  constexpr WorkerStatusResponseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~WorkerStatusResponseDefaultTypeInternal() {}
+  union {
+    WorkerStatusResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT WorkerStatusResponseDefaultTypeInternal _WorkerStatusResponse_default_instance_;
+constexpr LoadModelRequest::LoadModelRequest(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : model_id_(0){}
+struct LoadModelRequestDefaultTypeInternal {
+  constexpr LoadModelRequestDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~LoadModelRequestDefaultTypeInternal() {}
+  union {
+    LoadModelRequest _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT LoadModelRequestDefaultTypeInternal _LoadModelRequest_default_instance_;
+constexpr LoadModelResponse::LoadModelResponse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : current_model_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , success_(false)
+  , switch_time_ms_(0){}
+struct LoadModelResponseDefaultTypeInternal {
+  constexpr LoadModelResponseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~LoadModelResponseDefaultTypeInternal() {}
+  union {
+    LoadModelResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT LoadModelResponseDefaultTypeInternal _LoadModelResponse_default_instance_;
 }  // namespace internal
 }  // namespace infaas
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_query_2eproto[9];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_query_2eproto[13];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_query_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_query_2eproto = nullptr;
 
@@ -232,6 +295,49 @@ const uint32_t TableStruct_query_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(pr
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::infaas::internal::HeartbeatResponse, status_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, workload_type_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, model_name_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, busy_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, queue_length_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, gpu_memory_mb_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, average_latency_ms_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, active_requests_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, worker_port_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, throughput_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, gpu_reserved_mb_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, gpu_peak_mb_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, last_fid_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, total_images_generated_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, model_switches_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::WorkerStatusResponse, last_switch_time_ms_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::LoadModelRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::LoadModelRequest, model_id_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::LoadModelResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::LoadModelResponse, success_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::LoadModelResponse, switch_time_ms_),
+  PROTOBUF_FIELD_OFFSET(::infaas::internal::LoadModelResponse, current_model_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::infaas::internal::QueryOnlineRequest)},
@@ -243,6 +349,10 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 60, -1, -1, sizeof(::infaas::internal::QueryOfflineResponse)},
   { 67, -1, -1, sizeof(::infaas::internal::HeartbeatRequest)},
   { 74, -1, -1, sizeof(::infaas::internal::HeartbeatResponse)},
+  { 81, -1, -1, sizeof(::infaas::internal::WorkerStatusRequest)},
+  { 87, -1, -1, sizeof(::infaas::internal::WorkerStatusResponse)},
+  { 108, -1, -1, sizeof(::infaas::internal::LoadModelRequest)},
+  { 115, -1, -1, sizeof(::infaas::internal::LoadModelResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -255,6 +365,10 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_QueryOfflineResponse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_HeartbeatRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_HeartbeatResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_WorkerStatusRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_WorkerStatusResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_LoadModelRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::infaas::internal::_LoadModelResponse_default_instance_),
 };
 
 const char descriptor_table_protodef_query_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -281,25 +395,42 @@ const char descriptor_table_protodef_query_2eproto[] PROTOBUF_SECTION_VARIABLE(p
   "atus\030\001 \001(\0132$.infaas.internal.InfaasReque"
   "stStatus\"I\n\021HeartbeatResponse\0224\n\006status\030"
   "\001 \001(\0132$.infaas.internal.InfaasRequestSta"
-  "tus2\205\003\n\005Query\022Z\n\013QueryOnline\022#.infaas.in"
-  "ternal.QueryOnlineRequest\032$.infaas.inter"
-  "nal.QueryOnlineResponse\"\000\022k\n\020QueryOnline"
-  "Image\022(.infaas.internal.QueryOnlineImage"
-  "Request\032).infaas.internal.QueryOnlineIma"
-  "geResponse\"\0000\001\022]\n\014QueryOffline\022$.infaas."
-  "internal.QueryOfflineRequest\032%.infaas.in"
-  "ternal.QueryOfflineResponse\"\000\022T\n\tHeartbe"
-  "at\022!.infaas.internal.HeartbeatRequest\032\"."
-  "infaas.internal.HeartbeatResponse\"\000b\006pro"
-  "to3"
+  "tus\"\025\n\023WorkerStatusRequest\"\357\002\n\024WorkerSta"
+  "tusResponse\022\025\n\rworkload_type\030\001 \001(\t\022\022\n\nmo"
+  "del_name\030\002 \001(\t\022\014\n\004busy\030\003 \001(\010\022\024\n\014queue_le"
+  "ngth\030\004 \001(\005\022\025\n\rgpu_memory_mb\030\005 \001(\002\022\032\n\022ave"
+  "rage_latency_ms\030\006 \001(\002\022\027\n\017active_requests"
+  "\030\007 \001(\005\022\023\n\013worker_port\030\010 \001(\005\022\022\n\nthroughpu"
+  "t\030\t \001(\002\022\027\n\017gpu_reserved_mb\030\n \001(\002\022\023\n\013gpu_"
+  "peak_mb\030\013 \001(\002\022\020\n\010last_fid\030\014 \001(\002\022\036\n\026total"
+  "_images_generated\030\r \001(\005\022\026\n\016model_switche"
+  "s\030\016 \001(\005\022\033\n\023last_switch_time_ms\030\017 \001(\002\"$\n\020"
+  "LoadModelRequest\022\020\n\010model_id\030\001 \001(\005\"S\n\021Lo"
+  "adModelResponse\022\017\n\007success\030\001 \001(\010\022\026\n\016swit"
+  "ch_time_ms\030\002 \001(\002\022\025\n\rcurrent_model\030\003 \001(\t2"
+  "\272\004\n\005Query\022Z\n\013QueryOnline\022#.infaas.intern"
+  "al.QueryOnlineRequest\032$.infaas.internal."
+  "QueryOnlineResponse\"\000\022k\n\020QueryOnlineImag"
+  "e\022(.infaas.internal.QueryOnlineImageRequ"
+  "est\032).infaas.internal.QueryOnlineImageRe"
+  "sponse\"\0000\001\022]\n\014QueryOffline\022$.infaas.inte"
+  "rnal.QueryOfflineRequest\032%.infaas.intern"
+  "al.QueryOfflineResponse\"\000\022T\n\tHeartbeat\022!"
+  ".infaas.internal.HeartbeatRequest\032\".infa"
+  "as.internal.HeartbeatResponse\"\000\022]\n\014Worke"
+  "rStatus\022$.infaas.internal.WorkerStatusRe"
+  "quest\032%.infaas.internal.WorkerStatusResp"
+  "onse\"\000\022T\n\tLoadModel\022!.infaas.internal.Lo"
+  "adModelRequest\032\".infaas.internal.LoadMod"
+  "elResponse\"\000b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_query_2eproto_deps[1] = {
   &::descriptor_table_infaas_5frequest_5fstatus_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_query_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_query_2eproto = {
-  false, false, 1323, descriptor_table_protodef_query_2eproto, "query.proto", 
-  &descriptor_table_query_2eproto_once, descriptor_table_query_2eproto_deps, 1, 9,
+  false, false, 2020, descriptor_table_protodef_query_2eproto, "query.proto", 
+  &descriptor_table_query_2eproto_once, descriptor_table_query_2eproto_deps, 1, 13,
   schemas, file_default_instances, TableStruct_query_2eproto::offsets,
   file_level_metadata_query_2eproto, file_level_enum_descriptors_query_2eproto, file_level_service_descriptors_query_2eproto,
 };
@@ -2661,6 +2792,1136 @@ void HeartbeatResponse::InternalSwap(HeartbeatResponse* other) {
       file_level_metadata_query_2eproto[8]);
 }
 
+// ===================================================================
+
+class WorkerStatusRequest::_Internal {
+ public:
+};
+
+WorkerStatusRequest::WorkerStatusRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:infaas.internal.WorkerStatusRequest)
+}
+WorkerStatusRequest::WorkerStatusRequest(const WorkerStatusRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:infaas.internal.WorkerStatusRequest)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData WorkerStatusRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*WorkerStatusRequest::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata WorkerStatusRequest::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_query_2eproto_getter, &descriptor_table_query_2eproto_once,
+      file_level_metadata_query_2eproto[9]);
+}
+
+// ===================================================================
+
+class WorkerStatusResponse::_Internal {
+ public:
+};
+
+WorkerStatusResponse::WorkerStatusResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:infaas.internal.WorkerStatusResponse)
+}
+WorkerStatusResponse::WorkerStatusResponse(const WorkerStatusResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  workload_type_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    workload_type_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_workload_type().empty()) {
+    workload_type_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_workload_type(), 
+      GetArenaForAllocation());
+  }
+  model_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    model_name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_model_name().empty()) {
+    model_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_model_name(), 
+      GetArenaForAllocation());
+  }
+  ::memcpy(&busy_, &from.busy_,
+    static_cast<size_t>(reinterpret_cast<char*>(&last_switch_time_ms_) -
+    reinterpret_cast<char*>(&busy_)) + sizeof(last_switch_time_ms_));
+  // @@protoc_insertion_point(copy_constructor:infaas.internal.WorkerStatusResponse)
+}
+
+inline void WorkerStatusResponse::SharedCtor() {
+workload_type_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  workload_type_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+model_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  model_name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&busy_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&last_switch_time_ms_) -
+    reinterpret_cast<char*>(&busy_)) + sizeof(last_switch_time_ms_));
+}
+
+WorkerStatusResponse::~WorkerStatusResponse() {
+  // @@protoc_insertion_point(destructor:infaas.internal.WorkerStatusResponse)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void WorkerStatusResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  workload_type_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  model_name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void WorkerStatusResponse::ArenaDtor(void* object) {
+  WorkerStatusResponse* _this = reinterpret_cast< WorkerStatusResponse* >(object);
+  (void)_this;
+}
+void WorkerStatusResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void WorkerStatusResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void WorkerStatusResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:infaas.internal.WorkerStatusResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  workload_type_.ClearToEmpty();
+  model_name_.ClearToEmpty();
+  ::memset(&busy_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&last_switch_time_ms_) -
+      reinterpret_cast<char*>(&busy_)) + sizeof(last_switch_time_ms_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* WorkerStatusResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string workload_type = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_workload_type();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.WorkerStatusResponse.workload_type"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string model_name = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_model_name();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.WorkerStatusResponse.model_name"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool busy = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          busy_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 queue_length = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          queue_length_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float gpu_memory_mb = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+          gpu_memory_mb_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float average_latency_ms = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 53)) {
+          average_latency_ms_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 active_requests = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          active_requests_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 worker_port = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          worker_port_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float throughput = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 77)) {
+          throughput_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float gpu_reserved_mb = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 85)) {
+          gpu_reserved_mb_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float gpu_peak_mb = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 93)) {
+          gpu_peak_mb_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float last_fid = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 101)) {
+          last_fid_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 total_images_generated = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
+          total_images_generated_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 model_switches = 14;
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 112)) {
+          model_switches_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float last_switch_time_ms = 15;
+      case 15:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 125)) {
+          last_switch_time_ms_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* WorkerStatusResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:infaas.internal.WorkerStatusResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string workload_type = 1;
+  if (!this->_internal_workload_type().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_workload_type().data(), static_cast<int>(this->_internal_workload_type().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.WorkerStatusResponse.workload_type");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_workload_type(), target);
+  }
+
+  // string model_name = 2;
+  if (!this->_internal_model_name().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_model_name().data(), static_cast<int>(this->_internal_model_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.WorkerStatusResponse.model_name");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_model_name(), target);
+  }
+
+  // bool busy = 3;
+  if (this->_internal_busy() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(3, this->_internal_busy(), target);
+  }
+
+  // int32 queue_length = 4;
+  if (this->_internal_queue_length() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_queue_length(), target);
+  }
+
+  // float gpu_memory_mb = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_memory_mb = this->_internal_gpu_memory_mb();
+  uint32_t raw_gpu_memory_mb;
+  memcpy(&raw_gpu_memory_mb, &tmp_gpu_memory_mb, sizeof(tmp_gpu_memory_mb));
+  if (raw_gpu_memory_mb != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(5, this->_internal_gpu_memory_mb(), target);
+  }
+
+  // float average_latency_ms = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_average_latency_ms = this->_internal_average_latency_ms();
+  uint32_t raw_average_latency_ms;
+  memcpy(&raw_average_latency_ms, &tmp_average_latency_ms, sizeof(tmp_average_latency_ms));
+  if (raw_average_latency_ms != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(6, this->_internal_average_latency_ms(), target);
+  }
+
+  // int32 active_requests = 7;
+  if (this->_internal_active_requests() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(7, this->_internal_active_requests(), target);
+  }
+
+  // int32 worker_port = 8;
+  if (this->_internal_worker_port() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(8, this->_internal_worker_port(), target);
+  }
+
+  // float throughput = 9;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_throughput = this->_internal_throughput();
+  uint32_t raw_throughput;
+  memcpy(&raw_throughput, &tmp_throughput, sizeof(tmp_throughput));
+  if (raw_throughput != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(9, this->_internal_throughput(), target);
+  }
+
+  // float gpu_reserved_mb = 10;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_reserved_mb = this->_internal_gpu_reserved_mb();
+  uint32_t raw_gpu_reserved_mb;
+  memcpy(&raw_gpu_reserved_mb, &tmp_gpu_reserved_mb, sizeof(tmp_gpu_reserved_mb));
+  if (raw_gpu_reserved_mb != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(10, this->_internal_gpu_reserved_mb(), target);
+  }
+
+  // float gpu_peak_mb = 11;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_peak_mb = this->_internal_gpu_peak_mb();
+  uint32_t raw_gpu_peak_mb;
+  memcpy(&raw_gpu_peak_mb, &tmp_gpu_peak_mb, sizeof(tmp_gpu_peak_mb));
+  if (raw_gpu_peak_mb != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(11, this->_internal_gpu_peak_mb(), target);
+  }
+
+  // float last_fid = 12;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_last_fid = this->_internal_last_fid();
+  uint32_t raw_last_fid;
+  memcpy(&raw_last_fid, &tmp_last_fid, sizeof(tmp_last_fid));
+  if (raw_last_fid != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(12, this->_internal_last_fid(), target);
+  }
+
+  // int32 total_images_generated = 13;
+  if (this->_internal_total_images_generated() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(13, this->_internal_total_images_generated(), target);
+  }
+
+  // int32 model_switches = 14;
+  if (this->_internal_model_switches() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(14, this->_internal_model_switches(), target);
+  }
+
+  // float last_switch_time_ms = 15;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_last_switch_time_ms = this->_internal_last_switch_time_ms();
+  uint32_t raw_last_switch_time_ms;
+  memcpy(&raw_last_switch_time_ms, &tmp_last_switch_time_ms, sizeof(tmp_last_switch_time_ms));
+  if (raw_last_switch_time_ms != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(15, this->_internal_last_switch_time_ms(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:infaas.internal.WorkerStatusResponse)
+  return target;
+}
+
+size_t WorkerStatusResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:infaas.internal.WorkerStatusResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string workload_type = 1;
+  if (!this->_internal_workload_type().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_workload_type());
+  }
+
+  // string model_name = 2;
+  if (!this->_internal_model_name().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_model_name());
+  }
+
+  // bool busy = 3;
+  if (this->_internal_busy() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // int32 queue_length = 4;
+  if (this->_internal_queue_length() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_queue_length());
+  }
+
+  // float gpu_memory_mb = 5;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_memory_mb = this->_internal_gpu_memory_mb();
+  uint32_t raw_gpu_memory_mb;
+  memcpy(&raw_gpu_memory_mb, &tmp_gpu_memory_mb, sizeof(tmp_gpu_memory_mb));
+  if (raw_gpu_memory_mb != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float average_latency_ms = 6;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_average_latency_ms = this->_internal_average_latency_ms();
+  uint32_t raw_average_latency_ms;
+  memcpy(&raw_average_latency_ms, &tmp_average_latency_ms, sizeof(tmp_average_latency_ms));
+  if (raw_average_latency_ms != 0) {
+    total_size += 1 + 4;
+  }
+
+  // int32 active_requests = 7;
+  if (this->_internal_active_requests() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_active_requests());
+  }
+
+  // int32 worker_port = 8;
+  if (this->_internal_worker_port() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_worker_port());
+  }
+
+  // float throughput = 9;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_throughput = this->_internal_throughput();
+  uint32_t raw_throughput;
+  memcpy(&raw_throughput, &tmp_throughput, sizeof(tmp_throughput));
+  if (raw_throughput != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float gpu_reserved_mb = 10;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_reserved_mb = this->_internal_gpu_reserved_mb();
+  uint32_t raw_gpu_reserved_mb;
+  memcpy(&raw_gpu_reserved_mb, &tmp_gpu_reserved_mb, sizeof(tmp_gpu_reserved_mb));
+  if (raw_gpu_reserved_mb != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float gpu_peak_mb = 11;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_peak_mb = this->_internal_gpu_peak_mb();
+  uint32_t raw_gpu_peak_mb;
+  memcpy(&raw_gpu_peak_mb, &tmp_gpu_peak_mb, sizeof(tmp_gpu_peak_mb));
+  if (raw_gpu_peak_mb != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float last_fid = 12;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_last_fid = this->_internal_last_fid();
+  uint32_t raw_last_fid;
+  memcpy(&raw_last_fid, &tmp_last_fid, sizeof(tmp_last_fid));
+  if (raw_last_fid != 0) {
+    total_size += 1 + 4;
+  }
+
+  // int32 total_images_generated = 13;
+  if (this->_internal_total_images_generated() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_total_images_generated());
+  }
+
+  // int32 model_switches = 14;
+  if (this->_internal_model_switches() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_model_switches());
+  }
+
+  // float last_switch_time_ms = 15;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_last_switch_time_ms = this->_internal_last_switch_time_ms();
+  uint32_t raw_last_switch_time_ms;
+  memcpy(&raw_last_switch_time_ms, &tmp_last_switch_time_ms, sizeof(tmp_last_switch_time_ms));
+  if (raw_last_switch_time_ms != 0) {
+    total_size += 1 + 4;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData WorkerStatusResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    WorkerStatusResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*WorkerStatusResponse::GetClassData() const { return &_class_data_; }
+
+void WorkerStatusResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<WorkerStatusResponse *>(to)->MergeFrom(
+      static_cast<const WorkerStatusResponse &>(from));
+}
+
+
+void WorkerStatusResponse::MergeFrom(const WorkerStatusResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:infaas.internal.WorkerStatusResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_workload_type().empty()) {
+    _internal_set_workload_type(from._internal_workload_type());
+  }
+  if (!from._internal_model_name().empty()) {
+    _internal_set_model_name(from._internal_model_name());
+  }
+  if (from._internal_busy() != 0) {
+    _internal_set_busy(from._internal_busy());
+  }
+  if (from._internal_queue_length() != 0) {
+    _internal_set_queue_length(from._internal_queue_length());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_memory_mb = from._internal_gpu_memory_mb();
+  uint32_t raw_gpu_memory_mb;
+  memcpy(&raw_gpu_memory_mb, &tmp_gpu_memory_mb, sizeof(tmp_gpu_memory_mb));
+  if (raw_gpu_memory_mb != 0) {
+    _internal_set_gpu_memory_mb(from._internal_gpu_memory_mb());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_average_latency_ms = from._internal_average_latency_ms();
+  uint32_t raw_average_latency_ms;
+  memcpy(&raw_average_latency_ms, &tmp_average_latency_ms, sizeof(tmp_average_latency_ms));
+  if (raw_average_latency_ms != 0) {
+    _internal_set_average_latency_ms(from._internal_average_latency_ms());
+  }
+  if (from._internal_active_requests() != 0) {
+    _internal_set_active_requests(from._internal_active_requests());
+  }
+  if (from._internal_worker_port() != 0) {
+    _internal_set_worker_port(from._internal_worker_port());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_throughput = from._internal_throughput();
+  uint32_t raw_throughput;
+  memcpy(&raw_throughput, &tmp_throughput, sizeof(tmp_throughput));
+  if (raw_throughput != 0) {
+    _internal_set_throughput(from._internal_throughput());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_reserved_mb = from._internal_gpu_reserved_mb();
+  uint32_t raw_gpu_reserved_mb;
+  memcpy(&raw_gpu_reserved_mb, &tmp_gpu_reserved_mb, sizeof(tmp_gpu_reserved_mb));
+  if (raw_gpu_reserved_mb != 0) {
+    _internal_set_gpu_reserved_mb(from._internal_gpu_reserved_mb());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_gpu_peak_mb = from._internal_gpu_peak_mb();
+  uint32_t raw_gpu_peak_mb;
+  memcpy(&raw_gpu_peak_mb, &tmp_gpu_peak_mb, sizeof(tmp_gpu_peak_mb));
+  if (raw_gpu_peak_mb != 0) {
+    _internal_set_gpu_peak_mb(from._internal_gpu_peak_mb());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_last_fid = from._internal_last_fid();
+  uint32_t raw_last_fid;
+  memcpy(&raw_last_fid, &tmp_last_fid, sizeof(tmp_last_fid));
+  if (raw_last_fid != 0) {
+    _internal_set_last_fid(from._internal_last_fid());
+  }
+  if (from._internal_total_images_generated() != 0) {
+    _internal_set_total_images_generated(from._internal_total_images_generated());
+  }
+  if (from._internal_model_switches() != 0) {
+    _internal_set_model_switches(from._internal_model_switches());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_last_switch_time_ms = from._internal_last_switch_time_ms();
+  uint32_t raw_last_switch_time_ms;
+  memcpy(&raw_last_switch_time_ms, &tmp_last_switch_time_ms, sizeof(tmp_last_switch_time_ms));
+  if (raw_last_switch_time_ms != 0) {
+    _internal_set_last_switch_time_ms(from._internal_last_switch_time_ms());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void WorkerStatusResponse::CopyFrom(const WorkerStatusResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:infaas.internal.WorkerStatusResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool WorkerStatusResponse::IsInitialized() const {
+  return true;
+}
+
+void WorkerStatusResponse::InternalSwap(WorkerStatusResponse* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &workload_type_, lhs_arena,
+      &other->workload_type_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &model_name_, lhs_arena,
+      &other->model_name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(WorkerStatusResponse, last_switch_time_ms_)
+      + sizeof(WorkerStatusResponse::last_switch_time_ms_)
+      - PROTOBUF_FIELD_OFFSET(WorkerStatusResponse, busy_)>(
+          reinterpret_cast<char*>(&busy_),
+          reinterpret_cast<char*>(&other->busy_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata WorkerStatusResponse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_query_2eproto_getter, &descriptor_table_query_2eproto_once,
+      file_level_metadata_query_2eproto[10]);
+}
+
+// ===================================================================
+
+class LoadModelRequest::_Internal {
+ public:
+};
+
+LoadModelRequest::LoadModelRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:infaas.internal.LoadModelRequest)
+}
+LoadModelRequest::LoadModelRequest(const LoadModelRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  model_id_ = from.model_id_;
+  // @@protoc_insertion_point(copy_constructor:infaas.internal.LoadModelRequest)
+}
+
+inline void LoadModelRequest::SharedCtor() {
+model_id_ = 0;
+}
+
+LoadModelRequest::~LoadModelRequest() {
+  // @@protoc_insertion_point(destructor:infaas.internal.LoadModelRequest)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void LoadModelRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void LoadModelRequest::ArenaDtor(void* object) {
+  LoadModelRequest* _this = reinterpret_cast< LoadModelRequest* >(object);
+  (void)_this;
+}
+void LoadModelRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void LoadModelRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void LoadModelRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:infaas.internal.LoadModelRequest)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  model_id_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* LoadModelRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 model_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          model_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* LoadModelRequest::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:infaas.internal.LoadModelRequest)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 model_id = 1;
+  if (this->_internal_model_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_model_id(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:infaas.internal.LoadModelRequest)
+  return target;
+}
+
+size_t LoadModelRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:infaas.internal.LoadModelRequest)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 model_id = 1;
+  if (this->_internal_model_id() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_model_id());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData LoadModelRequest::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    LoadModelRequest::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*LoadModelRequest::GetClassData() const { return &_class_data_; }
+
+void LoadModelRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<LoadModelRequest *>(to)->MergeFrom(
+      static_cast<const LoadModelRequest &>(from));
+}
+
+
+void LoadModelRequest::MergeFrom(const LoadModelRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:infaas.internal.LoadModelRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_model_id() != 0) {
+    _internal_set_model_id(from._internal_model_id());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void LoadModelRequest::CopyFrom(const LoadModelRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:infaas.internal.LoadModelRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool LoadModelRequest::IsInitialized() const {
+  return true;
+}
+
+void LoadModelRequest::InternalSwap(LoadModelRequest* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(model_id_, other->model_id_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata LoadModelRequest::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_query_2eproto_getter, &descriptor_table_query_2eproto_once,
+      file_level_metadata_query_2eproto[11]);
+}
+
+// ===================================================================
+
+class LoadModelResponse::_Internal {
+ public:
+};
+
+LoadModelResponse::LoadModelResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:infaas.internal.LoadModelResponse)
+}
+LoadModelResponse::LoadModelResponse(const LoadModelResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  current_model_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    current_model_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_current_model().empty()) {
+    current_model_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_current_model(), 
+      GetArenaForAllocation());
+  }
+  ::memcpy(&success_, &from.success_,
+    static_cast<size_t>(reinterpret_cast<char*>(&switch_time_ms_) -
+    reinterpret_cast<char*>(&success_)) + sizeof(switch_time_ms_));
+  // @@protoc_insertion_point(copy_constructor:infaas.internal.LoadModelResponse)
+}
+
+inline void LoadModelResponse::SharedCtor() {
+current_model_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  current_model_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&success_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&switch_time_ms_) -
+    reinterpret_cast<char*>(&success_)) + sizeof(switch_time_ms_));
+}
+
+LoadModelResponse::~LoadModelResponse() {
+  // @@protoc_insertion_point(destructor:infaas.internal.LoadModelResponse)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void LoadModelResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  current_model_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void LoadModelResponse::ArenaDtor(void* object) {
+  LoadModelResponse* _this = reinterpret_cast< LoadModelResponse* >(object);
+  (void)_this;
+}
+void LoadModelResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void LoadModelResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void LoadModelResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:infaas.internal.LoadModelResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  current_model_.ClearToEmpty();
+  ::memset(&success_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&switch_time_ms_) -
+      reinterpret_cast<char*>(&success_)) + sizeof(switch_time_ms_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* LoadModelResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // bool success = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // float switch_time_ms = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 21)) {
+          switch_time_ms_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // string current_model = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_current_model();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "infaas.internal.LoadModelResponse.current_model"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* LoadModelResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:infaas.internal.LoadModelResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
+  }
+
+  // float switch_time_ms = 2;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_switch_time_ms = this->_internal_switch_time_ms();
+  uint32_t raw_switch_time_ms;
+  memcpy(&raw_switch_time_ms, &tmp_switch_time_ms, sizeof(tmp_switch_time_ms));
+  if (raw_switch_time_ms != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(2, this->_internal_switch_time_ms(), target);
+  }
+
+  // string current_model = 3;
+  if (!this->_internal_current_model().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_current_model().data(), static_cast<int>(this->_internal_current_model().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "infaas.internal.LoadModelResponse.current_model");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_current_model(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:infaas.internal.LoadModelResponse)
+  return target;
+}
+
+size_t LoadModelResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:infaas.internal.LoadModelResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string current_model = 3;
+  if (!this->_internal_current_model().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_current_model());
+  }
+
+  // bool success = 1;
+  if (this->_internal_success() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // float switch_time_ms = 2;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_switch_time_ms = this->_internal_switch_time_ms();
+  uint32_t raw_switch_time_ms;
+  memcpy(&raw_switch_time_ms, &tmp_switch_time_ms, sizeof(tmp_switch_time_ms));
+  if (raw_switch_time_ms != 0) {
+    total_size += 1 + 4;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData LoadModelResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    LoadModelResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*LoadModelResponse::GetClassData() const { return &_class_data_; }
+
+void LoadModelResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<LoadModelResponse *>(to)->MergeFrom(
+      static_cast<const LoadModelResponse &>(from));
+}
+
+
+void LoadModelResponse::MergeFrom(const LoadModelResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:infaas.internal.LoadModelResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_current_model().empty()) {
+    _internal_set_current_model(from._internal_current_model());
+  }
+  if (from._internal_success() != 0) {
+    _internal_set_success(from._internal_success());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_switch_time_ms = from._internal_switch_time_ms();
+  uint32_t raw_switch_time_ms;
+  memcpy(&raw_switch_time_ms, &tmp_switch_time_ms, sizeof(tmp_switch_time_ms));
+  if (raw_switch_time_ms != 0) {
+    _internal_set_switch_time_ms(from._internal_switch_time_ms());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void LoadModelResponse::CopyFrom(const LoadModelResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:infaas.internal.LoadModelResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool LoadModelResponse::IsInitialized() const {
+  return true;
+}
+
+void LoadModelResponse::InternalSwap(LoadModelResponse* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &current_model_, lhs_arena,
+      &other->current_model_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(LoadModelResponse, switch_time_ms_)
+      + sizeof(LoadModelResponse::switch_time_ms_)
+      - PROTOBUF_FIELD_OFFSET(LoadModelResponse, success_)>(
+          reinterpret_cast<char*>(&success_),
+          reinterpret_cast<char*>(&other->success_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata LoadModelResponse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_query_2eproto_getter, &descriptor_table_query_2eproto_once,
+      file_level_metadata_query_2eproto[12]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace internal
 }  // namespace infaas
@@ -2691,6 +3952,18 @@ template<> PROTOBUF_NOINLINE ::infaas::internal::HeartbeatRequest* Arena::Create
 }
 template<> PROTOBUF_NOINLINE ::infaas::internal::HeartbeatResponse* Arena::CreateMaybeMessage< ::infaas::internal::HeartbeatResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::infaas::internal::HeartbeatResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::infaas::internal::WorkerStatusRequest* Arena::CreateMaybeMessage< ::infaas::internal::WorkerStatusRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::infaas::internal::WorkerStatusRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::infaas::internal::WorkerStatusResponse* Arena::CreateMaybeMessage< ::infaas::internal::WorkerStatusResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::infaas::internal::WorkerStatusResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::infaas::internal::LoadModelRequest* Arena::CreateMaybeMessage< ::infaas::internal::LoadModelRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::infaas::internal::LoadModelRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::infaas::internal::LoadModelResponse* Arena::CreateMaybeMessage< ::infaas::internal::LoadModelResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::infaas::internal::LoadModelResponse >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 
