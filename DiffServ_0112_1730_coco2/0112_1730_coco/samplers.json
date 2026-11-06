@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "filename": "Euler_a"
+  },
+  {
+    "id": 2,
+    "filename": "DPM++_Karras"
+  },
+  {
+    "id": 3,
+    "filename": "LMS"
+  },
+  {
+    "id": 4,
+    "filename": "DDIM"
+  }
+]
