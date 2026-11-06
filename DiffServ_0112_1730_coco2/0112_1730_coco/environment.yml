@@ -1,0 +1,25 @@
+name: DIFS_Gen
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - pillow
+  - cmake
+  - make
+  - ninja
+  - git
+  - psutil
+  - protobuf=5.29.*
+  - grpcio>=1.71
+  - grpcio-tools
+  - pip:
+      - -r requirements.txt
+      - -r requirements-torch.txt

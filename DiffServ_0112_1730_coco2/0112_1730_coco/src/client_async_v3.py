@@ -1,0 +1,245 @@
+# Date: 2026.03.18
+# Purpose: External Client; this is what actually sends the requests
+# Adapted: from 'client_async_v2.py'
+
+import asyncio
+import grpc
+import grpc.aio
+import query_pb2
+import query_pb2_grpc
+import infaas_request_status_pb2
+import time
+import os
+import json
+import argparse
+import random
+import numpy as np
+import csv
+from project_paths import PROMPTS_FILE, CLIENT_DIR
+
+
+# --- utility functions ---
+def extract_coco_prompts(json_path, count=10, seed=None):
+
+    # Make prompt selection reproducible
+    if seed is not None:
+        random.seed(seed) # To make different runs of the same experiment use the same prompt rather than totally new ones between successive plots.
+
+    with open(json_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    all_annotations = data.get('annotations', [])
+
+    if len(all_annotations) >= count:
+        sampled_annos = random.sample(all_annotations, count)
+    else:
+        sampled_annos = all_annotations
+
+    return [anno['caption'] for anno in sampled_annos]
+
+
+############################################################
+# 🔥 MAIN ASYNC CLIENT
+############################################################
+
+async def run():
+
+    parser = argparse.ArgumentParser(description="gRPC Async Client (Autoscaler Mode)")
+
+    # 🔥 KEEP same interface (Q1 etc.), but no longer used for routing
+    parser.add_argument("-prompt_count", type=int, required=True,help="Number of prompts per query") # i.e (for number of prompts per query)
+
+    parser.add_argument("-steps", type=int, default=25)
+    parser.add_argument("-sampler", type=int, default=1)
+    parser.add_argument("-seed", type=int, default=42, help="Random seed for prompt selection and image generation")
+
+    # 🔥 NEW: SLO accuracy level; maps to canonical step count server-side
+    parser.add_argument("-accuracy", type=str, default=None,
+                        choices=["high", "medium", "low"],
+                        help="SLO accuracy level: high=40 steps, medium=30 steps, low=20 steps")
+
+    # 🔥 NEW: scheduler endpoint
+    parser.add_argument("-host", type=str, default="localhost")
+    parser.add_argument("-port", type=int, default=50050)
+
+    args = parser.parse_args()
+
+    print(f"[CLIENT] Steps: {args.steps}, Sampler: {args.sampler}, Accuracy: {args.accuracy}")
+    print(f"[CLIENT] Connecting to scheduler at {args.host}:{args.port}")
+
+    ############################################################
+    # CONNECT TO SCHEDULER (NOT WORKERS)
+    ############################################################
+
+    options = [
+        ('grpc.max_receive_message_length', 100 * 1024 * 1024)
+    ]
+
+    # 0. METRICS: Client side latency logging (2026.05.15)
+    os.makedirs("metrics", exist_ok=True)
+
+    client_metrics_file = "metrics/client_metrics.csv"
+
+    if not os.path.exists(client_metrics_file):
+
+        with open(client_metrics_file, "w", newline="") as f:
+
+            writer = csv.writer(f)
+
+            writer.writerow([
+                "timestamp",
+                "image_id",
+                "latency",
+                "total_images"
+            ])   
+
+    async with grpc.aio.insecure_channel(f"{args.host}:{args.port}", options=options) as channel:
+
+        # ⚠️ IMPORTANT: must match server.py service name
+        stub = query_pb2_grpc.QueryStub(channel)
+
+        ############################################################
+        # LOAD PROMPTS
+        ############################################################
+
+        json_file = str(PROMPTS_FILE)
+        prompt_count = args.prompt_count
+
+        try:
+            prompts = extract_coco_prompts(json_file, prompt_count, args.seed)
+
+            print(f"✅ Loaded {len(prompts)} prompts")
+
+        except FileNotFoundError:
+            print(f"❌ File not found: {json_file}")
+            return
+
+        ############################################################
+        # BUILD REQUEST
+        ############################################################
+
+        # SLO accuracy level overrides the raw -steps value with the
+        # canonical step count for that level (low=20, medium=30, high=40)
+        accuracy_level = args.accuracy
+        steps = args.steps
+
+        if accuracy_level is not None:
+            try:
+                from slo import resolve_step_count
+                steps = resolve_step_count(accuracy_level)
+                print(f"[CLIENT] Accuracy '{accuracy_level}' -> {steps} steps")
+            except Exception as e:
+                print(f"[CLIENT] WARNING: could not resolve accuracy level '{accuracy_level}': {e}")
+
+        request = query_pb2.QueryOnlineImageRequest(
+            Prompt=prompts,
+            Steps=steps,
+            Sampler_Type=args.sampler,
+            CFG_Scale=7.5,
+            #BatchSize=1,
+            BatchSize=len(prompts),
+            Seed=args.seed,
+            AccuracyLevel=accuracy_level or ""
+        )
+
+        print(f"[CLIENT] Sending request to scheduler...")
+
+        ############################################################
+        # STREAMING RESPONSE
+        ############################################################
+
+        try:
+            latencies = []
+            start_time = time.perf_counter()
+            request_start_time = time.perf_counter()
+            image_count = 0
+
+            save_dir = CLIENT_DIR
+            save_dir.mkdir(parents=True, exist_ok=True)
+
+            stream = stub.QueryOnlineImage(request)
+
+            async for response in stream:
+
+                if response.status.status == 1:
+
+                    image_count += 1
+
+                    image_latency = time.perf_counter() - request_start_time
+                    latencies.append(image_latency)
+
+                    print(f"[LATENCY] Image {image_count}: {image_latency:.3f}s")
+
+                    if response.image_data:
+
+                        img_bytes = response.image_data
+
+                        file_name = f"received_{image_count}_{int(time.time())}.png"
+                        save_path = save_dir / file_name
+
+                        with open(save_path, "wb") as f:
+                            f.write(img_bytes)
+
+                        elapsed = time.perf_counter() - start_time
+
+                        print(f"[{image_count}] Saved ({elapsed:.2f}s): {save_path}")
+
+                        # METRICS: Logging image latency
+                        with open("metrics/client_metrics.csv", "a", newline="") as f:
+                            
+                            writer = csv.writer(f)
+
+                            writer.writerow([
+                                time.time(),
+                                image_count,
+                                elapsed,
+                                image_count
+                            ])                        
+
+                else:
+                    print(f"[CLIENT] Server error: {response.status.msg}")
+                    break
+
+            ############################################################
+            # SUMMARY
+            ############################################################
+
+            total_time = time.perf_counter() - start_time
+
+            print("\n[CLIENT] ===== SUMMARY =====")
+            print(f"Images received: {image_count}")
+            print(f"Total time: {total_time:.2f}s")
+            if image_count > 0:
+                
+                print(f"Avg latency/image: {total_time / image_count:.2f}s")
+
+                print(f"Avg latency: {np.mean(latencies):.3f}s")
+                print(f"P95 latency: {np.percentile(latencies, 95):.3f}s")
+                print(f"P99 latency: {np.percentile(latencies, 99):.3f}s")
+                print(f"Throughput: {image_count / total_time:.2f} images/sec")
+                
+
+        except grpc.RpcError as e:
+
+            elapsed_time = time.perf_counter() - start_time
+
+            print(f"[CLIENT] gRPC Error: {e.code()} - {e.details()}")
+            print(f"[CLIENT] Time before failure: {elapsed_time:.2f}s")
+
+
+############################################################
+# ENTRY
+############################################################
+
+if __name__ == "__main__":
+    
+    # Example of command to start this file individually from the command line
+    #
+    # python client_async_v3.py -prompt_count 50 -steps 20 -sampler 1
+    
+
+    try:
+        asyncio.run(run())
+
+    except KeyboardInterrupt:
+        print("\n[CLIENT] Interrupted and exiting.")

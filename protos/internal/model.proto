@@ -1,0 +1,14 @@
+//Date: 2026.01.08
+//Purpose: Update model type enum; For defining Diffusion as a First-Class Model Type
+syntax = "proto3";
+
+package infaas.internal;
+
+enum ModelType{
+  MODEL_CV = 0;
+  MODEL_NLP = 1;
+  MODEL_AUDIO = 2;
+  MODEL_DIFFUSION = 3; //NEW
+  MODEL_CPU = 4;
+  MODEL_GPU = 5;
+}

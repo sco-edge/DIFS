@@ -1,0 +1,32 @@
+INCLUDE(GRPCGenerateCPP)
+
+# Generate C++ code for core public protos
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS
+  request_reply.proto
+  modelreg.proto
+  queryfe.proto
+)
+
+# Generate gRPC code for services
+PROTOBUF_GENERATE_GRPC_CPP(PROTO_GRPC_SRCS PROTO_GRPC_HDRS
+  modelreg.proto
+  queryfe.proto
+)
+
+# Create the main infaas-protos library
+add_library(infaas-protos
+  ${PROTO_SRCS}
+  ${PROTO_GRPC_SRCS}
+)
+
+target_include_directories(infaas-protos PUBLIC
+  ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+# Internal protos (always needed)
+add_subdirectory(internal)
+
+# TRTIS protos — only build if ENABLE_TRTIS is ON (disabled in local mode)
+if(ENABLE_TRTIS)
+  add_subdirectory(trtis)
+endif()

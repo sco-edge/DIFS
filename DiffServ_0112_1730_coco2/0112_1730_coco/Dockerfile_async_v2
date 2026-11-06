@@ -1,0 +1,56 @@
+# 1. use the latest PyTorch base image you specified
+FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
+
+WORKDIR /workspace
+
+# 2. update system packages and install tools
+RUN apt-get update && apt-get install -y \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. install gRPC and Protobuf dependencies
+# in a recent environment it is stable to use the latest version of grpcio.
+RUN pip install --no-cache-dir \
+    grpcio \
+    grpcio-tools \
+    "protobuf<5.0.0" \
+    accelerate==1.12.0 \
+    diffusers==0.36.0 \
+    transformers==4.57.3 \
+    safetensors==0.7.0 \
+    huggingface-hub==0.36.0 \
+    # other core libraries:
+    PyYAML==6.0.3 \
+    requests==2.32.5 \
+    tqdm==4.67.1 \
+    tokenizers==0.22.1 \
+    pillow \
+    torchmetrics \
+    scipy \
+    torchmetrics[image]     
+    # recommended approach: install the full torchmetrics image extension package
+
+# 4. create the directory structure and copy files
+RUN mkdir proto
+COPY protos/query.proto protos/
+COPY protos/infaas_request_status.proto protos/
+COPY src/pytorch_container_diffusion_async_v2.py .
+COPY real_stats.npz .
+COPY models.json .
+COPY samplers.json .
+
+# 5. compile the proto (creates .py files at the root)
+# use the -I option to point to the proto directory and emit results into the current location (.)
+RUN python -m grpc_tools.protoc \
+    -I./protos \
+    --python_out=. \
+    --grpc_python_out=. \
+    ./protos/query.proto ./protos/infaas_request_status.proto
+
+# 6. set environment variables
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+ENV PYTHONUNBUFFERED=1
+
+# 7. run the server
+#ENTRYPOINT ["python", "pytorch_container_diffusion_v3.py", "-model", "1", "-sampler", "1", "-npz", "/workspace/real_stats.npz", "-thread", "10", "-port", "50052"]
+ENTRYPOINT ["python", "pytorch_container_diffusion_async_v2.py"]
