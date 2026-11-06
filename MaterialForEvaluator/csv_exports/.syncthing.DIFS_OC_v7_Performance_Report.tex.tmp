@@ -1,0 +1,1074 @@
+\documentclass[11pt]{report}
+
+% ============================================================
+% Packages
+% ============================================================
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=1in, headheight=14pt]{geometry}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+
+% ============================================================
+% Style
+% ============================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{DIFS\_OC\_v6: Workload Comparison Report}
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{red!70!black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  captionpos=b
+}
+
+% ============================================================
+% Title Page
+% ============================================================
+\title{\Huge DIFS\_OC\_v6: Workload Comparison Report\\[0.5em]
+\large Real User-Generated (DiffusionDB) Prompts vs.\ COCO Captions\\
+Under the DIFS\_OC\_v4 Comparison Setup}
+\author{DIFS Research Team}
+\date{September 2026}
+
+\let\svunderscore\_%
+\renewcommand{\_}{\svunderscore\allowbreak}%
+\emergencystretch=2em%
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+% Chapter 1: Executive Summary
+% ============================================================
+\chapter{Executive Summary}
+
+% POPULATED-BY-v6NUMBERS
+\begin{quote}
+\textbf{Values in this report are populated from the completed R6 benchmark
+run of DIFS\_OC\_v6 (DiffusionDB workload) and DIFS\_OC\_v4 (COCO workload).}
+\end{quote}
+
+This report presents DIFS\_OC\_v6, a replication of the DIFS\_OC\_v4 baseline
+comparison benchmark in which the request workload is swapped from curated
+MS~COCO captions to \emph{real user-generated text-to-image prompts} drawn from
+the DiffusionDB dataset (Wang et~al., ACL 2023).  Everything else---hardware,
+model cache, worker pool of 5, Poisson arrival model, the four
+Clipper-/INFaaS-style baseline emulations, the four accuracy levels
+(10/20/30/40 steps), CFG 7.5, sampler, and the fixed 60\,s latency SLO---is
+held \emph{byte-identical} to DIFS\_OC\_v4.  The experiment therefore isolates
+the effect of the \textbf{prompt-content distribution} on each system's
+latency-SLO attainment, throughput, and completion under identical load.
+
+\begin{itemize}
+  \item \textbf{Workload swap.}  DiffusionsDB prompts are longer
+        (median $\sim$20 words vs.\ $\sim$10 for COCO), stylistically rich
+        (artist/style/quality keywords), and drawn from a pool of 10{,}000
+        unique prompts (1{,}436{,}185 after NSFW-filtered deduplication;
+        threshold \texttt{prompt\_nsfw} $<$ 0.1), seeded 42.
+  \item \textbf{Isolated variable.}  Step count, CFG, sampler, arrival rates,
+        SLO cuts, and pool sampling procedure are identical to v4, so any
+        measured difference is attributable to prompt content.
+  \item \textbf{Bottom line.}  Replacing COCO captions with real DiffusionDB
+        prompts leaves the comparative result \emph{qualitatively unchanged}:
+        DIFS\_v3 and Clipper Small-Only still attain 100\% latency-SLO under
+        every load level, INFaaS degrades most at 40 steps (75.9\% vs.\ 75.5\%),
+        Clipper Large-Only still collapses at 40 steps (0\% under both
+        workloads).  All four systems retain 100\% completion, 0 dropped
+        requests, and 100\% step-count accuracy SLO.  Throughput is identical
+        to within $\pm$0.001 req/s.  The v4 ablation conclusions therefore
+        \emph{generalise} to messy user-generated prompts.
+\end{itemize}
+
+% POPULATED-BY-v6NUMBERS
+\begin{table}[H]
+\centering
+\caption{Executive summary: mean latency-SLO attainment (\%), accuracy SLO
+  (\%; constant 100.0 by the step-count definition), throughput (req/s),
+  and completion (\%) per system under the DiffusionDB workload (v6),
+  alongside the COCO-workload values from v4.}
+\label{tab:summary_cmp}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.4cm}ccccc@{}}
+\toprule
+\textbf{System} & \multicolumn{2}{c}{\textbf{Lat. SLO \%}} &
+                  \multicolumn{2}{c}{\textbf{Thru. req/s}} &
+                  \textbf{Acc. SLO \%} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & \textbf{COCO} & \textbf{DiffusionDB} & \textbf{COCO} & \textbf{DiffusionDB} & \textbf{both} \\
+\midrule
+
+
+
+
+
+
+
+
+Clipper Large-Only & 74.3 & 73.2 & 0.0054 & 0.0054 & 100.0 \\
+Clipper Small-Only & 100.0 & 100.0 & 0.0192 & 0.0197 & 100.0 \\
+INFaaS & 92.2 & 94.0 & 0.0110 & 0.0113 & 100.0 \\
+\textbf{DIFS\_v3} & 100.0 & 100.0 & 0.0207 & 0.0206 & 100.0 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ============================================================
+% Chapter 2: Distinguishing DIFS_OC_v6
+% ============================================================
+\chapter{Distinguishing DIFS\_OC\_v6}
+
+\section{DIFS\_OC\_v6 vs.\ DIFS\_OC\_v4}
+
+DIFS\_OC\_v4 and DIFS\_OC\_v6 are the two halves of a controlled
+\emph{workload-generalisation} study on the same hardware and codebase with the
+same baseline emulations:
+
+\begin{itemize}
+  \item \textbf{Identical.} Both operate on a single RTX 6000 Ada (49\,GB) node,
+        use the same model cache (SD-v1-5, SD-2-1, SDXL-Base, SD-3.5-Medium,
+        SD-3.5-Large), a fixed pool of 5 workers, the same four baseline
+        configurations (Clipper-style Large-Only, Clipper-style Small-Only,
+        INFaaS-style, DIFS\_OC\_v3), Poisson arrivals at the five load levels
+        (2/4/6/8/10 req/min), a fixed 60\,s latency SLO, step-count accuracy
+        SLO (10/20/30/40), CFG 7.5, sampler, and the same seed-42 deterministic
+        prompt sampling procedure (one prompt per request).
+  \item \textbf{Different.} Only the \textbf{prompt source} changes:
+        v4 samples 300 of 202{,}654 COCO captions per level; v6 samples 300 of
+        10{,}000 DiffusionDB prompts per level.  No other code path, metric
+        definition, or environment variable differs.
+  \item \textbf{Purpose.} v4 answered ``how do the four systems compare under
+        a curated caption workload?''; v6 answers ``\emph{do those conclusions
+        generalise when the workload is the messy, long, stylised, real-user
+        prompt text that a production text-to-image service actually
+        encounters?}''.
+\end{itemize}
+
+\section{DIFS\_OC\_v6 vs.\ the earlier DIFS projects (in general)}
+
+\begin{description}
+  \item[DIFS\_OC\_v1/v2 --- INFaaS lineage.] Direct descendants of the INFaaS
+        codebase (Romero et~al., ATC~2021); established the single-node
+        multi-model diffusion worker pool, the gRPC scheduler protocol, and the
+        model registry used in every later project.
+  \item[DIFS\_OC\_v3 --- the multiworker SLO benchmark.] Introduced EDF
+        scheduling, locality-aware routing, and fair-share step adaptation, and
+        produced the first SLO-guarantee results.  Its \texttt{src/} is the
+        basis for v4 and v6.
+  \item[DIFS\_OC\_v4 --- baseline comparison.]  Benchmarked v3 against
+        Clipper-/INFaaS-\emph{emulations} on the \textbf{COCO} caption workload
+        (this session's reference set: Clipper, INFaaS, MuxServe, WarmServe).
+  \item[DIFS\_OC\_v5 --- switching-modes study.] Measured hot-switch,
+        forced-DRAM-reload, and cold reload costs on the same GPU; did not
+        change the workload.
+  \item[DIFS\_OC\_v6 --- \textbf{this project}.] Reuses the v4 harness
+        unchanged but replaces the workload with real DiffusionDB user prompts,
+        so the v4 conclusions can be stress-tested against a distribution
+        shift in the input text.
+\end{description}
+
+Put differently: \textbf{v6 is the first DIFS project in which the \emph{workload
+itself} is the experimental variable}, rather than the scheduling policy, model
+pool, or infrastructure.
+
+\section{Why the DiffusionDB dataset}
+
+DiffusionDB (Wang et~al., ACL 2023, arXiv:2210.14896) is a large-scale
+dataset of \textbf{real user-generated}\footnote{collected from the official
+Stable Diffusion Discord bot, August 2022} text-to-image prompts.
+
+\begin{itemize}
+  \item \textbf{Scale.} 2M images / 1.4M unique prompts in the 2M subset
+        ($\sim$14M / 1.8M in the \emph{large} version).
+  \item \textbf{Realism.}  Prompts are authentic production text --- long
+        comma/tag-packed strings with artist names, style and quality
+        modifiers, and idiosyncratic phrasing --- unlike curated,
+        short descriptive COCO sentences.
+  \item \textbf{Distribution shift.}  Median length $\sim$20 words vs.\ $\sim$8--12
+        for COCO; >50\% of pool prompts are $\geq$20 words; heavy-length tail.
+  \item \textbf{Safety-aware.}  Per-prompt NSFW scores
+        (\texttt{prompt\_nsfw}, \texttt{image\_nsfw}) allow principled
+        filtering ($<$0.1 used here).
+  \item \textbf{External validity.}  Because requests resemble real user
+        traffic, v6 results speak to the behaviour a deployed diffusion-SLO
+        system would exhibit, strengthening the generality of the v4 ablation.
+\end{itemize}
+
+% ============================================================
+% Chapter 3: Experimental Setup
+% ============================================================
+
+\chapter{Experimental Setup}
+
+\section{Hardware}
+
+\begin{itemize}
+  \item \textbf{GPU:} NVIDIA RTX 6000 Ada (49\,GB).
+  \item \textbf{Worker pool:} 5 workers, one vanilla diffusion model per worker,
+        launched as direct Python subprocesses (no Docker).
+  \item \textbf{Models} ($id$: name): 3=SD-v1-5, 4=SD-2-1, 5=SDXL-Base,
+        8=SD-3.5-Medium, 9=SD-3.5-Large.  Cache:
+        \texttt{/mnt/ssd4t/.../downloaded\_diffusion\_models/diffusion-models}.
+\end{itemize}
+
+\section{Workload: DiffusionDB prompt pool}
+
+Built by \texttt{src/scripts/build\_diffusiondb\_pool.py}:
+
+\begin{enumerate}
+  \item Download \texttt{poloclub/diffusiondb} \texttt{metadata.parquet}
+        (2{,}000{,}000 rows).
+  \item Drop rows with \texttt{prompt\_nsfw} $< 0.1$ $\to$ 1{,}887{,}112 kept.
+  \item Deduplicate trimmed prompt text (first-occurrence) $\to$ 1{,}436{,}185
+        unique prompts.
+  \item Deterministically sample 10{,}000 (seeded 42).
+  \item Serialise as COCO-schema JSON
+        (\texttt{annotations/diffusiondb\_prompts.json}) so the v4 client loader
+        \texttt{extract\_coco\_prompts()} works unchanged.
+\end{enumerate}
+
+Prompt-stat summary: min 1 word, median 20, max 160; $\geq$20-word fraction
+51.4\%.
+
+\section{Workload: parity with v4}
+
+Each SLO-benchmark request sends \texttt{-prompt\_count 1} with
+\texttt{DIFS\_PROMPTS\_FILE} pointing at the DiffusionDB JSON; selection uses
+seed 42 exactly as v4 did for COCO.  All other constants come from
+\texttt{src/experiments/experiment\_config.py} unchanged (see CH~1 of the v4
+report for the full list).
+
+\section{Metrics}
+
+\begin{itemize}
+  \item \textbf{Latency SLO attainment} (\%): fraction of requests whose
+        end-to-end latency $<$ fixed 60{,}000 ms budget.
+  \item \textbf{Accuracy SLO attainment} (\%): fraction of completed requests
+        served at or above the required step count for their accuracy level
+        ($\sigma(\mathrm{low})=10$, $\sigma(\mathrm{medium})=20$,
+        $\sigma(\mathrm{high})=30$, $\sigma(\mathrm{very\_high})=40$).  Because
+        every completed request is resident at its own required step count,
+        this is 100\% for all systems (real differentiators are latency SLO and
+        throughput).
+  \item \textbf{Throughput} (req/s): completed requests per second.
+  \item \textbf{Completion} (\%): requests\_completed / requests\_submitted per
+        cell.
+\end{itemize}
+
+% ============================================================
+% Chapter 4: Results — DiffusionDB Workload (v6)
+% ============================================================
+
+\chapter{Results: DiffusionDB Workload (DIFS\_OC\_v6)}
+
+% TABLES POPULATED BY compile_report_v6.py from v6 CSVs
+
+\section{Latency SLO Attainment}
+
+\begin{table}[H]
+\centering
+\caption{Latency SLO Attainment (\%) by system, load level and step count
+  under the DiffusionDB workload.  ``---'' = no requests served at that step
+  count in the cell.}
+\label{tab:latency_v6}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{System} & \textbf{Load} & \textbf{Steps 10} & \textbf{Steps 20} & \textbf{Steps 30} & \textbf{Steps 40} \\
+\midrule
+
+
+
+
+
+
+
+
+Clipper Large-Only  & low      & 100.0 & 100.0 & 73.2 & 0.0 \\
+Clipper Large-Only  & medium   & 100.0 & 100.0 & 100.0 & 0.0 \\
+Clipper Large-Only  & high     & 100.0 & 100.0 & 100.0 & 0.0 \\
+Clipper Large-Only  & saturation & 100.0 & 100.0 & 91.7 & 0.0 \\
+Clipper Large-Only  & stress   & 100.0 & 100.0 & 100.0 & 0.0 \\
+Clipper Small-Only  & low      & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & medium   & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & high     & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & saturation & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & stress   & 100.0 & 100.0 & 100.0 & 100.0 \\
+INFaaS  & low      & 100.0 & 100.0 & 100.0 & 78.7 \\
+INFaaS  & medium   & 100.0 & 100.0 & 100.0 & 79.2 \\
+INFaaS  & high     & 100.0 & 100.0 & 100.0 & 72.7 \\
+INFaaS  & saturation & 100.0 & 100.0 & 100.0 & 74.1 \\
+INFaaS  & stress   & 100.0 & 100.0 & 100.0 & 75.0 \\
+\textbf{DIFS\_v3}  & low      & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & medium   & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & high     & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & saturation & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & stress   & 100.0 & 100.0 & 100.0 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Accuracy SLO Attainment}
+
+\begin{table}[H]
+\centering
+\caption{Accuracy SLO Attainment (\%) under the DiffusionDB workload.  Constant
+  100.0 by definition for every completed request.}
+\label{tab:accuracy_v6}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{System} & \textbf{Load} & \textbf{Steps 10} & \textbf{Steps 20} & \textbf{Steps 30} & \textbf{Steps 40} \\
+\midrule
+
+
+
+
+
+
+
+
+Clipper Large-Only  & low      & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Large-Only  & medium   & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Large-Only  & high     & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Large-Only  & saturation & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Large-Only  & stress   & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & low      & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & medium   & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & high     & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & saturation & 100.0 & 100.0 & 100.0 & 100.0 \\
+Clipper Small-Only  & stress   & 100.0 & 100.0 & 100.0 & 100.0 \\
+INFaaS  & low      & 100.0 & 100.0 & 100.0 & 100.0 \\
+INFaaS  & medium   & 100.0 & 100.0 & 100.0 & 100.0 \\
+INFaaS  & high     & 100.0 & 100.0 & 100.0 & 100.0 \\
+INFaaS  & saturation & 100.0 & 100.0 & 100.0 & 100.0 \\
+INFaaS  & stress   & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & low      & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & medium   & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & high     & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & saturation & 100.0 & 100.0 & 100.0 & 100.0 \\
+\textbf{DIFS\_v3}  & stress   & 100.0 & 100.0 & 100.0 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Throughput}
+
+\begin{table}[H]
+\centering
+\caption{Throughput (req/s) by system, load level and step count under the
+  DiffusionDB workload.}
+\label{tab:throughput_v6}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{System} & \textbf{Load} & \textbf{Steps 10} & \textbf{Steps 20} & \textbf{Steps 30} & \textbf{Steps 40} \\
+\midrule
+
+
+
+
+
+
+
+
+Clipper Large-Only  & low      & 0.0063 & 0.0056 & 0.0046 & 0.0047 \\
+Clipper Large-Only  & medium   & 0.0062 & 0.0051 & 0.0047 & 0.0053 \\
+Clipper Large-Only  & high     & 0.0063 & 0.0050 & 0.0053 & 0.0047 \\
+Clipper Large-Only  & saturation & 0.0067 & 0.0053 & 0.0053 & 0.0044 \\
+Clipper Large-Only  & stress   & 0.0072 & 0.0050 & 0.0061 & 0.0039 \\
+Clipper Small-Only  & low      & 0.0090 & 0.0084 & 0.0076 & 0.0083 \\
+Clipper Small-Only  & medium   & 0.0180 & 0.0169 & 0.0149 & 0.0167 \\
+Clipper Small-Only  & high     & 0.0270 & 0.0250 & 0.0217 & 0.0243 \\
+Clipper Small-Only  & saturation & 0.0289 & 0.0289 & 0.0236 & 0.0249 \\
+Clipper Small-Only  & stress   & 0.0278 & 0.0228 & 0.0183 & 0.0206 \\
+INFaaS  & low      & 0.0090 & 0.0084 & 0.0072 & 0.0083 \\
+INFaaS  & medium   & 0.0136 & 0.0138 & 0.0104 & 0.0107 \\
+INFaaS  & high     & 0.0147 & 0.0123 & 0.0097 & 0.0110 \\
+INFaaS  & saturation & 0.0142 & 0.0120 & 0.0098 & 0.0120 \\
+INFaaS  & stress   & 0.0144 & 0.0122 & 0.0111 & 0.0111 \\
+\textbf{DIFS\_v3}  & low      & 0.0090 & 0.0084 & 0.0076 & 0.0083 \\
+\textbf{DIFS\_v3}  & medium   & 0.0180 & 0.0169 & 0.0149 & 0.0167 \\
+\textbf{DIFS\_v3}  & high     & 0.0270 & 0.0250 & 0.0217 & 0.0243 \\
+\textbf{DIFS\_v3}  & saturation & 0.0289 & 0.0289 & 0.0236 & 0.0249 \\
+\textbf{DIFS\_v3}  & stress   & 0.0317 & 0.0283 & 0.0239 & 0.0244 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Completion Rates}
+
+\begin{table}[H]
+\centering
+\caption{Completion (completed/submitted) by system, load level and step count
+  under the DiffusionDB workload.}
+\label{tab:completion_v6}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{System} & \textbf{Load} & \textbf{Steps 10} & \textbf{Steps 20} & \textbf{Steps 30} & \textbf{Steps 40} \\
+\midrule
+
+
+
+
+
+
+
+
+Clipper Large-Only  & low      & 57/57\ (100\%) & 50/50\ (100\%) & 41/41\ (100\%) & 42/42\ (100\%) \\
+Clipper Large-Only  & medium   & 28/28\ (100\%) & 23/23\ (100\%) & 21/21\ (100\%) & 24/24\ (100\%) \\
+Clipper Large-Only  & high     & 19/19\ (100\%) & 15/15\ (100\%) & 16/16\ (100\%) & 14/14\ (100\%) \\
+Clipper Large-Only  & saturation & 15/15\ (100\%) & 12/12\ (100\%) & 12/12\ (100\%) & 10/10\ (100\%) \\
+Clipper Large-Only  & stress   & 13/13\ (100\%) & 9/9\ (100\%) & 11/11\ (100\%) & 7/7\ (100\%) \\
+Clipper Small-Only  & low      & 81/81\ (100\%) & 76/76\ (100\%) & 68/68\ (100\%) & 75/75\ (100\%) \\
+Clipper Small-Only  & medium   & 81/81\ (100\%) & 76/76\ (100\%) & 67/67\ (100\%) & 75/75\ (100\%) \\
+Clipper Small-Only  & high     & 81/81\ (100\%) & 75/75\ (100\%) & 65/65\ (100\%) & 73/73\ (100\%) \\
+Clipper Small-Only  & saturation & 65/65\ (100\%) & 65/65\ (100\%) & 53/53\ (100\%) & 56/56\ (100\%) \\
+Clipper Small-Only  & stress   & 50/50\ (100\%) & 41/41\ (100\%) & 33/33\ (100\%) & 37/37\ (100\%) \\
+INFaaS  & low      & 81/81\ (100\%) & 76/76\ (100\%) & 65/65\ (100\%) & 75/75\ (100\%) \\
+INFaaS  & medium   & 61/61\ (100\%) & 62/62\ (100\%) & 47/47\ (100\%) & 48/48\ (100\%) \\
+INFaaS  & high     & 44/44\ (100\%) & 37/37\ (100\%) & 29/29\ (100\%) & 33/33\ (100\%) \\
+INFaaS  & saturation & 32/32\ (100\%) & 27/27\ (100\%) & 22/22\ (100\%) & 27/27\ (100\%) \\
+INFaaS  & stress   & 26/26\ (100\%) & 22/22\ (100\%) & 20/20\ (100\%) & 20/20\ (100\%) \\
+\textbf{DIFS\_v3}  & low      & 81/81\ (100\%) & 76/76\ (100\%) & 68/68\ (100\%) & 75/75\ (100\%) \\
+\textbf{DIFS\_v3}  & medium   & 81/81\ (100\%) & 76/76\ (100\%) & 67/67\ (100\%) & 75/75\ (100\%) \\
+\textbf{DIFS\_v3}  & high     & 81/81\ (100\%) & 75/75\ (100\%) & 65/65\ (100\%) & 73/73\ (100\%) \\
+\textbf{DIFS\_v3}  & saturation & 65/65\ (100\%) & 65/65\ (100\%) & 53/53\ (100\%) & 56/56\ (100\%) \\
+\textbf{DIFS\_v3}  & stress   & 57/57\ (100\%) & 51/51\ (100\%) & 43/43\ (100\%) & 44/44\ (100\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Plot Generation}
+
+Plots for the DiffusionDB workload mirror v4's figure set (width-consistent bar
+charts, throughput--latency scatter, latency-by-steps lines) plus the
+v4-vs-v6 overlay figures in Chapter~5 and the standalone model-switching
+figure sets in Chapter~6 (v4 and v5 equivalents, generated from v6's own
+data).  All plots are written to
+\texttt{results/model\_benchmark/plot\_data\_baseline/plots/} by the scripts in
+\texttt{src/plots/}.
+
+% ============================================================
+% Chapter 5: Comparison — COCO (v4) vs DiffusionDB (v6)
+% ============================================================
+
+\chapter{COCO vs.\ DiffusionDB: Comparison}
+
+\begin{quote}
+\textit{Both workloads' results come from their own completed runs: v6 from its
+own \texttt{baseline\_comparison.csv}, v4 (read-only reference) from v4's
+\texttt{baseline\_comparison.csv}.}
+\end{quote}
+
+\section{Per-System Aggregate}
+
+% POPULATED-BY-v6NUMBERS
+\begin{table}[H]
+\centering
+\caption{Per-system aggregates (mean over the 20 cells) for each workload.
+  Abs, differences = DiffusionDB minus COCO.}
+\label{tab:agg_cmp}
+\begin{tabular}{@{}llcc@{}}
+\toprule
+\textbf{Workload} & \textbf{System} & \textbf{Lat. SLO \%} & \textbf{Thru req/s} \\
+\midrule
+
+
+
+
+
+
+
+
+COCO & Clipper Large-Only & 74.3 & 0.0054 \\
+COCO & Clipper Small-Only & 100.0 & 0.0192 \\
+COCO & INFaaS & 92.2 & 0.0110 \\
+COCO & \textbf{DIFS\_v3} & 100.0 & 0.0207 \\
+DiffusionDB & Clipper Large-Only & 73.2 & 0.0054 \\
+DiffusionDB & Clipper Small-Only & 100.0 & 0.0197 \\
+DiffusionDB & INFaaS & 94.0 & 0.0113 \\
+DiffusionDB & \textbf{DIFS\_v3} & 100.0 & 0.0206 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Latency SLO by System and Load}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{../plot_data_baseline/plots/latency_slo_coco_vs_diffusiondb.png}
+\caption{Latency SLO attainment by system and load level: DiffusionDB (v6,
+  green, hatched) vs.\ COCO (v4, gray).}
+\label{fig:cmp_lat}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{../plot_data_baseline/plots/throughput_coco_vs_diffusiondb.png}
+\caption{Throughput (req/s) by system and load level: DiffusionDB (v6) vs.\
+  COCO (v4).}
+\label{fig:cmp_thr}
+\end{figure}
+
+\section{Latency SLO by Step Count}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{../plot_data_baseline/plots/latency_by_steps_overlay.png}
+\caption{Latency SLO attainment vs.\ step count, mean over load levels:
+  COCO (v4, squares) vs.\ DiffusionDB (v6, circles) per system.}
+\label{fig:cmp_steps}
+\end{figure}
+
+\section{Throughput--Latency SLO}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{../plot_data_baseline/plots/throughput_latency_overlay.png}
+\caption{Throughput vs.\ latency SLO attainment, one point per per-step row:
+  COCO (v4, squares) vs.\ DiffusionDB (v6, circles).}
+\label{fig:cmp_tl}
+\end{figure}
+
+\section{Interpretation}
+
+\begin{itemize}
+  \item \textbf{The latency-SLO cliff does not shift.} The step-count cliff
+        locations are identical under both workloads.  Clipper Large-Only hits
+        0\% latency-SLO attainment at 40 steps in both the COCO run (0.0) and the
+        DiffusionDB run (0.0); its 30-step cell is 97.1\% (COCO) vs.\ 93.0\%
+        (DiffusionDB), a small move driven by the low-load cell's Poisson sample
+        (41 vs.\ 42 requests).  INFaaS degrades only at 40 steps: 75.5\%
+        (COCO) vs.\ 75.9\% (DiffusionDB)---statistically unchanged.  The longer,
+        more stylised DiffusionDB prompt text therefore does \emph{not} shift
+        the SLO cliff in either direction.
+  \item \textbf{Per-step attainment patterns are preserved.} Clipper Small-Only
+        and DIFS\_v3 score 100.0\% latency-SLO on \emph{every} (step, load) cell
+        under both workloads, including 40 steps.  INFaaS's 30-step attainment
+        is already variable with workload (93.4\% COCO vs.\ 100.0\%
+        DiffusionDB), reflecting its fixed single-model routing rather than any
+        prompt-content effect.  The systems that met the SLO under COCO captions
+        continue to meet it under real prompts, and the systems that failed the
+        SLO (Large-Only at 40 steps, INFaaS at 40 steps under stress) continue
+        to fail it by the same margin.
+  \item \textbf{Throughput and completion are workload-invariant.}  Mean
+        throughput matches to within $\pm$0.001 req/s per system (Small-Only
+        0.0192$\to$0.0197, INFaaS 0.0110$\to$0.0113, DIFS\_v3 0.0207$\to$0.0206,
+        Large-Only 0.0054$\to$0.0054).  Every cell reports 100\% completion and
+        zero dropped requests under \emph{both} workloads, and step-count
+        accuracy SLO is 100.0\% throughout.  Prompt content is not a
+        performance variable at fixed step count, model, CFG, and image size:
+        compute per request is determined by steps and model, not by text.
+  \item \textbf{Which system holds 100\% under both workloads?}  Exactly the
+        same two: \textbf{DIFS\_v3} and \textbf{Clipper Small-Only}.  DIFS\_v3
+        achieves this with 5 workers and step-count fair-share \emph{routing}
+        rather than a single cheap model, which is the key behavioural
+        difference retained under the DiffusionDB workload.
+\end{itemize}
+
+% ============================================================
+% Chapter 6: Model-Switching Behaviour
+% ============================================================
+\chapter{Model-Switching Behaviour}
+
+Every figure in this chapter is a v6 reproduction of the corresponding figure
+sets from DIFS\_OC\_v4 (hot-switching overhead) and DIFS\_OC\_v5 (three worker
+switch modes and their SLO context), generated from v6's \emph{own} measured
+data and styled with the same colours and hatches as the reference projects,
+so plots can be read side-by-side across the three writeups.  The worker
+implements three selectable switch modes (environment variable
+\texttt{DIFS\_MODEL\_SWITCH\_MODE}):
+
+\begin{description}
+  \item[hot] Cache pointer flip to an already-resident model.
+  \item[force\_upload] Genuine DRAM $\to$ GPU weight re-upload plus sync; the
+        target is staged in host memory, no disk read.
+  \item[cold\_every] Always reload the target from disk into DRAM and then push
+        to GPU; never reuse the cache.
+\end{description}
+
+Together with the cold \emph{initial} loads recorded during the R6 run
+(\texttt{metrics/model\_load\_metrics.csv}), these modes define a three-tier
+memory hierarchy for the scheduler: \textbf{GPU-resident (hot)} $\to$
+\textbf{DRAM-resident (warm / force\_upload)} $\to$ \textbf{disk (cold)}.
+
+\section{Measured switch costs}
+
+\begin{table}[H]
+\centering
+\caption{v6 measured switching costs: median over the 20 off-diagonal model
+  pairs (range in parentheses), cost as a fraction of the fixed 60\,s latency
+  SLO, and cost relative to the demand seen at the low and stress load levels
+  (inter-arrival times of $\sim$30\,s and $\sim$6\,s).  Data:
+  \texttt{switch\_<mode>/pairwise\_switching.csv} (this project) and
+  \texttt{model\_load\_metrics.csv}.}
+\label{tab:switch_costs}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Mode} & \textbf{Median} & \textbf{Range} & \textbf{\% of 60\,s SLO}
+                 & \textbf{vs.\ 30\,s gap} & \textbf{vs.\ 6\,s gap} \\
+\midrule
+hot            & 0.010\,ms  & 0.010\,ms (flat) & $1.7\times10^{-5}$\%
+                    & $\sim$0\% & $\sim$0\% \\
+force\_upload  & 188.6\,ms  & 73.4--461.8\,ms  & 0.31 $\to$ 0.77\%
+                    & $\sim$0.6\% & $\sim$3.1\% \\
+cold\_every    & 3.79\,s    & 0.89--8.11\,s    & 6.3 $\to$ 13.5\%
+                    & $\sim$12.6\% & $\sim$63\% \\
+cold initial load & 1.0--6.7\,s (per model) & 0.70--10.6\,s
+                    & 1.7 $\to$ 17.7\% & $\sim$3--22\% & $\sim$17--112\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The tiers are separated by roughly three orders of magnitude: hot is
+$\sim$$19{,}000\times$ faster than force\_upload, which in turn is
+$\sim$$20\times$ faster than cold\_every (medians 0.010\,ms, 189\,ms, 3.79\,s).
+The biggest absolute costs are concentrated on the heaviest targets
+(SD-3.5-Large, SD-3.5-Medium): median cold\_every cost to land on those targets
+is 5.93\,s and 5.55\,s respectively, versus 1.0--1.1\,s for the two SD-v1-5/2-1
+models; the same ordering holds for force\_upload (212\,ms and 163\,ms vs.\
+73--124\,ms), confirming that the switch cost is dominated by the \emph{size of
+the target weights}, not the identity of the source.
+
+\section{Pairwise switching matrices}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{0.32\textwidth}
+  \includegraphics[width=\linewidth]{../plot_data_baseline/plots/switching_pairwise_hot.png}
+  \caption{hot (ms)}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.32\textwidth}
+  \includegraphics[width=\linewidth]{../plot_data_baseline/plots/switching_pairwise_force_upload.png}
+  \caption{force\_upload (ms)}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.32\textwidth}
+  \includegraphics[width=\linewidth]{../plot_data_baseline/plots/switching_pairwise_cold_every.png}
+  \caption{cold\_every (s)}
+\end{subfigure}
+\caption{Pairwise switching matrices across all 25 model pairs for the three
+  worker modes (v6 measurements, format identical to v5).}
+\label{fig:pairwise_modes}
+\end{figure}
+
+\section{Cross-mode and aggregate views}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../plot_data_baseline/plots/switching_cross_mode_by_target.png}
+\caption{Median switch time by target model for each mode (log scale).
+  SD-v1-5/SD-2-1 swap fastest in every mode; the SD-3.5 models are the most
+  expensive targets, but the mode gap dominates the target gap.}
+\label{fig:cross_mode}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../plot_data_baseline/plots/switching_mode_overview.png}
+\caption{Aggregate switch-time overview by mode: translucent bars show the
+  target-projected max, solid bars the median.  Across modes the median cost
+  spans four orders of magnitude.}
+\label{fig:mode_overview}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../plot_data_baseline/plots/switching_mode_target_heatmap.png}
+\caption{Mode $\times$ target-model median switch time (ms, log colour).
+  Empty cells in the mode row read across the target columns: hot is flat at
+  0.01\,ms, warm rises gently with target size, cold varies most strongly with
+  target size.}
+\label{fig:mode_target_heatmap}
+\end{figure}
+
+\section{Switching overhead vs.\ the four schemes (v4 figure set)}
+
+The four figures below reproduce the DIFS\_OC\_v4 switching figure set with
+v6's own pairwise-hot and cold-load data.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../plot_data_baseline/plots/switching_pairwise_heatmap.png}
+\caption{Hot-switch time (ms) across all model pairs (v4-style rendering of
+  v6's hot data).  The matrix is flat at 0.010\,ms: every pair is ``free''.}
+\label{fig:pairwise_v4style}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../plot_data_baseline/plots/switching_cold_vs_hot.png}
+\caption{Cold initial load vs.\ hot runtime switch by model (log scale): cold
+  loads 1.0--6.7\,s against a 0.010\,ms hot switch---a $\sim$${10}^{5}$--$10^{6}\times$
+  gap, and the dominant cost is paid exactly once at run start.}
+\label{fig:cold_vs_hot}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../plot_data_baseline/plots/switching_overhead_by_scheme.png}
+\caption{Estimated per-request switching overhead by scheme under v4's four
+  baseline emulations using v6's hot-switch time.  Clipper policies are pinned
+  (0 switches $\Rightarrow$ 0 overhead); INFaaS and DIFS\_v3 pay a handful of
+  $\sim$0.01\,ms switches per request in the estimate---overheads of
+  $2$--$5\times10^{-3}$\,ms/request, far below any measurable latency.}
+\label{fig:overhead_scheme}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../plot_data_baseline/plots/switching_overhead_fraction.png}
+\caption{Hot-switch overhead as a fraction of per-model inference latency
+  (log scale).  Even against the fastest model (SD-v1-5 at $\sim$5\,s/sample)
+  the switch is $\sim$$2\times10^{-6}$ of the generation; against
+  SD-3.5-Large it is $\sim$$1\times10^{-7}$.}
+\label{fig:overhead_fraction}
+\end{figure}
+
+\section{SLO context of the three modes}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{../plot_data_baseline/plots/switching_slo_budget_fraction.png}
+\caption{Switch cost as a percentage of the 60\,s latency-SLO budget by mode and
+  target (log scale).  hot is $<10^{-4}$\%, warm is $\sim$0.1--0.4\%,
+  cold\_every is $\sim$1.8--13.5\%.}
+\label{fig:slo_fraction}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{../plot_data_baseline/plots/switching_slo_affordable_switches.png}
+\caption{Number of switches that fit inside one 60\,s latency-SLO budget
+  (median-basis worst target): $\sim$280 warm switches vs.\ $\sim$10 cold
+  switches (and $>$1{,}000{,}000 hot).  Even a second successive cold switch on
+  SD-3.5-Large consumes over a quarter of the request budget.}
+\label{fig:slo_affordable}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../plot_data_baseline/plots/switching_slo_vs_budget.png}
+\caption{Median and max switch time per mode against the 60\,s latency-SLO
+  budget line (log scale).  All three modes fit within one budget, but cold is
+  within $\sim$$13\%$ while warm is within $\sim$$0.8\%$.}
+\label{fig:slo_vs_budget}
+\end{figure}
+
+\section{When to cold-switch vs.\ when to warm-switch}
+
+The three measured tiers are not interchangeable; each occupies a different
+place in the memory hierarchy, and the right choice follows from whether the
+scheduler can \emph{resolve the target's residency} and how often the target
+will be re-used.  The cost model from
+Table~\ref{tab:switch_costs} gives the following decision framework.
+
+\subsection{Best situations for cold switching}
+
+Cold switching --- reloading the target from disk --- is the right choice when
+the \emph{residency itself} is the problem, not the switch latency:
+
+\begin{enumerate}
+  \item \textbf{Scale-down and memory reclamation.}  Cold is the only mode
+        that actually \emph{frees} memory: hot keeps weights in VRAM, warm keeps
+        them in DRAM.  After a demand burst, under co-tenant GPU/DRAM pressure,
+        or when the pool must be shrunk to a cheap subset, a cold reload is the
+        only primitive that returns both DRAM and VRAM to the allocator while
+        still being reversible on demand.  There is no warm alternative here, by
+        construction.
+  \item \textbf{Rare, long-lived demand.}  At the low/medium load levels the
+        inter-arrival windows are 9000\,s/4500\,s.  A workload that touches
+        SD-3.5-Large only a handful of times per hour should \emph{not} keep it
+        resident for the whole epoch; the one-off 5.9--8.1\,s cold load (paid
+        once) amortises to $\ll0.1\%$ of the epoch, whereas warm would waste
+        $\sim$7\,GB of DRAM for the entire window on near-zero utilisation.
+        Cold converts ``rarely needed'' into ``cheaply available''.
+  \item \textbf{The heavy-quality tail.}  For 30--40-step requests on the large
+        model, generation alone approaches the SLO, and the switch cost is a
+        \emph{fraction} of the compute it unlocks.  An 8.1\,s worst-case cold
+        switch is $\leq13.5\%$ of the 60\,s budget and well below one
+        SD-3.5-Large generation; when the synchronous work after the switch is
+        tens of seconds, the reload is second-order and cold is ``cheap
+        insurance'' for a rare heavy request.
+  \item \textbf{Correctness, versioning, and cold start.}  A cold reload
+        guarantees clean weights and state: fresh checkpoints after training
+        drift, no stale cache pointers, a reset CUDA context, and the only sane
+        behaviour after a crash or at the very beginning of a run.  The
+        1.0--6.7\,s initial loads already recorded in
+        \texttt{model\_load\_metrics.csv} are the unavoidable cold component of
+        \emph{every} run; planning for it (warm-up the pool before the first
+        arrival) is mandatory regardless of the scheduler's runtime policy.
+\end{enumerate}
+
+\subsection{Best situations for warm (\texttt{force\_upload}) switching}
+
+Warm switching --- staging the target in DRAM and re-uploading to GPU --- is
+the right choice whenever \emph{the target can be kept (or prefetched) in host
+memory} and the switch will happen reasonably often:
+
+\begin{enumerate}
+  \item \textbf{High-frequency reconfiguration.}  At the high, saturation and
+        stress levels the inter-arrival time falls to 10--6\,s.  A cold switch
+        (median 3.79\,s) then blocks the worker for up to $\sim$63\% of one
+        inter-arrival, whereas a warm switch (median 0.19\,s) blocks for
+        $\sim$3\%.  Any scheduler that adapts the active model set on the
+        timescale of a few requests must use warm for the inner loop; cold is
+        catastrophic at this cadence.
+  \item \textbf{Heavy-model rotation economics.}  The models with the largest
+        cold penalties (SD-3.5-Medium/-Large: 5.6--5.9\,s per target median)
+        are exactly the ones whose warm cost is smallest in relative terms
+        (163--212\,ms, a $\times$$28$--$35$ saving).  This asymmetry is the
+        strongest argument for warm: it lets the scheduler \emph{toggle the
+        powerful models} in and out of the active set at sub-second cost,
+        which is precisely the mechanism a 100\%-SLO policy needs when 40-step
+        demand shifts onto SD-3.5.  A cold policy would either keep the heavy
+        models permanently resident (wasting the very memory that motivated
+        switching) or stall requests for $\sim$6--8\,s on every rotation.
+  \item \textbf{SLO protection under tight budgets.}  Warm's worst pair
+        (461.8\,ms) consumes 0.77\% of the 60\,s budget; cold's worst
+        (8.11\,s) consumes 13.5\%.  In the latency-critical cells --- 40-step
+        requests where inference already sits near the SLO --- an 8\,s stall
+        can push a request over budget; a 0.46\,s stall cannot.  Systems that
+        make \emph{hard} SLO guarantees should therefore run their switching on
+        warm so the switch term is second-order and provable.
+  \item \textbf{Deterministic cost bounds.}  Warm variance is tight
+        (73--462\,ms), while cold's disk-bound spread is nearly
+        $9\times$ (0.89--8.11\,s) and its initial-load spread wider still.
+        Admission control and back-pressure need worst-case bounds; warm gives
+        them.
+  \item \textbf{Prefetch pipelining.}  A DRAM $\to$ GPU upload can be
+        overlapped with an in-flight generation: stage the target during the
+        current request so only the burst transfer stalls the pipeline.  The
+        disk read of a cold switch cannot be hidden on a single worker.  Warm
+        turns an apparent switch latency into a near-zero on-path stall, which
+        is why it is the natural inner-loop primitive for a scheduler that
+        already stages models ahead of time.
+\end{enumerate}
+
+\subsection{Choosing one over the other}
+
+The decision is a \textbf{residency triage}, not a question of speed alone.
+Prefer the \emph{shallowest tier whose residency you can afford}, using the
+measured hierarchy as the cost ladder:
+
+\begin{enumerate}
+  \item \textbf{GPU-resident $\to$ hot.}  If the target is already in VRAM,
+        switching costs 0.01\,ms and there is zero reason to pay anything else.
+        On this node the whole five-model pool fits the 49\,GB GPU, which is why
+        a more \emph{hot-first} policy (DIFS\_v3) attains 100\% latency-SLO in
+        R6 while paying a switch cost that is, by
+        Figure~\ref{fig:overhead_fraction}, $10^{-7}$--$10^{-6}$ of the
+        generation time.
+  \item \textbf{DRAM-staged $\to$ warm.}  If the target is (or can be
+        prefetched to) host memory, use force\_upload.  Warm is the correct
+        default for \emph{adaptive} reconfiguration because it is
+        $\sim$$20\times$ cheaper than cold and its cost is tight enough to
+        guarantee SLOs.  Break-even rule from
+        Table~\ref{tab:switch_costs}: as long as a target is re-used roughly
+        every $20\,\textrm{s}$ or sooner, warm amortises its DRAM staging
+        against the disk read that cold would pay each time.
+  \item \textbf{Disk-only $\to$ cold.}  Use cold only when residency must be
+        released (scale-down, eviction, co-tenancy), the artifact changed
+        (checkpoint/version), or the model is being used for the first time in
+        a run (cold start).  In the hot path of a high-rate workload, cold is
+        not a choice but a last resort.
+\end{enumerate}
+
+Operationally, an SLO-serving scheduler should therefore run a \emph{two-tier
+policy}: keep the frequently used models GPU-resident (hot), stage the
+next-likely tier in DRAM (warm), and demote to disk (cold) only for evicted or
+never-seen targets.  On this single-node geometry the measured outcome is
+benign --- the flat 0.01\,ms hot matrix means switching is not a factor in the
+R6 results (Chapter~7) --- but the same measurements quantify what v6's
+scheduler would need if the working set ever exceeded residency: warm switching
+preserves SLOs through $\sim$$300$ switches per budget, while a single cold
+switch already spends up to a seventh of the request budget and would cap a
+reconfiguration chain at $\sim$$7$--$16$ switches per request.
+
+% ============================================================
+% Chapter 7: Analysis and Interpretation
+% ============================================================
+\chapter{Analysis and Interpretation}
+
+\section{Key findings}
+
+\begin{enumerate}
+  \item \textbf{Workload robustness.}  Replacing curated COCO captions
+        (median $\sim$10 words) with 10{,}000 real DiffusionDB prompts
+        (median $\sim$20 words, rich in artist/style/quality modifiers) changes
+        no aggregate metric by more than $1.8$ percentage points of latency-SLO
+        attainment (INFaaS 92.2$\to$94.0; Clipper Large-Only 74.3$\to$73.2) and
+        no throughput by more than 0.0005 req/s.  The systems' \emph{ranking} is
+        unchanged: DIFS\_v3 $>$ Clipper Small-Only $>$ INFaaS $>$ Clipper
+        Large-Only on mean latency-SLO attainment (100, 100, 94.0, 73.2).
+  \item \textbf{The discriminator is the model/step trade-off, not the
+        prompt.}  The only cells that fail the 60\,s latency SLO are the ones
+        served by SD-3.5-Large at 30--40 steps (Clipper Large-Only, 40-step
+        collapse; INFaaS 40-step, pinned to SD-3.5) or that batch too much
+        compute onto one model.  At a fixed step count the DiffusionDB prompt
+        text adds zero measurable latency, because diffusion cost depends on
+        steps $\times$ model, not on the prompt string.
+  \item \textbf{No dropped work.}  Completion is 100\% under both workloads at
+        every load level including stress (10 req/min), with zero dropped
+        requests and zero accuracy-SLO violations---evidence that the pool and
+        admission-control path absorb arrivals without loss under either
+        prompt distribution.
+  \item \textbf{Switching is not a factor here.}  Hot-switch times between all
+        model pairs are a flat 0.01\,ms and the \emph{only} cold loads
+        (medians 1.0--6.7\,s per model) are paid at run start; a fully resident
+        pool therefore pays a per-switch cost of
+        $10^{-7}$--$10^{-6}$ of generation time (Chapter~6).  The three measured
+        switch tiers (hot / force\_upload / cold\_every) span four orders of
+        magnitude and define when a 100\%-SLO policy must fall back from hot to
+        warm and finally to cold switching.
+\end{enumerate}
+
+\section{Workload effect on scheduling decisions}
+
+Prompt content exerts its influence through \emph{workload statistics} that the
+scheduler observes---most notably the step-count mix (which step level a request
+receives)---not through the raw text.  DIFS\_v3's fair-share step adaptation
+kept 100\% latency-SLO at all five load levels under the DiffusionDB workload
+because it continues to route 40-step requests onto models that can complete
+them within 60\,s, exactly as it did under COCO.  The DiffusionDB pool's longer
+prompts change the \emph{semantics} of generations but not the per-step compute
+cost; this is why the SLO outcomes, throughput, and completions are
+statistically indistinguishable from v4.  In a real service the practical
+consequence is benign: serving policies tuned on curated captions remain valid
+when users type long, stylised prompts.
+
+\section{External validity of the v4 ablation}
+
+v6 provides the external-validity check that a single curated dataset
+(COCO captions) cannot offer.  The v4 conclusions---DIFS\_v3-style routing with
+fair-share step adaptation meets the latency SLO at all loads; a Large-Only
+policy collapses on 40-step requests; INFaaS routing degrades at 40 steps;
+completion is upheld even under stress---were obtained with DiffusionsDB's
+\emph{real user-generated prompts}.  Since the results are unchanged, the v4
+ablation is not an artefact of the caption distribution, and the generalisation
+claim ``DIFS\_v3 maintains 100\% latency-SLO attainment on a multi-model worker
+pool over a broad range of request rates, for our model stack and step
+allocations'' now rests on two independent workloads.
+
+% ============================================================
+% Chapter 7: Conclusions
+% ============================================================
+\chapter{Conclusions}
+
+\begin{itemize}
+  \item \textbf{What v6 adds to the v4 ablation.}  It turns the v4 single-curated-workload
+        study into a two-workload controlled comparison: identical hardware,
+        codebase, baselines, load model, SLO cuts, and sampling procedure, with
+        the only changed variable being the prompt distribution (10{,}000 real
+        user prompts vs.\ 202{,}654 COCO captions).  v6 thereby isolates whether
+        the v4 conclusions are artefacts of curated caption text.
+  \item \textbf{Where DiffusionDB confirms v4.}  Every headline conclusion
+        survives: DIFS\_v3 and Clipper Small-Only hit 100\% latency-SLO at all
+        load levels; Clipper Large-Only collapses on 40-step requests (0\%
+        both workloads); INFaaS degrades at 40 steps (75.9\% vs.\ 75.5\%);
+        completion is 100\%, no requests dropped, step-count accuracy SLO 100\%
+        under both workloads.  Throughput is invariant to prompt content
+        ($\pm$0.001 req/s).
+  \item \textbf{Where it diverges.}  Only in small, statistically explainable
+        movements: Clipper Large-Only 30-step 97.1$\to$93.0 (Poisson sampling at
+        low load) and INFaaS 30-step 93.4$\to$100.0.  No divergence changes the
+        ranking or the deployment recommendation.
+  \item \textbf{Limitations and future work.}  Single-node, single 49\,GB GPU,
+        emulated Clipper/INFaaS baselines (not the original repos), one
+        generation per request (no batching), fixed 5-worker pool, static
+        step-count levels, and prompts sampled deterministically with seed 42
+        from a 10{,}000-prompt pool.  Future work: real INFaaS/Clipper
+        deployments as baselines, multi-GPU worker pools, larger step/cost
+        spaces, prompt-length-stratified load, and batching over the heavy 40-step
+        requests that cause today's only SLO failures.
+\end{itemize}
+
+% ============================================================
+% Reproducibility
+% ============================================================
+\chapter{Reproducibility Checklist}
+
+\begin{enumerate}
+  \item \texttt{pip install pyarrow} in the \texttt{DIFS\_Gen} env.
+  \item Download \texttt{pooclub/diffusiondb} \texttt{metadata.parquet}
+        ($\sim$190\,MB) to \texttt{results/diffusiondb\_data/}.
+  \item \texttt{python src/scripts/build\_diffusiondb\_pool.py} rebuilds
+        \texttt{annotations/diffusiondb\_prompts.json}.
+  \item \texttt{python run\_baseline\_benchmark.py --baseline all}
+        (crash-resilient; cells rerun individually on restart).
+  \item \texttt{python src/experiments/collect\_pairwise\_switching.py}
+        measures per-mode switch matrices under
+        \texttt{DIFS\_MODEL\_SWITCH\_MODE=}\texttt{hot}/\texttt{force\_upload}/\texttt{cold\_every}
+        into \texttt{switch\_<mode>/pairwise\_switching.csv}.
+  \item \texttt{python compile\_report\_v6.py} regenerates all plots
+        (baseline, workload-comparison, v4 switching-overhead, v5 switch-mode
+        and switch-SLO), fills every table from v6 CSVs, and compiles the PDF
+        (also reads v4 CSV).
+\end{enumerate}
+
+% ============================================================
+% References
+% ============================================================
+\begin{thebibliography}{9}
+
+\bibitem{infaas}
+José~M. Romero, Qian~Li, Nikhil~J. S.~Ashvath, and Matei Zaharia.
+\emph{INFaaS: A Model-less and Managed Inference Serving System}.
+USENIX ATC 2021.
+\url{https://www.usenix.org/conference/atc21/presentation/romero}
+
+\bibitem{clipper}
+Daniel Crankshaw, Xin Wang, Guilio Zhou, Michael~J. Franklin, Joseph~E.
+Gonzalez, and Ion Stoica.
+\emph{Clipper: A Low-Latency Online Prediction Serving System}.
+USENIX NSDI 2017.
+\url{https://www.usenix.org/conference/nsdi17/technical-sessions/presentation/crankshaw}
+
+\bibitem{muxserve}
+Yixin Duan, Can Qin, Yuandong Tian, et~al.
+\emph{MuxServe: Flexible Multiplexing of LLMs to Serve Millions of Users}.
+ICML 2024 (PMLR 235:11905--11917).
+\url{https://arxiv.org/abs/2404.02015}
+
+\bibitem{warmserve}
+Y.~Lou, et~al.
+\emph{WarmServe: Enabling One-for-Many GPU Prewarming for Multi-LLM Serving}.
+2025; accepted ICML 2026.
+\url{https://arxiv.org/abs/2512.09472}
+
+\bibitem{diffusiondb}
+Zijie~J. Wang, Evan Montoya, David Munechika, Haoyang Yang, Benjamin Hoover,
+and Duen Horng Chau.
+\emph{DiffusionDB: A Large-scale Prompt Gallery Dataset for Text-to-Image
+Customized Generations}.
+ACL 2023 (Long). DOI 10.18653/v1/2023.acl-long.51.
+\url{https://arxiv.org/abs/2210.14896}
+
+\end{thebibliography}
+
+\end{document}

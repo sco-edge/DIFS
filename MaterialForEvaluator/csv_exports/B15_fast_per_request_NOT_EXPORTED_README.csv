@@ -1,0 +1,6 @@
+field,value
+fast_results_dir,/mnt/ssd4t/kwadwo/Desktop/WORK/PROGRAMMING_WORLD/PROJECTS_RESEARCH/Templates/DIFS_OC_v7/DiffServ_0112_1730_coco2/0112_1730_coco/results/model_benchmark_fast/plot_data_baseline
+per_request_file_present,No - model_benchmark_fast contains aggregate slo_violation/startup/latency_inflation CSVs only
+available_fast_files,"slo_violation_runs.csv, slo_violation_summary.csv, slo_violation_exact_load.csv, startup_latency.csv, latency_inflation_high_load.csv"
+authoritative_fast_aggregates,See B14_fast_slo_sweep_runs.csv and B14_fast_slo_sweep_summary.csv
+snapshot_fallback,B15_full_per_request_latency_snapshot.csv is from metrics/ snapshot (mixed provenance); not exclusively fast-run per-baseline

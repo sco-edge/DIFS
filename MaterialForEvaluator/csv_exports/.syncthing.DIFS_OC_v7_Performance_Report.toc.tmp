@@ -1,0 +1,38 @@
+\contentsline {chapter}{\numberline {1}Executive Summary}{3}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Distinguishing DIFS\_\allowbreak OC\_\allowbreak v6}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}DIFS\_\allowbreak OC\_\allowbreak v6 vs.\ DIFS\_\allowbreak OC\_\allowbreak v4}{5}{section.2.1}%
+\contentsline {section}{\numberline {2.2}DIFS\_\allowbreak OC\_\allowbreak v6 vs.\ the earlier DIFS projects (in general)}{5}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Why the DiffusionDB dataset}{6}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Experimental Setup}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Hardware}{7}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Workload: DiffusionDB prompt pool}{7}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Workload: parity with v4}{7}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Metrics}{8}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Results: DiffusionDB Workload (DIFS\_\allowbreak OC\_\allowbreak v6)}{9}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Latency SLO Attainment}{9}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Accuracy SLO Attainment}{10}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Throughput}{11}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Completion Rates}{12}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Plot Generation}{12}{section.4.5}%
+\contentsline {chapter}{\numberline {5}COCO vs.\ DiffusionDB: Comparison}{13}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Per-System Aggregate}{13}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Latency SLO by System and Load}{14}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Latency SLO by Step Count}{15}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Throughput--Latency SLO}{16}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Interpretation}{16}{section.5.5}%
+\contentsline {chapter}{\numberline {6}Model-Switching Behaviour}{18}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Measured switch costs}{18}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Pairwise switching matrices}{19}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Cross-mode and aggregate views}{20}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Switching overhead vs.\ the four schemes (v4 figure set)}{22}{section.6.4}%
+\contentsline {section}{\numberline {6.5}SLO context of the three modes}{27}{section.6.5}%
+\contentsline {section}{\numberline {6.6}When to cold-switch vs.\ when to warm-switch}{29}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}Best situations for cold switching}{29}{subsection.6.6.1}%
+\contentsline {subsection}{\numberline {6.6.2}Best situations for warm (\texttt {force\_\allowbreak upload}) switching}{30}{subsection.6.6.2}%
+\contentsline {subsection}{\numberline {6.6.3}Choosing one over the other}{31}{subsection.6.6.3}%
+\contentsline {chapter}{\numberline {7}Analysis and Interpretation}{32}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Key findings}{32}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Workload effect on scheduling decisions}{32}{section.7.2}%
+\contentsline {section}{\numberline {7.3}External validity of the v4 ablation}{33}{section.7.3}%
+\contentsline {chapter}{\numberline {8}Conclusions}{34}{chapter.8}%
+\contentsline {chapter}{\numberline {9}Reproducibility Checklist}{35}{chapter.9}%

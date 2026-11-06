@@ -1,0 +1,712 @@
+#!/usr/bin/env bash
+# DIFS_OC_v7 - Quality Testing & Evaluation (concise version of v6)
+#
+# Interactive menu AND command-line modes share one code path.
+# Defaults are "quick" (minute-level); pass --full for v6-scale runs.
+
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
+
+ENV_NAME="${DIFS_ENV_NAME:-DIFS_Gen}"
+# Force use of conda env if available
+if command -v conda >/dev/null 2>&1 && conda env list 2>/dev/null | grep -q "$ENV_NAME"; then
+    CONDA_PY="$(conda run -n "$ENV_NAME" python -c 'import sys; print(sys.executable)' 2>/dev/null || true)"
+    if [[ -n "$CONDA_PY" && -x "$CONDA_PY" ]]; then
+        PYTHON="$CONDA_PY"
+        DIFS_PYTHON_BIN="$CONDA_PY"
+    else
+        PYTHON="${DIFS_PYTHON:-python3}"
+    fi
+else
+    PYTHON="${DIFS_PYTHON:-python3}"
+fi
+# Separate directories for live (current) and last (previous option-3) results
+LIVE_RESULTS_DIR="$PROJECT_ROOT/results/model_benchmark_live"
+LAST_RESULTS_DIR="$PROJECT_ROOT/results/model_benchmark_last"
+export DIFS_LIVE_RESULTS_DIR="$LIVE_RESULTS_DIR"
+export DIFS_LAST_RESULTS_DIR="$LAST_RESULTS_DIR"
+: "${SEED:=42}"
+export SEED
+SEED="${DIFS_SEED:-${SEED:-42}}"
+
+# Quick defaults (override with --full or explicit flags)
+QUICK_MODE=1
+BASELINES=(clipper_large clipper_small infaas difs_v3)
+LEVELS=(low high)
+PROMPT_COUNT=12
+WORKERS=2
+
+RUN_SETUP=0
+RUN_EXPERIMENTS=0
+RUN_PLOTS=0
+RUN_REPORT=0
+CLEAN_OUTPUT=0
+DRY_RUN=0
+FORCE=0
+TRACK=1
+TRACK_PORT=8080
+TRACKER_PID=""
+TRACKER_ACTIVE=0
+PERF=0
+PRELOAD=""
+
+SKIP_BASELINE=0
+SKIP_SWITCHING=0
+SWITCH_MODELS=(3 5)
+SWITCH_REPEAT=1
+SWITCH_DELAY=1.0
+
+log()  { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
+warn() { printf '[%s] WARNING: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >&2; }
+die()  { printf '[%s] ERROR: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >&2; exit 1; }
+
+stop_tracker_gui() {
+    if [[ -n "${TRACKER_PID:-}" ]]; then
+        kill "$TRACKER_PID" 2>/dev/null || true
+        wait "$TRACKER_PID" 2>/dev/null || true
+        TRACKER_PID=""
+    fi
+    TRACKER_ACTIVE=0
+}
+
+run_cmd() {
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        log "[dry-run] $*"
+        return 0
+    fi
+    "$@"
+}
+
+python_env() {
+    # Print the command prefix used to run Python inside the project env.
+    if command -v conda >/dev/null 2>&1 \
+        && conda env list 2>/dev/null | awk '{print $1}' | grep -qx "$ENV_NAME" \
+        && [[ "${DIFS_NO_CONDA:-0}" != "1" ]]; then
+        printf '%s\n' "conda run --no-capture-output -n $ENV_NAME $PYTHON"
+    else
+        printf '%s\n' "$PYTHON"
+    fi
+}
+
+PYTHON_BIN=""
+resolve_python_bin() {
+    [[ -n "$PYTHON_BIN" ]] && return 0
+    if [[ -n "${DIFS_PYTHON_BIN:-}" ]]; then
+        PYTHON_BIN="$DIFS_PYTHON_BIN"
+    elif command -v conda >/dev/null 2>&1 \
+        && conda env list 2>/dev/null | awk '{print $1}' | grep -qx "$ENV_NAME" \
+        && [[ "${DIFS_NO_CONDA:-0}" != "1" ]]; then
+        PYTHON_BIN="$(conda run -n "$ENV_NAME" python -c 'import sys; print(sys.executable)' 2>/dev/null || true)"
+    fi
+    if [[ -z "$PYTHON_BIN" ]]; then
+        PYTHON_BIN="$(command -v "$PYTHON" || true)"
+    fi
+    [[ -n "$PYTHON_BIN" ]] || die "No Python interpreter found (set DIFS_PYTHON_BIN)."
+    log "Python binary: $PYTHON_BIN"
+}
+
+py() {
+    # Run Python with PYTHONPATH=src in the project root.
+    local pycmd track_gui="${DIFS_TRACK_GUI:-1}"
+    pycmd="$(python_env)"
+    [[ "$TRACKER_ACTIVE" -eq 1 ]] && track_gui=0
+    # shellcheck disable=SC2086
+    run_cmd env PYTHONPATH=src DIFS_PERF_OPTIMIZATION="$PERF" \
+        DIFS_PRELOAD_MODELS="$PRELOAD" DIFS_TRACK_GUI="$track_gui" \
+        $pycmd "$@"
+}
+
+###############################################################################
+# Setup
+###############################################################################
+run_setup() {
+    log "Setup: checking environment, prompts, and model cache..."
+
+    if ! command -v conda >/dev/null 2>&1; then
+        warn "conda not found; using ${PYTHON} directly."
+    elif ! conda env list 2>/dev/null | awk '{print $1}' | grep -qx "$ENV_NAME"; then
+        if [[ "${DIFS_ALLOW_CONDA_CREATE:-0}" == "1" ]]; then
+            log "Creating conda env ${ENV_NAME} (python=3.10)..."
+            run_cmd conda create -y -n "$ENV_NAME" python=3.10
+        else
+            warn "conda env '${ENV_NAME}' not found. Create it with:"
+            warn "  conda create -y -n ${ENV_NAME} python=3.10"
+            warn "  (or set DIFS_ALLOW_CONDA_CREATE=1)"
+        fi
+    else
+        log "Conda env '${ENV_NAME}' found."
+    fi
+
+    if [[ -f "$PROMPTS_FILE" ]]; then
+        log "DiffusionDB prompt pool found: $PROMPTS_FILE"
+    else
+        log "Building DiffusionDB prompt pool (requires pyarrow + metadata.parquet)..."
+        py src/scripts/build_diffusiondb_pool.py || warn "Prompt build failed; see errors above."
+    fi
+
+    if [[ -n "$MODEL_DIR" && ! -d "$MODEL_DIR" ]]; then
+        warn "DIFS_MODEL_DIR does not exist: $MODEL_DIR"
+    elif [[ -z "$MODEL_DIR" ]]; then
+        warn "DIFS_MODEL_DIR is unset; workers will use project_paths.py defaults."
+    fi
+}
+
+###############################################################################
+# Experiments
+###############################################################################
+port_in_use() {
+    "$PYTHON_BIN" - "$1" <<'PY'
+import socket
+import sys
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    sock.settimeout(0.5)
+    sys.exit(0 if sock.connect_ex(("127.0.0.1", int(sys.argv[1]))) == 0 else 1)
+PY
+}
+
+wait_for_port() {
+    local port="$1" timeout="${2:-600}" pid="${3:-}"
+    "$PYTHON_BIN" - "$port" "$timeout" "$pid" <<'PY'
+import os
+import socket
+import sys
+import time
+
+port, timeout = int(sys.argv[1]), float(sys.argv[2])
+pid = int(sys.argv[3]) if sys.argv[3] else None
+
+def alive():
+    if pid is None:
+        return True
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+deadline = time.time() + timeout
+while time.time() < deadline:
+    if not alive():
+        sys.exit(2)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(1.0)
+        if sock.connect_ex(("127.0.0.1", port)) == 0:
+            sys.exit(0)
+    time.sleep(1.0)
+sys.exit(1)
+PY
+}
+
+SWITCH_WORKER_PID=""
+stop_switch_worker() {
+    if [[ -n "$SWITCH_WORKER_PID" ]]; then
+        log "Stopping switching worker pid=$SWITCH_WORKER_PID"
+        kill -TERM "$SWITCH_WORKER_PID" 2>/dev/null || true
+        for _ in $(seq 1 20); do
+            kill -0 "$SWITCH_WORKER_PID" 2>/dev/null || break
+            sleep 1
+        done
+        kill -KILL "$SWITCH_WORKER_PID" 2>/dev/null || true
+        wait "$SWITCH_WORKER_PID" 2>/dev/null || true
+        SWITCH_WORKER_PID=""
+    fi
+}
+trap stop_switch_worker EXIT
+
+run_baseline() {
+    if [[ "$FORCE" -eq 1 ]]; then
+        local csv="$PROJECT_ROOT/results/model_benchmark/plot_data_baseline/baseline_comparison.csv"
+        local obj_csv="$PROJECT_ROOT/results/model_benchmark/plot_data_baseline/objective_metrics.csv"
+        log "Force: removing $csv and $obj_csv"
+        [[ "$DRY_RUN" -eq 1 ]] || rm -f "$csv" "$obj_csv"
+    fi
+
+    local extra=()
+    if [[ "$TRACK" -eq 1 ]]; then
+        extra+=(--track --track-gui-port "$TRACK_PORT")
+    fi
+
+    py run_baseline_benchmark.py \
+        --baseline "${BASELINES[@]}" \
+        --levels "${LEVELS[@]}" \
+        --workers "$WORKERS" \
+        --prompt-count "$PROMPT_COUNT" \
+        --seed "${SEED:-42}" \
+        "${extra[@]}"
+}
+
+run_switching() {
+    log "Pairwise model-switching measurements (models: ${SWITCH_MODELS[*]})"
+    [[ "${#SWITCH_MODELS[@]}" -ge 2 ]] || die "Need at least two --switch-models."
+    resolve_python_bin
+
+    local base="$PROJECT_ROOT/results/model_benchmark/plot_data_baseline"
+    local first="${SWITCH_MODELS[0]}"
+    local port=50060 mode mode_dir matrix wlog rc port_rc
+    local -a modes=(hot force_upload cold_every)
+
+    local -a env_args=(
+        "DIFS_OUTPUT_DIR=$OUTPUT_DIR"
+        "HF_HOME=${HF_HOME:-$HOME/.cache/huggingface}"
+        "PYTHONPATH=$PROJECT_ROOT/src:$PROJECT_ROOT${PYTHONPATH:+:$PYTHONPATH}"
+    )
+    [[ -n "$MODEL_DIR" ]] && env_args+=("DIFS_MODEL_DIR=$MODEL_DIR")
+    env_args+=("DIFS_PERF_OPTIMIZATION=$PERF")
+    [[ -n "$PRELOAD" ]] && env_args+=("DIFS_PRELOAD_MODELS=$PRELOAD")
+
+    for mode in "${modes[@]}"; do
+        mode_dir="$base/switch_$mode"
+        matrix="$mode_dir/pairwise_switching.csv"
+        wlog="$PROJECT_ROOT/logs/switch_worker_$mode.log"
+        [[ "$DRY_RUN" -eq 1 ]] || mkdir -p "$mode_dir" "$PROJECT_ROOT/logs"
+
+        if [[ -f "$matrix" && "$FORCE" -eq 0 && "${DIFS_FORCE_RERUN:-0}" != "1" ]]; then
+            log "[switching] $mode already measured; skipping ($matrix). Use --force to redo."
+            continue
+        fi
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            log "[dry-run] Would start worker mode=$mode on port $port for ${SWITCH_MODELS[*]}"
+            continue
+        fi
+        if port_in_use "$port"; then
+            die "Port $port is in use; stop the stale process before switching ($mode)."
+        fi
+
+        log "[switching] starting worker: mode=$mode model=$first port=$port"
+        env "${env_args[@]}" \
+            DIFS_MODEL_SWITCH_MODE="$mode" \
+            "$PYTHON_BIN" -u "$PROJECT_ROOT/src/1/pytorch_container_diffusion_v3.py" \
+                -model "$first" -sampler 1 -thread 10 -port "$port" \
+                -npz "$PROJECT_ROOT/real_stats.npz" >> "$wlog" 2>&1 &
+        SWITCH_WORKER_PID=$!
+
+        port_rc=0
+        wait_for_port "$port" 900 "$SWITCH_WORKER_PID" || port_rc=$?
+        if [[ "$port_rc" -ne 0 ]]; then
+            warn "Worker for mode=$mode failed to start (rc=$port_rc). See $wlog"
+            stop_switch_worker
+            return 1
+        fi
+
+        rc=0
+        env "${env_args[@]}" \
+            "$PYTHON_BIN" -u "$PROJECT_ROOT/src/experiments/collect_pairwise_switching.py" \
+                --worker "localhost:$port" \
+                --models "${SWITCH_MODELS[@]}" \
+                --warmup 1 --repeat "$SWITCH_REPEAT" --delay "$SWITCH_DELAY" \
+                --output "$matrix" || rc=1
+        stop_switch_worker
+        if [[ "$rc" -ne 0 ]]; then
+            warn "Collection failed for mode=$mode. See $wlog"
+            return 1
+        fi
+        [[ -s "$matrix" ]] || die "Expected switching CSV not written: $matrix"
+        log "[switching] $mode complete: $matrix"
+    done
+}
+
+
+backup_live_to_last() {
+    mkdir -p "$LAST_RESULTS_DIR"
+    if [[ -d "$LIVE_RESULTS_DIR" ]] && [[ -n "$(ls -A "$LIVE_RESULTS_DIR" 2>/dev/null)" ]]; then
+        rm -rf "$LAST_RESULTS_DIR"/*
+        cp -a "$LIVE_RESULTS_DIR"/. "$LAST_RESULTS_DIR"/ 2>/dev/null || true
+        log "Backed up previous live run to $LAST_RESULTS_DIR"
+    else
+        log "No previous live results to back up"
+    fi
+}
+
+prepare_live_results() {
+    mkdir -p "$LIVE_RESULTS_DIR"
+    rm -rf "$LIVE_RESULTS_DIR"/*
+    mkdir -p "$LIVE_RESULTS_DIR/plot_data_baseline" "$LIVE_RESULTS_DIR/plot_data_baseline/plots"
+    export DIFS_LIVE_RESULTS_DIR="$LIVE_RESULTS_DIR"
+}
+
+run_plots_from_last() {
+    log "Generating plots from last option-3 run ($LAST_RESULTS_DIR)..."
+    resolve_python_bin
+    local base="$LAST_RESULTS_DIR/plot_data_baseline"
+    if [[ ! -f "$base/baseline_comparison.csv" && ! -f "$base/switch_hot/pairwise_switching.csv" ]]; then
+        warn "No plots CSVs found in $base. Run option 3 at least twice."
+        return 0
+    fi
+    export DIFS_PLOT_DATA_DIR="$base"
+    local plots=(
+        src/plots/plot_baseline_comparison.py
+        src/plots/plot_workload_comparison.py
+        src/plots/plot_switching_overhead.py
+        src/plots/plot_switch_modes.py
+        src/plots/plot_switch_slo.py
+    )
+    local p
+    for p in "${plots[@]}"; do
+        if [[ -f "$PROJECT_ROOT/$p" ]]; then
+            log "  plotting: $p"
+            (cd "$PROJECT_ROOT" && PYTHONPATH=src "$PYTHON_BIN" "$p") || warn "plot failed: $p"
+        fi
+    done
+    unset DIFS_PLOT_DATA_DIR
+}
+
+run_report_from_last() {
+    log "Compiling report from last option-3 run..."
+    resolve_python_bin
+    local base="$LAST_RESULTS_DIR/plot_data_baseline"
+    if [[ ! -f "$base/baseline_comparison.csv" ]]; then
+        warn "No experiment results found in $base. Run option 3 at least twice."
+        return 0
+    fi
+    export DIFS_PLOT_DATA_DIR="$base"
+    if [[ -f "$PROJECT_ROOT/compile_report_v7.py" ]]; then
+        (cd "$PROJECT_ROOT" && PYTHONPATH=src "$PYTHON_BIN" compile_report_v7.py) || warn "v7 report compile failed."
+    elif [[ -f "$PROJECT_ROOT/compile_report_v6.py" ]]; then
+        (cd "$PROJECT_ROOT" && PYTHONPATH=src "$PYTHON_BIN" compile_report_v6.py) || warn "v6 report compiler failed."
+    elif [[ -f "$PROJECT_ROOT/compile_report.py" ]]; then
+        (cd "$PROJECT_ROOT" && PYTHONPATH=src "$PYTHON_BIN" compile_report.py) || warn "legacy report compiler failed."
+    else
+        warn "No report compiler found."
+    fi
+    unset DIFS_PLOT_DATA_DIR
+}
+
+run_experiments() {
+    resolve_python_bin
+    # Clear any prior tracker state so new run's plots/tables start fresh.
+    PYTHONPATH="$PROJECT_ROOT/src" "$PYTHON_BIN" -c "from pathlib import Path; from tracking.realtime_tracker import RealTimeTracker; RealTimeTracker(Path('$PROJECT_ROOT')).reset()" || warn "Failed to reset tracker state"
+    start_tracker_gui
+    log "Mode: $([[ "$QUICK_MODE" -eq 1 ]] && echo quick/minute-level || echo full/v6-scale)"
+    log "  prompts/level=${PROMPT_COUNT} levels=${LEVELS[*]} workers=${WORKERS}"
+
+    if [[ "$SKIP_BASELINE" -eq 0 ]]; then
+        run_baseline
+    else
+        log "Skipping baseline (--skip-baseline)."
+    fi
+    if [[ "$SKIP_SWITCHING" -eq 0 ]]; then
+        run_switching
+    else
+        log "Skipping switching (--skip-switching)."
+    fi
+    # Populate dashboard from completed results
+    if [[ -f "$PROJECT_ROOT/src/tracking/populate_from_csv.py" ]]; then
+        log "Populating dashboard from completed results..."
+        PYTHONPATH="$PROJECT_ROOT/src" DIFS_LIVE_RESULTS_DIR="$LIVE_RESULTS_DIR" "$PYTHON_BIN" "$PROJECT_ROOT/src/tracking/populate_from_csv.py" --project-root "$PROJECT_ROOT" 2>&1 | tail -5 || warn "Failed to populate dashboard from results"
+    fi
+}
+
+###############################################################################
+# Plots / report
+###############################################################################
+run_plots() {
+    log "Generating plots from existing CSVs..."
+    local baseline_csv="$PROJECT_ROOT/results/model_benchmark/plot_data_baseline/baseline_comparison.csv"
+    local switch_hot="$PROJECT_ROOT/results/model_benchmark/plot_data_baseline/switch_hot/pairwise_switching.csv"
+    if [[ ! -f "$baseline_csv" && ! -f "$switch_hot" ]]; then
+        warn "No experiment CSVs found. Run experiments (option 3) first to generate results."
+        return 0
+    fi
+    local plots=(
+        src/plots/plot_baseline_comparison.py
+        src/plots/plot_workload_comparison.py
+        src/plots/plot_switching_overhead.py
+        src/plots/plot_switch_modes.py
+        src/plots/plot_switch_slo.py
+    )
+    local p
+    for p in "${plots[@]}"; do
+        if [[ -f "$PROJECT_ROOT/$p" ]]; then
+            log "  plotting: $p"
+            py "$p" || warn "plot failed: $p"
+        fi
+    done
+}
+
+run_report() {
+    log "Compiling report from existing CSVs..."
+    local baseline_csv="$PROJECT_ROOT/results/model_benchmark/plot_data_baseline/baseline_comparison.csv"
+    if [[ ! -f "$baseline_csv" ]]; then
+        warn "No experiment results found. Run experiments (option 3) first."
+        return 0
+    fi
+    if [[ -f "$PROJECT_ROOT/compile_report_v7.py" ]]; then
+        py compile_report_v7.py || warn "v7 report compile failed."
+    elif [[ -f "$PROJECT_ROOT/compile_report_v6.py" ]]; then
+        py compile_report_v6.py || warn "v6 report compiler failed (v7 report template may be missing)."
+    elif [[ -f "$PROJECT_ROOT/compile_report.py" ]]; then
+        py compile_report.py || warn "legacy report compiler failed."
+    else
+        warn "No report compiler found."
+    fi
+}
+
+###############################################################################
+# Clean
+###############################################################################
+run_clean() {
+    if [[ "$FORCE" -ne 1 && "$DRY_RUN" -ne 1 ]]; then
+        local answer=""
+        read -r -p "Delete $OUTPUT_DIR and client_received/*.png? [y/N] " answer || answer=""
+        [[ "$answer" =~ ^[Yy]$ ]] || { log "Clean cancelled."; return 0; }
+    fi
+    log "Cleaning temporary output and generated images..."
+    run_cmd rm -rf "$OUTPUT_DIR"
+    if [[ -d "$PROJECT_ROOT/client_received" ]]; then
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            log "[dry-run] find $PROJECT_ROOT/client_received -name '*.png' -delete"
+        else
+            find "$PROJECT_ROOT/client_received" -name '*.png' -delete 2>/dev/null || true
+        fi
+    fi
+}
+
+###############################################################################
+# Trackers
+###############################################################################
+open_tracker_browser() {
+    [[ "${DIFS_OPEN_GUI:-1}" == "1" ]] || return 0
+    [[ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]] || return 0
+    command -v xdg-open >/dev/null 2>&1 || return 0
+    nohup xdg-open "http://127.0.0.1:${TRACK_PORT}" >/dev/null 2>&1 &
+}
+
+start_tracker_gui() {
+    [[ "$TRACK" -eq 1 ]] || return 0
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        log "[dry-run] start tracker GUI on http://127.0.0.1:${TRACK_PORT}"
+        return 0
+    fi
+
+    resolve_python_bin
+    # Free port if in use
+    fuser -k ${TRACK_PORT}/tcp 2>/dev/null || pkill -f "tracking.dash_app.*${TRACK_PORT}" 2>/dev/null || pkill -f "tracker_gui_server.*${TRACK_PORT}" 2>/dev/null || true
+    sleep 1
+    # Launch stdlib tracker GUI (2x2 plots + Current Results table) on port TRACK_PORT
+    local tracker_log="$PROJECT_ROOT/results/model_benchmark/Reports/tracker_gui.log"
+    mkdir -p "$(dirname "$tracker_log")"
+    PYTHONPATH="$PROJECT_ROOT/src" nohup "$PYTHON_BIN" -m tracking.tracker_gui_server \
+        --project-root "$PROJECT_ROOT" --port "$TRACK_PORT" \
+        >"$tracker_log" 2>&1 &
+    TRACKER_PID=$!
+    TRACKER_ACTIVE=1
+
+    local rc=0
+    # Wait for the tracker server to become reachable via its HTTP API
+    deadline=$(( SECONDS + 60 ))
+    while [[ $SECONDS -lt $deadline ]]; do
+        if curl -fsS --max-time 2 "http://127.0.0.1:${TRACK_PORT}/api/metrics" >/dev/null 2>&1; then
+            rc=0
+            break
+        fi
+        sleep 1
+    done
+    if [[ "$rc" -ne 0 ]]; then
+        warn "Tracker GUI failed to start. See $tracker_log"
+        stop_tracker_gui
+        return 0
+    fi
+    log "Tracker GUI: http://127.0.0.1:${TRACK_PORT} (log: $tracker_log)"
+    open_tracker_browser
+}
+
+tracker_cli() {
+    log "CLI tracker (Ctrl+C to stop)"
+    # shellcheck disable=SC2016
+    py - <<'PY'
+import json
+import time
+from pathlib import Path
+
+from tracking.realtime_tracker import RealTimeTracker
+
+tracker = RealTimeTracker(Path.cwd())
+while True:
+    try:
+        if tracker.metrics_file.exists():
+            data = json.loads(tracker.metrics_file.read_text())
+            tracker.baseline_metrics = data.get("baseline", {})
+            tracker.current_metrics = data.get("current", {})
+            tracker.history = data.get("history", [])
+        tracker.display_cli_dashboard()
+    except KeyboardInterrupt:
+        break
+    except Exception as exc:
+        print(f"[TRACKER] waiting for metrics... ({exc})")
+    time.sleep(2)
+PY
+}
+
+tracker_gui() {
+    log "GUI tracker on http://127.0.0.1:${TRACK_PORT} (Ctrl+C to stop)"
+    # shellcheck disable=SC2016
+    py - "$TRACK_PORT" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+from tracking.realtime_tracker import RealTimeTracker
+
+port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
+tracker = RealTimeTracker(Path.cwd())
+if tracker.metrics_file.exists():
+    data = json.loads(tracker.metrics_file.read_text())
+    tracker.baseline_metrics = data.get("baseline", {})
+    tracker.current_metrics = data.get("current", {})
+    tracker.history = data.get("history", [])
+tracker.serve_forever(port=port)
+PY
+}
+
+###############################################################################
+# Help / menu
+###############################################################################
+show_help() {
+    cat <<EOF
+DIFS_OC_v7 runner - quality testing (concise v6)
+
+Usage: $0 [options]
+  --setup            check/create env, build prompts, verify model cache
+  --experiments      run baseline benchmark (quick by default)
+  --plots            generate plots from existing CSVs
+  --report           compile the PDF report
+  --all              setup + experiments + plots + report
+  --clean            remove temporary outputs / generated PNGs
+  --full             v6-scale run (300 prompts, 5 levels, 5 workers)
+  --quick            minute-level run (default: 12 prompts, low/high, 2 workers)
+  --baseline NAME... baselines to run (default: all four)
+  --levels NAME...   load levels (default: low high)
+  --workers N        worker pool size (default: 2)
+  --prompt-count N   requests per level (default: 12 quick / 300 full)
+  --skip-baseline    skip the baseline benchmark stage
+  --skip-switching   skip pairwise model-switching measurements
+  --switch-models... model IDs for switching (quick: 3 5; full: 3 4 5 8 9)
+  --switch-repeat N  measurements per pair (default: 1 quick / 3 full)
+  --switch-delay SEC delay between switches (default: 1.0 quick / 2.0 full)
+  --track            enable real-time tracker during experiments
+  --track-gui-port N GUI port (default: 8080)
+  --optimize         enable v7 optimizer (health-aware + prefetch)
+  --no-optimize      disable optimizer (default)
+  --force            delete previous CSV before running
+  --dry-run          print commands without executing
+  --help             show this help
+
+Interactive: run without options.
+EOF
+}
+
+show_menu() {
+    clear 2>/dev/null || true
+    echo "=============================================="
+    echo "   DIFS_OC_v7 Runner - Quality Testing"
+    echo "=============================================="
+    echo "Mode: $([[ "$QUICK_MODE" -eq 1 ]] && echo quick/minute-level || echo full/v6-scale)"
+    echo "Targets: SLO -5%, cold/hot start -50%, error/normal -30%"
+    echo "=============================================="
+    echo "1. Run Complete Pipeline (setup > experiments > plots > report)"
+    echo "2. Setup Only"
+    echo "3. Experiments Only (with tracker if TRACK=1) - FORCE FRESH RERUN + populate dashboard"
+    echo "4. Start/Show Dashboard (post-experiment results viewer)"
+    echo "5. Toggle Performance Tracker (CLI/GUI)"
+    echo "6. Plots Only"
+    echo "7. Report Only"
+    echo "8. Clean Output"
+    echo "9. Help/Information"
+    echo "10. Generate Plots from Last Option-3 Run (Live/Previous)"
+    echo "11. Exit"
+    echo "=============================================="
+}
+
+menu_loop() {
+    local choice
+    while true; do
+        show_menu
+        read -r -p "Select an option (1-11): " choice
+        case "$choice" in
+            1) run_setup; run_experiments; run_plots; run_report; read -r -p "Press Enter...";;
+            2) run_setup; read -r -p "Press Enter...";;
+            3) backup_live_to_last; prepare_live_results; FORCE=1; export DIFS_FORCE_RERUN=1; log "Option 3: forcing fresh rerun (backed up previous live run to last-results, cleared live results)..."; \
+               rm -f "$PROJECT_ROOT/results/model_benchmark/plot_data_baseline/baseline_comparison.csv" \
+                     "$PROJECT_ROOT/results/model_benchmark/plot_data_baseline/objective_metrics.csv" 2>/dev/null || true; \
+               find "$PROJECT_ROOT/results/model_benchmark/plot_data_baseline" -name 'pairwise_switching.csv' -delete 2>/dev/null || true; \
+               find "$PROJECT_ROOT/results" -name 'slo_benchmark_results.csv' -delete 2>/dev/null || true; \
+               run_experiments; FORCE=0; export DIFS_FORCE_RERUN=0; read -r -p "Press Enter...";;
+            4) log "Starting dashboard (tracker GUI)..."; start_tracker_gui; open_tracker_browser 2>/dev/null || true; read -r -p "Press Enter...";;
+            5) if [[ "$TRACKER_ACTIVE" -eq 1 ]]; then
+                log "Tracker already running on http://127.0.0.1:${TRACK_PORT}"
+                open_tracker_browser
+              else
+                log "Starting tracker..."
+                start_tracker_gui
+                open_tracker_browser
+              fi;;
+            6) run_plots; read -r -p "Press Enter...";;
+            7) run_report; read -r -p "Press Enter...";;
+            8) run_clean; read -r -p "Press Enter...";;
+            9) show_help; read -r -p "Press Enter...";;
+            10) backup_live_to_last; run_plots_from_last; run_report_from_last 2>/dev/null || true; read -r -p "Press Enter...";;
+            11) log "Exiting."; return 0;;
+            *) warn "Invalid option."; read -r -p "Press Enter...";;
+        esac
+    done
+}
+
+###############################################################################
+# Argument parsing
+###############################################################################
+if [[ $# -eq 0 ]]; then
+    menu_loop
+    exit 0
+fi
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --setup) RUN_SETUP=1; shift;;
+        --experiments) RUN_EXPERIMENTS=1; shift;;
+        --plots) RUN_PLOTS=1; shift;;
+        --report) RUN_REPORT=1; shift;;
+        --all) RUN_SETUP=1; RUN_EXPERIMENTS=1; RUN_PLOTS=1; RUN_REPORT=1; shift;;
+        --clean) CLEAN_OUTPUT=1; shift;;
+        --full) QUICK_MODE=0; PROMPT_COUNT=300; LEVELS=(low medium high saturation stress); WORKERS=5
+                SWITCH_MODELS=(3 4 5 8 9); SWITCH_REPEAT=3; SWITCH_DELAY=2.0; shift;;
+        --quick) QUICK_MODE=1; PROMPT_COUNT=12; LEVELS=(low high); WORKERS=2
+                 SWITCH_MODELS=(3 5); SWITCH_REPEAT=1; SWITCH_DELAY=1.0; shift;;
+        --skip-baseline) SKIP_BASELINE=1; shift;;
+        --skip-switching) SKIP_SWITCHING=1; shift;;
+        --switch-models)
+            shift; SWITCH_MODELS=()
+            while [[ $# -gt 0 && "$1" != --* ]]; do SWITCH_MODELS+=("$1"); shift; done;;
+        --switch-repeat) shift; SWITCH_REPEAT="${1:?--switch-repeat needs a value}"; shift;;
+        --switch-delay) shift; SWITCH_DELAY="${1:?--switch-delay needs a value}"; shift;;
+        --baseline)
+            shift; BASELINES=()
+            while [[ $# -gt 0 && "$1" != --* ]]; do BASELINES+=("$1"); shift; done
+            [[ ${#BASELINES[@]} -gt 0 ]] || die "--baseline needs at least one name";;
+        --levels)
+            shift; LEVELS=()
+            while [[ $# -gt 0 && "$1" != --* ]]; do LEVELS+=("$1"); shift; done
+            [[ ${#LEVELS[@]} -gt 0 ]] || die "--levels needs at least one name";;
+        --workers) shift; WORKERS="${1:?--workers needs a value}"; shift;;
+        --prompt-count) shift; PROMPT_COUNT="${1:?--prompt-count needs a value}"; shift;;
+        --seed) shift; SEED="${1:?--seed needs a value}"; shift;;
+        --track) TRACK=1; shift;;
+        --track-gui-port) shift; TRACK_PORT="${1:?--track-gui-port needs a value}"; shift;;
+        --optimize) PERF=1; PRELOAD="${DIFS_PRELOAD_MODELS:-all}"; shift;;
+        --no-optimize) PERF=0; PRELOAD=""; shift;;
+        --force) FORCE=1; shift;;
+        --dry-run) DRY_RUN=1; shift;;
+        --help|-h) show_help; exit 0;;
+        *) die "Unknown option: $1 (use --help)";;
+    esac
+done
+
+[[ "$RUN_SETUP" -eq 1 ]] && run_setup
+[[ "$RUN_EXPERIMENTS" -eq 1 ]] && run_experiments
+[[ "$RUN_PLOTS" -eq 1 ]] && run_plots
+[[ "$RUN_REPORT" -eq 1 ]] && run_report
+[[ "$CLEAN_OUTPUT" -eq 1 ]] && run_clean
+
+exit 0

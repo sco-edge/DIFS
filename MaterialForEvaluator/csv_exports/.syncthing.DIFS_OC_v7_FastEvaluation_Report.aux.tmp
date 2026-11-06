@@ -1,0 +1,32 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Executive Summary}{2}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Interpretation}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Table 1 (B14): Step/Latency SLO Relationship}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Table 2 (B15): Per-Request E2E Latency and Latency SLO}{3}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Graphs (Fast Run)}{3}{section.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Startup latency reduction (fast).}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:sf}{{1}{3}{Startup latency reduction (fast)}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces SLO violation vs load (fast).}}{3}{figure.2}\protected@file@percent }
+\newlabel{fig:slf}{{2}{3}{SLO violation vs load (fast)}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Latency inflation at high load (fast).}}{4}{figure.3}\protected@file@percent }
+\newlabel{fig:lif}{{3}{4}{Latency inflation at high load (fast)}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Graphs (Full/Live if available)}{4}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Analysis and Conclusions}{4}{section.6}\protected@file@percent }
+\gdef \@abspage@last{4}

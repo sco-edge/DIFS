@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: ttwgu-st4xq
+created: 2026-10-31T14:50:15+09:00

@@ -1,0 +1,1223 @@
+#!/usr/bin/env bash
+#
+# run_all_experiments.sh
+#
+# One-shot, reproducible driver for DIFS_OC_v6:
+#   1. setup       - conda env + pinned Python deps, DiffusionDB prompts, model weights
+#   2. experiments - baseline comparison (R6) + pairwise model-switching measurements
+#   3. plots       - all v6 figures from the experiment CSVs
+#   4. report      - populate the LaTeX tables and compile the PDF (if TeX is available)
+#
+# The project is designed for one RTX 6000 Ada (49 GiB).  A full baseline run
+# takes roughly 21.5 h.  The script is resumable at the cell level: completed
+# cells already present in baseline_comparison.csv are skipped unless --force.
+#
+# How to run
+#   # Full pipeline: setup + ~21.5 h experiments + plots + PDF report
+#   ./run_all_experiments.sh --all --output-dir /path/on/a/large/disk
+#
+#   # Print every command without executing anything
+#   ./run_all_experiments.sh --dry-run --all
+#
+#   # Setup only (conda env, pinned deps, DiffusionDB, model snapshots)
+#   ./run_all_experiments.sh --setup
+#
+#   # Experiments only; resume completed baseline cells
+#   ./run_all_experiments.sh --experiments --skip-switching
+#
+#   # Reuse an existing env/model cache and run everything
+#   ./run_all_experiments.sh --all --skip-deps --model-dir /data/models
+#
+#   # Regenerate only figures and the PDF from existing CSVs
+#   ./run_all_experiments.sh --plots --report
+#
+#   # Force a clean rerun of every baseline cell and switching matrix
+#   ./run_all_experiments.sh --experiments --force
+#
+# Requirements / notes
+#   * Run from this directory (the script cd's here automatically).
+#   * real_stats.npz (33 MB, the FID reference) must be present here; it is
+#     NOT tracked by git, so copy it when moving the project.
+#   * HF_TOKEN is required for the gated SD-3.5-medium snapshot. Accept its
+#     license on huggingface.co and export HF_TOKEN before running --setup.
+#   * The five full model snapshots need about 180 GB; output images need at
+#     least 30 GiB free. Use --output-dir when /tmp is small.
+#   * The v4 COCO baseline CSV is auto-detected for the overlay plots;
+#     override it with --v4-csv PATH (or the V4_CSV environment variable).
+#   * pdflatex is optional; the report stage is skipped when TeX or a figure
+#     is missing.
+#   * Output images and gen_stats.npz are deleted after a completed run unless
+#     --keep-output-images is set. client_received/*.png are kept unless
+#     --clean-client-images is set.
+#
+# ---------------------------------------------------------------------------
+# Interactive Menu (added for DIFS_OC_v6)
+# ---------------------------------------------------------------------------
+show_menu() {
+    clear 2>/dev/null || true
+    echo "===================================="
+    echo "   DIFS_OC_v6 Project Runner"
+    echo "===================================="
+    echo "1. Run Complete Pipeline (setup → experiments → plots → report)"
+    echo "2. Setup Only (conda env + deps, DiffusionDB prompts, model weights)"
+    echo "3. Experiments Only (baseline comparison + switching measurements) [fresh or reuse recent]"
+    echo "4. Plots Only (generate figures from CSV files)"
+    echo "5. Report Only (compile LaTeX tables and PDF report)"
+    echo "6. Force Re-run (ignore existing results)"
+    echo "7. Clean Output (remove temporary files)"
+    echo "8. Help/Information"
+    echo "9. Exit"
+    echo "===================================="
+    read -p "Please select an option (1-9): " choice
+    echo ""
+}
+
+# ---------------------------------------------------------------------------
+# Display help information
+# ---------------------------------------------------------------------------
+show_help() {
+    echo "===================================="
+    echo "     DIFS_OC_v6 Help Information"
+    echo "===================================="
+    echo "This script provides an interactive menu for running DIFS_OC_v6 experiments."
+    echo ""
+    echo "Project Overview:"
+    echo "- One-shot, reproducible driver for DIFS_OC_v6"
+    echo "- Setup: conda env + pinned Python deps, DiffusionDB prompts, model weights"
+    echo "- Experiments: baseline comparison (R6) + pairwise model-switching measurements"
+    echo "- Plots: generate all figures from experiment CSVs"  
+    echo "- Report: populate LaTeX tables and compile PDF report"
+    echo ""
+    echo "Requirements:"
+    echo "- Run from this directory (the script cd's here automatically)"
+    echo "- real_stats.npz (33 MB) must be present in project root"
+    echo "- HF_TOKEN required for gated SD-3.5-medium snapshot"
+    echo "- Conda environment 'DIFS_Gen' with Python 3.10"
+    echo "- Output images and gen_stats.npz are deleted after a completed run"
+    echo "===================================="
+}
+
+# ---------------------------------------------------------------------------
+# Handle menu selection (kept for reference; the live loop is below)
+# ---------------------------------------------------------------------------
+# The interactive loop maps the selection to real command-line arguments and
+# falls through to the normal argument parser, so there is a single code path.
+
+# ---------------------------------------------------------------------------
+set -Eeuo pipefail
+
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
+cd "$PROJECT_ROOT"
+
+# ---------------------------------------------------------------------------
+# Defaults (override with flags or environment variables)
+# ---------------------------------------------------------------------------
+ENV_NAME="${DIFS_ENV_NAME:-DIFS_Gen}"
+PYTHON="${DIFS_PYTHON:-}"
+MODEL_DIR="${DIFS_MODEL_DIR:-}"
+HF_HOME="${HF_HOME:-$HOME/.cache/huggingface}"
+OUTPUT_DIR="${DIFS_OUTPUT_DIR:-/tmp/diffserv_output}"
+WORKERS="${DIFS_WORKERS:-5}"
+SEED="${DIFS_SEED:-42}"
+BASELINES="${DIFS_BASELINES:-all}"
+LEVELS="${DIFS_LEVELS:-}"
+V4_CSV="${V4_CSV:-}"
+SWITCH_MODELS="${DIFS_SWITCH_MODELS:-3 4 5 8 9}"
+SWITCH_REPEAT="${DIFS_SWITCH_REPEAT:-3}"
+SWITCH_DELAY="${DIFS_SWITCH_DELAY:-2.0}"
+TORCH_INDEX_URL="${TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu124}"
+
+STAGE_SETUP=0
+STAGE_EXPERIMENTS=0
+STAGE_PLOTS=0
+STAGE_REPORT=0
+ANY_STAGE=0
+
+SKIP_DEPS=0
+SKIP_MODELS=0
+SKIP_DATASET=0
+SKIP_BASELINE=0
+SKIP_SWITCHING=0
+KEEP_OUTPUT_IMAGES=0
+CLEAN_CLIENT_IMAGES=0
+FORCE=0
+DRY_RUN=0
+
+CURRENT_WORKER_PID=""
+LOG_DIR="$PROJECT_ROOT/logs"
+mkdir -p "$LOG_DIR"
+RUN_LOG="$LOG_DIR/run_all_$(date +%Y%m%d_%H%M%S).log"
+
+PLOT_DATA="$PROJECT_ROOT/results/model_benchmark/plot_data_baseline"
+BASELINE_CSV="$PLOT_DATA/baseline_comparison.csv"
+PROMPTS_FILE="$PROJECT_ROOT/annotations/diffusiondb_prompts.json"
+PARQUET_FILE="$PROJECT_ROOT/results/diffusiondb_data/metadata.parquet"
+WORKER_SCRIPT="$PROJECT_ROOT/src/1/pytorch_container_diffusion_v3.py"
+COLLECT_SCRIPT="$PROJECT_ROOT/src/experiments/collect_pairwise_switching.py"
+BUILD_POOL_SCRIPT="$PROJECT_ROOT/src/scripts/build_diffusiondb_pool.py"
+REPORT_DIR="$PROJECT_ROOT/results/model_benchmark/Reports"
+REPORT_TEX="$REPORT_DIR/DIFS_OC_v6_WorkloadComparison_Report.tex"
+
+# ---------------------------------------------------------------------------
+# Logging / helpers
+# ---------------------------------------------------------------------------
+exec > >(tee -a "$RUN_LOG") 2>&1
+
+log()  { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
+warn() { printf '[%s] WARNING: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >&2; }
+die()  { printf '[%s] ERROR: %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >&2; exit 1; }
+
+run() {
+    log "RUN: $*"
+    if [ "$DRY_RUN" -eq 0 ]; then
+        "$@"
+    fi
+}
+
+stop_current_worker() {
+    if [ -n "${CURRENT_WORKER_PID:-}" ]; then
+        log "Stopping switching worker pid=$CURRENT_WORKER_PID"
+        kill -TERM "$CURRENT_WORKER_PID" 2>/dev/null || true
+        for _ in $(seq 1 20); do
+            if ! kill -0 "$CURRENT_WORKER_PID" 2>/dev/null; then
+                break
+            fi
+            sleep 1
+        done
+        kill -KILL "$CURRENT_WORKER_PID" 2>/dev/null || true
+        wait "$CURRENT_WORKER_PID" 2>/dev/null || true
+        CURRENT_WORKER_PID=""
+    fi
+}
+
+cleanup_on_exit() {
+    stop_current_worker
+}
+trap cleanup_on_exit EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+usage() {
+    cat <<'EOF'
+Usage: ./run_all_experiments.sh [STAGES] [OPTIONS]
+
+Stages (default: --all)
+  --all            Run setup, experiments, plots and report.
+  --setup          Create/activate the conda env, install pinned deps, download data/models.
+  --experiments    Run the baseline benchmark and model-switching measurements.
+  --plots          Regenerate every figure from the existing CSVs.
+  --report         Populate the LaTeX tables and compile the PDF (needs TeX + all figures).
+
+Experiment options
+  --baseline LIST      Baseline names for run_baseline_benchmark.py (default: all).
+                       Examples: "all", "infaas difs_v3", "clipper_large".
+  --levels LIST        Load levels (default: all five: low medium high saturation stress).
+  --workers N          Worker-pool size (default: 5).
+  --seed N             RNG seed (default: 42).
+  --switch-models LIST Model IDs to measure switching between (default: "3 4 5 8 9").
+  --switch-repeat N    Measurements per directed pair (default: 3).
+  --switch-delay SEC   Delay between switches (default: 2.0).
+  --skip-baseline      Do not run the baseline comparison.
+  --skip-switching     Do not run model-switching measurements.
+
+Setup options
+  --python PATH        Use this interpreter instead of the conda env.
+  --env-name NAME      Conda env name (default: DIFS_Gen).
+  --model-dir DIR      Model cache directory (sets DIFS_MODEL_DIR).
+  --hf-home DIR        Hugging Face cache directory (default: $HOME/.cache/huggingface).
+  --output-dir DIR     Worker image output directory (default: /tmp/diffserv_output).
+                       If its filesystem has <30 GiB free the script first deletes
+                       disposable images/npz there, then relocates to a larger
+                       filesystem (DIFS_OUTPUT_FALLBACK_DIR / /mnt/ssd4t/...).
+  --torch-index-url U  PyTorch wheel index (default: cu124).
+  --skip-deps          Do not pip-install dependencies (still verifies imports).
+  --skip-models        Do not download missing model weights (still verifies presence).
+  --skip-dataset       Do not download/build the DiffusionDB prompt pool.
+  --force              Redo completed baseline/switching measurements and rebuild prompts.
+
+Report / cleanup options
+  --v4-csv PATH        v4 COCO baseline CSV for the COCO-vs-DiffusionDB overlay plots.
+  --keep-output-images Keep output images after a completed run.
+  --clean-client-images Delete client_received/*.png after a completed run.
+
+Other
+  --dry-run            Print commands without executing them.
+  -h, --help           Show this help.
+
+Prerequisites
+  - NVIDIA GPU with >= 15 GiB free VRAM (one RTX 6000 Ada is the reference target).
+  - NVIDIA driver + CUDA 12.x runtime compatible with the PyTorch cu124 wheels.
+  - conda (or pass --python), ~200 GB free disk for the five full model snapshots + outputs.
+  - real_stats.npz must be present in the project root (it is NOT tracked by git).
+  - HF_TOKEN is needed for gated models (accept the SD-3.5-medium license on huggingface.co).
+  - pdflatex is optional; the PDF report is skipped when TeX or a figure is missing.
+EOF
+}
+
+# ---------------------------------------------------------------------------
+# Interactive menu (only when no arguments are supplied).  The selection is
+# translated into normal CLI arguments and execution falls through to the same
+# argument parser and main pipeline below, so there is a single code path.
+# ---------------------------------------------------------------------------
+if [ $# -eq 0 ]; then
+    while true; do
+        show_menu
+        case "${choice:-}" in
+            1) set -- --all; break ;;
+            2) set -- --setup; break ;;
+            3)
+                while true; do
+                    echo "===================================="
+                    echo "   Experiments Options"
+                    echo "===================================="
+                    echo "1. Run all experiments from scratch (fresh run)"
+                    echo "2. Verify/reuse most recent run (skip completed)"
+                    echo "3. Back to menu"
+                    echo "===================================="
+                    read -p "Please select an option (1-3): " echoice
+                    echo ""
+                    case "${echoice:-}" in
+                        1) set -- --experiments --force; break 2 ;;
+                        2) set -- --experiments; break 2 ;;
+                        3) break ;;
+                        *) warn "Invalid option. Please select 1-3." ;;
+                    esac
+                done
+                ;;
+            4) set -- --plots; break ;;
+            5) set -- --report; break ;;
+            6) set -- --all --force; break ;;
+            7)
+                log "Cleaning disposable inference outputs in ${OUTPUT_DIR:-/tmp/diffserv_output} ..."
+                find "${OUTPUT_DIR:-/tmp/diffserv_output}" -maxdepth 1 -type f \
+                    \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.npz' \) \
+                    -delete 2>/dev/null || true
+                read -p "Press Enter to continue..."
+                ;;
+            8) show_help; read -p "Press Enter to continue..." ;;
+            9) log "Exiting script. Goodbye!"; exit 0 ;;
+            *) warn "Invalid option. Please select 1-9."; read -p "Press Enter to continue..." ;;
+        esac
+    done
+fi
+
+# ---------------------------------------------------------------------------
+# Argument parsing
+# ---------------------------------------------------------------------------
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --all)            STAGE_SETUP=1; STAGE_EXPERIMENTS=1; STAGE_PLOTS=1; STAGE_REPORT=1; ANY_STAGE=1 ;;
+        --setup)          STAGE_SETUP=1; ANY_STAGE=1 ;;
+        --experiments)    STAGE_EXPERIMENTS=1; ANY_STAGE=1 ;;
+        --plots)          STAGE_PLOTS=1; ANY_STAGE=1 ;;
+        --report)         STAGE_REPORT=1; ANY_STAGE=1 ;;
+        --skip-deps)      SKIP_DEPS=1 ;;
+        --skip-models)    SKIP_MODELS=1 ;;
+        --skip-dataset)   SKIP_DATASET=1 ;;
+        --skip-baseline)  SKIP_BASELINE=1 ;;
+        --skip-switching) SKIP_SWITCHING=1 ;;
+        --keep-output-images) KEEP_OUTPUT_IMAGES=1 ;;
+        --clean-client-images) CLEAN_CLIENT_IMAGES=1 ;;
+        --force)          FORCE=1 ;;
+        --dry-run)        DRY_RUN=1 ;;
+        --python)         PYTHON="$2"; shift ;;
+        --env-name)       ENV_NAME="$2"; shift ;;
+        --model-dir)      MODEL_DIR="$2"; shift ;;
+        --hf-home)        HF_HOME="$2"; shift ;;
+        --output-dir)     OUTPUT_DIR="$2"; shift ;;
+        --torch-index-url) TORCH_INDEX_URL="$2"; shift ;;
+        --workers)        WORKERS="$2"; shift ;;
+        --seed)           SEED="$2"; shift ;;
+        --baseline)       BASELINES="$2"; shift ;;
+        --levels)         LEVELS="$2"; shift ;;
+        --v4-csv)         V4_CSV="$2"; shift ;;
+        --switch-models)  SWITCH_MODELS="$2"; shift ;;
+        --switch-repeat)  SWITCH_REPEAT="$2"; shift ;;
+        --switch-delay)   SWITCH_DELAY="$2"; shift ;;
+        -h|--help)        usage; exit 0 ;;
+        *)                die "Unknown option: $1 (use --help)" ;;
+    esac
+    shift
+done
+
+if [ "$ANY_STAGE" -eq 0 ]; then
+    STAGE_SETUP=1
+    STAGE_EXPERIMENTS=1
+    STAGE_PLOTS=1
+    STAGE_REPORT=1
+fi
+
+# ---------------------------------------------------------------------------
+# Path / environment setup
+# ---------------------------------------------------------------------------
+default_model_dir() {
+    if [ -n "${MODEL_DIR:-}" ]; then
+        printf '%s\n' "$MODEL_DIR"
+        return
+    fi
+    local d
+    for d in \
+        "$PROJECT_ROOT/models/diffusion-models" \
+        "/mnt/my_ssd/Downloads/sd-models/downloaded_diffusion_models/diffusion-models" \
+        "/mnt/ssd4t/kwadwo/Downloads/sd-models/downloaded_diffusion_models/diffusion-models" \
+        "/tmp/model" \
+        "$HOME/difs_models/diffusion-models"; do
+        if [ -d "$d" ]; then
+            printf '%s\n' "$d"
+            return
+        fi
+    done
+    printf '%s\n' "$HOME/difs_models/diffusion-models"
+}
+
+resolve_python() {
+    if [ -n "$PYTHON" ]; then
+        command -v "$PYTHON" >/dev/null 2>&1 || die "Python not found: $PYTHON"
+        PYTHON="$(command -v "$PYTHON")"
+        log "Using Python: $PYTHON"
+        return
+    fi
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        PYTHON="python3"
+        log "[dry-run] Would resolve the '$ENV_NAME' conda environment."
+        return
+    fi
+
+    if ! command -v conda >/dev/null 2>&1; then
+        local conda_bin
+        for conda_bin in \
+            "$HOME/miniforge3/bin/conda" \
+            "$HOME/miniconda3/bin/conda" \
+            "$HOME/anaconda3/bin/conda"; do
+            if [ -x "$conda_bin" ]; then
+                PATH="$(dirname "$conda_bin"):$PATH"
+                export PATH
+                log "Found conda at $conda_bin"
+                break
+            fi
+        done
+    fi
+
+    if ! command -v conda >/dev/null 2>&1; then
+        if command -v python3 >/dev/null 2>&1; then
+            PYTHON="$(command -v python3)"
+            warn "conda not found; using $PYTHON. Dependencies must already be installed."
+            return
+        fi
+        die "conda not found and no --python given."
+    fi
+
+    local conda_base
+    conda_base="$(conda info --base)"
+    # shellcheck disable=SC1091
+    source "$conda_base/etc/profile.d/conda.sh"
+
+    if conda env list 2>/dev/null | awk -v env="$ENV_NAME" '$1 == env { found=1 } END { exit(found ? 0 : 1) }'; then
+        conda activate "$ENV_NAME"
+        PYTHON="$(command -v python)"
+    else
+        local candidate
+        for candidate in \
+            "$HOME/miniforge3/envs/$ENV_NAME/bin/python" \
+            "$HOME/miniconda3/envs/$ENV_NAME/bin/python" \
+            "$HOME/anaconda3/envs/$ENV_NAME/bin/python" \
+            "$HOME/.conda/envs/$ENV_NAME/bin/python"; do
+            if [ -x "$candidate" ]; then
+                PYTHON="$candidate"
+                log "Using Python from an existing env: $PYTHON"
+                log "Using Python: $PYTHON (env: $ENV_NAME)"
+                return
+            fi
+        done
+        if [ "$STAGE_SETUP" -eq 1 ]; then
+            log "Creating conda environment '$ENV_NAME' (Python 3.10)..."
+            run conda create -y -n "$ENV_NAME" python=3.10 pip
+            conda activate "$ENV_NAME"
+            PYTHON="$(command -v python)"
+        else
+            die "Conda env '$ENV_NAME' not found. Run '$0 --setup' first, or pass --python."
+        fi
+    fi
+    log "Using Python: $PYTHON (env: $ENV_NAME)"
+}
+
+export_runtime_env() {
+    MODEL_DIR="$(default_model_dir)"
+    export DIFS_MODEL_DIR="$MODEL_DIR"
+    export DIFS_OUTPUT_DIR="$OUTPUT_DIR"
+    export HF_HOME
+    export PYTHONPATH="$PROJECT_ROOT/src:$PROJECT_ROOT${PYTHONPATH:+:$PYTHONPATH}"
+    if [ -n "$V4_CSV" ]; then
+        export V4_CSV
+    fi
+    if [ "$DRY_RUN" -eq 0 ]; then
+        mkdir -p "$MODEL_DIR" "$OUTPUT_DIR" "$HF_HOME" "$PLOT_DATA"
+    fi
+    log "Project root : $PROJECT_ROOT"
+    log "Model cache  : $MODEL_DIR"
+    log "HF cache     : $HF_HOME"
+    log "Output images: $OUTPUT_DIR"
+    if [ -n "$V4_CSV" ]; then
+        log "v4 reference : $V4_CSV"
+    fi
+}
+
+autodetect_v4_csv() {
+    if [ -n "$V4_CSV" ]; then
+        [ -f "$V4_CSV" ] || warn "V4_CSV is set but does not exist: $V4_CSV"
+        return
+    fi
+    local candidate
+    for candidate in \
+        "$PROJECT_ROOT/../../../DIFS_OC_v4/DiffServ_0112_1730_coco2/0112_1730_coco/results/model_benchmark/plot_data_baseline/baseline_comparison.csv" \
+        "$PROJECT_ROOT/../../DIFS_OC_v4/DiffServ_0112_1730_coco2/0112_1730_coco/results/model_benchmark/plot_data_baseline/baseline_comparison.csv"; do
+        if [ -f "$candidate" ]; then
+            V4_CSV="$(cd -- "$(dirname -- "$candidate")" && pwd)/$(basename -- "$candidate")"
+            log "Auto-detected v4 reference: $V4_CSV"
+            return
+        fi
+    done
+    warn "No v4 COCO baseline CSV found. COCO-vs-DiffusionDB overlay plots will be skipped."
+}
+
+# ---------------------------------------------------------------------------
+# Preflight
+# ---------------------------------------------------------------------------
+check_required_files() {
+    local required=(
+        "$PROJECT_ROOT/run_baseline_benchmark.py"
+        "$PROJECT_ROOT/compile_report_v6.py"
+        "$WORKER_SCRIPT"
+        "$COLLECT_SCRIPT"
+        "$BUILD_POOL_SCRIPT"
+        "$PROJECT_ROOT/src/plots/plot_baseline_comparison.py"
+        "$PROJECT_ROOT/src/plots/plot_switching_overhead.py"
+        "$PROJECT_ROOT/src/plots/plot_workload_comparison.py"
+        "$PROJECT_ROOT/src/plots/plot_switch_modes.py"
+        "$PROJECT_ROOT/src/plots/plot_switch_slo.py"
+    )
+    local f
+    for f in "${required[@]}"; do
+        [ -f "$f" ] || die "Required file is missing: $f"
+    done
+    if { [ "$STAGE_SETUP" -eq 1 ] || [ "$STAGE_EXPERIMENTS" -eq 1 ]; } && [ ! -s "$PROJECT_ROOT/real_stats.npz" ]; then
+        if [ "$DRY_RUN" -eq 1 ]; then
+            warn "real_stats.npz is missing (it is not tracked by git); a real run will fail until it is copied in."
+        else
+            die "real_stats.npz (the 33 MB FID reference, not tracked by git) is missing. Copy it to $PROJECT_ROOT."
+        fi
+    fi
+}
+
+check_gpu() {
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] Would require >= 15000 MiB free VRAM."
+        return
+    fi
+    command -v nvidia-smi >/dev/null 2>&1 || die "nvidia-smi not found; a CUDA GPU is required."
+    local gpu_index="${CUDA_VISIBLE_DEVICES:-0}"
+    gpu_index="${gpu_index%%,*}"
+    if ! [[ "$gpu_index" =~ ^[0-9]+$ ]]; then
+        gpu_index=0
+    fi
+    local free_mib total_mib
+    free_mib="$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits -i "$gpu_index" | tr -d '[:space:]')"
+    total_mib="$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits -i "$gpu_index" | tr -d '[:space:]')"
+    log "GPU $gpu_index memory: ${free_mib} MiB free / ${total_mib} MiB total"
+    [ -n "$free_mib" ] || die "Could not read GPU memory via nvidia-smi."
+    if [ "$free_mib" -lt 15000 ]; then
+        die "At least 15000 MiB free VRAM is required; found ${free_mib} MiB. Stop other GPU jobs first."
+    fi
+}
+
+check_disk() {
+    local avail_kb
+    avail_kb="$(df -Pk "$PROJECT_ROOT" | awk 'NR==2 {print $4}')"
+    [ -n "$avail_kb" ] || die "Could not determine free disk space."
+    log "Free disk space: $((avail_kb / 1024 / 1024)) GiB"
+    if [ "$avail_kb" -lt 52428800 ]; then
+        warn "Less than 50 GiB free on the project filesystem; logs/results and temporary files may fill it."
+    fi
+}
+
+output_min_free_gib() {
+    printf '%s\n' "${DIFS_OUTPUT_MIN_FREE_GIB:-30}"
+}
+
+output_free_gib() {
+    local dir="$1" avail_kb
+    while [ ! -d "$dir" ] && [ "$dir" != "/" ]; do
+        dir="$(dirname -- "$dir")"
+    done
+    avail_kb="$(df -Pk "$dir" | awk 'NR==2 {print $4}')" || return 1
+    [ -n "$avail_kb" ] || return 1
+    printf '%s\n' "$((avail_kb / 1024 / 1024))"
+}
+
+free_output_space() {
+    local dir="$1" count size
+    [ -d "$dir" ] || return 0
+    count="$(find "$dir" -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.npz' \) 2>/dev/null | wc -l | tr -d ' ' || true)"
+    [ "${count:-0}" -gt 0 ] || return 0
+    size="$(du -sh "$dir" 2>/dev/null | awk '{print $1}' || true)"
+    log "Deleting $count disposable image/npz file(s) ($size) from $dir before choosing a fallback."
+    find "$dir" -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.npz' \) -delete 2>/dev/null \
+        || warn "Could not delete every disposable file in $dir; check permissions."
+}
+
+check_output_space() {
+    local min_gib free_gib
+    min_gib="$(output_min_free_gib)"
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] Would require >= ${min_gib} GiB free on the output filesystem ($OUTPUT_DIR), delete disposable files first, and relocate to a larger filesystem only if still short."
+        return
+    fi
+
+    mkdir -p "$OUTPUT_DIR"
+    free_gib="$(output_free_gib "$OUTPUT_DIR")" || die "Could not determine free space for $OUTPUT_DIR."
+    log "Free space for output images ($OUTPUT_DIR): ${free_gib} GiB"
+    if [ "$free_gib" -ge "$min_gib" ]; then
+        export DIFS_OUTPUT_DIR="$OUTPUT_DIR"
+        return
+    fi
+
+    warn "Only ${free_gib} GiB free on the filesystem holding $OUTPUT_DIR (need ${min_gib} GiB)."
+
+    # Step 1: free disposable files that a previous run left behind.
+    free_output_space "$OUTPUT_DIR"
+    free_gib="$(output_free_gib "$OUTPUT_DIR")" || free_gib=0
+    log "Free space after cleanup ($OUTPUT_DIR): ${free_gib} GiB"
+    if [ "$free_gib" -ge "$min_gib" ]; then
+        export DIFS_OUTPUT_DIR="$OUTPUT_DIR"
+        return
+    fi
+
+    # Step 2: still short -> relocate to the first larger filesystem.
+    local -a candidates=()
+    if [ -n "${DIFS_OUTPUT_FALLBACK_DIR:-}" ]; then
+        IFS=':' read -r -a candidates <<< "$DIFS_OUTPUT_FALLBACK_DIR"
+    fi
+    candidates+=( "/mnt/ssd4t/diffserv_output" "/mnt/my_ssd/diffserv_output" "/var/tmp/diffserv_output" "${HOME:-/root}/diffserv_output" )
+
+    local cand cand_free
+    for cand in "${candidates[@]}"; do
+        [ -n "$cand" ] || continue
+        [ "$cand" = "$OUTPUT_DIR" ] && continue
+        mkdir -p "$cand" 2>/dev/null || continue
+        [ -w "$cand" ] || continue
+        cand_free="$(output_free_gib "$cand")" || continue
+        if [ "$cand_free" -ge "$min_gib" ]; then
+            warn "Relocating output images from $OUTPUT_DIR to $cand (${cand_free} GiB free)."
+            OUTPUT_DIR="$cand"
+            export DIFS_OUTPUT_DIR="$OUTPUT_DIR"
+            log "Output images: $OUTPUT_DIR"
+            return
+        fi
+    done
+
+    die "Still only ${free_gib} GiB free for $OUTPUT_DIR after cleanup, and no fallback filesystem has ${min_gib} GiB free. Set DIFS_OUTPUT_DIR or --output-dir to a larger filesystem (tried: ${candidates[*]})."
+}
+
+check_model_space() {
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] Would check free space for the model cache ($MODEL_DIR)."
+        return
+    fi
+    local dir="$MODEL_DIR"
+    mkdir -p "$dir"
+    local avail_kb
+    avail_kb="$(df -Pk "$dir" | awk 'NR==2 {print $4}')"
+    [ -n "$avail_kb" ] || die "Could not determine free space for $dir."
+    log "Free space for model cache ($dir): $((avail_kb / 1024 / 1024)) GiB"
+    if [ "$avail_kb" -lt 188743680 ]; then
+        warn "Less than 180 GiB free for the model cache; the five full v6 snapshots total ~180 GB and may not fit."
+    fi
+}
+
+check_models_present() {
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] Would verify the five model snapshots in $MODEL_DIR."
+        return
+    fi
+    local missing=()
+    local spec dir
+    for spec in \
+        "stable-diffusion-v1-5" \
+        "stable-diffusion-2-1" \
+        "stable-diffusion-xl-base-1.0" \
+        "stable-diffusion-3.5-medium" \
+        "stable-diffusion-3.5-large"; do
+        dir="$MODEL_DIR/$spec"
+        if ! model_repo_present "$dir"; then
+            missing+=("$spec")
+        fi
+    done
+    if [ "${#missing[@]}" -gt 0 ]; then
+        die "Missing model weights in $MODEL_DIR: ${missing[*]}. Run '$0 --setup' (or copy the model cache) first."
+    fi
+    log "All five required model directories are present."
+}
+
+model_repo_present() {
+    local d="$1"
+    [ -f "$d/model_index.json" ] || return 1
+    find "$d" -maxdepth 4 \( -name '*.safetensors' -o -name 'pytorch_model.bin' \) -size +50M -print -quit 2>/dev/null | grep -q .
+}
+
+# ---------------------------------------------------------------------------
+# Dependency installation
+# ---------------------------------------------------------------------------
+install_python_deps() {
+    log "=== Installing pinned Python dependencies ==="
+    run "$PYTHON" -m pip install --upgrade pip
+
+    log "Installing PyTorch 2.5.1 / torchvision 0.20.1 / torchaudio 2.5.1 from $TORCH_INDEX_URL"
+    run "$PYTHON" -m pip install \
+        --index-url "$TORCH_INDEX_URL" \
+        "torch==2.5.1" "torchvision==0.20.1" "torchaudio==2.5.1"
+
+    log "Installing the v6 runtime stack"
+    run "$PYTHON" -m pip install \
+        "diffusers==0.39.0" \
+        "transformers==5.15.0" \
+        "accelerate==0.24.1" \
+        "safetensors==0.8.0" \
+        "huggingface_hub==1.27.0" \
+        "numpy==2.2.6" \
+        "scipy==1.15.2" \
+        "pandas==2.3.3" \
+        "matplotlib==3.10.9" \
+        "pillow==12.3.0" \
+        "pyarrow==25.0.1" \
+        "torchmetrics==1.8.2" \
+        "grpcio==1.71.0" \
+        "grpcio-tools==1.71.0" \
+        "protobuf==5.29.3" \
+        "pynvml==13.0.1" \
+        "torch-fidelity==0.4.0" \
+        "omegaconf==2.3.0" \
+        "opencv-python" \
+        "imageio" \
+        "imageio-ffmpeg" \
+        "tqdm" \
+        "requests" \
+        "tabulate" \
+        "joblib" \
+        "psutil" \
+        "seaborn"
+}
+
+verify_python_deps() {
+    log "=== Verifying Python imports ==="
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] Would verify the required Python imports and CUDA visibility."
+        return
+    fi
+    "$PYTHON" - <<'PY'
+import importlib
+import sys
+
+modules = [
+    "torch", "torchvision", "diffusers", "transformers", "accelerate",
+    "safetensors", "huggingface_hub", "numpy", "scipy", "pandas",
+    "matplotlib", "PIL", "pyarrow", "torchmetrics", "grpc",
+    "google.protobuf", "pynvml", "torch_fidelity", "omegaconf",
+]
+missing = []
+for name in modules:
+    try:
+        importlib.import_module(name)
+    except Exception as exc:  # noqa: BLE001 - report every failure
+        missing.append(f"{name}: {exc}")
+
+if missing:
+    print("[deps] Missing/broken imports:", file=sys.stderr)
+    for item in missing:
+        print("  -", item, file=sys.stderr)
+    sys.exit(1)
+print("[deps] All required imports succeeded.")
+PY
+    if [ "$DRY_RUN" -eq 0 ]; then
+        "$PYTHON" - <<'PY'
+import torch
+print(f"[deps] torch={torch.__version__} cuda_available={torch.cuda.is_available()} "
+      f"cuda={torch.version.cuda}")
+if not torch.cuda.is_available():
+    raise SystemExit("[deps] ERROR: PyTorch cannot see a CUDA device.")
+PY
+    fi
+}
+
+# ---------------------------------------------------------------------------
+# Data / model downloads
+# ---------------------------------------------------------------------------
+download_diffusiondb_metadata() {
+    if [ "$SKIP_DATASET" -eq 1 ]; then
+        log "Skipping dataset download (--skip-dataset)."
+        return
+    fi
+    if [ -s "$PARQUET_FILE" ]; then
+        log "DiffusionDB metadata already present: $PARQUET_FILE"
+    else
+        log "=== Downloading DiffusionDB metadata.parquet ==="
+        if [ "$DRY_RUN" -eq 0 ]; then
+            mkdir -p "$(dirname -- "$PARQUET_FILE")"
+        fi
+        run "$PYTHON" - "$PARQUET_FILE" <<'PY'
+import os
+import sys
+from huggingface_hub import hf_hub_download
+
+target = sys.argv[1]
+result = hf_hub_download(
+    repo_id="poloclub/diffusiondb",
+    filename="metadata.parquet",
+    repo_type="dataset",
+    local_dir=os.path.dirname(target),
+    token=os.environ.get("HF_TOKEN") or None,
+)
+print(f"[download] {result}")
+PY
+    fi
+
+    if [ -s "$PROMPTS_FILE" ] && [ "$FORCE" -eq 0 ]; then
+        log "DiffusionDB prompt pool already present: $PROMPTS_FILE"
+    else
+        log "=== Building DiffusionDB prompt pool ==="
+        run "$PYTHON" "$BUILD_POOL_SCRIPT" \
+            --parquet "$PARQUET_FILE" \
+            --out "$PROMPTS_FILE"
+    fi
+}
+
+download_model() {
+    local repo="$1"
+    local dest="$2"
+    if model_repo_present "$dest"; then
+        log "Model already present: $dest"
+        return
+    fi
+    if [ "$SKIP_MODELS" -eq 1 ]; then
+        die "Model missing but --skip-models was set: $dest"
+    fi
+    log "=== Downloading $repo -> $dest ==="
+    if [ "$DRY_RUN" -eq 0 ]; then
+        mkdir -p "$dest"
+    fi
+    run "$PYTHON" - "$repo" "$dest" <<'PY'
+import os
+import sys
+from huggingface_hub import snapshot_download
+
+repo, dest = sys.argv[1], sys.argv[2]
+snapshot_download(
+    repo_id=repo,
+    local_dir=dest,
+    token=os.environ.get("HF_TOKEN") or None,
+)
+print(f"[download] {repo} -> {dest}")
+PY
+}
+
+download_models() {
+    log "=== Ensuring the five v6 model snapshots are available ==="
+    check_model_space
+    if [ -z "${HF_TOKEN:-}" ]; then
+        warn "HF_TOKEN is not set. Gated repos (SD-3.5-medium) may fail to download; accept their license on huggingface.co and export HF_TOKEN."
+    fi
+    download_model "stable-diffusion-v1-5/stable-diffusion-v1-5" "$MODEL_DIR/stable-diffusion-v1-5"
+    download_model "stabilityai/stable-diffusion-2-1" "$MODEL_DIR/stable-diffusion-2-1"
+    download_model "stabilityai/stable-diffusion-xl-base-1.0" "$MODEL_DIR/stable-diffusion-xl-base-1.0"
+    download_model "stabilityai/stable-diffusion-3.5-medium" "$MODEL_DIR/stable-diffusion-3.5-medium"
+    download_model "camenduru/stable-diffusion-3.5-large" "$MODEL_DIR/stable-diffusion-3.5-large"
+}
+
+# ---------------------------------------------------------------------------
+# Stage 1: setup
+# ---------------------------------------------------------------------------
+stage_setup() {
+    log "================ STAGE 1/4: SETUP ================"
+    check_required_files
+    check_disk
+    if [ "$SKIP_DEPS" -eq 0 ]; then
+        install_python_deps
+    else
+        log "Skipping dependency installation (--skip-deps)."
+    fi
+    verify_python_deps
+    download_diffusiondb_metadata
+    download_models
+    check_models_present
+    log "Setup complete."
+}
+
+# ---------------------------------------------------------------------------
+# Stage 2a: baseline benchmark
+# ---------------------------------------------------------------------------
+stage_baseline() {
+    log "=== Stage 2a: baseline comparison (R6) ==="
+    check_gpu
+    check_models_present
+    if [ "$DRY_RUN" -eq 0 ]; then
+        [ -s "$PROMPTS_FILE" ] || die "Prompt pool missing: $PROMPTS_FILE. Run --setup first."
+        [ -s "$PROJECT_ROOT/real_stats.npz" ] || die "real_stats.npz is missing from the project root."
+    fi
+
+    if [ "$FORCE" -eq 1 ] && [ -f "$BASELINE_CSV" ]; then
+        log "--force: removing existing $BASELINE_CSV so every cell is rerun."
+        run rm -f "$BASELINE_CSV"
+    fi
+
+    local -a baseline_args level_args cmd
+    read -r -a baseline_args <<< "$BASELINES"
+    cmd=( "$PYTHON" -u run_baseline_benchmark.py --baseline "${baseline_args[@]}" --seed "$SEED" --workers "$WORKERS" )
+    if [ -n "$LEVELS" ]; then
+        read -r -a level_args <<< "$LEVELS"
+        cmd+=( --levels "${level_args[@]}" )
+    fi
+    run "${cmd[@]}"
+}
+
+# ---------------------------------------------------------------------------
+# Stage 2b: pairwise model switching
+# ---------------------------------------------------------------------------
+port_in_use() {
+    "$PYTHON" - "$1" <<'PY'
+import socket
+import sys
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    sock.settimeout(0.5)
+    sys.exit(0 if sock.connect_ex(("127.0.0.1", int(sys.argv[1]))) == 0 else 1)
+PY
+}
+
+wait_for_port() {
+    local port="$1"
+    local timeout="${2:-600}"
+    local pid="${3:-}"
+    "$PYTHON" - "$port" "$timeout" "$pid" <<'PY'
+import os
+import socket
+import sys
+import time
+
+port = int(sys.argv[1])
+timeout = float(sys.argv[2])
+pid = int(sys.argv[3]) if sys.argv[3] else None
+
+
+def worker_alive() -> bool:
+    if pid is None:
+        return True
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
+deadline = time.time() + timeout
+while time.time() < deadline:
+    if not worker_alive():
+        sys.exit(2)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(1.0)
+        if sock.connect_ex(("127.0.0.1", port)) == 0:
+            sys.exit(0)
+    time.sleep(1.0)
+sys.exit(1)
+PY
+}
+
+stage_switching() {
+    log "=== Stage 2b: pairwise model-switching measurements ==="
+    check_gpu
+    check_models_present
+    if [ "$DRY_RUN" -eq 0 ]; then
+        [ -x "$PYTHON" ] || die "Python interpreter is not executable: $PYTHON"
+    fi
+    local -a switch_models
+    read -r -a switch_models <<< "$SWITCH_MODELS"
+    [ "${#switch_models[@]}" -ge 2 ] || die "--switch-models needs at least two model IDs."
+    if [ "$DRY_RUN" -eq 0 ] && [ ! -s "$PROMPTS_FILE" ]; then
+        die "Prompt pool missing: $PROMPTS_FILE. Run --setup first."
+    fi
+    local first_model="${switch_models[0]}"
+    local port=50060
+    local mode mode_dir matrix wlog wpid rc
+    local -a modes=(hot force_upload cold_every)
+
+    for mode in "${modes[@]}"; do
+        mode_dir="$PLOT_DATA/switch_$mode"
+        matrix="$mode_dir/pairwise_switching.csv"
+        wlog="$LOG_DIR/switch_worker_$mode.log"
+        if [ "$DRY_RUN" -eq 0 ]; then
+            mkdir -p "$mode_dir"
+        fi
+
+        if [ -f "$matrix" ] && [ "$FORCE" -eq 0 ]; then
+            log "[switching] $mode already measured; skipping ($matrix). Use --force to redo."
+            continue
+        fi
+
+        if [ "$DRY_RUN" -eq 1 ]; then
+            log "[dry-run] Would start worker mode=$mode on port $port and collect ${switch_models[*]}"
+            continue
+        fi
+
+        if port_in_use "$port"; then
+            die "Port $port is already in use. Stop the stale process before starting the '$mode' switching worker."
+        fi
+
+        log "[switching] Starting worker: mode=$mode first_model=$first_model port=$port"
+        printf '\n===== %s : mode=%s =====\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$mode" >> "$wlog"
+        env \
+            DIFS_MODEL_DIR="$MODEL_DIR" \
+            DIFS_OUTPUT_DIR="$OUTPUT_DIR" \
+            DIFS_MODEL_SWITCH_MODE="$mode" \
+            HF_HOME="$HF_HOME" \
+            PYTHONPATH="$PYTHONPATH" \
+            "$PYTHON" -u "$WORKER_SCRIPT" \
+                -model "$first_model" \
+                -sampler 1 \
+                -thread 10 \
+                -port "$port" \
+                -npz "$PROJECT_ROOT/real_stats.npz" \
+                >> "$wlog" 2>&1 &
+        wpid=$!
+        CURRENT_WORKER_PID="$wpid"
+
+        local port_rc=0
+        wait_for_port "$port" 900 "$wpid" || port_rc=$?
+        if [ "$port_rc" -ne 0 ]; then
+            if [ "$port_rc" -eq 2 ]; then
+                warn "Worker for mode=$mode exited before opening port $port. See $wlog"
+            else
+                warn "Worker for mode=$mode did not open port $port within 900 s. See $wlog"
+            fi
+            stop_current_worker
+            return 1
+        fi
+        log "[switching] Worker ready (pid=$wpid). Collecting measurements..."
+        rc=0
+        if ! run "$PYTHON" -u "$COLLECT_SCRIPT" \
+                --worker "localhost:$port" \
+                --models "${switch_models[@]}" \
+                --warmup 1 \
+                --repeat "$SWITCH_REPEAT" \
+                --delay "$SWITCH_DELAY" \
+                --output "$matrix"; then
+            rc=1
+        fi
+        stop_current_worker
+
+        if [ "$rc" -ne 0 ]; then
+            warn "Collection failed for mode=$mode. See $wlog"
+            return 1
+        fi
+        [ -s "$matrix" ] || die "Expected switching CSV was not written: $matrix"
+        log "[switching] $mode complete: $matrix"
+    done
+}
+
+stage_experiments() {
+    log "================ STAGE 2/4: EXPERIMENTS ================"
+    check_output_space
+    if [ "$FORCE" -eq 1 ] && { [ "$SKIP_BASELINE" -eq 0 ] || [ "$SKIP_SWITCHING" -eq 0 ]; }; then
+        if [ -f "$PROJECT_ROOT/metrics/model_load_metrics.csv" ]; then
+            log "--force: removing existing metrics/model_load_metrics.csv so cold-load plots use this run."
+            run rm -f "$PROJECT_ROOT/metrics/model_load_metrics.csv"
+        fi
+    fi
+    if [ "$SKIP_BASELINE" -eq 0 ]; then
+        stage_baseline
+    else
+        log "Skipping baseline benchmark (--skip-baseline)."
+    fi
+    if [ "$SKIP_SWITCHING" -eq 0 ]; then
+        stage_switching
+    else
+        log "Skipping switching measurements (--skip-switching)."
+    fi
+    cleanup_inference_outputs
+    cleanup_client_images
+    log "Experiments complete."
+}
+
+# ---------------------------------------------------------------------------
+# Stage 3: plots
+# ---------------------------------------------------------------------------
+have_switching_data() {
+    [ -f "$PLOT_DATA/switch_hot/pairwise_switching.csv" ] &&
+    [ -f "$PLOT_DATA/switch_force_upload/pairwise_switching.csv" ] &&
+    [ -f "$PLOT_DATA/switch_cold_every/pairwise_switching.csv" ]
+}
+
+stage_plots() {
+    log "================ STAGE 3/4: PLOTS ================"
+    if [ "$DRY_RUN" -eq 0 ] && [ ! -s "$BASELINE_CSV" ]; then
+        die "No baseline results at $BASELINE_CSV. Run --experiments first."
+    fi
+    run "$PYTHON" "$PROJECT_ROOT/src/plots/plot_baseline_comparison.py"
+
+    if [ -n "$V4_CSV" ] && [ -f "$V4_CSV" ]; then
+        run "$PYTHON" "$PROJECT_ROOT/src/plots/plot_workload_comparison.py"
+    else
+        warn "v4 reference CSV unavailable; generating v6-only workload summary (overlay plots skipped)."
+        run "$PYTHON" "$PROJECT_ROOT/src/plots/plot_workload_comparison.py"
+    fi
+
+    if have_switching_data; then
+        if [ -f "$PROJECT_ROOT/metrics/model_load_metrics.csv" ]; then
+            run "$PYTHON" "$PROJECT_ROOT/src/plots/plot_switching_overhead.py"
+        else
+            warn "metrics/model_load_metrics.csv missing; skipping switching-overhead plot."
+        fi
+        run "$PYTHON" "$PROJECT_ROOT/src/plots/plot_switch_modes.py"
+        run "$PYTHON" "$PROJECT_ROOT/src/plots/plot_switch_slo.py"
+    else
+        warn "Switching CSVs are incomplete; skipping switching plots."
+    fi
+    log "Plots written under $PLOT_DATA/plots/"
+}
+
+# ---------------------------------------------------------------------------
+# Stage 4: report
+# ---------------------------------------------------------------------------
+report_prereqs_ok() {
+    if ! ( PATH="/usr/bin:/bin:/usr/local/bin"; command -v pdflatex >/dev/null 2>&1 ); then
+        warn "pdflatex is not available in /usr/bin:/bin:/usr/local/bin; skipping PDF report."
+        return 1
+    fi
+    if [ ! -f "$REPORT_TEX" ]; then
+        warn "Report TeX not found: $REPORT_TEX; skipping report."
+        return 1
+    fi
+    local missing
+    if ! missing="$("$PYTHON" - "$REPORT_TEX" <<'PY'
+import pathlib
+import re
+import sys
+
+tex = pathlib.Path(sys.argv[1])
+root = tex.parent
+text = tex.read_text(encoding="utf-8")
+missing = []
+for match in re.finditer(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", text):
+    rel = match.group(1)
+    if not (root / rel).resolve().exists():
+        missing.append(rel)
+if missing:
+    print("\n".join(missing))
+    sys.exit(1)
+sys.exit(0)
+PY
+)"; then
+        warn "Report is missing figures; skipping PDF compile:"
+        while IFS= read -r f; do [ -n "$f" ] && warn "  missing: $f"; done <<< "$missing"
+        return 1
+    fi
+    return 0
+}
+
+stage_report() {
+    log "================ STAGE 4/4: REPORT ================"
+    if ! report_prereqs_ok; then
+        warn "Report stage skipped. All available plots are in $PLOT_DATA/plots/."
+        return 0
+    fi
+    run "$PYTHON" "$PROJECT_ROOT/compile_report_v6.py"
+    log "Report output: $REPORT_DIR/DIFS_OC_v6_WorkloadComparison_Report.pdf"
+}
+
+# ---------------------------------------------------------------------------
+# Cleanup
+# ---------------------------------------------------------------------------
+cleanup_inference_outputs() {
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] Would delete disposable images in ${OUTPUT_DIR:-/tmp/diffserv_output} after a completed run."
+        return 0
+    fi
+    local dir="${OUTPUT_DIR:-/tmp/diffserv_output}"
+    [ -d "$dir" ] || return 0
+    local resolved
+    resolved="$(realpath -m "$dir" 2>/dev/null || printf '%s' "$dir")"
+    case "$resolved" in
+        "/"|"/tmp"|"/home"|"/mnt"|"/var"|"/usr"|"/etc"|"$PROJECT_ROOT")
+            warn "Refusing to delete files directly in $dir; use a dedicated --output-dir subdirectory."
+            return 0
+            ;;
+    esac
+    local count size
+    count="$(find "$dir" -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.npz' \) 2>/dev/null | wc -l | tr -d ' ' || true)"
+    [ "$count" -gt 0 ] || return 0
+    size="$(du -sh "$dir" 2>/dev/null | awk '{print $1}' || true)"
+    log "Inference outputs from the completed run: $count files ($size) in $dir; these are disposable."
+    if [ "$KEEP_OUTPUT_IMAGES" -eq 1 ]; then
+        log "--keep-output-images set; leaving them in place."
+    else
+        if find "$dir" -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.npz' \) -delete 2>/dev/null; then
+            log "Deleted inference output images from $dir."
+        else
+            warn "Could not delete every output file in $dir; check permissions."
+        fi
+    fi
+}
+
+cleanup_client_images() {
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[dry-run] Would report (and optionally delete) client_received/*.png."
+        return 0
+    fi
+    local dir="$PROJECT_ROOT/client_received"
+    [ -d "$dir" ] || return 0
+    local count size
+    count="$(find "$dir" -maxdepth 1 -type f -name '*.png' 2>/dev/null | wc -l | tr -d ' ' || true)"
+    [ "$count" -gt 0 ] || return 0
+    size="$(du -sh "$dir" 2>/dev/null | awk '{print $1}' || true)"
+    if [ "$CLEAN_CLIENT_IMAGES" -eq 1 ]; then
+        log "Deleting $count received images ($size) from $dir."
+        if ! find "$dir" -maxdepth 1 -type f -name '*.png' -delete 2>/dev/null; then
+            warn "Could not delete every client_received image; check permissions."
+        fi
+    else
+        log "$count received images ($size) remain in $dir (use --clean-client-images to delete)."
+    fi
+}
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+log "Run log: $RUN_LOG"
+log "Stages: setup=$STAGE_SETUP experiments=$STAGE_EXPERIMENTS plots=$STAGE_PLOTS report=$STAGE_REPORT"
+log "Options: force=$FORCE dry_run=$DRY_RUN skip_deps=$SKIP_DEPS skip_models=$SKIP_MODELS"
+log "         skip_dataset=$SKIP_DATASET skip_baseline=$SKIP_BASELINE skip_switching=$SKIP_SWITCHING"
+
+resolve_python
+check_required_files
+autodetect_v4_csv
+export_runtime_env
+
+if [ "$DRY_RUN" -eq 1 ]; then
+    log "[dry-run] No commands will be executed."
+fi
+
+if [ "$STAGE_SETUP" -eq 1 ]; then
+    stage_setup
+fi
+if [ "$STAGE_EXPERIMENTS" -eq 1 ]; then
+    stage_experiments
+fi
+if [ "$STAGE_PLOTS" -eq 1 ]; then
+    stage_plots
+fi
+if [ "$STAGE_REPORT" -eq 1 ]; then
+    stage_report
+fi
+
+log "All requested stages finished successfully."
+log "Run log: $RUN_LOG"
