@@ -1,0 +1,130 @@
+# Secrets
+*.env
+*.key
+*.secret
+*.pem
+*.p12
+*~
+*.md
+*.odt
+*.docx
+Notes/*
+#DiffServ_0112_1730_coco2/*
+DiffServ_0112_1730_coco2/0112_1730_coco/annotations/*
+DiffServ_0112_1730_coco2/0112_1730_coco/client_received/*
+DiffServ_0112_1730_coco2/0112_1730_coco/src/venv_diffserve/*
+DiffServ_0112_1730_coco2/0112_1730_coco/venv_diffserve/*
+DiffServ_0112_1730_coco2/stable-diffusion-v1-4/*
+huggingface_tokens.md
+dump_codebase.sh
+codebase_dump.txt
+config/*.json
+config/*.yaml
+credentials/
+.secrets/
+.env.*
+DiffServ_0112_1730_coco2/0112_1730_coco/NOTES.md
+.env .env.* *.pem *.key *secret* *credential*
+address_port.json my_config/
+NOTES.md session_recall.md global_session_recall.md
+
+
+# ---- Build artifacts (regenerable) ----
+build/
+DiffServ_0112_1730_coco2/0112_1730_coco/build/
+DiffServ_0112_1730_coco2/0112_1730_coco/client_received/
+DiffServ_0112_1730_coco2/0112_1730_coco/WorkersLogs/
+*.sync-conflict-*
+
+# ---- PDF / LaTeX sources & build artifacts (reports are regenerated, not versioned) ----
+*.tex
+*.pdf
+*.dvi
+*.puml
+*.bbl
+*.blg
+*.synctex
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# ---- LaTeX build artifacts ----
+*.aux
+*.out
+*.toc
+*.log
+missfont.log
+texput.log
+
+# ---- Session / working notes (never committed) ----
+**/session_recall.md
+**/WORK_CHECKPOINT.md
+**/GIT_PUBLISH_V1_V2_V3.md
+
+# ---- Sensitive / local runtime configuration ----
+my_config/
+address_port.json
+src/metadata-store/*.conf
+**/.aws/
+**/.ssh/
+**/.kube/
+.kubeconfig
+*.crt
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+.netrc
+.htpasswd
+
+# ---- Python caches ----
+__pycache__/
+*.pyc
+.mypy_cache/
+src/.mypy_cache/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/ venv/ env/
+.DS_Store
+Thumbs.db
+
+# ---- Large binary data (keep on disk, not in git) ----
+real_stats.npz
+DiffServ_0112_1730_coco2/0112_1730_coco/real_stats.npz
+
+# ---- Runtime metrics / logs ----
+metrics/
+DiffServ_0112_1730_coco2/0112_1730_coco/metrics/
+terminal_*.txt
+docker_logs.txt
+benchmark_run.log
+multiworker_*.log
+
+# ---- Tools / installers / session dumps ----
+TAGS
+session_export.json
+get-docker.sh
+git-delta_*.deb
+socket
+
+
+# ---- Model weights / large binaries / local profiling ----
+models/ model_cache/ checkpoints/ weights/
+*.pth *.pt *.ckpt *.safetensors *.bin *.onnx *.engine *.trt
+real_stats.npz
+*.npz
+
+# ---- Runtime outputs / generated images / logs ----
+client_received/ output/ diffserv_output/
+logs/ WorkersLogs/ *.log
+
+
+Generated metrics and large experiment artifacts
+metrics/*.csv
+metrics/*.csv.*
+metrics/*.sync-conflict-*
+results/
+metrics/*.csv.bak
