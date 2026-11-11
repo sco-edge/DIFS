@@ -10,7 +10,6 @@ PROTO_PATH = os.path.join(PROJECT_ROOT, "protos","python_protos")
 
 sys.path.insert(0,PROTO_PATH)
 
-
 import grpc
 import query_pb2
 import query_pb2_grpc
