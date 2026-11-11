@@ -11,7 +11,9 @@ its variants. Inspired by automated, model-less inference systems such as INFaaS
 Inference Serving," OSDI 2020), DIFS eliminates the complexity of manual model specification and resource
 management, enabling developers to focus on prompt engineering and creative output rather than infrastructure tuning.
 Like INFaaS, DIFS adopts a model-less abstraction: users specify high-level task requirements (e.g., desired
-latency, output resolution, or quality level) rather than exact model variants. The system then automatically selects and routes requests to the most suitable pre-registered diffusion model from a local repository, navigating the inherent trade-off space between speed, memory usage, and visual fidelity.
+latency, output resolution, or quality level) rather than exact model variants. The system then automatically selects
+and routes requests to the most suitable pre-registered diffusion model from a local repository, navigating the inherent
+trade-off space between speed, memory usage, and visual fidelity.
 Key differentiators and contributions of DIFS include:
 
 <!-- * Local, Single-Machine Optimization:
