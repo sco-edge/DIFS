@@ -60,8 +60,10 @@ def run():
 
             # 4. 상태 확인 및 결과 출력
             if response.status.status == 1: # SUCCESS = 1 [cite: 2]
-                print(f"[클라이언트] 서버 응답 수신 성공")
-                print(f"[성능 로그] 총 쿼리 소요 시간: {elapsed_time:.4f} 초 (RTT)")
+                #print(f"[클라이언트] 서버 응답 수신 성공")
+                print(f"[Client] Server response received successfully")
+                #print(f"[성능 로그] 총 쿼리 소요 시간: {elapsed_time:.4f} 초 (RTT)")
+                print(f"[Performance Log] Total Query Duration {elapsed_time:.4f} seconds (RTT)")
                 #print(f"- 생성된 이미지 개수: {len(response.image_paths)}개")
 
                 # --- [추가 포인트] 수신된 바이너리 데이터를 파일로 저장 ---
