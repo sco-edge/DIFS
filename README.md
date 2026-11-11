@@ -34,7 +34,7 @@ Key differentiators and contributions of DIFS include:
 - By operating entirely offline, DIFS ensures data privacy and eliminates cloud costs, making it ideal for on-premises creative
   tools, research prototyping, and edge deployment.
 
-At its core, DIFS leverages the Stable Diffusion family (e.g., v1.5, SDXL, Turbo, and LoRA-adapted variants) as the primary generative
+At its core, DIFS leverages the Stable Diffusion family (e.g., v1.5, and SDXL) as the primary generative
 backbone, registered as profiled model variants within the system. This combination of automated variant selection, local execution, and
 diffusion-aware scheduling positions DIFS as a practical, accessible platform for deploying state-of-the-art text-to-image generation in
 real-world, resource-constrained environments.
