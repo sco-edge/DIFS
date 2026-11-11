@@ -73,11 +73,11 @@ def run():
 				# print(f"- 수신된 이미지 개수: {len(response.image_data)}개")
 
                 # for i, img_bytes in enumerate(response.image_data):
-                #     # 파일명 결정 (서버 경로에서 파일명만 추출하거나 새로 명명)
+                #     # 파일명 결정 (서버 경로에서 파일명만 추출하거나 새로 명명) # Determine the filename (extract the filename from the server path or assign a new name)
                 #     file_name = f"received_image_{i+1}_{int(time.time())}.png"
                 #     save_path = os.path.join(save_dir, file_name)
 
-                    # # 바이너리 쓰기 모드('wb')로 파일 저장
+                    # # 바이너리 쓰기 모드('wb')로 파일 저장 # # Save the file in binary write mode ('wb')
                     # with open(save_path, "wb") as f:
                         # f.write(img_bytes)
                         
