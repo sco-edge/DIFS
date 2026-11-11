@@ -16,7 +16,7 @@ and routes requests to the most suitable pre-registered diffusion model from a l
 trade-off space between speed, memory usage, and visual fidelity.
 Key differentiators and contributions of DIFS include:
 
-<!-- * Local, Single-Machine Optimization:
+* Local, Single-Machine Optimization:
 - Unlike the original cloud-centric INFaaS (which relied on AWS EC2/S3), DIFS is fully adapted for standalone execution
    on resource-constrained hardware, including machines with a single consumer-grade GPU. All AWS dependencies have been
     removed, and model/data loading uses local file paths.
@@ -41,4 +41,4 @@ real-world, resource-constrained environments.
 
 In essence, DIFS transforms the sophisticated model-serving concepts of INFaaS into a dedicated, diffusion-first inference service—bridging
 the gap between cutting-edge generative AI and deployable, user-friendly systems.
--->
+
