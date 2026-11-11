@@ -23,8 +23,10 @@ Key differentiators and contributions of DIFS include:
     
 * Diffusion-Specific Architecture Support:
 - Built around the iterative denoising process of diffusion models, DIFS enables dynamic control over inference parameters
-   (e.g., number of steps, guidance scale) and supports efficient memory techniques (attention slicing, sequential offloading)
+   (e.g., number of steps, number of requests, model type) and supports efficient memory techniques (attention slicing, sequential offloading)
    to maximize performance on limited VRAM.
+
+-
    
 * Extensible Scaling Potential:
 - While optimized for single-GPU setups, the retained INFaaS worker-master design allows future extensions to multi-GPU vertical
