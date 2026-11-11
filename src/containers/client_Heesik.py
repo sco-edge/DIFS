@@ -19,9 +19,10 @@ import time
 import os
 
 def run():
-    # 1. 서버 채널 연결 (대용량 이미지 수신을 위해 메시지 크기 제한 확장 권장)
+    # 1. 서버 채널 연결 (대용량 이미지 수신을 위해 메시지 크기 제한 확장 권장) 
+    # 1. Server Channel Connection (Increasing the message size limit is recommended to accommodate the receipt of large-sized images)
     options = [
-        ('grpc.max_receive_message_length', 100 * 1024 * 1024) # 100MB까지 허용
+        ('grpc.max_receive_message_length', 100 * 1024 * 1024) # 100MB까지 허용  # Up to 100MB allowed
     ]
     #with grpc.insecure_channel('localhost:50051') as channel:
     with grpc.insecure_channel('192.168.128.8:50010') as channel:
@@ -31,14 +32,14 @@ def run():
         prompts = ["dog", "dog", "dog", "dog", "dog", "car", "car", "car", "car", "car"]
         #prompts = ["take a rest"]
 
-        # 2. QueryOnlineRequest 생성
-        # repeated 필드는 파이썬의 list를 그대로 대입하면 됩니다.
+        # 2. QueryOnlineRequest 생성 # 2. Create QueryOnlineRequest
+        # repeated 필드는 파이썬의 list를 그대로 대입하면 됩니다. # For `repeated` fields, you can simply assign a Python list.
 #        request = query_pb2.QueryOnlineImageRequest(
         request = query_pb2.QueryOnlineRequest(
-            Prompt=prompts,           # ["sentence1", "sentence2"] 형식
+            Prompt=prompts,           # ["sentence1", "sentence2"] 형식 format
             Steps=25,
             CFG_Scale=7.5,
-            BatchSize=len(prompts),   # 프롬프트 개수에 맞춰 BatchSize 설정
+            BatchSize=len(prompts),   # 프롬프트 개수에 맞춰 BatchSize 설정 # Set BatchSize according to the number of prompts
             Seed=42
             #model=["stable-diffusion-v1-5"],
             #submitter="user_test"
