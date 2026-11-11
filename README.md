@@ -26,7 +26,9 @@ Key differentiators and contributions of DIFS include:
    (e.g., number of steps, number of requests, model type) and supports efficient memory techniques (attention slicing, sequential offloading)
    to maximize performance on limited VRAM.
 
--
+* Reporting Functionality
+- Several reporting options for key performance indicators such as accuracy service-level-objectives (SLO), end-to-end latency and load levels are
+  offered in the more recent versions for evaluation options
    
 * Extensible Scaling Potential:
 - While optimized for single-GPU setups, the retained INFaaS worker-master design allows future extensions to multi-GPU vertical
