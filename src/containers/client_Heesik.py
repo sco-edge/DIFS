@@ -64,7 +64,7 @@ def run():
                 print(f"[성능 로그] 총 쿼리 소요 시간: {elapsed_time:.4f} 초 (RTT)")
                 #print(f"- 생성된 이미지 개수: {len(response.image_paths)}개")
 
-                # --- [추가 포인트] 수신된 바이너리 데이터를 파일로 저장 ---
+                # --- [추가 포인트] 수신된 바이너리 데이터를 파일로 저장 --- # --- [Additional Point] Saving received binary data to a file ---
                 save_dir = "./client_received"
                 os.makedirs(save_dir, exist_ok=True)
 
@@ -93,14 +93,18 @@ def run():
 
 
             else:
-                print(f"[클라이언트] 서버 처리 실패: {response.status.msg}")
+                print(f"[Client] Server processing failed: {response.status.msg}")
+                #print(f"[클라이언트] 서버 처리 실패: {response.status.msg}")
+                
 
         except grpc.RpcError as e:
-            # RPC 오류 발생 시에도 시간 출력 (타임아웃 확인용)
+            # RPC 오류 발생 시에도 시간 출력 (타임아웃 확인용) # Output the time even when an RPC error occurs (for checking timeouts)
             end_time = time.perf_counter()
             elapsed_time = end_time - start_time
-            print(f"[클라이언트] gRPC 오류 발생: {e.code()} - {e.details()}")
-            print(f"[성능 로그] 오류 발생 시점까지의 시간: {elapsed_time:.4f} 초")
+            print(f"[Client] gRPC error occurred: {e.code()} - {e.details()}")
+            print(f"[Performance Log] Time elapsed up to the point of error: {elapsed_time:.4f} 초")
+            #print(f"[클라이언트] gRPC 오류 발생: {e.code()} - {e.details()}")
+            #print(f"[성능 로그] 오류 발생 시점까지의 시간: {elapsed_time:.4f} 초")
 
 if __name__ == "__main__":
     run()
