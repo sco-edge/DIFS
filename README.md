@@ -33,6 +33,7 @@ Key differentiators and contributions of DIFS include:
 * Extensible Scaling Potential:
 - While optimized for single-GPU setups, the retained INFaaS worker-master design allows future extensions to multi-GPU vertical
    scaling or multi-node horizontal scaling for high-throughput scenarios.
+- The scaling options in dependent on the number of GPUs available during the experimental runs
    
 * Privacy and Cost Efficiency:
 - By operating entirely offline, DIFS ensures data privacy and eliminates cloud costs, making it ideal for on-premises creative
