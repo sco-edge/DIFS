@@ -47,24 +47,24 @@ def run():
         print(f"[클라이언트] 요청 전송 (QueryOnlineImage): '{request.Prompt}'")
 
         try:
-            # --- 시간 측정 시작 ---
+            # --- 시간 측정 시작 --- # --- Start time measurement ---
             start_time = time.perf_counter()
 
             # 3. RPC 호출 및 응답 수신 [cite: 5, 13, 14]
             # response = stub.QueryOnlineImage(request)
             response = stub.QueryOnline(request)
 
-            # --- 시간 측정 종료 및 계산 ---
+            # --- 시간 측정 종료 및 계산 --- # 3. RPC Invocation and Receipt of Responses [cite: 5, 13, 14]
             end_time = time.perf_counter()
             elapsed_time = end_time - start_time
 
-            # 4. 상태 확인 및 결과 출력
+            # 4. 상태 확인 및 결과 출력  # 4. Check status and output results
             if response.status.status == 1: # SUCCESS = 1 [cite: 2]
                 print(f"[클라이언트] 서버 응답 수신 성공")
                 print(f"[성능 로그] 총 쿼리 소요 시간: {elapsed_time:.4f} 초 (RTT)")
                 #print(f"- 생성된 이미지 개수: {len(response.image_paths)}개")
 
-                # --- [추가 포인트] 수신된 바이너리 데이터를 파일로 저장 ---
+                # --- [추가 포인트] 수신된 바이너리 데이터를 파일로 저장 --- # --- [Additional Point] Saving received binary data to a file ---
                 save_dir = "./client_received"
                 os.makedirs(save_dir, exist_ok=True)
 
