@@ -2,7 +2,6 @@ import io
 import os
 import grpc
 from concurrent import futures
-
 import torch
 from diffusers import StableDiffusionPipeline
 
